@@ -12,7 +12,7 @@ config_version=5
 
 config/name="Ecos de Lirael"
 config/description="Action-RPG estilo Zelda com elementos souls-like. Protótipo de combate (Fase 0)."
-run/main_scene="res://world/village.tscn"
+run/main_scene="res://ui/title_screen.tscn"
 config/features=PackedStringArray("4.3")
 config/icon="res://icon.svg"
 
@@ -20,6 +20,7 @@ config/icon="res://icon.svg"
 
 GameState="*res://core/game_state.gd"
 GameEvents="*res://core/game_events.gd"
+SaveManager="*res://core/save_manager.gd"
 
 [display]
 

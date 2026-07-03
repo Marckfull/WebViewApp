@@ -28,11 +28,22 @@ souls-like, exploração entre cenas, NPCs com diálogo e a primeira luta de bos
   fica gravada (o boss não volta).
 - **Campo de Treino**: a arena da Fase 0, para testar builds e números.
 
-**Interface:**
+**Interface e persistência:**
+- Tela de título com **Continuar / Novo Jogo**.
+- **Save automático em JSON** (escrita atômica em `user://`): salva ao
+  descansar, ao vencer boss, ao coletar Ecos e quando o app fecha ou vai
+  para segundo plano (essencial em Android). Ao continuar, a jogadora
+  acorda no último santuário onde descansou — regra souls.
 - HUD: vida, stamina, Ecos, mensagens de evento e barra de boss.
 - Caixa de diálogo que pausa o jogo (avança com interact/ataque).
 - Controles de toque: joystick virtual + botões ATACAR/ROLAR/ALVO/USAR
   (aparecem só em dispositivos com touchscreen).
+
+**Arte:**
+- Aria tem **sprites reais em pixel art** (24×24): idle com piscada,
+  caminhada, rolamento e ataque com espada em 3 direções (+ flip).
+  Os sprites são gerados por `../tools/generate_aria_sprites.py` —
+  edite as grades de caracteres e rode o script para iterar a arte.
 
 ## Como rodar
 
@@ -69,21 +80,23 @@ landscape por sensor e filtro de textura *nearest* (pixel art).
 
 ```
 game/
-├── core/        # autoloads: estado global (Ecos, flags, spawn) e event bus
+├── assets/      # sprites em pixel art (gerados por tools/)
+├── core/        # autoloads: GameState, GameEvents e SaveManager
 ├── systems/     # componentes reutilizáveis: Health, Stamina, Hitbox, Hurtbox
 ├── entities/
-│   ├── player/  # Aria: máquina de estados + lock-on
+│   ├── player/  # Aria: máquina de estados + lock-on + sprites animados
 │   ├── enemies/ # EnemyBase (Ecoado, Brutamontes) + BossEcoGuardia (2 fases)
 │   └── npc.*    # NPCs com diálogo
 ├── world/       # Level (base de cena), vila, cripta, gym, portais,
 │                # santuário, spawners, pickups de Eco
-└── ui/          # HUD (+ barra de boss), diálogo, joystick e botões de toque
+└── ui/          # título, HUD (+ barra de boss), diálogo, controles de toque
 ```
 
 ## Próximos passos (ver GDD, seção 8)
 
 1. Playtest: a sensação do combate e a dificuldade do boss (deve matar o
    jogador mediano 2–4 vezes).
-2. Save/load em JSON (Ecos, flags, posição) — hoje o progresso vive só na sessão.
-3. Primeiros sprites reais de Aria (substituir o greybox) e SFX de combate.
+2. SFX de combate e primeira música (a trilha é mecânica central no GDD).
+3. Sprites para inimigos e NPCs (mesmo pipeline do gerador da Aria).
 4. Sistema de inventário e primeiro item de dungeon (Gancho-corda).
+5. Ocarina de Vidro: roda de melodias e a primeira música jogável.

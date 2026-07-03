@@ -36,7 +36,7 @@ var _iframes := 0.0
 @onready var hitbox_pivot: Node2D = $HitboxPivot
 @onready var hitbox_shape: CollisionShape2D = $HitboxPivot/Hitbox/CollisionShape2D
 @onready var sword_visual: Polygon2D = $HitboxPivot/SwordVisual
-@onready var body_visual: Polygon2D = $BodyVisual
+@onready var sprite: AnimatedSprite2D = $Sprite
 @onready var reticle: Polygon2D = $Reticle
 
 
@@ -62,6 +62,7 @@ func _physics_process(delta: float) -> void:
 			velocity = Vector2.ZERO
 	velocity += _knockback
 	move_and_slide()
+	_update_animation()
 
 
 func is_alive() -> bool:
@@ -87,7 +88,7 @@ func _enter_roll(dir: Vector2) -> void:
 	_timer = ROLL_DURATION
 	_roll_dir = dir
 	hurtbox.invulnerable = true
-	body_visual.modulate = Color(1.0, 1.0, 1.0, 0.45)
+	sprite.modulate = Color(1.0, 1.0, 1.0, 0.45)
 
 
 func _state_roll(delta: float) -> void:
@@ -95,7 +96,7 @@ func _state_roll(delta: float) -> void:
 	_timer -= delta
 	if _timer <= 0.0:
 		hurtbox.invulnerable = false
-		body_visual.modulate = Color.WHITE
+		sprite.modulate = Color.WHITE
 		state = State.MOVE
 
 
@@ -103,6 +104,10 @@ func _enter_attack() -> void:
 	state = State.ATTACK
 	_timer = ATTACK_DURATION
 	sword_visual.visible = true
+	# play() direto (fora do guard de _update_animation) para reiniciar
+	# a animação não-loop a cada golpe.
+	sprite.flip_h = _is_side() and facing.x < 0.0
+	sprite.play("attack_" + _facing_name())
 
 
 func _state_attack(delta: float) -> void:
@@ -147,9 +152,9 @@ func _on_hit_received(from_hitbox: Hitbox) -> void:
 
 
 func _flash() -> void:
-	body_visual.modulate = Color(3.0, 1.2, 1.2)
+	sprite.modulate = Color(3.0, 1.2, 1.2)
 	var tween := create_tween()
-	tween.tween_property(body_visual, "modulate", Color.WHITE, 0.2)
+	tween.tween_property(sprite, "modulate", Color.WHITE, 0.2)
 
 
 func _on_died() -> void:
@@ -157,7 +162,7 @@ func _on_died() -> void:
 		_exit_attack()
 	lock_target = null
 	state = State.DEAD
-	body_visual.modulate = Color(0.45, 0.45, 0.55, 0.6)
+	sprite.modulate = Color(0.45, 0.45, 0.55, 0.6)
 	died.emit()
 	GameEvents.player_died.emit(global_position)
 
@@ -169,7 +174,7 @@ func respawn(at: Vector2) -> void:
 	stamina.refill()
 	_knockback = Vector2.ZERO
 	_iframes = 1.0
-	body_visual.modulate = Color.WHITE
+	sprite.modulate = Color.WHITE
 	state = State.MOVE
 
 
@@ -185,6 +190,37 @@ func _update_lock() -> void:
 	reticle.visible = lock_target != null
 	if lock_target:
 		reticle.global_position = lock_target.global_position + Vector2(0, -20)
+
+
+func _update_animation() -> void:
+	sprite.flip_h = _is_side() and facing.x < 0.0
+	match state:
+		State.MOVE:
+			var prefix := "walk_" if velocity.length() > 5.0 else "idle_"
+			_play(prefix + _facing_name())
+		State.ROLL:
+			_play("roll_" + _facing_name())
+		State.ATTACK:
+			pass  # disparada uma única vez em _enter_attack (não-loop)
+		State.HURT:
+			_play("idle_" + _facing_name())
+		State.DEAD:
+			_play("idle_down")
+
+
+func _is_side() -> bool:
+	return absf(facing.x) >= absf(facing.y)
+
+
+func _facing_name() -> String:
+	if _is_side():
+		return "side"
+	return "down" if facing.y > 0.0 else "up"
+
+
+func _play(anim: String) -> void:
+	if sprite.animation != StringName(anim):
+		sprite.play(anim)
 
 
 func _cycle_lock_target() -> void:

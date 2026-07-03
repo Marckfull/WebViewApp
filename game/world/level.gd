@@ -29,6 +29,14 @@ func _ready() -> void:
 func _place_player_at_spawn() -> void:
 	if GameState.next_spawn.is_empty():
 		return
+	if GameState.next_spawn == "__shrine__":
+		# Carregou um save: acorda ao lado do santuário da cena.
+		GameState.next_spawn = ""
+		var shrine := get_node_or_null("Shrine")
+		if shrine:
+			player.global_position = shrine.global_position + Vector2(0, 28)
+			player.get_node("Camera2D").reset_smoothing()
+		return
 	var spawn := get_node_or_null("Spawns/" + GameState.next_spawn)
 	GameState.next_spawn = ""
 	if spawn:

@@ -1,10 +1,11 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=10 format=3]
 
 [ext_resource type="Script" path="res://entities/player/player.gd" id="1_player"]
 [ext_resource type="Script" path="res://systems/health.gd" id="2_health"]
 [ext_resource type="Script" path="res://systems/stamina.gd" id="3_stamina"]
 [ext_resource type="Script" path="res://systems/hurtbox.gd" id="4_hurtbox"]
 [ext_resource type="Script" path="res://systems/hitbox.gd" id="5_hitbox"]
+[ext_resource type="SpriteFrames" path="res://entities/player/aria_frames.tres" id="6_frames"]
 
 [sub_resource type="CircleShape2D" id="body_shape"]
 radius = 6.0
@@ -20,13 +21,10 @@ collision_layer = 2
 collision_mask = 5
 script = ExtResource("1_player")
 
-[node name="BodyVisual" type="Polygon2D" parent="."]
-color = Color(0.55, 0.85, 0.78, 1)
-polygon = PackedVector2Array(-6, -10, 6, -10, 6, 10, -6, 10)
-
-[node name="HeadVisual" type="Polygon2D" parent="BodyVisual"]
-color = Color(0.92, 0.82, 0.7, 1)
-polygon = PackedVector2Array(-4, -14, 4, -14, 4, -8, -4, -8)
+[node name="Sprite" type="AnimatedSprite2D" parent="."]
+position = Vector2(0, -1)
+sprite_frames = ExtResource("6_frames")
+autoplay = "idle_down"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, 3)
