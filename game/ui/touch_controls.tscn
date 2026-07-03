@@ -86,6 +86,21 @@ theme_override_colors/font_color = Color(1, 1, 1, 0.5)
 text = "ITEM"
 horizontal_alignment = 1
 
+[node name="OcarinaButton" type="TouchScreenButton" parent="."]
+position = Vector2(536, 8)
+texture_normal = SubResource("btn_tex_small")
+action = "ocarina"
+
+[node name="OcarinaLabel" type="Label" parent="OcarinaButton"]
+offset_left = -2.0
+offset_top = 18.0
+offset_right = 46.0
+offset_bottom = 30.0
+theme_override_font_sizes/font_size = 7
+theme_override_colors/font_color = Color(1, 1, 1, 0.5)
+text = "OCARINA"
+horizontal_alignment = 1
+
 [node name="BagButton" type="TouchScreenButton" parent="."]
 position = Vector2(590, 8)
 texture_normal = SubResource("btn_tex_small")

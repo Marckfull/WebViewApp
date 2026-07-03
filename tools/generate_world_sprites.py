@@ -4,6 +4,7 @@ além dos SpriteFrames (.tres) dos inimigos.
 
 Rode da raiz do repositório:  python3 tools/generate_world_sprites.py
 """
+import random
 from pathlib import Path
 
 from PIL import Image
@@ -204,6 +205,20 @@ PROP_PALETTES = {
         "A": (88, 60, 38, 255),
         "m": (168, 176, 190, 255),
     },
+    "anvil": {
+        ".": None,
+        "o": (30, 26, 30, 255),
+        "m": (168, 176, 190, 255),
+        "M": (110, 118, 134, 255),
+        "A": (86, 66, 48, 255),
+    },
+    "ocarina": {
+        ".": None,
+        "o": (30, 30, 48, 255),
+        "c": (150, 210, 230, 255),
+        "C": (100, 160, 190, 255),
+        "w": (235, 250, 255, 255),
+    },
 }
 
 GRAPPLE_POST = [
@@ -220,6 +235,68 @@ GRAPPLE_POST = [
     ".oAAAAo.",
     ".oooooo.",
 ]
+
+ANVIL = [
+    "ommmmmmmmmо.".replace("о", "o"),
+    ".oMMMMMMMo..",
+    "....oMMo....",
+    "....oMMo....",
+    "...oMMMMo...",
+    "..oAAAAAAo..",
+    "..oooooooo..",
+]
+
+OCARINA = [
+    "....oo...",
+    "...occo..",
+    "..occcco.",
+    ".occwccco",
+    ".occccco.",
+    "..oCCCo..",
+    "...ooo...",
+]
+
+TILE_SPECS = {
+    "grass": {
+        "base": (107, 158, 71, 255),
+        "dark": (86, 132, 58, 255),
+        "light": (128, 178, 88, 255),
+        "n_dark": 30, "n_light": 12,
+    },
+    "dirt": {
+        "base": (199, 168, 107, 255),
+        "dark": (172, 140, 86, 255),
+        "light": (216, 188, 128, 255),
+        "n_dark": 24, "n_light": 10,
+    },
+    "stone": {
+        "base": (52, 47, 86, 255),
+        "dark": (38, 34, 64, 255),
+        "light": (66, 60, 104, 255),
+        "n_dark": 14, "n_light": 10,
+        "grid": 16,
+    },
+}
+
+
+def make_tile(name, spec):
+    """Tile 32x32 sem costura: base + salpicos determinísticos."""
+    rng = random.Random(name)
+    img = Image.new("RGBA", (32, 32), spec["base"])
+    if spec.get("grid"):
+        step = spec["grid"]
+        for i in range(0, 32, step):
+            for j in range(32):
+                img.putpixel((i, j), spec["dark"])
+                img.putpixel((j, i), spec["dark"])
+    for _ in range(spec["n_dark"]):
+        x, y = rng.randrange(32), rng.randrange(32)
+        img.putpixel((x, y), spec["dark"])
+        if name == "grass" and y < 31:
+            img.putpixel((x, y + 1), spec["dark"])  # folha de grama
+    for _ in range(spec["n_light"]):
+        img.putpixel((rng.randrange(32), rng.randrange(32)), spec["light"])
+    return img
 
 
 def save(img, rel):
@@ -260,6 +337,11 @@ def main():
         save(render(rows, ICON_PALETTES[name], 16), f"icons/{name}.png")
 
     save(render(GRAPPLE_POST, PROP_PALETTES["grapple_post"], 16), "props/grapple_post.png")
+    save(render(ANVIL, PROP_PALETTES["anvil"], 16), "props/anvil.png")
+    save(render(OCARINA, PROP_PALETTES["ocarina"], 16), "icons/ocarina_vidro.png")
+
+    for name, spec in TILE_SPECS.items():
+        save(make_tile(name, spec), f"tiles/{name}.png")
     print("OK: sprites do mundo gerados em", SPRITES)
 
 

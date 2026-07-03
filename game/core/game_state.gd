@@ -4,10 +4,13 @@ extends Node
 
 signal echoes_changed(amount: int)
 signal inventory_changed
+signal weapon_changed(level: int)
 
 var echoes: int = 0
 ## Inventário: id do item -> quantidade (ver ItemDB).
 var inventory: Dictionary = {}
+## Nível de forja da lâmina (0 a 3) — ver forge.gd e player.gd.
+var weapon_level: int = 0
 ## Flags de progresso permanente (ex.: "cripta_boss_derrotado").
 var flags: Dictionary = {}
 ## Nome do Marker2D (em "Spawns/") onde a jogadora aparece na próxima cena.
@@ -21,6 +24,7 @@ func reset() -> void:
 	echoes = 0
 	flags = {}
 	inventory = {}
+	weapon_level = 0
 	next_spawn = ""
 	last_shrine_scene = "res://world/village.tscn"
 	echoes_changed.emit(echoes)
@@ -32,8 +36,26 @@ func add_item(id: String, amount: int = 1) -> void:
 	inventory_changed.emit()
 
 
+func remove_item(id: String, amount: int = 1) -> void:
+	var left := int(inventory.get(id, 0)) - amount
+	if left > 0:
+		inventory[id] = left
+	else:
+		inventory.erase(id)
+	inventory_changed.emit()
+
+
 func has_item(id: String) -> bool:
 	return int(inventory.get(id, 0)) > 0
+
+
+func item_count(id: String) -> int:
+	return int(inventory.get(id, 0))
+
+
+func upgrade_weapon() -> void:
+	weapon_level += 1
+	weapon_changed.emit(weapon_level)
 
 
 func add_echoes(amount: int) -> void:

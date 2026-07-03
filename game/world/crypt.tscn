@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3]
+[gd_scene load_steps=22 format=3]
 
 [ext_resource type="Script" path="res://world/crypt.gd" id="1_crypt"]
 [ext_resource type="PackedScene" path="res://entities/player/player.tscn" id="2_player"]
@@ -12,6 +12,8 @@
 [ext_resource type="PackedScene" path="res://world/resource_node.tscn" id="10_resource"]
 [ext_resource type="PackedScene" path="res://world/grapple_point.tscn" id="11_grapple"]
 [ext_resource type="PackedScene" path="res://ui/inventory_screen.tscn" id="12_inventory"]
+[ext_resource type="PackedScene" path="res://ui/ocarina_wheel.tscn" id="13_wheel"]
+[ext_resource type="Texture2D" path="res://assets/sprites/tiles/stone.png" id="14_stone"]
 
 [sub_resource type="RectangleShape2D" id="wall_h"]
 size = Vector2(640, 16)
@@ -41,11 +43,14 @@ intro_message = "Cripta das Guardiãs. Algo canta lá embaixo... errado."
 music = "crypt"
 
 [node name="Floor" type="Polygon2D" parent="."]
-color = Color(0.18, 0.16, 0.3, 1)
+texture_repeat = 2
+texture = ExtResource("14_stone")
 polygon = PackedVector2Array(0, 0, 640, 0, 640, 900, 0, 900)
 
 [node name="BossRoomTint" type="Polygon2D" parent="Floor"]
-color = Color(0.23, 0.17, 0.36, 1)
+texture_repeat = 2
+color = Color(0.88, 0.72, 1, 1)
+texture = ExtResource("14_stone")
 polygon = PackedVector2Array(16, 16, 624, 16, 624, 330, 16, 330)
 
 [node name="Solids" type="StaticBody2D" parent="."]
@@ -152,6 +157,11 @@ target_scene = "res://world/village.tscn"
 target_spawn = "from_crypt"
 label_text = "Pedra-Alva"
 
+[node name="OcarinaPickup" parent="." instance=ExtResource("10_resource")]
+position = Vector2(560, 520)
+item_id = "ocarina_vidro"
+one_time = true
+
 [node name="OreA" parent="." instance=ExtResource("10_resource")]
 position = Vector2(560, 700)
 item_id = "minerio_eco"
@@ -192,3 +202,5 @@ position = Vector2(320, 790)
 [node name="TouchControls" parent="." instance=ExtResource("8_touch")]
 
 [node name="InventoryScreen" parent="." instance=ExtResource("12_inventory")]
+
+[node name="OcarinaWheel" parent="." instance=ExtResource("13_wheel")]

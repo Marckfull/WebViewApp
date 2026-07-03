@@ -47,11 +47,21 @@ souls-like, exploração entre cenas, NPCs com diálogo e a primeira luta de bos
 - **Gancho-corda** — primeiro item de dungeon, dropado pelo Eco da
   Guardiã: use [H / ITEM] perto de um poste com argola para se lançar
   até ele (reposicionamento rápido em combate e travessia).
+- **Ocarina de Vidro** — encontrada num nicho da Cripta. [M / OCARINA]
+  abre a roda de melodias: **Melodia do Retorno** (teleporta ao
+  santuário da área) e **Acalento** (acalma Ecoados próximos por
+  alguns segundos — eles "lembram do que eram" e param de atacar).
+- **Forja da Odara** — a bigorna ao lado da ferreira: gaste 3 Minérios
+  de Eco por nível para reforjar a lâmina (+4 de dano, até nível 3).
+  Persistido no save.
 
 **Arte (direção inspirada em Minish Cap):**
 - Proporção **chibi** (cabeça grande), cores vivas e saturadas com
   contorno escuro; cenários coloridos (grama viva, terra clara, cripta
   em azul-púrpura saturado).
+- **Tiles desenhados** (32×32, sem costura): grama com folhinhas, terra
+  salpicada e lajota de pedra na cripta — aplicados por textura
+  repetida nos polígonos de chão.
 - Sprites de **todos** os personagens: Aria (idle com piscada, andar,
   rolar, atacar em 3 direções + flip), Ecoado, Brutamontes, o boss
   espectral e os 3 NPCs; ícones de itens e props.
@@ -82,8 +92,9 @@ souls-like, exploração entre cenas, NPCs com diálogo e a primeira luta de bos
 | Rolar | K ou Espaço | A / Cruz |
 | Lock-on (alvo) | L ou Tab | R1 / RB |
 | Usar item (gancho) | H | B / Círculo |
+| Ocarina (melodias) | M | L1 / LB |
 | Bolsa (inventário) | I | Select / Back |
-| Interagir (falar/descansar) | E ou Enter | Y / Triângulo |
+| Interagir (falar/descansar/forjar) | E ou Enter | Y / Triângulo |
 
 No Android/touchscreen: arraste na metade esquerda da tela para mover;
 botões ATACAR / ROLAR / USAR à direita.
@@ -118,9 +129,8 @@ game/
 
 ## Próximos passos (ver GDD, seção 8)
 
-1. Playtest geral: combate, dificuldade do boss, sensação do gancho.
-2. Ocarina de Vidro: roda de melodias e a primeira música jogável.
-3. Forja da Odara: gastar Minério de Eco em upgrades de arma.
-4. Tiles de cenário (grama/terra/pedra desenhadas) substituindo os
-   polígonos chapados, no mesmo pipeline dos geradores.
-5. Frascos de Essência (cura limitada recarregável no santuário).
+1. Playtest geral: combate, boss, gancho, melodias e economia da forja.
+2. Frascos de Essência (cura limitada recarregável no santuário).
+3. Ciclo dia/noite (+ melodia da ocarina para acelerá-lo).
+4. Segunda dungeon (Floresta Sussurrante) com novo bioma e boss.
+5. Mapa que se desenha conforme Aria explora (mecânica da cartógrafa).

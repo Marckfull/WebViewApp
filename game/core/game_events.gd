@@ -8,6 +8,7 @@ signal boss_engaged(boss_name: String, max_health: int)
 signal boss_health_changed(current: int)
 signal boss_ended(victory: bool)
 signal dialog_requested(speaker: String, lines: PackedStringArray)
+signal melody_played(melody_id: String)
 
 
 func notify(text: String) -> void:

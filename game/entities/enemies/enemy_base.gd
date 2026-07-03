@@ -8,6 +8,9 @@ enum State { IDLE, CHASE, TELEGRAPH, ATTACK, RECOVER, HURT, DEAD }
 
 const ECHO_PICKUP := preload("res://world/echo_pickup.tscn")
 const KNOCKBACK_DECAY := 500.0
+const CALM_RANGE := 170.0
+const CALM_DURATION := 4.0
+const CALM_TINT := Color(0.6, 0.8, 1.25)
 
 @export var max_speed := 50.0
 @export var aggro_range := 140.0
@@ -25,6 +28,7 @@ var state := State.IDLE
 var _timer := 0.0
 var _attack_dir := Vector2.RIGHT
 var _knockback := Vector2.ZERO
+var _calm_timer := 0.0
 
 @onready var health: Health = $Health
 @onready var hurtbox: Hurtbox = $Hurtbox
@@ -36,15 +40,21 @@ var _knockback := Vector2.ZERO
 func _ready() -> void:
 	hurtbox.hit_received.connect(_on_hit_received)
 	health.died.connect(_on_died)
+	GameEvents.melody_played.connect(_on_melody_played)
 
 
 func _physics_process(delta: float) -> void:
 	_knockback = _knockback.move_toward(Vector2.ZERO, KNOCKBACK_DECAY * delta)
+	if _calm_timer > 0.0:
+		_calm_timer -= delta
+		if _calm_timer <= 0.0:
+			visual.modulate = Color.WHITE
 	var player := _get_player()
 	match state:
 		State.IDLE:
 			velocity = Vector2.ZERO
-			if player and global_position.distance_to(player.global_position) <= aggro_range:
+			if _calm_timer <= 0.0 and player \
+					and global_position.distance_to(player.global_position) <= aggro_range:
 				state = State.CHASE
 		State.CHASE:
 			if player == null:
@@ -84,6 +94,23 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 	if absf(velocity.x) > 1.0:
 		visual.flip_h = velocity.x < 0.0
+
+
+func _on_melody_played(melody_id: String) -> void:
+	if melody_id != "acalento" or state == State.DEAD:
+		return
+	var player := _get_player()
+	if player and global_position.distance_to(player.global_position) <= CALM_RANGE:
+		calm(CALM_DURATION)
+
+
+## O Acalento da ocarina: o Ecoado lembra por um instante do que era.
+func calm(duration: float) -> void:
+	_calm_timer = duration
+	state = State.IDLE
+	velocity = Vector2.ZERO
+	hitbox_shape.set_deferred("disabled", true)
+	visual.modulate = CALM_TINT
 
 
 func _get_player() -> Player:

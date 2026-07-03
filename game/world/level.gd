@@ -17,6 +17,7 @@ var _death_drop: Node2D
 
 func _ready() -> void:
 	GameEvents.player_died.connect(_on_player_died)
+	GameEvents.melody_played.connect(_on_melody_played)
 	var cam: Camera2D = player.get_node("Camera2D")
 	cam.limit_left = 0
 	cam.limit_top = 0
@@ -51,6 +52,13 @@ func _respawn_point() -> Vector2:
 	if shrine:
 		return shrine.global_position + Vector2(0, 28)
 	return player.global_position
+
+
+func _on_melody_played(melody_id: String) -> void:
+	if melody_id == "retorno":
+		player.global_position = _respawn_point()
+		player.get_node("Camera2D").reset_smoothing()
+		GameEvents.notify("A canção te leva de volta ao santuário.")
 
 
 func _on_player_died(death_position: Vector2) -> void:

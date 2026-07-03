@@ -1,0 +1,28 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://world/forge.gd" id="1_forge"]
+[ext_resource type="Texture2D" path="res://assets/sprites/props/anvil.png" id="2_anvil"]
+
+[sub_resource type="CircleShape2D" id="area_shape"]
+radius = 22.0
+
+[node name="Forge" type="Area2D"]
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("1_forge")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+position = Vector2(0, -2)
+texture = ExtResource("2_anvil")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("area_shape")
+
+[node name="Prompt" type="Label" parent="."]
+offset_left = -90.0
+offset_top = -30.0
+offset_right = 90.0
+offset_bottom = -18.0
+theme_override_font_sizes/font_size = 8
+theme_override_colors/font_color = Color(1, 0.9, 0.7, 0.95)
+horizontal_alignment = 1

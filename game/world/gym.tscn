@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3]
+[gd_scene load_steps=19 format=3]
 
 [ext_resource type="Script" path="res://world/level.gd" id="1_gym"]
 [ext_resource type="PackedScene" path="res://entities/player/player.tscn" id="2_player"]
@@ -12,6 +12,8 @@
 [ext_resource type="PackedScene" path="res://world/resource_node.tscn" id="10_resource"]
 [ext_resource type="PackedScene" path="res://world/grapple_point.tscn" id="11_grapple"]
 [ext_resource type="PackedScene" path="res://ui/inventory_screen.tscn" id="12_inventory"]
+[ext_resource type="PackedScene" path="res://ui/ocarina_wheel.tscn" id="13_wheel"]
+[ext_resource type="Texture2D" path="res://assets/sprites/tiles/dirt.png" id="14_dirt"]
 
 [sub_resource type="RectangleShape2D" id="wall_h"]
 size = Vector2(960, 16)
@@ -31,15 +33,20 @@ arena_size = Vector2(960, 540)
 intro_message = "Campo de treino — derrote os Ecoados."
 
 [node name="Floor" type="Polygon2D" parent="."]
-color = Color(0.66, 0.55, 0.36, 1)
+texture_repeat = 2
+texture = ExtResource("14_dirt")
 polygon = PackedVector2Array(0, 0, 960, 0, 960, 540, 0, 540)
 
 [node name="FloorDetail1" type="Polygon2D" parent="Floor"]
-color = Color(0.6, 0.5, 0.33, 1)
+texture_repeat = 2
+color = Color(0.9, 0.87, 0.82, 1)
+texture = ExtResource("14_dirt")
 polygon = PackedVector2Array(300, 100, 660, 100, 660, 440, 300, 440)
 
 [node name="FloorDetail2" type="Polygon2D" parent="Floor"]
-color = Color(0.57, 0.47, 0.31, 1)
+texture_repeat = 2
+color = Color(0.84, 0.8, 0.76, 1)
+texture = ExtResource("14_dirt")
 polygon = PackedVector2Array(720, 160, 940, 160, 940, 380, 720, 380)
 
 [node name="Walls" type="StaticBody2D" parent="."]
@@ -175,3 +182,5 @@ enemy_scene = ExtResource("6_brutamontes")
 [node name="TouchControls" parent="." instance=ExtResource("8_touch")]
 
 [node name="InventoryScreen" parent="." instance=ExtResource("12_inventory")]
+
+[node name="OcarinaWheel" parent="." instance=ExtResource("13_wheel")]

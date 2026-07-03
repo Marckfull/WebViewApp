@@ -12,6 +12,7 @@ func _ready() -> void:
 	GameEvents.boss_ended.connect(_on_boss_ended)
 	GameState.echoes_changed.connect(_on_echoes_changed)
 	GameState.inventory_changed.connect(save_game)
+	GameState.weapon_changed.connect(_on_weapon_changed)
 
 
 func _notification(what: int) -> void:
@@ -30,6 +31,7 @@ func save_game() -> void:
 		"echoes": GameState.echoes,
 		"flags": GameState.flags,
 		"inventory": GameState.inventory,
+		"weapon_level": GameState.weapon_level,
 		"shrine_scene": GameState.last_shrine_scene,
 	}
 	var tmp_path := SAVE_PATH + ".tmp"
@@ -56,6 +58,7 @@ func load_game() -> bool:
 	for id in inv:
 		inv[id] = int(inv[id])  # JSON devolve números como float
 	GameState.inventory = inv
+	GameState.weapon_level = int(parsed.get("weapon_level", 0))
 	GameState.last_shrine_scene = str(
 			parsed.get("shrine_scene", "res://world/village.tscn"))
 	# A jogadora acorda no último santuário onde descansou (regra souls).
@@ -82,4 +85,8 @@ func _on_boss_ended(victory: bool) -> void:
 
 
 func _on_echoes_changed(_amount: int) -> void:
+	save_game()
+
+
+func _on_weapon_changed(_level: int) -> void:
 	save_game()

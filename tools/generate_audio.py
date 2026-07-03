@@ -176,6 +176,37 @@ def sfx_blip():
     return tone(660, 0.06, "square", vol=0.2, release=0.03)
 
 
+def sfx_forge():
+    buf = []
+    for at in (0.0, 0.22):
+        mix(buf, tone(1180, 0.12, "square", vol=0.12, glide_to=990,
+                      release=0.09), at)
+        mix(buf, tone(640, 0.16, "sine", vol=0.3, glide_to=520,
+                      release=0.12), at)
+        mix(buf, noise(0.03, vol=0.25, lowpass=2, release=0.02), at)
+    return buf
+
+
+def _ocarina_phrase(names_durs):
+    buf = []
+    at = 0.0
+    for name, dur in names_durs:
+        mix(buf, tone(note_freq(name), dur, "sine", vol=0.35,
+                      attack=0.04, release=0.15,
+                      vibrato_hz=5.5, vibrato_depth=4.0), at)
+        at += dur
+    return buf
+
+
+def sfx_melody_return():
+    # o leitmotiv da Canção do Mundo
+    return _ocarina_phrase([("E5", 0.32), ("C5", 0.32), ("D5", 0.32), ("A4", 0.62)])
+
+
+def sfx_melody_calm():
+    return _ocarina_phrase([("A4", 0.4), ("G4", 0.4), ("E4", 0.75)])
+
+
 # --------------------------------------------------------------- músicas
 
 def melody(buf, beat, notes, wave_type="sine", vol=0.3, vib=5.0, depth=3.0):
@@ -270,6 +301,8 @@ def main():
         "roll": sfx_roll(), "pickup": sfx_pickup(), "death": sfx_death(),
         "enemy_death": sfx_enemy_death(), "shrine": sfx_shrine(),
         "victory": sfx_victory(), "roar": sfx_roar(), "blip": sfx_blip(),
+        "forge": sfx_forge(), "melody_return": sfx_melody_return(),
+        "melody_calm": sfx_melody_calm(),
     }
     for name, buf in sfx.items():
         write_wav(OUT / "sfx" / f"{name}.wav", buf)

@@ -13,6 +13,13 @@ const DB := {
 		"desc": "Brilha de leve no escuro. Base de poções restauradoras.",
 		"icon": "res://assets/sprites/icons/erva_lunar.png",
 	},
+	"ocarina_vidro": {
+		"name": "Ocarina de Vidro",
+		"desc": "O instrumento de uma Guardiã. Toque [M / OCARINA] para "
+				+ "abrir a roda de melodias.",
+		"icon": "res://assets/sprites/icons/ocarina_vidro.png",
+		"key": true,
+	},
 	"gancho_corda": {
 		"name": "Gancho-corda",
 		"desc": "Ferramenta das Guardiãs. Use-a [H / ITEM] perto de um poste "

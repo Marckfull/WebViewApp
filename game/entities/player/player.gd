@@ -23,6 +23,8 @@ const LOCK_RANGE := 180.0
 const LOCK_BREAK_RANGE := 240.0
 const GRAPPLE_RANGE := 170.0
 const GRAPPLE_SPEED := 400.0
+const BASE_DAMAGE := 12
+const DAMAGE_PER_FORGE := 4
 
 var state: State = State.MOVE
 var facing := Vector2.DOWN
@@ -37,6 +39,7 @@ var _grapple_target := Vector2.ZERO
 @onready var stamina: Stamina = $Stamina
 @onready var hurtbox: Hurtbox = $Hurtbox
 @onready var hitbox_pivot: Node2D = $HitboxPivot
+@onready var hitbox: Hitbox = $HitboxPivot/Hitbox
 @onready var hitbox_shape: CollisionShape2D = $HitboxPivot/Hitbox/CollisionShape2D
 @onready var sword_visual: Polygon2D = $HitboxPivot/SwordVisual
 @onready var sprite: AnimatedSprite2D = $Sprite
@@ -46,6 +49,12 @@ var _grapple_target := Vector2.ZERO
 func _ready() -> void:
 	hurtbox.hit_received.connect(_on_hit_received)
 	health.died.connect(_on_died)
+	GameState.weapon_changed.connect(_apply_weapon_level)
+	_apply_weapon_level(GameState.weapon_level)
+
+
+func _apply_weapon_level(level: int) -> void:
+	hitbox.damage = BASE_DAMAGE + DAMAGE_PER_FORGE * level
 
 
 func _physics_process(delta: float) -> void:
