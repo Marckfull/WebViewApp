@@ -32,6 +32,7 @@ fill_from = Vector2(0.5, 0.5)
 fill_to = Vector2(0.5, 0)
 
 [node name="TouchControls" type="CanvasLayer"]
+process_mode = 3
 script = ExtResource("1_controls")
 
 [node name="VirtualJoystick" type="Control" parent="."]
@@ -68,6 +69,21 @@ offset_bottom = 36.0
 theme_override_font_sizes/font_size = 8
 theme_override_colors/font_color = Color(1, 1, 1, 0.5)
 text = "ROLAR"
+horizontal_alignment = 1
+
+[node name="LockButton" type="TouchScreenButton" parent="."]
+position = Vector2(516, 176)
+texture_normal = SubResource("btn_tex_small")
+action = "lock_on"
+
+[node name="LockLabel" type="Label" parent="LockButton"]
+offset_left = 4.0
+offset_top = 18.0
+offset_right = 40.0
+offset_bottom = 30.0
+theme_override_font_sizes/font_size = 8
+theme_override_colors/font_color = Color(1, 1, 1, 0.5)
+text = "ALVO"
 horizontal_alignment = 1
 
 [node name="InteractButton" type="TouchScreenButton" parent="."]

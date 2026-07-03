@@ -1,6 +1,6 @@
-[gd_scene load_steps=13 format=3]
+[gd_scene load_steps=14 format=3]
 
-[ext_resource type="Script" path="res://world/gym.gd" id="1_gym"]
+[ext_resource type="Script" path="res://world/level.gd" id="1_gym"]
 [ext_resource type="PackedScene" path="res://entities/player/player.tscn" id="2_player"]
 [ext_resource type="PackedScene" path="res://world/shrine.tscn" id="3_shrine"]
 [ext_resource type="Script" path="res://world/enemy_spawner.gd" id="4_spawner"]
@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" path="res://entities/enemies/brutamontes.tscn" id="6_brutamontes"]
 [ext_resource type="PackedScene" path="res://ui/hud.tscn" id="7_hud"]
 [ext_resource type="PackedScene" path="res://ui/touch_controls.tscn" id="8_touch"]
+[ext_resource type="PackedScene" path="res://world/portal.tscn" id="9_portal"]
 
 [sub_resource type="RectangleShape2D" id="wall_h"]
 size = Vector2(960, 16)
@@ -23,6 +24,8 @@ size = Vector2(24, 200)
 
 [node name="Gym" type="Node2D"]
 script = ExtResource("1_gym")
+arena_size = Vector2(960, 540)
+intro_message = "Campo de treino — derrote os Ecoados."
 
 [node name="Floor" type="Polygon2D" parent="."]
 color = Color(0.13, 0.13, 0.18, 1)
@@ -116,6 +119,20 @@ polygon = PackedVector2Array(688, 340, 712, 340, 712, 540, 688, 540)
 
 [node name="Shrine" parent="." instance=ExtResource("3_shrine")]
 position = Vector2(120, 270)
+
+[node name="PortalVillage" parent="." instance=ExtResource("9_portal")]
+position = Vector2(40, 180)
+target_scene = "res://world/village.tscn"
+target_spawn = "from_gym"
+label_text = "Pedra-Alva"
+
+[node name="Spawns" type="Node2D" parent="."]
+
+[node name="default" type="Marker2D" parent="Spawns"]
+position = Vector2(170, 270)
+
+[node name="from_village" type="Marker2D" parent="Spawns"]
+position = Vector2(95, 180)
 
 [node name="Player" parent="." instance=ExtResource("2_player")]
 position = Vector2(170, 270)

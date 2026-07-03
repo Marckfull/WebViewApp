@@ -1,0 +1,174 @@
+[gd_scene load_steps=17 format=3]
+
+[ext_resource type="Script" path="res://world/crypt.gd" id="1_crypt"]
+[ext_resource type="PackedScene" path="res://entities/player/player.tscn" id="2_player"]
+[ext_resource type="PackedScene" path="res://world/shrine.tscn" id="3_shrine"]
+[ext_resource type="Script" path="res://world/enemy_spawner.gd" id="4_spawner"]
+[ext_resource type="PackedScene" path="res://entities/enemies/ecoado.tscn" id="5_ecoado"]
+[ext_resource type="PackedScene" path="res://world/portal.tscn" id="6_portal"]
+[ext_resource type="PackedScene" path="res://ui/hud.tscn" id="7_hud"]
+[ext_resource type="PackedScene" path="res://ui/touch_controls.tscn" id="8_touch"]
+[ext_resource type="PackedScene" path="res://entities/enemies/boss_eco_guardia.tscn" id="9_boss"]
+
+[sub_resource type="RectangleShape2D" id="wall_h"]
+size = Vector2(640, 16)
+
+[sub_resource type="RectangleShape2D" id="wall_v"]
+size = Vector2(16, 900)
+
+[sub_resource type="RectangleShape2D" id="seg_left"]
+size = Vector2(244, 16)
+
+[sub_resource type="RectangleShape2D" id="seg_right"]
+size = Vector2(242, 16)
+
+[sub_resource type="RectangleShape2D" id="gate_shape"]
+size = Vector2(122, 16)
+
+[sub_resource type="RectangleShape2D" id="pillar"]
+size = Vector2(36, 36)
+
+[sub_resource type="RectangleShape2D" id="trigger_shape"]
+size = Vector2(160, 24)
+
+[node name="Crypt" type="Node2D"]
+script = ExtResource("1_crypt")
+arena_size = Vector2(640, 900)
+intro_message = "Cripta das Guardiãs. Algo canta lá embaixo... errado."
+
+[node name="Floor" type="Polygon2D" parent="."]
+color = Color(0.1, 0.1, 0.14, 1)
+polygon = PackedVector2Array(0, 0, 640, 0, 640, 900, 0, 900)
+
+[node name="BossRoomTint" type="Polygon2D" parent="Floor"]
+color = Color(0.14, 0.11, 0.18, 1)
+polygon = PackedVector2Array(16, 16, 624, 16, 624, 330, 16, 330)
+
+[node name="Solids" type="StaticBody2D" parent="."]
+collision_layer = 1
+collision_mask = 0
+
+[node name="Top" type="CollisionShape2D" parent="Solids"]
+position = Vector2(320, 8)
+shape = SubResource("wall_h")
+
+[node name="Bottom" type="CollisionShape2D" parent="Solids"]
+position = Vector2(320, 892)
+shape = SubResource("wall_h")
+
+[node name="Left" type="CollisionShape2D" parent="Solids"]
+position = Vector2(8, 450)
+shape = SubResource("wall_v")
+
+[node name="Right" type="CollisionShape2D" parent="Solids"]
+position = Vector2(632, 450)
+shape = SubResource("wall_v")
+
+[node name="SegLeft" type="CollisionShape2D" parent="Solids"]
+position = Vector2(138, 330)
+shape = SubResource("seg_left")
+
+[node name="SegRight" type="CollisionShape2D" parent="Solids"]
+position = Vector2(503, 330)
+shape = SubResource("seg_right")
+
+[node name="Pillar1" type="CollisionShape2D" parent="Solids"]
+position = Vector2(200, 520)
+shape = SubResource("pillar")
+
+[node name="Pillar2" type="CollisionShape2D" parent="Solids"]
+position = Vector2(440, 640)
+shape = SubResource("pillar")
+
+[node name="WallVisuals" type="Node2D" parent="."]
+
+[node name="TopV" type="Polygon2D" parent="WallVisuals"]
+color = Color(0.24, 0.24, 0.32, 1)
+polygon = PackedVector2Array(0, 0, 640, 0, 640, 16, 0, 16)
+
+[node name="BottomV" type="Polygon2D" parent="WallVisuals"]
+color = Color(0.24, 0.24, 0.32, 1)
+polygon = PackedVector2Array(0, 884, 640, 884, 640, 900, 0, 900)
+
+[node name="LeftV" type="Polygon2D" parent="WallVisuals"]
+color = Color(0.24, 0.24, 0.32, 1)
+polygon = PackedVector2Array(0, 0, 16, 0, 16, 900, 0, 900)
+
+[node name="RightV" type="Polygon2D" parent="WallVisuals"]
+color = Color(0.24, 0.24, 0.32, 1)
+polygon = PackedVector2Array(624, 0, 640, 0, 640, 900, 624, 900)
+
+[node name="SegLeftV" type="Polygon2D" parent="WallVisuals"]
+color = Color(0.3, 0.28, 0.38, 1)
+polygon = PackedVector2Array(16, 322, 260, 322, 260, 338, 16, 338)
+
+[node name="SegRightV" type="Polygon2D" parent="WallVisuals"]
+color = Color(0.3, 0.28, 0.38, 1)
+polygon = PackedVector2Array(382, 322, 624, 322, 624, 338, 382, 338)
+
+[node name="Pillar1V" type="Polygon2D" parent="WallVisuals"]
+color = Color(0.3, 0.3, 0.4, 1)
+polygon = PackedVector2Array(182, 502, 218, 502, 218, 538, 182, 538)
+
+[node name="Pillar2V" type="Polygon2D" parent="WallVisuals"]
+color = Color(0.3, 0.3, 0.4, 1)
+polygon = PackedVector2Array(422, 622, 458, 622, 458, 658, 422, 658)
+
+[node name="Gate" type="StaticBody2D" parent="."]
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Gate"]
+position = Vector2(321, 330)
+shape = SubResource("gate_shape")
+disabled = true
+
+[node name="Visual" type="Polygon2D" parent="Gate"]
+visible = false
+color = Color(0.7, 0.4, 0.85, 0.9)
+polygon = PackedVector2Array(260, 322, 382, 322, 382, 338, 260, 338)
+
+[node name="BossTrigger" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BossTrigger"]
+position = Vector2(321, 270)
+shape = SubResource("trigger_shape")
+
+[node name="Boss" parent="." instance=ExtResource("9_boss")]
+position = Vector2(320, 140)
+
+[node name="Shrine" parent="." instance=ExtResource("3_shrine")]
+position = Vector2(140, 800)
+
+[node name="PortalVillage" parent="." instance=ExtResource("6_portal")]
+position = Vector2(320, 856)
+target_scene = "res://world/village.tscn"
+target_spawn = "from_crypt"
+label_text = "Pedra-Alva"
+
+[node name="SpawnerA" type="Marker2D" parent="."]
+position = Vector2(320, 600)
+script = ExtResource("4_spawner")
+enemy_scene = ExtResource("5_ecoado")
+
+[node name="SpawnerB" type="Marker2D" parent="."]
+position = Vector2(480, 470)
+script = ExtResource("4_spawner")
+enemy_scene = ExtResource("5_ecoado")
+
+[node name="Spawns" type="Node2D" parent="."]
+
+[node name="default" type="Marker2D" parent="Spawns"]
+position = Vector2(320, 790)
+
+[node name="from_village" type="Marker2D" parent="Spawns"]
+position = Vector2(320, 790)
+
+[node name="Player" parent="." instance=ExtResource("2_player")]
+position = Vector2(320, 790)
+
+[node name="HUD" parent="." instance=ExtResource("7_hud")]
+
+[node name="TouchControls" parent="." instance=ExtResource("8_touch")]

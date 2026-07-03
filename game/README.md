@@ -1,27 +1,37 @@
-# Ecos de Lirael — Protótipo de Combate (Fase 0)
+# Ecos de Lirael — Protótipo Jogável (Fase 0+)
 
 Projeto **Godot 4.3+** do action-RPG descrito em [`../docs/GDD-PLANO-DO-JOGO.md`](../docs/GDD-PLANO-DO-JOGO.md).
 
-Esta é a **Fase 0** do plano: uma arena de treino ("gym") em greybox que valida o
-núcleo do combate souls-like antes de investirmos em arte, história e conteúdo.
-O objetivo desta fase é responder uma pergunta: **o combate é divertido?**
+Greybox jogável que valida o núcleo do jogo antes da arte final: combate
+souls-like, exploração entre cenas, NPCs com diálogo e a primeira luta de boss.
 
 ## O que já está jogável
 
-- **Movimentação** analógica em 8 direções (Aria, o retângulo verde-água 🙂).
-- **Ataque** com varredura de espada, custo de stamina e janela de acerto.
-- **Esquiva-rolamento** com i-frames (invencibilidade durante o rolamento).
-- **Stamina** com regeneração após pausa curta (o coração do souls-like).
-- **Inimigos "Ecoados"**: perseguem, telegrafam o golpe (piscam) e investem;
-  janela de punição após o ataque.
-- **Mini-boss "Brutamontes"**: mais lento, mais dano, resiste a atordoamento
-  (poise) — o proto-boss da Fase 0.
-- **Loop de morte souls-like**: ao morrer você perde seus **Ecos** e eles ficam
-  no local da morte; volte lá para recuperá-los (um novo drop substitui o antigo).
-- **Santuário** (bonfire): descansar cura, recarrega frascos/stamina e **repõe
-  todos os inimigos**.
-- **HUD**: vida, stamina, contador de Ecos e mensagens de evento.
-- **Controles de toque**: joystick virtual flutuante + botões multi-touch
+**Combate (núcleo souls-like):**
+- Movimentação analógica em 8 direções (Aria, o retângulo verde-água 🙂).
+- Ataque com varredura de espada, custo de stamina e janela de acerto.
+- Esquiva-rolamento com i-frames; stamina com regeneração após pausa curta.
+- **Lock-on de alvo** (Z-targeting): trava a mira no inimigo mais próximo,
+  pressione de novo para alternar entre alvos; movimento vira strafe.
+- Inimigos "Ecoados" com telegraph e janela de punição; mini-boss
+  "Brutamontes" com poise.
+- **Loop de morte souls-like**: Ecos dropados no local da morte,
+  recuperáveis; santuários curam e repõem os inimigos.
+
+**Mundo (3 cenas conectadas por portais):**
+- **Pedra-Alva** (vila hub): 3 NPCs com diálogo (Mestra Odara, Corvo e Sela),
+  santuário e portais para as outras áreas.
+- **Cripta das Guardiãs**: corredor de Ecoados, santuário antes do boss e a
+  luta contra o **Eco da Guardiã** — boss de 2 fases com barra própria no HUD:
+  o portão fecha ao entrar, a fase 2 (≤50% de vida) fica mais rápida e ganha
+  investida tripla, e o boss reseta se você morrer ou descansar. A vitória
+  fica gravada (o boss não volta).
+- **Campo de Treino**: a arena da Fase 0, para testar builds e números.
+
+**Interface:**
+- HUD: vida, stamina, Ecos, mensagens de evento e barra de boss.
+- Caixa de diálogo que pausa o jogo (avança com interact/ataque).
+- Controles de toque: joystick virtual + botões ATACAR/ROLAR/ALVO/USAR
   (aparecem só em dispositivos com touchscreen).
 
 ## Como rodar
@@ -37,7 +47,8 @@ O objetivo desta fase é responder uma pergunta: **o combate é divertido?**
 | Mover | WASD / setas | Analógico esquerdo |
 | Atacar | J ou Z | X / Quadrado |
 | Rolar | K ou Espaço | A / Cruz |
-| Interagir (descansar) | E ou Enter | Y / Triângulo |
+| Lock-on (alvo) | L ou Tab | R1 / RB |
+| Interagir (falar/descansar) | E ou Enter | Y / Triângulo |
 
 No Android/touchscreen: arraste na metade esquerda da tela para mover;
 botões ATACAR / ROLAR / USAR à direita.
@@ -58,18 +69,21 @@ landscape por sensor e filtro de textura *nearest* (pixel art).
 
 ```
 game/
-├── core/        # autoloads: estado global (Ecos) e event bus
+├── core/        # autoloads: estado global (Ecos, flags, spawn) e event bus
 ├── systems/     # componentes reutilizáveis: Health, Stamina, Hitbox, Hurtbox
 ├── entities/
-│   ├── player/  # Aria: máquina de estados (mover/rolar/atacar/dano/morte)
-│   └── enemies/ # EnemyBase + variantes (Ecoado, Brutamontes)
-├── world/       # arena gym, santuário, spawners, pickups de Eco
-└── ui/          # HUD, joystick virtual, botões de toque
+│   ├── player/  # Aria: máquina de estados + lock-on
+│   ├── enemies/ # EnemyBase (Ecoado, Brutamontes) + BossEcoGuardia (2 fases)
+│   └── npc.*    # NPCs com diálogo
+├── world/       # Level (base de cena), vila, cripta, gym, portais,
+│                # santuário, spawners, pickups de Eco
+└── ui/          # HUD (+ barra de boss), diálogo, joystick e botões de toque
 ```
 
 ## Próximos passos (ver GDD, seção 8)
 
-1. Playtest do combate e ajuste fino dos números (velocidades, custos, janelas).
-2. Lock-on de alvo (Z-targeting adaptado a touch).
-3. Boss real com 2 fases para fechar o gate da Fase 0.
-4. Início da vertical slice: vila de Pedra-Alva + primeira dungeon.
+1. Playtest: a sensação do combate e a dificuldade do boss (deve matar o
+   jogador mediano 2–4 vezes).
+2. Save/load em JSON (Ecos, flags, posição) — hoje o progresso vive só na sessão.
+3. Primeiros sprites reais de Aria (substituir o greybox) e SFX de combate.
+4. Sistema de inventário e primeiro item de dungeon (Gancho-corda).

@@ -70,3 +70,9 @@ disabled = true
 [node name="Camera2D" type="Camera2D" parent="."]
 position_smoothing_enabled = true
 position_smoothing_speed = 6.0
+
+[node name="Reticle" type="Polygon2D" parent="."]
+top_level = true
+visible = false
+color = Color(0.95, 0.8, 0.3, 0.9)
+polygon = PackedVector2Array(0, -5, 5, 0, 0, 5, -5, 0)

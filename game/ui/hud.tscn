@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://ui/hud.gd" id="1_hud"]
 
@@ -18,6 +18,13 @@ corner_radius_bottom_left = 2
 
 [sub_resource type="StyleBoxFlat" id="stamina_fill"]
 bg_color = Color(0.35, 0.8, 0.45, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[sub_resource type="StyleBoxFlat" id="boss_fill"]
+bg_color = Color(0.75, 0.2, 0.35, 1)
 corner_radius_top_left = 2
 corner_radius_top_right = 2
 corner_radius_bottom_right = 2
@@ -56,6 +63,28 @@ unique_name_in_owner = true
 theme_override_font_sizes/font_size = 10
 theme_override_colors/font_color = Color(0.6, 0.9, 1, 1)
 text = "Ecos: 0"
+
+[node name="BossUI" type="VBoxContainer" parent="."]
+unique_name_in_owner = true
+visible = false
+anchor_left = 0.2
+anchor_top = 0.86
+anchor_right = 0.8
+anchor_bottom = 0.97
+theme_override_constants/separation = 2
+
+[node name="BossName" type="Label" parent="BossUI"]
+unique_name_in_owner = true
+theme_override_font_sizes/font_size = 10
+theme_override_colors/font_color = Color(0.9, 0.75, 0.8, 1)
+horizontal_alignment = 1
+
+[node name="BossBar" type="ProgressBar" parent="BossUI"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 8)
+theme_override_styles/background = SubResource("bar_bg")
+theme_override_styles/fill = SubResource("boss_fill")
+show_percentage = false
 
 [node name="MessageLabel" type="Label" parent="."]
 unique_name_in_owner = true

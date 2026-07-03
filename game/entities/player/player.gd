@@ -19,9 +19,12 @@ const ATTACK_LUNGE := 55.0
 const HURT_DURATION := 0.35
 const HURT_IFRAMES := 0.7
 const KNOCKBACK_DECAY := 480.0
+const LOCK_RANGE := 180.0
+const LOCK_BREAK_RANGE := 240.0
 
 var state: State = State.MOVE
 var facing := Vector2.DOWN
+var lock_target: Node2D
 var _timer := 0.0
 var _roll_dir := Vector2.ZERO
 var _knockback := Vector2.ZERO
@@ -34,6 +37,7 @@ var _iframes := 0.0
 @onready var hitbox_shape: CollisionShape2D = $HitboxPivot/Hitbox/CollisionShape2D
 @onready var sword_visual: Polygon2D = $HitboxPivot/SwordVisual
 @onready var body_visual: Polygon2D = $BodyVisual
+@onready var reticle: Polygon2D = $Reticle
 
 
 func _ready() -> void:
@@ -44,6 +48,7 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	_iframes = maxf(_iframes - delta, 0.0)
 	_knockback = _knockback.move_toward(Vector2.ZERO, KNOCKBACK_DECAY * delta)
+	_update_lock()
 	match state:
 		State.MOVE:
 			_state_move()
@@ -66,7 +71,9 @@ func is_alive() -> bool:
 func _state_move() -> void:
 	var dir := Input.get_vector("move_left", "move_right", "move_up", "move_down")
 	velocity = dir * SPEED
-	if dir.length() > 0.1:
+	# Com lock-on ativo, o facing aponta para o alvo (strafe); sem lock,
+	# segue a direção do movimento.
+	if lock_target == null and dir.length() > 0.1:
 		facing = dir.normalized()
 	if Input.is_action_just_pressed("roll") and dir.length() > 0.1 \
 			and stamina.try_spend(ROLL_COST):
@@ -148,6 +155,7 @@ func _flash() -> void:
 func _on_died() -> void:
 	if state == State.ATTACK:
 		_exit_attack()
+	lock_target = null
 	state = State.DEAD
 	body_visual.modulate = Color(0.45, 0.45, 0.55, 0.6)
 	died.emit()
@@ -163,3 +171,32 @@ func respawn(at: Vector2) -> void:
 	_iframes = 1.0
 	body_visual.modulate = Color.WHITE
 	state = State.MOVE
+
+
+func _update_lock() -> void:
+	if Input.is_action_just_pressed("lock_on"):
+		_cycle_lock_target()
+	if lock_target and (not is_instance_valid(lock_target)
+			or not lock_target.is_in_group("enemies")
+			or global_position.distance_to(lock_target.global_position) > LOCK_BREAK_RANGE):
+		lock_target = null
+	if lock_target and state != State.ROLL and state != State.DEAD:
+		facing = (lock_target.global_position - global_position).normalized()
+	reticle.visible = lock_target != null
+	if lock_target:
+		reticle.global_position = lock_target.global_position + Vector2(0, -20)
+
+
+func _cycle_lock_target() -> void:
+	var candidates: Array = get_tree().get_nodes_in_group("enemies").filter(
+			func(e: Node2D) -> bool:
+				return global_position.distance_to(e.global_position) <= LOCK_RANGE)
+	if candidates.is_empty():
+		lock_target = null
+		return
+	candidates.sort_custom(
+			func(a: Node2D, b: Node2D) -> bool:
+				return global_position.distance_squared_to(a.global_position) \
+						< global_position.distance_squared_to(b.global_position))
+	var idx := candidates.find(lock_target)
+	lock_target = candidates[(idx + 1) % candidates.size()] if idx >= 0 else candidates[0]

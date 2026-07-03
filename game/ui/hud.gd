@@ -7,6 +7,9 @@ var _msg_tween: Tween
 @onready var stamina_bar: ProgressBar = %StaminaBar
 @onready var echo_label: Label = %EchoLabel
 @onready var message_label: Label = %MessageLabel
+@onready var boss_ui: VBoxContainer = %BossUI
+@onready var boss_name_label: Label = %BossName
+@onready var boss_bar: ProgressBar = %BossBar
 
 
 func _ready() -> void:
@@ -19,6 +22,9 @@ func _ready() -> void:
 	GameState.echoes_changed.connect(_on_echoes_changed)
 	_on_echoes_changed(GameState.echoes)
 	GameEvents.notified.connect(show_message)
+	GameEvents.boss_engaged.connect(_on_boss_engaged)
+	GameEvents.boss_health_changed.connect(_on_boss_health_changed)
+	GameEvents.boss_ended.connect(_on_boss_ended)
 
 
 func _on_hp_changed(current: int, max_value: int) -> void:
@@ -33,6 +39,21 @@ func _on_stamina_changed(current: float, max_value: float) -> void:
 
 func _on_echoes_changed(amount: int) -> void:
 	echo_label.text = "Ecos: %d" % amount
+
+
+func _on_boss_engaged(boss_name: String, max_health: int) -> void:
+	boss_name_label.text = boss_name
+	boss_bar.max_value = max_health
+	boss_bar.value = max_health
+	boss_ui.visible = true
+
+
+func _on_boss_health_changed(current: int) -> void:
+	boss_bar.value = current
+
+
+func _on_boss_ended(_victory: bool) -> void:
+	boss_ui.visible = false
 
 
 func show_message(text: String) -> void:
