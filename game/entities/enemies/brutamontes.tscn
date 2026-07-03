@@ -1,9 +1,10 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://entities/enemies/enemy_base.gd" id="1_enemy"]
 [ext_resource type="Script" path="res://systems/health.gd" id="2_health"]
 [ext_resource type="Script" path="res://systems/hurtbox.gd" id="3_hurtbox"]
 [ext_resource type="Script" path="res://systems/hitbox.gd" id="4_hitbox"]
+[ext_resource type="SpriteFrames" path="res://entities/enemies/brutamontes_frames.tres" id="5_frames"]
 
 [sub_resource type="CircleShape2D" id="body_shape"]
 radius = 10.0
@@ -28,9 +29,10 @@ recover_time = 1.1
 stagger_chance = 0.3
 echoes_reward = 120
 
-[node name="Visual" type="Polygon2D" parent="."]
-color = Color(0.45, 0.22, 0.5, 1)
-polygon = PackedVector2Array(-10, -16, 0, -20, 10, -16, 12, 6, 6, 15, -6, 15, -12, 6)
+[node name="Visual" type="AnimatedSprite2D" parent="."]
+position = Vector2(0, -1)
+sprite_frames = ExtResource("5_frames")
+autoplay = "idle"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, 4)

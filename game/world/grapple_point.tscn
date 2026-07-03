@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/props/grapple_post.png" id="1_post"]
+
+[node name="GrapplePoint" type="Node2D" groups=["grapple_points"]]
+
+[node name="Sprite" type="Sprite2D" parent="."]
+position = Vector2(0, -2)
+texture = ExtResource("1_post")

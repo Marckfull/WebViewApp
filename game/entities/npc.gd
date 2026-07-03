@@ -2,18 +2,19 @@ extends Area2D
 ## NPC: mostra o nome, um prompt de interação e abre diálogo via event bus.
 
 @export var npc_name := "???"
-@export var body_color := Color(0.8, 0.7, 0.5)
+@export var portrait: Texture2D
 @export var dialog_lines: PackedStringArray = []
 
 var _player: Player
 
 @onready var prompt: Label = $Prompt
 @onready var name_label: Label = $NameLabel
-@onready var visual: Polygon2D = $Visual
+@onready var visual: Sprite2D = $Visual
 
 
 func _ready() -> void:
-	visual.color = body_color
+	if portrait:
+		visual.texture = portrait
 	name_label.text = npc_name
 	prompt.visible = false
 	body_entered.connect(_on_body_entered)

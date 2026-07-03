@@ -23,6 +23,7 @@ func _process(delta: float) -> void:
 	var dist := global_position.distance_to(player.global_position)
 	if dist <= COLLECT_RANGE:
 		GameState.add_echoes(amount)
+		AudioManager.play_sfx("pickup")
 		queue_free()
 	elif dist <= ATTRACT_RANGE:
 		global_position = global_position.move_toward(

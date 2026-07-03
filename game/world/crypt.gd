@@ -3,6 +3,9 @@ extends Level
 ## Guardiã. O portão fecha ao entrar na sala; o boss reseta se a
 ## jogadora morrer ou descansar; a vitória fica gravada em GameState.
 
+const RESOURCE_NODE := preload("res://world/resource_node.tscn")
+const GANCHO_POSITION := Vector2(320, 140)
+
 @onready var boss: BossEcoGuardia = $Boss
 @onready var gate_shape: CollisionShape2D = $Gate/CollisionShape2D
 @onready var gate_visual: Polygon2D = $Gate/Visual
@@ -17,6 +20,7 @@ func _ready() -> void:
 	if GameState.flags.get("cripta_boss_derrotado", false):
 		boss.queue_free()
 		trigger.queue_free()
+		_spawn_gancho()
 
 
 func _on_trigger_entered(body: Node2D) -> void:
@@ -34,7 +38,19 @@ func _set_gate(closed: bool) -> void:
 func _on_boss_ended(victory: bool) -> void:
 	if victory:
 		GameState.flags["cripta_boss_derrotado"] = true
+		_spawn_gancho()
 	_set_gate(false)
+
+
+## Recompensa da dungeon: o Gancho-corda surge onde a Guardiã caiu.
+func _spawn_gancho() -> void:
+	if GameState.flags.get("coletado_gancho_corda", false):
+		return
+	var node := RESOURCE_NODE.instantiate()
+	node.item_id = "gancho_corda"
+	node.one_time = true
+	node.position = GANCHO_POSITION
+	add_child.call_deferred(node)
 
 
 func _on_rest() -> void:

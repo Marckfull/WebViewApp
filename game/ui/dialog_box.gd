@@ -24,6 +24,7 @@ func _process(_delta: float) -> void:
 		return
 	if Input.is_action_just_pressed("interact") \
 			or Input.is_action_just_pressed("attack"):
+		AudioManager.play_sfx("blip")
 		_advance()
 
 

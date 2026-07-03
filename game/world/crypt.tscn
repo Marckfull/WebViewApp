@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3]
+[gd_scene load_steps=20 format=3]
 
 [ext_resource type="Script" path="res://world/crypt.gd" id="1_crypt"]
 [ext_resource type="PackedScene" path="res://entities/player/player.tscn" id="2_player"]
@@ -9,6 +9,9 @@
 [ext_resource type="PackedScene" path="res://ui/hud.tscn" id="7_hud"]
 [ext_resource type="PackedScene" path="res://ui/touch_controls.tscn" id="8_touch"]
 [ext_resource type="PackedScene" path="res://entities/enemies/boss_eco_guardia.tscn" id="9_boss"]
+[ext_resource type="PackedScene" path="res://world/resource_node.tscn" id="10_resource"]
+[ext_resource type="PackedScene" path="res://world/grapple_point.tscn" id="11_grapple"]
+[ext_resource type="PackedScene" path="res://ui/inventory_screen.tscn" id="12_inventory"]
 
 [sub_resource type="RectangleShape2D" id="wall_h"]
 size = Vector2(640, 16)
@@ -35,13 +38,14 @@ size = Vector2(160, 24)
 script = ExtResource("1_crypt")
 arena_size = Vector2(640, 900)
 intro_message = "Cripta das Guardiãs. Algo canta lá embaixo... errado."
+music = "crypt"
 
 [node name="Floor" type="Polygon2D" parent="."]
-color = Color(0.1, 0.1, 0.14, 1)
+color = Color(0.18, 0.16, 0.3, 1)
 polygon = PackedVector2Array(0, 0, 640, 0, 640, 900, 0, 900)
 
 [node name="BossRoomTint" type="Polygon2D" parent="Floor"]
-color = Color(0.14, 0.11, 0.18, 1)
+color = Color(0.23, 0.17, 0.36, 1)
 polygon = PackedVector2Array(16, 16, 624, 16, 624, 330, 16, 330)
 
 [node name="Solids" type="StaticBody2D" parent="."]
@@ -83,35 +87,35 @@ shape = SubResource("pillar")
 [node name="WallVisuals" type="Node2D" parent="."]
 
 [node name="TopV" type="Polygon2D" parent="WallVisuals"]
-color = Color(0.24, 0.24, 0.32, 1)
+color = Color(0.4, 0.38, 0.6, 1)
 polygon = PackedVector2Array(0, 0, 640, 0, 640, 16, 0, 16)
 
 [node name="BottomV" type="Polygon2D" parent="WallVisuals"]
-color = Color(0.24, 0.24, 0.32, 1)
+color = Color(0.4, 0.38, 0.6, 1)
 polygon = PackedVector2Array(0, 884, 640, 884, 640, 900, 0, 900)
 
 [node name="LeftV" type="Polygon2D" parent="WallVisuals"]
-color = Color(0.24, 0.24, 0.32, 1)
+color = Color(0.4, 0.38, 0.6, 1)
 polygon = PackedVector2Array(0, 0, 16, 0, 16, 900, 0, 900)
 
 [node name="RightV" type="Polygon2D" parent="WallVisuals"]
-color = Color(0.24, 0.24, 0.32, 1)
+color = Color(0.4, 0.38, 0.6, 1)
 polygon = PackedVector2Array(624, 0, 640, 0, 640, 900, 624, 900)
 
 [node name="SegLeftV" type="Polygon2D" parent="WallVisuals"]
-color = Color(0.3, 0.28, 0.38, 1)
+color = Color(0.46, 0.42, 0.68, 1)
 polygon = PackedVector2Array(16, 322, 260, 322, 260, 338, 16, 338)
 
 [node name="SegRightV" type="Polygon2D" parent="WallVisuals"]
-color = Color(0.3, 0.28, 0.38, 1)
+color = Color(0.46, 0.42, 0.68, 1)
 polygon = PackedVector2Array(382, 322, 624, 322, 624, 338, 382, 338)
 
 [node name="Pillar1V" type="Polygon2D" parent="WallVisuals"]
-color = Color(0.3, 0.3, 0.4, 1)
+color = Color(0.5, 0.5, 0.72, 1)
 polygon = PackedVector2Array(182, 502, 218, 502, 218, 538, 182, 538)
 
 [node name="Pillar2V" type="Polygon2D" parent="WallVisuals"]
-color = Color(0.3, 0.3, 0.4, 1)
+color = Color(0.5, 0.5, 0.72, 1)
 polygon = PackedVector2Array(422, 622, 458, 622, 458, 658, 422, 658)
 
 [node name="Gate" type="StaticBody2D" parent="."]
@@ -148,6 +152,20 @@ target_scene = "res://world/village.tscn"
 target_spawn = "from_crypt"
 label_text = "Pedra-Alva"
 
+[node name="OreA" parent="." instance=ExtResource("10_resource")]
+position = Vector2(560, 700)
+item_id = "minerio_eco"
+
+[node name="OreB" parent="." instance=ExtResource("10_resource")]
+position = Vector2(80, 560)
+item_id = "minerio_eco"
+
+[node name="GrapplePostA" parent="." instance=ExtResource("11_grapple")]
+position = Vector2(80, 80)
+
+[node name="GrapplePostB" parent="." instance=ExtResource("11_grapple")]
+position = Vector2(560, 80)
+
 [node name="SpawnerA" type="Marker2D" parent="."]
 position = Vector2(320, 600)
 script = ExtResource("4_spawner")
@@ -172,3 +190,5 @@ position = Vector2(320, 790)
 [node name="HUD" parent="." instance=ExtResource("7_hud")]
 
 [node name="TouchControls" parent="." instance=ExtResource("8_touch")]
+
+[node name="InventoryScreen" parent="." instance=ExtResource("12_inventory")]

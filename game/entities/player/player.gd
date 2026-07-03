@@ -5,7 +5,7 @@ extends CharacterBody2D
 
 signal died
 
-enum State { MOVE, ROLL, ATTACK, HURT, DEAD }
+enum State { MOVE, ROLL, ATTACK, HURT, DEAD, GRAPPLE }
 
 const SPEED := 90.0
 const ROLL_SPEED := 200.0
@@ -21,6 +21,8 @@ const HURT_IFRAMES := 0.7
 const KNOCKBACK_DECAY := 480.0
 const LOCK_RANGE := 180.0
 const LOCK_BREAK_RANGE := 240.0
+const GRAPPLE_RANGE := 170.0
+const GRAPPLE_SPEED := 400.0
 
 var state: State = State.MOVE
 var facing := Vector2.DOWN
@@ -29,6 +31,7 @@ var _timer := 0.0
 var _roll_dir := Vector2.ZERO
 var _knockback := Vector2.ZERO
 var _iframes := 0.0
+var _grapple_target := Vector2.ZERO
 
 @onready var health: Health = $Health
 @onready var stamina: Stamina = $Stamina
@@ -58,6 +61,8 @@ func _physics_process(delta: float) -> void:
 			_state_attack(delta)
 		State.HURT:
 			_state_hurt(delta)
+		State.GRAPPLE:
+			_state_grapple(delta)
 		State.DEAD:
 			velocity = Vector2.ZERO
 	velocity += _knockback
@@ -81,6 +86,8 @@ func _state_move() -> void:
 		_enter_roll(dir.normalized())
 	elif Input.is_action_just_pressed("attack") and stamina.try_spend(ATTACK_COST):
 		_enter_attack()
+	elif Input.is_action_just_pressed("use_item"):
+		_try_grapple()
 
 
 func _enter_roll(dir: Vector2) -> void:
@@ -89,6 +96,7 @@ func _enter_roll(dir: Vector2) -> void:
 	_roll_dir = dir
 	hurtbox.invulnerable = true
 	sprite.modulate = Color(1.0, 1.0, 1.0, 0.45)
+	AudioManager.play_sfx("roll")
 
 
 func _state_roll(delta: float) -> void:
@@ -108,6 +116,7 @@ func _enter_attack() -> void:
 	# a animação não-loop a cada golpe.
 	sprite.flip_h = _is_side() and facing.x < 0.0
 	sprite.play("attack_" + _facing_name())
+	AudioManager.play_sfx("swing")
 
 
 func _state_attack(delta: float) -> void:
@@ -149,6 +158,7 @@ func _on_hit_received(from_hitbox: Hitbox) -> void:
 	state = State.HURT
 	_timer = HURT_DURATION
 	_flash()
+	AudioManager.play_sfx("hurt")
 
 
 func _flash() -> void:
@@ -178,6 +188,36 @@ func respawn(at: Vector2) -> void:
 	state = State.MOVE
 
 
+func _try_grapple() -> void:
+	if not GameState.has_item("gancho_corda"):
+		return
+	var best: Node2D = null
+	var best_dist := GRAPPLE_RANGE
+	for point in get_tree().get_nodes_in_group("grapple_points"):
+		var dist := global_position.distance_to(point.global_position)
+		if dist < best_dist and dist > 20.0:
+			best_dist = dist
+			best = point
+	if best == null:
+		GameEvents.notify("Nenhum poste de gancho ao alcance.")
+		return
+	_grapple_target = best.global_position
+	facing = (_grapple_target - global_position).normalized()
+	state = State.GRAPPLE
+	_timer = 1.0  # trava de segurança se algo bloquear o caminho
+	AudioManager.play_sfx("roll")
+
+
+func _state_grapple(delta: float) -> void:
+	var to_target := _grapple_target - global_position
+	_timer -= delta
+	if to_target.length() < 12.0 or _timer <= 0.0:
+		velocity = Vector2.ZERO
+		state = State.MOVE
+		return
+	velocity = to_target.normalized() * GRAPPLE_SPEED
+
+
 func _update_lock() -> void:
 	if Input.is_action_just_pressed("lock_on"):
 		_cycle_lock_target()
@@ -198,7 +238,7 @@ func _update_animation() -> void:
 		State.MOVE:
 			var prefix := "walk_" if velocity.length() > 5.0 else "idle_"
 			_play(prefix + _facing_name())
-		State.ROLL:
+		State.ROLL, State.GRAPPLE:
 			_play("roll_" + _facing_name())
 		State.ATTACK:
 			pass  # disparada uma única vez em _enter_attack (não-loop)

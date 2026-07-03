@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3]
+[gd_scene load_steps=20 format=3]
 
 [ext_resource type="Script" path="res://world/level.gd" id="1_level"]
 [ext_resource type="PackedScene" path="res://entities/player/player.tscn" id="2_player"]
@@ -8,6 +8,12 @@
 [ext_resource type="PackedScene" path="res://ui/hud.tscn" id="6_hud"]
 [ext_resource type="PackedScene" path="res://ui/touch_controls.tscn" id="7_touch"]
 [ext_resource type="PackedScene" path="res://ui/dialog_box.tscn" id="8_dialog"]
+[ext_resource type="Texture2D" path="res://assets/sprites/npcs/odara.png" id="9_odara"]
+[ext_resource type="Texture2D" path="res://assets/sprites/npcs/corvo.png" id="10_corvo"]
+[ext_resource type="Texture2D" path="res://assets/sprites/npcs/sela.png" id="11_sela"]
+[ext_resource type="PackedScene" path="res://world/resource_node.tscn" id="12_resource"]
+[ext_resource type="PackedScene" path="res://world/grapple_point.tscn" id="13_grapple"]
+[ext_resource type="PackedScene" path="res://ui/inventory_screen.tscn" id="14_inventory"]
 
 [sub_resource type="RectangleShape2D" id="wall_h"]
 size = Vector2(1280, 16)
@@ -30,15 +36,15 @@ arena_size = Vector2(1280, 720)
 intro_message = "Pedra-Alva... ou o que o Silêncio deixou dela."
 
 [node name="Floor" type="Polygon2D" parent="."]
-color = Color(0.14, 0.17, 0.14, 1)
+color = Color(0.42, 0.62, 0.28, 1)
 polygon = PackedVector2Array(0, 0, 1280, 0, 1280, 720, 0, 720)
 
 [node name="PathH" type="Polygon2D" parent="Floor"]
-color = Color(0.2, 0.19, 0.17, 1)
+color = Color(0.78, 0.66, 0.42, 1)
 polygon = PackedVector2Array(120, 390, 1240, 390, 1240, 430, 120, 430)
 
 [node name="PathV" type="Polygon2D" parent="Floor"]
-color = Color(0.2, 0.19, 0.17, 1)
+color = Color(0.78, 0.66, 0.42, 1)
 polygon = PackedVector2Array(610, 48, 670, 48, 670, 430, 610, 430)
 
 [node name="Solids" type="StaticBody2D" parent="."]
@@ -80,47 +86,47 @@ shape = SubResource("well")
 [node name="BuildingVisuals" type="Node2D" parent="."]
 
 [node name="BorderTop" type="Polygon2D" parent="BuildingVisuals"]
-color = Color(0.22, 0.24, 0.2, 1)
+color = Color(0.24, 0.42, 0.2, 1)
 polygon = PackedVector2Array(0, 0, 1280, 0, 1280, 16, 0, 16)
 
 [node name="BorderBottom" type="Polygon2D" parent="BuildingVisuals"]
-color = Color(0.22, 0.24, 0.2, 1)
+color = Color(0.24, 0.42, 0.2, 1)
 polygon = PackedVector2Array(0, 704, 1280, 704, 1280, 720, 0, 720)
 
 [node name="BorderLeft" type="Polygon2D" parent="BuildingVisuals"]
-color = Color(0.22, 0.24, 0.2, 1)
+color = Color(0.24, 0.42, 0.2, 1)
 polygon = PackedVector2Array(0, 0, 16, 0, 16, 720, 0, 720)
 
 [node name="BorderRight" type="Polygon2D" parent="BuildingVisuals"]
-color = Color(0.22, 0.24, 0.2, 1)
+color = Color(0.24, 0.42, 0.2, 1)
 polygon = PackedVector2Array(1264, 0, 1280, 0, 1280, 720, 1264, 720)
 
 [node name="HouseABase" type="Polygon2D" parent="BuildingVisuals"]
-color = Color(0.33, 0.27, 0.22, 1)
+color = Color(0.87, 0.78, 0.58, 1)
 polygon = PackedVector2Array(120, 115, 240, 115, 240, 205, 120, 205)
 
 [node name="HouseARoof" type="Polygon2D" parent="BuildingVisuals"]
-color = Color(0.5, 0.25, 0.2, 1)
+color = Color(0.78, 0.32, 0.22, 1)
 polygon = PackedVector2Array(112, 118, 180, 78, 248, 118)
 
 [node name="HouseBBase" type="Polygon2D" parent="BuildingVisuals"]
-color = Color(0.33, 0.27, 0.22, 1)
+color = Color(0.87, 0.78, 0.58, 1)
 polygon = PackedVector2Array(830, 140, 970, 140, 970, 220, 830, 220)
 
 [node name="HouseBRoof" type="Polygon2D" parent="BuildingVisuals"]
-color = Color(0.5, 0.25, 0.2, 1)
+color = Color(0.78, 0.32, 0.22, 1)
 polygon = PackedVector2Array(822, 143, 900, 100, 978, 143)
 
 [node name="HouseCBase" type="Polygon2D" parent="BuildingVisuals"]
-color = Color(0.3, 0.25, 0.21, 1)
+color = Color(0.84, 0.74, 0.54, 1)
 polygon = PackedVector2Array(460, 515, 580, 515, 580, 605, 460, 605)
 
 [node name="HouseCRoof" type="Polygon2D" parent="BuildingVisuals"]
-color = Color(0.4, 0.22, 0.18, 1)
+color = Color(0.72, 0.3, 0.22, 1)
 polygon = PackedVector2Array(452, 518, 520, 478, 588, 518)
 
 [node name="WellBase" type="Polygon2D" parent="BuildingVisuals"]
-color = Color(0.45, 0.45, 0.5, 1)
+color = Color(0.62, 0.64, 0.7, 1)
 polygon = PackedVector2Array(620, 340, 660, 340, 660, 380, 620, 380)
 
 [node name="WellHole" type="Polygon2D" parent="BuildingVisuals"]
@@ -133,20 +139,31 @@ position = Vector2(280, 470)
 [node name="NpcOdara" parent="." instance=ExtResource("5_npc")]
 position = Vector2(280, 240)
 npc_name = "Mestra Odara"
-body_color = Color(0.75, 0.45, 0.3, 1)
+portrait = ExtResource("9_odara")
 dialog_lines = PackedStringArray("Aria? Você voltou... A vila não é a mesma desde que o Silêncio passou.", "Levaram a pequena Lys para o norte, na direção da Cripta das Guardiãs.", "Minha forja está fria. Mas se um dia me trouxer minério das ruínas, ainda sei fazer uma lâmina cantar.")
 
 [node name="NpcCorvo" parent="." instance=ExtResource("5_npc")]
 position = Vector2(860, 260)
 npc_name = "Corvo"
-body_color = Color(0.25, 0.25, 0.3, 1)
+portrait = ExtResource("10_corvo")
 dialog_lines = PackedStringArray("Ora, ora. Uma cartógrafa com uma espada. O mundo realmente acabou.", "Dizem que a Cripta ao norte guarda um eco antigo. Eu não iria. Mas você vai, não é?", "Volte com Ecos suficientes e talvez eu tenha algo para vender. Talvez.")
 
 [node name="NpcSela" parent="." instance=ExtResource("5_npc")]
 position = Vector2(600, 320)
 npc_name = "Sela"
-body_color = Color(0.55, 0.65, 0.45, 1)
+portrait = ExtResource("11_sela")
 dialog_lines = PackedStringArray("Os monstros... eles eram pessoas. Eu reconheci o padeiro entre eles.", "Se for lutar, cuide do fôlego: quem se cansa no meio de um golpe, morre.", "O santuário dourado cura, mas quando você descansa... eles voltam. Todos.")
+
+[node name="HerbA" parent="." instance=ExtResource("12_resource")]
+position = Vector2(450, 620)
+item_id = "erva_lunar"
+
+[node name="HerbB" parent="." instance=ExtResource("12_resource")]
+position = Vector2(1100, 240)
+item_id = "erva_lunar"
+
+[node name="GrapplePost" parent="." instance=ExtResource("13_grapple")]
+position = Vector2(1050, 560)
 
 [node name="PortalGym" parent="." instance=ExtResource("4_portal")]
 position = Vector2(1240, 410)
@@ -179,3 +196,5 @@ position = Vector2(340, 430)
 [node name="TouchControls" parent="." instance=ExtResource("7_touch")]
 
 [node name="DialogBox" parent="." instance=ExtResource("8_dialog")]
+
+[node name="InventoryScreen" parent="." instance=ExtResource("14_inventory")]

@@ -10,8 +10,9 @@ enum AttackKind { DASH, SWEEP }
 
 const BOSS_NAME := "Eco da Guardiã"
 const ECHO_PICKUP := preload("res://world/echo_pickup.tscn")
-const COLOR_PHASE1 := Color(0.65, 0.75, 0.95)
-const COLOR_PHASE2 := Color(0.85, 0.45, 0.75)
+# Tints de modulate sobre o sprite (que já é azulado).
+const COLOR_PHASE1 := Color.WHITE
+const COLOR_PHASE2 := Color(1.5, 0.75, 1.05)
 const DASH_TIME := 0.3
 const SWEEP_TIME := 0.25
 const CHAIN_TELEGRAPH := 0.25
@@ -35,7 +36,7 @@ var _start_position := Vector2.ZERO
 @onready var hitbox_pivot: Node2D = $HitboxPivot
 @onready var dash_shape: CollisionShape2D = $HitboxPivot/DashHitbox/CollisionShape2D
 @onready var sweep_shape: CollisionShape2D = $HitboxPivot/SweepHitbox/CollisionShape2D
-@onready var visual: Polygon2D = $Visual
+@onready var visual: AnimatedSprite2D = $Visual
 
 
 func _ready() -> void:
@@ -65,10 +66,12 @@ func _physics_process(delta: float) -> void:
 		State.TRANSITION:
 			velocity = Vector2.ZERO
 			_timer -= delta
-			visual.color = COLOR_PHASE1.lerp(COLOR_PHASE2, pingpong(_timer * 5.0, 1.0))
+			visual.modulate = COLOR_PHASE1.lerp(COLOR_PHASE2, pingpong(_timer * 5.0, 1.0))
 			if _timer <= 0.0:
 				_finish_transition()
 	move_and_slide()
+	if absf(velocity.x) > 1.0:
+		visual.flip_h = velocity.x < 0.0
 
 
 func is_engaged() -> bool:
@@ -99,7 +102,7 @@ func reset() -> void:
 	health.heal_full()
 	hurtbox.invulnerable = false
 	_disable_hitboxes()
-	visual.color = COLOR_PHASE1
+	visual.modulate = COLOR_PHASE1
 	GameEvents.boss_ended.emit(false)
 
 
@@ -129,10 +132,10 @@ func _enter_telegraph(kind: AttackKind, dir: Vector2) -> void:
 
 func _state_telegraph(delta: float) -> void:
 	_timer -= delta
-	visual.color = _phase_color().lerp(Color(1, 0.95, 0.7), pingpong(_timer * 7.0, 1.0))
+	visual.modulate = _phase_color().lerp(Color(1, 0.95, 0.7), pingpong(_timer * 7.0, 1.0))
 	if _timer > 0.0:
 		return
-	visual.color = _phase_color()
+	visual.modulate = _phase_color()
 	if _attack == AttackKind.SWEEP:
 		state = State.SWEEP
 		_timer = SWEEP_TIME
@@ -189,7 +192,7 @@ func _enter_transition() -> void:
 
 func _finish_transition() -> void:
 	phase = 2
-	visual.color = COLOR_PHASE2
+	visual.modulate = COLOR_PHASE2
 	hurtbox.invulnerable = false
 	_enter_recover()
 
@@ -215,6 +218,7 @@ func _on_hit_received(from_hitbox: Hitbox) -> void:
 		return
 	health.damage(from_hitbox.damage)
 	_flash()
+	AudioManager.play_sfx("hit")
 
 
 func _on_health_changed(current: int, max_value: int) -> void:
@@ -229,7 +233,7 @@ func _on_health_changed(current: int, max_value: int) -> void:
 func _flash() -> void:
 	visual.modulate = Color(3.0, 3.0, 3.0)
 	var tween := create_tween()
-	tween.tween_property(visual, "modulate", Color.WHITE, 0.12)
+	tween.tween_property(visual, "modulate", _phase_color(), 0.12)
 
 
 func _on_died() -> void:
@@ -239,7 +243,7 @@ func _on_died() -> void:
 	collision_layer = 0
 	set_collision_mask_value(2, false)
 	set_collision_mask_value(3, false)
-	visual.color = Color(0.35, 0.35, 0.45)
+	visual.modulate = Color(0.35, 0.35, 0.45)
 	var pickup := ECHO_PICKUP.instantiate()
 	pickup.amount = echoes_reward
 	pickup.position = global_position

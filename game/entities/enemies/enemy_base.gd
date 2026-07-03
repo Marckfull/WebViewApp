@@ -25,17 +25,15 @@ var state := State.IDLE
 var _timer := 0.0
 var _attack_dir := Vector2.RIGHT
 var _knockback := Vector2.ZERO
-var _base_color: Color
 
 @onready var health: Health = $Health
 @onready var hurtbox: Hurtbox = $Hurtbox
 @onready var hitbox_pivot: Node2D = $HitboxPivot
 @onready var hitbox_shape: CollisionShape2D = $HitboxPivot/Hitbox/CollisionShape2D
-@onready var visual: Polygon2D = $Visual
+@onready var visual: AnimatedSprite2D = $Visual
 
 
 func _ready() -> void:
-	_base_color = visual.color
 	hurtbox.hit_received.connect(_on_hit_received)
 	health.died.connect(_on_died)
 
@@ -61,8 +59,8 @@ func _physics_process(delta: float) -> void:
 		State.TELEGRAPH:
 			velocity = Vector2.ZERO
 			_timer -= delta
-			visual.color = _base_color.lerp(
-					Color(1.0, 0.95, 0.7), pingpong(_timer * 6.0, 1.0))
+			visual.modulate = Color.WHITE.lerp(
+					Color(2.2, 2.0, 1.2), pingpong(_timer * 6.0, 1.0))
 			if _timer <= 0.0:
 				_enter_attack()
 		State.ATTACK:
@@ -84,6 +82,8 @@ func _physics_process(delta: float) -> void:
 			velocity = Vector2.ZERO
 	velocity += _knockback
 	move_and_slide()
+	if absf(velocity.x) > 1.0:
+		visual.flip_h = velocity.x < 0.0
 
 
 func _get_player() -> Player:
@@ -103,7 +103,7 @@ func _enter_telegraph(dir: Vector2) -> void:
 func _enter_attack() -> void:
 	state = State.ATTACK
 	_timer = attack_time
-	visual.color = _base_color
+	visual.modulate = Color.WHITE
 	hitbox_shape.set_deferred("disabled", false)
 
 
@@ -118,13 +118,13 @@ func _on_hit_received(from_hitbox: Hitbox) -> void:
 		return
 	health.damage(from_hitbox.damage)
 	_flash()
+	AudioManager.play_sfx("hit")
 	if state == State.DEAD:
 		return
 	_knockback = (global_position - from_hitbox.global_position).normalized() \
 			* from_hitbox.knockback
 	if randf() <= stagger_chance:
 		hitbox_shape.set_deferred("disabled", true)
-		visual.color = _base_color
 		state = State.HURT
 		_timer = hurt_time
 
@@ -138,6 +138,7 @@ func _flash() -> void:
 func _on_died() -> void:
 	state = State.DEAD
 	hitbox_shape.set_deferred("disabled", true)
+	AudioManager.play_sfx("enemy_death")
 	var pickup := ECHO_PICKUP.instantiate()
 	pickup.amount = echoes_reward
 	pickup.position = global_position

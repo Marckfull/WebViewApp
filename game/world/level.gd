@@ -8,6 +8,7 @@ const ECHO_PICKUP := preload("res://world/echo_pickup.tscn")
 
 @export var arena_size := Vector2(960, 540)
 @export var intro_message := ""
+@export var music := "village"
 
 var _death_drop: Node2D
 
@@ -22,6 +23,7 @@ func _ready() -> void:
 	cam.limit_right = int(arena_size.x)
 	cam.limit_bottom = int(arena_size.y)
 	_place_player_at_spawn()
+	AudioManager.play_level_music(music)
 	if not intro_message.is_empty():
 		GameEvents.notify(intro_message)
 

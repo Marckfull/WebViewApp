@@ -13,110 +13,112 @@ OUT_DIR = Path(__file__).resolve().parent.parent / "game/assets/sprites/aria"
 TRES_PATH = Path(__file__).resolve().parent.parent / "game/entities/player/aria_frames.tres"
 CANVAS = 24
 
+# Direção de arte inspirada em Minish Cap (GBA): proporção chibi
+# (cabeça ≈ metade da altura), cores vivas e saturadas, contorno escuro.
 PALETTE = {
     ".": None,                    # transparente
-    "o": (38, 30, 42, 255),       # contorno
-    "s": (236, 196, 160, 255),    # pele
-    "S": (198, 152, 120, 255),    # pele sombra
-    "e": (45, 35, 50, 255),       # olhos
-    "h": (128, 62, 46, 255),      # cabelo ruivo
-    "H": (92, 42, 34, 255),       # cabelo sombra
-    "t": (92, 168, 150, 255),     # túnica verde-água
-    "T": (62, 124, 110, 255),     # túnica sombra / cinto
-    "c": (238, 222, 178, 255),    # cachecol creme
-    "p": (72, 66, 88, 255),       # calça
-    "b": (52, 46, 60, 255),       # botas
-    "a": (122, 86, 54, 255),      # alforje/correia de couro
-    "g": (90, 62, 40, 255),       # empunhadura
-    "w": (222, 226, 238, 255),    # lâmina
-    "W": (160, 168, 190, 255),    # lâmina sombra/ponta
+    "o": (40, 32, 36, 255),       # contorno quente
+    "s": (252, 216, 168, 255),    # pele
+    "S": (224, 168, 120, 255),    # pele sombra
+    "e": (32, 40, 56, 255),       # olhos
+    "h": (200, 96, 48, 255),      # cabelo ruivo vivo
+    "H": (152, 64, 36, 255),      # cabelo sombra
+    "t": (64, 192, 160, 255),     # túnica verde-água viva
+    "T": (32, 140, 116, 255),     # túnica sombra / cinto
+    "c": (248, 232, 168, 255),    # cachecol creme
+    "p": (88, 80, 112, 255),      # calça
+    "b": (120, 76, 48, 255),      # botas de couro
+    "a": (160, 108, 60, 255),     # alforje/correia de couro
+    "g": (112, 76, 44, 255),      # empunhadura
+    "w": (236, 240, 252, 255),    # lâmina
+    "W": (168, 180, 208, 255),    # lâmina sombra/ponta
 }
 
 DOWN_BASE = [
-    "...oooooo...",
-    "..ohhhhhho..",
-    ".ohhhhhhhho.",
-    ".ohhhhhhhho.",
-    ".ohssssssho.",
-    ".ohsessesho.",
-    ".oHssssssHo.",
-    "..oSssssSo..",
-    "..occcccco..",
-    ".otttttttto.",
-    ".ottattttto.",
-    ".ostattttso.",
-    ".oSttttttSo.",
-    "..oTTTTTTo..",
-    "..oppppppo..",
-    "..opp..ppo..",
-    "..opp..ppo..",
-    "..obb..bbo..",
-    "..obb..bbo..",
-    "..oo....oo..",
+    "....oooooo....",
+    "..oohhhhhhoo..",
+    ".ohhhhhhhhhho.",
+    ".ohhhhhhhhhho.",
+    "ohhhhhhhhhhhho",
+    "ohhossssssohho",
+    "ohossssssssoho",
+    "ohoseesseesoho",
+    "ohoseesseesoho",
+    ".ohssssssssho.",
+    "..oSssssssSo..",
+    "...occcccco...",
+    "..otttttttto..",
+    "..ottattttto..",
+    "..ostattttso..",
+    "..oTTTTTTTTo..",
+    "...oppppppo...",
+    "...opp..ppo...",
+    "...obb..bbo...",
+    "...obb..bbo...",
+    "...oo....oo...",
 ]
 
 UP_BASE = [
+    "....oooooo....",
+    "..oohhhhhhoo..",
+    ".ohhhhhhhhhho.",
+    ".ohhhhhhhhhho.",
+    "ohhhhhhhhhhhho",
+    "ohhhhhhhhhhhho",
+    "ohhhhhhhhhhhho",
+    "ohhhhhhhhhhhho",
+    "ohHhhhhhhhHhho",
+    ".ohhhhhhhhhho.",
+    "..oHhhhhhhHo..",
+    "...ochhhhco...",
+    "..otthhhhtto..",
+    "..otthhhhtto..",
+    "..osthhhhtso..",
+    "..oTThhhhTTo..",
+    "...oppppppo...",
+    "...opp..ppo...",
+    "...obb..bbo...",
+    "...obb..bbo...",
+    "...oo....oo...",
+]
+
+SIDE_BASE = [
     "...oooooo...",
-    "..ohhhhhho..",
+    ".oohhhhhhoo.",
     ".ohhhhhhhho.",
-    ".ohhhhhhhho.",
-    ".ohhhhhhhho.",
-    ".ohhhhhhhho.",
-    ".oHhhhhhhHo.",
-    "..oShhhhSo..",
-    "..ochhhhco..",
-    ".otthhhhtto.",
-    ".otthhhhtto.",
-    ".osthhhhtso.",
-    ".oStthhttSo.",
+    "ohhhhhhhhhho",
+    "ohhhhsssssо.".replace("о", "o"),
+    "ohhhhsseeso.",
+    "ohhhhsseeso.",
+    ".ohhhssssso.",
+    ".ohHssssSo..",
+    "..oh.osso...",
+    "..ohoccco...",
+    "..otttttto..",
+    "..otatttto..",
+    "..osttttso..",
     "..oTTTTTTo..",
-    "..oppppppo..",
-    "..opp..ppo..",
+    "...oppppo...",
+    "...opp.po...",
+    "...obb.bo...",
+    "...obb.bo...",
+    "...oo..oo...",
+]
+
+SIDE_STRIDE_A = SIDE_BASE[:15] + [
+    "...oppppo...",
     "..opp..ppo..",
     "..obb..bbo..",
     "..obb..bbo..",
     "..oo....oo..",
 ]
 
-SIDE_BASE = [
-    "...oooo...",
-    "..ohhhho..",
-    ".ohhhhhho.",
-    ".ohhhhhho.",
-    ".ohhsssso.",
-    ".ohhsseso.",
-    ".oHhsssSo.",
-    "..ohsso...",
-    "..occcco..",
-    ".otttttto.",
-    ".otatttto.",
-    ".osttttso.",
-    ".oSttttSo.",
-    "..oTTTTo..",
-    "..oppppo..",
-    "..opp.ppo.",
-    "..opp.ppo.",
-    "..obb.bbo.",
-    "..obb.bbo.",
-    "..oo..oo..",
-]
-
-SIDE_STRIDE_A = SIDE_BASE[:14] + [
-    "..oppppo..",
-    ".opp..ppo.",
-    ".opp..ppo.",
-    ".obb..bbo.",
-    ".obb..bbo.",
-    ".oo....oo.",
-]
-
-SIDE_STRIDE_B = SIDE_BASE[:14] + [
-    "..oppppo..",
-    "..oppppo..",
-    "..oppppo..",
-    "..obbbbo..",
-    "..obbbbo..",
-    "..oo..oo..",
+SIDE_STRIDE_B = SIDE_BASE[:15] + [
+    "...oppppo...",
+    "....oppo....",
+    "....obbo....",
+    "....obbo....",
+    "....oo.o....",
 ]
 
 BALL = [
@@ -148,26 +150,32 @@ def padded(rows, extra_right):
 
 # Ataques: pose base + braço estendido com espada (via patches).
 ATTACK_SIDE = patched(padded(SIDE_BASE, 6), [
-    (11, 8, "s"), (11, 9, "s"), (11, 10, "g"),
-    (11, 11, "w"), (11, 12, "w"), (11, 13, "w"), (11, 14, "w"), (11, 15, "W"),
+    (13, 9, "s"), (13, 10, "g"),
+    (13, 11, "w"), (13, 12, "w"), (13, 13, "w"), (13, 14, "w"), (13, 15, "W"),
 ])
 
 ATTACK_DOWN = patched(padded(DOWN_BASE, 3), [
-    (12, 12, "g"),
-    (13, 12, "w"), (13, 13, "w"),
-    (14, 12, "w"), (14, 13, "w"),
-    (15, 12, "W"),
+    (14, 12, "g"),
+    (15, 12, "w"), (16, 12, "w"), (17, 12, "w"),
+    (18, 12, "W"),
 ])
 
 ATTACK_UP = patched(padded(UP_BASE, 3), [
-    (11, 12, "g"),
-    (10, 12, "w"), (9, 12, "w"), (8, 12, "w"), (7, 12, "w"),
-    (6, 12, "w"), (5, 12, "w"), (4, 12, "w"), (3, 12, "w"),
-    (2, 12, "W"),
+    (13, 14, "g"),
+    (12, 14, "w"), (11, 14, "w"), (10, 14, "w"), (9, 14, "w"),
+    (8, 14, "w"), (7, 14, "w"), (6, 14, "w"), (5, 14, "w"),
+    (4, 14, "w"), (3, 14, "w"),
+    (2, 14, "W"),
 ])
 
-DOWN_BLINK = patched(DOWN_BASE, [(5, 4, "S"), (5, 7, "S")])
-SIDE_BLINK = patched(SIDE_BASE, [(5, 6, "S")])
+DOWN_BLINK = patched(DOWN_BASE, [
+    (7, 4, "s"), (7, 5, "s"), (7, 8, "s"), (7, 9, "s"),
+    (8, 4, "S"), (8, 5, "S"), (8, 8, "S"), (8, 9, "S"),
+])
+SIDE_BLINK = patched(SIDE_BASE, [
+    (5, 7, "s"), (5, 8, "s"),
+    (6, 7, "S"), (6, 8, "S"),
+])
 
 
 def render(rows, y_shift=0):

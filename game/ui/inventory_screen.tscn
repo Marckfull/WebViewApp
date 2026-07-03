@@ -1,0 +1,71 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://ui/inventory_screen.gd" id="1_inventory"]
+
+[sub_resource type="StyleBoxFlat" id="panel_style"]
+bg_color = Color(0.09, 0.09, 0.14, 0.95)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.5, 0.45, 0.3, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[node name="InventoryScreen" type="CanvasLayer"]
+process_mode = 3
+layer = 9
+script = ExtResource("1_inventory")
+
+[node name="Panel" type="Panel" parent="."]
+anchor_left = 0.18
+anchor_top = 0.1
+anchor_right = 0.82
+anchor_bottom = 0.9
+theme_override_styles/panel = SubResource("panel_style")
+
+[node name="Title" type="Label" parent="Panel"]
+anchor_right = 1.0
+offset_top = 8.0
+offset_bottom = 24.0
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(0.95, 0.85, 0.55, 1)
+text = "Bolsa"
+horizontal_alignment = 1
+
+[node name="Scroll" type="ScrollContainer" parent="Panel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = 30.0
+offset_right = -12.0
+offset_bottom = -24.0
+
+[node name="ItemList" type="VBoxContainer" parent="Panel/Scroll"]
+unique_name_in_owner = true
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="EmptyLabel" type="Label" parent="Panel"]
+unique_name_in_owner = true
+anchor_top = 0.4
+anchor_right = 1.0
+anchor_bottom = 0.55
+theme_override_font_sizes/font_size = 9
+theme_override_colors/font_color = Color(0.55, 0.55, 0.62, 1)
+text = "A bolsa está vazia."
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Hint" type="Label" parent="Panel"]
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -18.0
+offset_bottom = -6.0
+theme_override_font_sizes/font_size = 7
+theme_override_colors/font_color = Color(0.55, 0.55, 0.62, 1)
+text = "[I / BOLSA] fechar"
+horizontal_alignment = 1

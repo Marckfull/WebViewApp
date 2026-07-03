@@ -39,11 +39,33 @@ souls-like, exploração entre cenas, NPCs com diálogo e a primeira luta de bos
 - Controles de toque: joystick virtual + botões ATACAR/ROLAR/ALVO/USAR
   (aparecem só em dispositivos com touchscreen).
 
-**Arte:**
-- Aria tem **sprites reais em pixel art** (24×24): idle com piscada,
-  caminhada, rolamento e ataque com espada em 3 direções (+ flip).
-  Os sprites são gerados por `../tools/generate_aria_sprites.py` —
-  edite as grades de caracteres e rode o script para iterar a arte.
+**Itens e exploração:**
+- **Inventário (Bolsa)** com ícones, quantidades e descrições — abre
+  com [I / BOLSA] e pausa o jogo. Persistido no save.
+- **Recursos coletáveis** no mundo: Erva-lunar (vila) e Minério de Eco
+  (treino/cripta); renascem ao descansar no santuário.
+- **Gancho-corda** — primeiro item de dungeon, dropado pelo Eco da
+  Guardiã: use [H / ITEM] perto de um poste com argola para se lançar
+  até ele (reposicionamento rápido em combate e travessia).
+
+**Arte (direção inspirada em Minish Cap):**
+- Proporção **chibi** (cabeça grande), cores vivas e saturadas com
+  contorno escuro; cenários coloridos (grama viva, terra clara, cripta
+  em azul-púrpura saturado).
+- Sprites de **todos** os personagens: Aria (idle com piscada, andar,
+  rolar, atacar em 3 direções + flip), Ecoado, Brutamontes, o boss
+  espectral e os 3 NPCs; ícones de itens e props.
+- Pipeline iterável: `../tools/generate_aria_sprites.py` e
+  `../tools/generate_world_sprites.py` — cada pose é uma grade de
+  caracteres (1 letra = 1 pixel); edite e rode para regenerar.
+
+**Áudio (100% procedural):**
+- **3 músicas** compostas por síntese (`../tools/generate_audio.py`):
+  tema da vila com o leitmotiv da "Canção do Mundo" (ocarina + pads),
+  drone tenso da cripta e tema de boss acelerado. Loop automático e
+  troca sozinha ao engajar/derrotar o boss.
+- **11 SFX**: golpe, acerto, dano, rolamento, coleta, morte, santuário,
+  rugido do boss, vitória, UI.
 
 ## Como rodar
 
@@ -59,6 +81,8 @@ souls-like, exploração entre cenas, NPCs com diálogo e a primeira luta de bos
 | Atacar | J ou Z | X / Quadrado |
 | Rolar | K ou Espaço | A / Cruz |
 | Lock-on (alvo) | L ou Tab | R1 / RB |
+| Usar item (gancho) | H | B / Círculo |
+| Bolsa (inventário) | I | Select / Back |
 | Interagir (falar/descansar) | E ou Enter | Y / Triângulo |
 
 No Android/touchscreen: arraste na metade esquerda da tela para mover;
@@ -94,9 +118,9 @@ game/
 
 ## Próximos passos (ver GDD, seção 8)
 
-1. Playtest: a sensação do combate e a dificuldade do boss (deve matar o
-   jogador mediano 2–4 vezes).
-2. SFX de combate e primeira música (a trilha é mecânica central no GDD).
-3. Sprites para inimigos e NPCs (mesmo pipeline do gerador da Aria).
-4. Sistema de inventário e primeiro item de dungeon (Gancho-corda).
-5. Ocarina de Vidro: roda de melodias e a primeira música jogável.
+1. Playtest geral: combate, dificuldade do boss, sensação do gancho.
+2. Ocarina de Vidro: roda de melodias e a primeira música jogável.
+3. Forja da Odara: gastar Minério de Eco em upgrades de arma.
+4. Tiles de cenário (grama/terra/pedra desenhadas) substituindo os
+   polígonos chapados, no mesmo pipeline dos geradores.
+5. Frascos de Essência (cura limitada recarregável no santuário).
