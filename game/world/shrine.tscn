@@ -1,0 +1,31 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://world/shrine.gd" id="1_shrine"]
+
+[sub_resource type="CircleShape2D" id="area_shape"]
+radius = 26.0
+
+[node name="Shrine" type="Area2D"]
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("1_shrine")
+
+[node name="Visual" type="Polygon2D" parent="."]
+color = Color(0.9, 0.8, 0.45, 1)
+polygon = PackedVector2Array(0, -14, 9, 0, 0, 14, -9, 0)
+
+[node name="VisualInner" type="Polygon2D" parent="."]
+color = Color(1, 0.95, 0.75, 1)
+polygon = PackedVector2Array(0, -7, 4.5, 0, 0, 7, -4.5, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("area_shape")
+
+[node name="Prompt" type="Label" parent="."]
+offset_left = -60.0
+offset_top = -34.0
+offset_right = 60.0
+offset_bottom = -20.0
+theme_override_font_sizes/font_size = 9
+text = "[E / USAR] Descansar"
+horizontal_alignment = 1

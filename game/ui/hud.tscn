@@ -1,0 +1,72 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://ui/hud.gd" id="1_hud"]
+
+[sub_resource type="StyleBoxFlat" id="bar_bg"]
+bg_color = Color(0, 0, 0, 0.45)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[sub_resource type="StyleBoxFlat" id="hp_fill"]
+bg_color = Color(0.85, 0.25, 0.3, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[sub_resource type="StyleBoxFlat" id="stamina_fill"]
+bg_color = Color(0.35, 0.8, 0.45, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[node name="HUD" type="CanvasLayer"]
+script = ExtResource("1_hud")
+
+[node name="Bars" type="VBoxContainer" parent="."]
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 150.0
+offset_bottom = 64.0
+theme_override_constants/separation = 4
+
+[node name="HpBar" type="ProgressBar" parent="Bars"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(140, 10)
+theme_override_styles/background = SubResource("bar_bg")
+theme_override_styles/fill = SubResource("hp_fill")
+max_value = 100.0
+value = 100.0
+show_percentage = false
+
+[node name="StaminaBar" type="ProgressBar" parent="Bars"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(140, 7)
+theme_override_styles/background = SubResource("bar_bg")
+theme_override_styles/fill = SubResource("stamina_fill")
+max_value = 100.0
+value = 100.0
+show_percentage = false
+
+[node name="EchoLabel" type="Label" parent="Bars"]
+unique_name_in_owner = true
+theme_override_font_sizes/font_size = 10
+theme_override_colors/font_color = Color(0.6, 0.9, 1, 1)
+text = "Ecos: 0"
+
+[node name="MessageLabel" type="Label" parent="."]
+unique_name_in_owner = true
+visible = false
+anchor_left = 0.0
+anchor_top = 0.3
+anchor_right = 1.0
+anchor_bottom = 0.42
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.9, 0.85, 0.7, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.8)
+theme_override_constants/outline_size = 4
+horizontal_alignment = 1
+vertical_alignment = 1

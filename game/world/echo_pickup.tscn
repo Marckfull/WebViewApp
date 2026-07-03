@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://world/echo_pickup.gd" id="1_pickup"]
+
+[node name="EchoPickup" type="Node2D"]
+script = ExtResource("1_pickup")
+
+[node name="Visual" type="Polygon2D" parent="."]
+color = Color(0.5, 0.9, 1, 0.9)
+polygon = PackedVector2Array(0, -5, 4, 0, 0, 5, -4, 0)

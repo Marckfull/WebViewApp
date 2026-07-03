@@ -1,0 +1,64 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://entities/enemies/enemy_base.gd" id="1_enemy"]
+[ext_resource type="Script" path="res://systems/health.gd" id="2_health"]
+[ext_resource type="Script" path="res://systems/hurtbox.gd" id="3_hurtbox"]
+[ext_resource type="Script" path="res://systems/hitbox.gd" id="4_hitbox"]
+
+[sub_resource type="CircleShape2D" id="body_shape"]
+radius = 10.0
+
+[sub_resource type="RectangleShape2D" id="hurt_shape"]
+size = Vector2(22, 28)
+
+[sub_resource type="RectangleShape2D" id="hit_shape"]
+size = Vector2(26, 18)
+
+[node name="Brutamontes" type="CharacterBody2D" groups=["enemies"]]
+collision_layer = 4
+collision_mask = 7
+script = ExtResource("1_enemy")
+max_speed = 34.0
+aggro_range = 170.0
+attack_range = 38.0
+telegraph_time = 0.7
+attack_time = 0.3
+attack_lunge = 230.0
+recover_time = 1.1
+stagger_chance = 0.3
+echoes_reward = 120
+
+[node name="Visual" type="Polygon2D" parent="."]
+color = Color(0.45, 0.22, 0.5, 1)
+polygon = PackedVector2Array(-10, -16, 0, -20, 10, -16, 12, 6, 6, 15, -6, 15, -12, 6)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 4)
+shape = SubResource("body_shape")
+
+[node name="Health" type="Node" parent="."]
+script = ExtResource("2_health")
+max_health = 140
+
+[node name="Hurtbox" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 16
+script = ExtResource("3_hurtbox")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+shape = SubResource("hurt_shape")
+
+[node name="HitboxPivot" type="Node2D" parent="."]
+
+[node name="Hitbox" type="Area2D" parent="HitboxPivot"]
+collision_layer = 32
+collision_mask = 0
+monitoring = false
+script = ExtResource("4_hitbox")
+damage = 24
+knockback = 240.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitboxPivot/Hitbox"]
+position = Vector2(18, 0)
+shape = SubResource("hit_shape")
+disabled = true

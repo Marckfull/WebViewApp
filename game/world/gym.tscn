@@ -1,0 +1,145 @@
+[gd_scene load_steps=13 format=3]
+
+[ext_resource type="Script" path="res://world/gym.gd" id="1_gym"]
+[ext_resource type="PackedScene" path="res://entities/player/player.tscn" id="2_player"]
+[ext_resource type="PackedScene" path="res://world/shrine.tscn" id="3_shrine"]
+[ext_resource type="Script" path="res://world/enemy_spawner.gd" id="4_spawner"]
+[ext_resource type="PackedScene" path="res://entities/enemies/ecoado.tscn" id="5_ecoado"]
+[ext_resource type="PackedScene" path="res://entities/enemies/brutamontes.tscn" id="6_brutamontes"]
+[ext_resource type="PackedScene" path="res://ui/hud.tscn" id="7_hud"]
+[ext_resource type="PackedScene" path="res://ui/touch_controls.tscn" id="8_touch"]
+
+[sub_resource type="RectangleShape2D" id="wall_h"]
+size = Vector2(960, 16)
+
+[sub_resource type="RectangleShape2D" id="wall_v"]
+size = Vector2(16, 540)
+
+[sub_resource type="RectangleShape2D" id="pillar"]
+size = Vector2(36, 36)
+
+[sub_resource type="RectangleShape2D" id="divider_v"]
+size = Vector2(24, 200)
+
+[node name="Gym" type="Node2D"]
+script = ExtResource("1_gym")
+
+[node name="Floor" type="Polygon2D" parent="."]
+color = Color(0.13, 0.13, 0.18, 1)
+polygon = PackedVector2Array(0, 0, 960, 0, 960, 540, 0, 540)
+
+[node name="FloorDetail1" type="Polygon2D" parent="Floor"]
+color = Color(0.16, 0.16, 0.22, 1)
+polygon = PackedVector2Array(300, 100, 660, 100, 660, 440, 300, 440)
+
+[node name="FloorDetail2" type="Polygon2D" parent="Floor"]
+color = Color(0.19, 0.17, 0.2, 1)
+polygon = PackedVector2Array(720, 160, 940, 160, 940, 380, 720, 380)
+
+[node name="Walls" type="StaticBody2D" parent="."]
+collision_layer = 1
+collision_mask = 0
+
+[node name="Top" type="CollisionShape2D" parent="Walls"]
+position = Vector2(480, 8)
+shape = SubResource("wall_h")
+
+[node name="Bottom" type="CollisionShape2D" parent="Walls"]
+position = Vector2(480, 532)
+shape = SubResource("wall_h")
+
+[node name="Left" type="CollisionShape2D" parent="Walls"]
+position = Vector2(8, 270)
+shape = SubResource("wall_v")
+
+[node name="Right" type="CollisionShape2D" parent="Walls"]
+position = Vector2(952, 270)
+shape = SubResource("wall_v")
+
+[node name="Pillar1" type="CollisionShape2D" parent="Walls"]
+position = Vector2(400, 270)
+shape = SubResource("pillar")
+
+[node name="Pillar2" type="CollisionShape2D" parent="Walls"]
+position = Vector2(620, 130)
+shape = SubResource("pillar")
+
+[node name="Pillar3" type="CollisionShape2D" parent="Walls"]
+position = Vector2(620, 410)
+shape = SubResource("pillar")
+
+[node name="DividerTop" type="CollisionShape2D" parent="Walls"]
+position = Vector2(700, 100)
+shape = SubResource("divider_v")
+
+[node name="DividerBottom" type="CollisionShape2D" parent="Walls"]
+position = Vector2(700, 440)
+shape = SubResource("divider_v")
+
+[node name="WallVisuals" type="Node2D" parent="."]
+
+[node name="TopV" type="Polygon2D" parent="WallVisuals"]
+color = Color(0.24, 0.24, 0.32, 1)
+polygon = PackedVector2Array(0, 0, 960, 0, 960, 16, 0, 16)
+
+[node name="BottomV" type="Polygon2D" parent="WallVisuals"]
+color = Color(0.24, 0.24, 0.32, 1)
+polygon = PackedVector2Array(0, 524, 960, 524, 960, 540, 0, 540)
+
+[node name="LeftV" type="Polygon2D" parent="WallVisuals"]
+color = Color(0.24, 0.24, 0.32, 1)
+polygon = PackedVector2Array(0, 0, 16, 0, 16, 540, 0, 540)
+
+[node name="RightV" type="Polygon2D" parent="WallVisuals"]
+color = Color(0.24, 0.24, 0.32, 1)
+polygon = PackedVector2Array(944, 0, 960, 0, 960, 540, 944, 540)
+
+[node name="Pillar1V" type="Polygon2D" parent="WallVisuals"]
+color = Color(0.3, 0.3, 0.4, 1)
+polygon = PackedVector2Array(382, 252, 418, 252, 418, 288, 382, 288)
+
+[node name="Pillar2V" type="Polygon2D" parent="WallVisuals"]
+color = Color(0.3, 0.3, 0.4, 1)
+polygon = PackedVector2Array(602, 112, 638, 112, 638, 148, 602, 148)
+
+[node name="Pillar3V" type="Polygon2D" parent="WallVisuals"]
+color = Color(0.3, 0.3, 0.4, 1)
+polygon = PackedVector2Array(602, 392, 638, 392, 638, 428, 602, 428)
+
+[node name="DividerTopV" type="Polygon2D" parent="WallVisuals"]
+color = Color(0.3, 0.28, 0.36, 1)
+polygon = PackedVector2Array(688, 0, 712, 0, 712, 200, 688, 200)
+
+[node name="DividerBottomV" type="Polygon2D" parent="WallVisuals"]
+color = Color(0.3, 0.28, 0.36, 1)
+polygon = PackedVector2Array(688, 340, 712, 340, 712, 540, 688, 540)
+
+[node name="Shrine" parent="." instance=ExtResource("3_shrine")]
+position = Vector2(120, 270)
+
+[node name="Player" parent="." instance=ExtResource("2_player")]
+position = Vector2(170, 270)
+
+[node name="SpawnerA" type="Marker2D" parent="."]
+position = Vector2(450, 160)
+script = ExtResource("4_spawner")
+enemy_scene = ExtResource("5_ecoado")
+
+[node name="SpawnerB" type="Marker2D" parent="."]
+position = Vector2(500, 390)
+script = ExtResource("4_spawner")
+enemy_scene = ExtResource("5_ecoado")
+
+[node name="SpawnerC" type="Marker2D" parent="."]
+position = Vector2(560, 270)
+script = ExtResource("4_spawner")
+enemy_scene = ExtResource("5_ecoado")
+
+[node name="SpawnerBoss" type="Marker2D" parent="."]
+position = Vector2(830, 270)
+script = ExtResource("4_spawner")
+enemy_scene = ExtResource("6_brutamontes")
+
+[node name="HUD" parent="." instance=ExtResource("7_hud")]
+
+[node name="TouchControls" parent="." instance=ExtResource("8_touch")]
