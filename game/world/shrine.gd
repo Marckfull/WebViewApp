@@ -36,3 +36,4 @@ func _rest() -> void:
 	_player.respawn(_player.global_position)
 	GameEvents.shrine_rested.emit()
 	GameEvents.notify("Você descansou. Os Ecoados retornaram.")
+	GameEvents.stats_requested.emit()

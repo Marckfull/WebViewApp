@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3]
+[gd_scene load_steps=21 format=3]
 
 [ext_resource type="Script" path="res://world/level.gd" id="1_gym"]
 [ext_resource type="PackedScene" path="res://entities/player/player.tscn" id="2_player"]
@@ -15,6 +15,7 @@
 [ext_resource type="PackedScene" path="res://ui/ocarina_wheel.tscn" id="13_wheel"]
 [ext_resource type="Texture2D" path="res://assets/sprites/tiles/dirt.png" id="14_dirt"]
 [ext_resource type="PackedScene" path="res://ui/map_screen.tscn" id="15_map"]
+[ext_resource type="PackedScene" path="res://ui/stats_screen.tscn" id="16_stats"]
 
 [sub_resource type="RectangleShape2D" id="wall_h"]
 size = Vector2(960, 16)
@@ -187,3 +188,5 @@ enemy_scene = ExtResource("6_brutamontes")
 [node name="OcarinaWheel" parent="." instance=ExtResource("13_wheel")]
 
 [node name="MapScreen" parent="." instance=ExtResource("15_map")]
+
+[node name="StatsScreen" parent="." instance=ExtResource("16_stats")]

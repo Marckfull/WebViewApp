@@ -204,6 +204,23 @@ ICON_PALETTES = {
         "P": (188, 96, 148, 255),
         "w": (255, 235, 248, 255),
     },
+    "amuleto_eco": {
+        ".": None,
+        "o": (60, 26, 34, 255),
+        "r": (222, 84, 104, 255),
+        "w": (255, 220, 228, 255),
+    },
+    "amuleto_vento": {
+        ".": None,
+        "o": (26, 48, 54, 255),
+        "c": (120, 214, 228, 255),
+    },
+    "talisma_sela": {
+        ".": None,
+        "o": (44, 38, 26, 255),
+        "p": (232, 150, 190, 255),
+        "w": (250, 226, 130, 255),
+    },
 }
 
 ICONS = {
@@ -260,6 +277,34 @@ ICONS = {
         ".oM..Mo..",
         "..oMMo...",
     ],
+    "amuleto_eco": [
+        "..oo..oo..",
+        ".orrrrrro.",
+        ".orwrrrro.",
+        ".orrrrrro.",
+        "..orrrro..",
+        "...orro...",
+        "....oo....",
+    ],
+    "amuleto_vento": [
+        "...ooo...",
+        "..occco..",
+        ".oc..cco.",
+        "....occo.",
+        "...occo..",
+        "..occo...",
+        ".occo....",
+        ".oo......",
+    ],
+    "talisma_sela": [
+        "....o....",
+        "..opppo..",
+        ".oppwppo.",
+        ".opwwwpo.",
+        ".oppwppo.",
+        "..opppo..",
+        "....o....",
+    ],
 }
 
 PROP_PALETTES = {
@@ -289,6 +334,14 @@ PROP_PALETTES = {
         "o": (26, 40, 26, 255),
         "g": (96, 168, 84, 255),
         "G": (66, 128, 58, 255),
+        "a": (150, 108, 66, 255),
+        "A": (108, 76, 46, 255),
+    },
+    "stand": {
+        ".": None,
+        "o": (40, 28, 26, 255),
+        "r": (204, 74, 74, 255),
+        "w": (240, 232, 214, 255),
         "a": (150, 108, 66, 255),
         "A": (108, 76, 46, 255),
     },
@@ -327,6 +380,18 @@ OCARINA = [
     ".occccco.",
     "..oCCCo..",
     "...ooo...",
+]
+
+STAND = [
+    "oooooooooooo",
+    "orwrwrwrwrwo",
+    "oooooooooooo",
+    ".o........o.",
+    ".o........o.",
+    ".oaaaaaaaao.",
+    ".oAAAAAAAAo.",
+    ".o.o....o.o.",
+    ".ooo....ooo.",
 ]
 
 TREE = [
@@ -440,6 +505,7 @@ def main():
     save(render(ANVIL, PROP_PALETTES["anvil"], 16), "props/anvil.png")
     save(render(OCARINA, PROP_PALETTES["ocarina"], 16), "icons/ocarina_vidro.png")
     save(render(TREE, PROP_PALETTES["tree"], 24), "props/tree.png")
+    save(render(STAND, PROP_PALETTES["stand"], 16), "props/stand.png")
 
     for name, spec in TILE_SPECS.items():
         save(make_tile(name, spec), f"tiles/{name}.png")

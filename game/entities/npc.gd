@@ -1,5 +1,7 @@
+class_name NpcBase
 extends Area2D
 ## NPC: mostra o nome, um prompt de interação e abre diálogo via event bus.
+## Subclasses (ex.: npc_sela.gd) sobrescrevem _interact() para quests.
 
 @export var npc_name := "???"
 @export var portrait: Texture2D
@@ -24,8 +26,12 @@ func _ready() -> void:
 func _physics_process(_delta: float) -> void:
 	# Input direto (e não _unhandled_input): os botões de toque geram
 	# ações sintéticas sem InputEvent propagado.
-	if _player and _player.is_alive() and not dialog_lines.is_empty() \
-			and Input.is_action_just_pressed("interact"):
+	if _player and _player.is_alive() and Input.is_action_just_pressed("interact"):
+		_interact()
+
+
+func _interact() -> void:
+	if not dialog_lines.is_empty():
 		GameEvents.dialog_requested.emit(npc_name, dialog_lines)
 
 

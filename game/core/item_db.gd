@@ -13,6 +13,24 @@ const DB := {
 		"desc": "Brilha de leve no escuro. Base de poções restauradoras.",
 		"icon": "res://assets/sprites/icons/erva_lunar.png",
 	},
+	"amuleto_eco": {
+		"name": "Amuleto do Eco",
+		"desc": "Um coração de vidro que pulsa devagar. +20 de vida máxima.",
+		"icon": "res://assets/sprites/icons/amuleto_eco.png",
+		"key": true,
+	},
+	"amuleto_vento": {
+		"name": "Amuleto do Vento",
+		"desc": "Leve como um suspiro. +20 de vigor máximo.",
+		"icon": "res://assets/sprites/icons/amuleto_vento.png",
+		"key": true,
+	},
+	"talisma_sela": {
+		"name": "Talismã de Sela",
+		"desc": "Era da mãe dela. Ataques e esquivas gastam 20% menos vigor.",
+		"icon": "res://assets/sprites/icons/talisma_sela.png",
+		"key": true,
+	},
 	"memoria_lys": {
 		"name": "Memória Perdida: Lys",
 		"desc": "Um fragmento cristalizado. Dentro dele, a risada da sua "

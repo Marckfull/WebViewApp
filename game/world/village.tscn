@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3]
+[gd_scene load_steps=29 format=3]
 
 [ext_resource type="Script" path="res://world/level.gd" id="1_level"]
 [ext_resource type="PackedScene" path="res://entities/player/player.tscn" id="2_player"]
@@ -19,6 +19,10 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/tiles/grass.png" id="17_grass"]
 [ext_resource type="Texture2D" path="res://assets/sprites/tiles/dirt.png" id="18_dirt"]
 [ext_resource type="PackedScene" path="res://ui/map_screen.tscn" id="19_map"]
+[ext_resource type="Script" path="res://entities/npc_sela.gd" id="20_sela"]
+[ext_resource type="PackedScene" path="res://world/shop_stand.tscn" id="21_stand"]
+[ext_resource type="PackedScene" path="res://ui/shop_screen.tscn" id="22_shop"]
+[ext_resource type="PackedScene" path="res://ui/stats_screen.tscn" id="23_stats"]
 
 [sub_resource type="RectangleShape2D" id="wall_h"]
 size = Vector2(1280, 16)
@@ -158,12 +162,15 @@ dialog_lines = PackedStringArray("Ora, ora. Uma cartógrafa com uma espada. O mu
 
 [node name="NpcSela" parent="." instance=ExtResource("5_npc")]
 position = Vector2(600, 320)
+script = ExtResource("20_sela")
 npc_name = "Sela"
 portrait = ExtResource("11_sela")
-dialog_lines = PackedStringArray("Os monstros... eles eram pessoas. Eu reconheci o padeiro entre eles.", "Se for lutar, cuide do fôlego: quem se cansa no meio de um golpe, morre.", "O santuário dourado cura, mas quando você descansa... eles voltam. Todos.")
 
 [node name="Forge" parent="." instance=ExtResource("15_forge")]
 position = Vector2(348, 250)
+
+[node name="ShopStand" parent="." instance=ExtResource("21_stand")]
+position = Vector2(920, 290)
 
 [node name="HerbA" parent="." instance=ExtResource("12_resource")]
 position = Vector2(450, 620)
@@ -222,3 +229,7 @@ position = Vector2(340, 430)
 [node name="OcarinaWheel" parent="." instance=ExtResource("16_wheel")]
 
 [node name="MapScreen" parent="." instance=ExtResource("19_map")]
+
+[node name="ShopScreen" parent="." instance=ExtResource("22_shop")]
+
+[node name="StatsScreen" parent="." instance=ExtResource("23_stats")]

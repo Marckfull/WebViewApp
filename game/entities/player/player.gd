@@ -26,6 +26,8 @@ const GRAPPLE_SPEED := 400.0
 const BASE_DAMAGE := 12
 const DAMAGE_PER_FORGE := 4
 const FLASK_HEAL := 60
+const BASE_HEALTH := 100
+const BASE_STAMINA := 100.0
 
 var state: State = State.MOVE
 var facing := Vector2.DOWN
@@ -51,11 +53,38 @@ func _ready() -> void:
 	hurtbox.hit_received.connect(_on_hit_received)
 	health.died.connect(_on_died)
 	GameState.weapon_changed.connect(_apply_weapon_level)
+	GameState.attributes_changed.connect(_apply_stats)
+	GameState.inventory_changed.connect(_apply_stats)
+	_apply_stats()
+	health.heal_full()
+	stamina.refill()
+
+
+## Recalcula vida/vigor/dano a partir de atributos, amuletos e forja.
+func _apply_stats() -> void:
+	var max_hp := BASE_HEALTH + 10 * int(GameState.attributes["vit"])
+	if GameState.has_item("amuleto_eco"):
+		max_hp += 20
+	health.max_health = max_hp
+	health.current = mini(health.current, max_hp)
+	health.changed.emit(health.current, max_hp)
+	var max_stamina := BASE_STAMINA + 8.0 * int(GameState.attributes["fol"])
+	if GameState.has_item("amuleto_vento"):
+		max_stamina += 20.0
+	stamina.max_stamina = max_stamina
+	stamina.current = minf(stamina.current, max_stamina)
+	stamina.changed.emit(stamina.current, max_stamina)
 	_apply_weapon_level(GameState.weapon_level)
 
 
 func _apply_weapon_level(level: int) -> void:
-	hitbox.damage = BASE_DAMAGE + DAMAGE_PER_FORGE * level
+	hitbox.damage = BASE_DAMAGE + DAMAGE_PER_FORGE * level \
+			+ 2 * int(GameState.attributes["forca"])
+
+
+## O Talismã de Sela reduz o custo de vigor em 20%.
+func _stamina_cost(base: float) -> float:
+	return base * (0.8 if GameState.has_item("talisma_sela") else 1.0)
 
 
 func _physics_process(delta: float) -> void:
@@ -92,9 +121,10 @@ func _state_move() -> void:
 	if lock_target == null and dir.length() > 0.1:
 		facing = dir.normalized()
 	if Input.is_action_just_pressed("roll") and dir.length() > 0.1 \
-			and stamina.try_spend(ROLL_COST):
+			and stamina.try_spend(_stamina_cost(ROLL_COST)):
 		_enter_roll(dir.normalized())
-	elif Input.is_action_just_pressed("attack") and stamina.try_spend(ATTACK_COST):
+	elif Input.is_action_just_pressed("attack") \
+			and stamina.try_spend(_stamina_cost(ATTACK_COST)):
 		_enter_attack()
 	elif Input.is_action_just_pressed("use_item"):
 		_try_grapple()

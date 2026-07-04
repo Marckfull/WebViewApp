@@ -6,6 +6,7 @@ signal echoes_changed(amount: int)
 signal inventory_changed
 signal weapon_changed(level: int)
 signal flasks_changed(current: int, max_value: int)
+signal attributes_changed
 
 ## Segundos de jogo para um ciclo completo de dia+noite.
 const DAY_LENGTH := 300.0
@@ -20,6 +21,8 @@ var weapon_level: int = 0
 ## Frascos de Essência (cura limitada, recarregada no santuário).
 var flasks: int = 3
 var flasks_max: int = 3
+## Atributos comprados com Ecos no santuário (level up souls-like).
+var attributes: Dictionary = {"vit": 0, "fol": 0, "forca": 0}
 ## Hora do mundo em [0,1): 0 = amanhecer; noite em [0.5, 0.9).
 var time_of_day := 0.15
 ## Mapa da cartógrafa: cena -> {"cols", "rows", "cells": Array[int]}.
@@ -44,6 +47,7 @@ func reset() -> void:
 	weapon_level = 0
 	flasks = 3
 	flasks_max = 3
+	attributes = {"vit": 0, "fol": 0, "forca": 0}
 	time_of_day = 0.15
 	map_data = {}
 	next_spawn = ""
@@ -51,6 +55,7 @@ func reset() -> void:
 	echoes_changed.emit(echoes)
 	inventory_changed.emit()
 	flasks_changed.emit(flasks, flasks_max)
+	attributes_changed.emit()
 
 
 func is_night() -> bool:
@@ -132,6 +137,30 @@ func item_count(id: String) -> int:
 func upgrade_weapon() -> void:
 	weapon_level += 1
 	weapon_changed.emit(weapon_level)
+
+
+func spend_echoes(amount: int) -> bool:
+	if echoes < amount:
+		return false
+	echoes -= amount
+	echoes_changed.emit(echoes)
+	return true
+
+
+## Custo do próximo nível de atributo (sobe com o total já comprado).
+func attribute_cost() -> int:
+	var total := 0
+	for key in attributes:
+		total += int(attributes[key])
+	return 100 + total * 50
+
+
+func raise_attribute(key: String) -> bool:
+	if not attributes.has(key) or not spend_echoes(attribute_cost()):
+		return false
+	attributes[key] = int(attributes[key]) + 1
+	attributes_changed.emit()
+	return true
 
 
 func add_echoes(amount: int) -> void:

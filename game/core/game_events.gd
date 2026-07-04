@@ -9,6 +9,8 @@ signal boss_health_changed(current: int)
 signal boss_ended(victory: bool)
 signal dialog_requested(speaker: String, lines: PackedStringArray)
 signal melody_played(melody_id: String)
+signal shop_requested
+signal stats_requested
 
 
 func notify(text: String) -> void:

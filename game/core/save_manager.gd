@@ -14,6 +14,7 @@ func _ready() -> void:
 	GameState.inventory_changed.connect(save_game)
 	GameState.weapon_changed.connect(_on_weapon_changed)
 	GameState.flasks_changed.connect(_on_flasks_changed)
+	GameState.attributes_changed.connect(save_game)
 
 
 func _notification(what: int) -> void:
@@ -35,6 +36,7 @@ func save_game() -> void:
 		"weapon_level": GameState.weapon_level,
 		"flasks": GameState.flasks,
 		"flasks_max": GameState.flasks_max,
+		"attributes": GameState.attributes,
 		"time_of_day": GameState.time_of_day,
 		"map_data": GameState.map_data,
 		"shrine_scene": GameState.last_shrine_scene,
@@ -66,6 +68,9 @@ func load_game() -> bool:
 	GameState.weapon_level = int(parsed.get("weapon_level", 0))
 	GameState.flasks_max = int(parsed.get("flasks_max", 3))
 	GameState.flasks = int(parsed.get("flasks", GameState.flasks_max))
+	var attrs: Dictionary = parsed.get("attributes", {})
+	for key in GameState.attributes:
+		GameState.attributes[key] = int(attrs.get(key, 0))
 	GameState.time_of_day = float(parsed.get("time_of_day", 0.15))
 	var raw_map: Dictionary = parsed.get("map_data", {})
 	for scene in raw_map:

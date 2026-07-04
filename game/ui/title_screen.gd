@@ -26,4 +26,4 @@ func _on_new_game_pressed() -> void:
 	AudioManager.play_sfx("blip")
 	SaveManager.delete_save()
 	GameState.reset()
-	get_tree().change_scene_to_file("res://world/village.tscn")
+	get_tree().change_scene_to_file("res://ui/intro.tscn")

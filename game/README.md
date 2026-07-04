@@ -32,6 +32,20 @@ souls-like, exploração entre cenas, NPCs com diálogo e a primeira luta de bos
   uma **Memória Perdida** de Lys numa clareira aberta.
 - **Campo de Treino**: a arena da Fase 0, para testar builds e números.
 
+**Progressão e economia:**
+- **Atributos no santuário** (level up souls-like): ao descansar, abre a
+  tela de fortalecimento — gaste Ecos em **Vitalidade** (+10 PV),
+  **Fôlego** (+8 vigor) ou **Força** (+2 dano). O custo sobe a cada
+  nível comprado. Persistido no save.
+- **Loja do Corvo** (banca ao lado dele na vila): frascos extras
+  (até 5) e dois amuletos passivos — **Amuleto do Eco** (+20 PV) e
+  **Amuleto do Vento** (+20 vigor).
+- **Side quest de Sela** ("O canteiro da mamãe"): leve 5 Ervas-lunares
+  e receba o **Talismã de Sela** (ataques/esquivas gastam 20% menos
+  vigor) — com diálogos por etapa da quest.
+- **Cutscene de abertura** ao iniciar Novo Jogo: o Silêncio chega a
+  Pedra-Alva (slides com fade, puláveis).
+
 **Sobrevivência e mundo vivo:**
 - **Frascos de Essência** (estilo Estus): 3 cargas que curam 60 de vida
   [Q / FRASCO]; recarregam ao descansar no santuário. Contador no HUD.
@@ -147,8 +161,10 @@ game/
 
 ## Próximos passos (ver GDD, seção 8)
 
-1. Playtest geral de tudo: combate, bosses, economia, dia/noite.
-2. Loja do Corvo (gastar Ecos em consumíveis e amuletos).
-3. Side quest com estrutura (Sela e as ervas; recompensa única).
-4. Atributos gastando Ecos no santuário (Vitalidade/Stamina/Força).
-5. Cutscene de abertura (o Silêncio chega a Pedra-Alva) e Ato 1.
+1. **Playtest geral** — o protótipo cobre agora todos os sistemas
+   centrais do GDD; a prioridade é jogar e calibrar números.
+2. Menu de pause com opções (volume, resetar save).
+3. Terceira dungeon (Forja Afundada) com o item Bomba de Eco.
+4. Polimento de combate: hit-stop, partículas, screen shake.
+5. Export Android de teste (APK) e ajuste dos controles de toque
+   em aparelho real.
