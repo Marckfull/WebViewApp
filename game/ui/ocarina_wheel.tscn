@@ -70,6 +70,12 @@ theme_override_font_sizes/font_size = 10
 theme_override_styles/normal = SubResource("button_style")
 text = "Acalento"
 
+[node name="SunButton" type="Button" parent="Panel/Melodies"]
+unique_name_in_owner = true
+theme_override_font_sizes/font_size = 10
+theme_override_styles/normal = SubResource("button_style")
+text = "Canto do Sol"
+
 [node name="Hint" type="Label" parent="Panel"]
 anchor_top = 1.0
 anchor_right = 1.0
@@ -78,5 +84,5 @@ offset_top = -18.0
 offset_bottom = -6.0
 theme_override_font_sizes/font_size = 7
 theme_override_colors/font_color = Color(0.55, 0.55, 0.62, 1)
-text = "Retorno: volta ao santuário · Acalento: acalma Ecoados próximos"
+text = "Retorno: santuário · Acalento: acalma Ecoados · Sol: dia/noite"
 horizontal_alignment = 1

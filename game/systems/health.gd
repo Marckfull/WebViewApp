@@ -26,6 +26,11 @@ func damage(amount: int) -> void:
 		died.emit()
 
 
+func heal(amount: int) -> void:
+	current = mini(current + amount, max_health)
+	changed.emit(current, max_health)
+
+
 func heal_full() -> void:
 	current = max_health
 	changed.emit(current, max_health)

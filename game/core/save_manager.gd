@@ -13,6 +13,7 @@ func _ready() -> void:
 	GameState.echoes_changed.connect(_on_echoes_changed)
 	GameState.inventory_changed.connect(save_game)
 	GameState.weapon_changed.connect(_on_weapon_changed)
+	GameState.flasks_changed.connect(_on_flasks_changed)
 
 
 func _notification(what: int) -> void:
@@ -32,6 +33,10 @@ func save_game() -> void:
 		"flags": GameState.flags,
 		"inventory": GameState.inventory,
 		"weapon_level": GameState.weapon_level,
+		"flasks": GameState.flasks,
+		"flasks_max": GameState.flasks_max,
+		"time_of_day": GameState.time_of_day,
+		"map_data": GameState.map_data,
 		"shrine_scene": GameState.last_shrine_scene,
 	}
 	var tmp_path := SAVE_PATH + ".tmp"
@@ -59,6 +64,18 @@ func load_game() -> bool:
 		inv[id] = int(inv[id])  # JSON devolve números como float
 	GameState.inventory = inv
 	GameState.weapon_level = int(parsed.get("weapon_level", 0))
+	GameState.flasks_max = int(parsed.get("flasks_max", 3))
+	GameState.flasks = int(parsed.get("flasks", GameState.flasks_max))
+	GameState.time_of_day = float(parsed.get("time_of_day", 0.15))
+	var raw_map: Dictionary = parsed.get("map_data", {})
+	for scene in raw_map:
+		var entry: Dictionary = raw_map[scene]
+		entry["cols"] = int(entry.get("cols", 1))
+		entry["rows"] = int(entry.get("rows", 1))
+		var cells: Array = entry.get("cells", [])
+		for i in cells.size():
+			cells[i] = int(cells[i])  # JSON devolve números como float
+	GameState.map_data = raw_map
 	GameState.last_shrine_scene = str(
 			parsed.get("shrine_scene", "res://world/village.tscn"))
 	# A jogadora acorda no último santuário onde descansou (regra souls).
@@ -89,4 +106,8 @@ func _on_echoes_changed(_amount: int) -> void:
 
 
 func _on_weapon_changed(_level: int) -> void:
+	save_game()
+
+
+func _on_flasks_changed(_current: int, _max_value: int) -> void:
 	save_game()

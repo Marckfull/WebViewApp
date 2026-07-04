@@ -13,6 +13,13 @@ const DB := {
 		"desc": "Brilha de leve no escuro. Base de poções restauradoras.",
 		"icon": "res://assets/sprites/icons/erva_lunar.png",
 	},
+	"memoria_lys": {
+		"name": "Memória Perdida: Lys",
+		"desc": "Um fragmento cristalizado. Dentro dele, a risada da sua "
+				+ "irmã — a floresta a guardava.",
+		"icon": "res://assets/sprites/icons/memoria_lys.png",
+		"key": true,
+	},
 	"ocarina_vidro": {
 		"name": "Ocarina de Vidro",
 		"desc": "O instrumento de uma Guardiã. Toque [M / OCARINA] para "

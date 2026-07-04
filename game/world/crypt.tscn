@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3]
+[gd_scene load_steps=23 format=3]
 
 [ext_resource type="Script" path="res://world/crypt.gd" id="1_crypt"]
 [ext_resource type="PackedScene" path="res://entities/player/player.tscn" id="2_player"]
@@ -14,6 +14,7 @@
 [ext_resource type="PackedScene" path="res://ui/inventory_screen.tscn" id="12_inventory"]
 [ext_resource type="PackedScene" path="res://ui/ocarina_wheel.tscn" id="13_wheel"]
 [ext_resource type="Texture2D" path="res://assets/sprites/tiles/stone.png" id="14_stone"]
+[ext_resource type="PackedScene" path="res://ui/map_screen.tscn" id="15_map"]
 
 [sub_resource type="RectangleShape2D" id="wall_h"]
 size = Vector2(640, 16)
@@ -41,6 +42,7 @@ script = ExtResource("1_crypt")
 arena_size = Vector2(640, 900)
 intro_message = "Cripta das Guardiãs. Algo canta lá embaixo... errado."
 music = "crypt"
+outdoor = false
 
 [node name="Floor" type="Polygon2D" parent="."]
 texture_repeat = 2
@@ -204,3 +206,5 @@ position = Vector2(320, 790)
 [node name="InventoryScreen" parent="." instance=ExtResource("12_inventory")]
 
 [node name="OcarinaWheel" parent="." instance=ExtResource("13_wheel")]
+
+[node name="MapScreen" parent="." instance=ExtResource("15_map")]

@@ -1,6 +1,7 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://ui/hud.gd" id="1_hud"]
+[ext_resource type="Texture2D" path="res://assets/sprites/icons/frasco_essencia.png" id="2_frasco"]
 
 [sub_resource type="StyleBoxFlat" id="bar_bg"]
 bg_color = Color(0, 0, 0, 0.45)
@@ -63,6 +64,20 @@ unique_name_in_owner = true
 theme_override_font_sizes/font_size = 10
 theme_override_colors/font_color = Color(0.6, 0.9, 1, 1)
 text = "Ecos: 0"
+
+[node name="Flasks" type="HBoxContainer" parent="Bars"]
+theme_override_constants/separation = 4
+
+[node name="FlaskIcon" type="TextureRect" parent="Bars/Flasks"]
+custom_minimum_size = Vector2(16, 16)
+texture = ExtResource("2_frasco")
+stretch_mode = 3
+
+[node name="FlaskLabel" type="Label" parent="Bars/Flasks"]
+unique_name_in_owner = true
+theme_override_font_sizes/font_size = 10
+theme_override_colors/font_color = Color(0.65, 0.95, 0.7, 1)
+text = "×3"
 
 [node name="BossUI" type="VBoxContainer" parent="."]
 unique_name_in_owner = true

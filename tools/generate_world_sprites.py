@@ -78,6 +78,36 @@ BRUTAMONTES = [
     "...oo..oooo..oo...",
 ]
 
+ESPREITADOR_PALETTE = {
+    ".": None,
+    "o": (22, 34, 26, 255),
+    "r": (88, 158, 96, 255),    # corpo verde
+    "R": (56, 112, 66, 255),    # sombra
+    "E": (240, 230, 140, 255),  # olhos amarelos
+}
+
+ALFA_PALETTE = {
+    ".": None,
+    "o": (18, 26, 20, 255),
+    "f": (86, 118, 94, 255),    # pelagem
+    "F": (58, 84, 64, 255),     # pelagem sombra
+    "e": (216, 244, 140, 255),  # olho
+}
+
+ALFA = [
+    "..............oo....",
+    ".....oooooo..offo...",
+    "....offffffooofffo..",
+    "...offffffffffffefo.",
+    "..offffffffffffffoo.",
+    "..oFffffffffffffffo.",
+    "..oFFffffffffffffo..",
+    "...oFFFFFFFFFFFFo...",
+    "...off..off...ffo...",
+    "...off..off...ffo...",
+    "...oo...oo....oo....",
+]
+
 BOSS_PALETTE = {
     ".": None,
     "o": (30, 30, 48, 255),
@@ -159,9 +189,44 @@ ICON_PALETTES = {
         "M": (110, 118, 134, 255),
         "r": (150, 108, 66, 255),
     },
+    "frasco_essencia": {
+        ".": None,
+        "o": (40, 44, 60, 255),
+        "a": (150, 108, 66, 255),
+        "l": (110, 220, 130, 255),
+        "L": (76, 170, 96, 255),
+        "w": (235, 255, 240, 255),
+    },
+    "memoria_lys": {
+        ".": None,
+        "o": (52, 30, 46, 255),
+        "p": (238, 142, 192, 255),
+        "P": (188, 96, 148, 255),
+        "w": (255, 235, 248, 255),
+    },
 }
 
 ICONS = {
+    "frasco_essencia": [
+        "...oo....",
+        "...oao...",
+        "..o..o...",
+        ".o....o..",
+        ".o.ll.o..",
+        ".olwllo..",
+        ".olllLo..",
+        ".oLLLLo..",
+        "..oooo...",
+    ],
+    "memoria_lys": [
+        "....o....",
+        "...opo...",
+        "..opwpo..",
+        ".opppPo..",
+        ".oppPPo..",
+        "..oPPo...",
+        "...oo....",
+    ],
     "minerio_eco": [
         "....o....",
         "...oco...",
@@ -219,6 +284,14 @@ PROP_PALETTES = {
         "C": (100, 160, 190, 255),
         "w": (235, 250, 255, 255),
     },
+    "tree": {
+        ".": None,
+        "o": (26, 40, 26, 255),
+        "g": (96, 168, 84, 255),
+        "G": (66, 128, 58, 255),
+        "a": (150, 108, 66, 255),
+        "A": (108, 76, 46, 255),
+    },
 }
 
 GRAPPLE_POST = [
@@ -254,6 +327,27 @@ OCARINA = [
     ".occccco.",
     "..oCCCo..",
     "...ooo...",
+]
+
+TREE = [
+    ".....oooooo.....",
+    "...ooggggggoo...",
+    "..oggggggggggo..",
+    ".oggggggggggggo.",
+    ".oggggGGgggggго.".replace("г", "g").replace("о", "o"),
+    "oggggGGGGGgggggo",
+    "ogggGGGGGGGggggo",
+    ".oGgGGGGGGGGgGo.",
+    ".oGGGGGGGGGGGGo.",
+    "..oGGGGGGGGGGo..",
+    "...ooGGGGGGoo...",
+    ".....oooooo.....",
+    "......oAao......",
+    "......oaao......",
+    "......oAao......",
+    "......oaao......",
+    ".....oaAAao.....",
+    ".....oooooo.....",
 ]
 
 TILE_SPECS = {
@@ -326,9 +420,15 @@ def main():
     save(render(BRUTAMONTES, BRUTA_PALETTE, 32, -1), "enemies/brutamontes_1.png")
     save(render(BOSS, BOSS_PALETTE, 32), "enemies/boss_0.png")
     save(render(BOSS, BOSS_PALETTE, 32, -1), "enemies/boss_1.png")
+    save(render(ECOADO, ESPREITADOR_PALETTE, 24), "enemies/espreitador_0.png")
+    save(render(ECOADO, ESPREITADOR_PALETTE, 24, -1), "enemies/espreitador_1.png")
+    save(render(ALFA, ALFA_PALETTE, 24), "enemies/alfa_0.png")
+    save(render(ALFA, ALFA_PALETTE, 24, -1), "enemies/alfa_1.png")
     write_enemy_tres("ecoado", ROOT / "entities/enemies/ecoado_frames.tres")
     write_enemy_tres("brutamontes", ROOT / "entities/enemies/brutamontes_frames.tres")
     write_enemy_tres("boss", ROOT / "entities/enemies/boss_frames.tres")
+    write_enemy_tres("espreitador", ROOT / "entities/enemies/espreitador_frames.tres")
+    write_enemy_tres("alfa", ROOT / "entities/enemies/alfa_frames.tres")
 
     for name, palette in NPCS.items():
         save(render(DOWN_BASE, palette, 24), f"npcs/{name}.png")
@@ -339,6 +439,7 @@ def main():
     save(render(GRAPPLE_POST, PROP_PALETTES["grapple_post"], 16), "props/grapple_post.png")
     save(render(ANVIL, PROP_PALETTES["anvil"], 16), "props/anvil.png")
     save(render(OCARINA, PROP_PALETTES["ocarina"], 16), "icons/ocarina_vidro.png")
+    save(render(TREE, PROP_PALETTES["tree"], 24), "props/tree.png")
 
     for name, spec in TILE_SPECS.items():
         save(make_tile(name, spec), f"tiles/{name}.png")

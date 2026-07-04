@@ -207,6 +207,19 @@ def sfx_melody_calm():
     return _ocarina_phrase([("A4", 0.4), ("G4", 0.4), ("E4", 0.75)])
 
 
+def sfx_melody_sun():
+    return _ocarina_phrase([("C5", 0.28), ("E5", 0.28), ("G5", 0.28), ("C6", 0.6)])
+
+
+def sfx_drink():
+    buf = []
+    for at, freq in [(0.0, 320), (0.13, 260)]:
+        mix(buf, tone(freq, 0.1, "sine", vol=0.35, glide_to=freq * 0.7,
+                      release=0.06), at)
+    mix(buf, noise(0.05, vol=0.1, lowpass=6, release=0.03), 0.06)
+    return buf
+
+
 # --------------------------------------------------------------- músicas
 
 def melody(buf, beat, notes, wave_type="sine", vol=0.3, vib=5.0, depth=3.0):
@@ -268,6 +281,30 @@ def music_crypt():
     return buf
 
 
+def music_forest():
+    beat = 0.5
+    bars = [
+        ["E3", "G3", "B3"], ["C3", "E3", "G3"],
+        ["G2", "B2", "D3"], ["D3", "F#3", "A3"],
+        ["E3", "G3", "B3"], ["C3", "E3", "G3"],
+        ["D3", "F#3", "A3"], ["E3", "G3", "B3"],
+    ]
+    buf = []
+    for i, chord in enumerate(bars):
+        seq = [chord[0], chord[1], chord[2], chord[1]] * 2
+        for j, n in enumerate(seq):
+            mix(buf, tone(note_freq(n), beat * 0.9, "triangle", vol=0.09,
+                          attack=0.02, release=0.15),
+                (i * 4 + j * 0.5) * beat)
+    melody(buf, beat, [
+        (0, "B4", 2), (2, "G4", 1), (3, "A4", 1),
+        (8, "E5", 2), (10, "D5", 1), (11, "B4", 1),
+        (16, "A4", 2), (18, "B4", 1), (19, "D5", 1),
+        (24, "E5", 1.5), (25.5, "D5", 0.5), (26, "B4", 2),
+    ], vol=0.2, vib=5.0, depth=3.0)
+    return buf
+
+
 def music_boss():
     beat = 0.4
     buf = []
@@ -302,14 +339,15 @@ def main():
         "enemy_death": sfx_enemy_death(), "shrine": sfx_shrine(),
         "victory": sfx_victory(), "roar": sfx_roar(), "blip": sfx_blip(),
         "forge": sfx_forge(), "melody_return": sfx_melody_return(),
-        "melody_calm": sfx_melody_calm(),
+        "melody_calm": sfx_melody_calm(), "melody_sun": sfx_melody_sun(),
+        "drink": sfx_drink(),
     }
     for name, buf in sfx.items():
         write_wav(OUT / "sfx" / f"{name}.wav", buf)
     for name, buf in [("village", music_village()), ("crypt", music_crypt()),
-                      ("boss", music_boss())]:
+                      ("boss", music_boss()), ("forest", music_forest())]:
         write_wav(OUT / "music" / f"{name}.wav", buf)
-    print(f"OK: {len(sfx)} SFX + 3 músicas em {OUT}")
+    print(f"OK: {len(sfx)} SFX + 4 músicas em {OUT}")
 
 
 if __name__ == "__main__":

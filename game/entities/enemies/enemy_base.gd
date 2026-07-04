@@ -53,8 +53,10 @@ func _physics_process(delta: float) -> void:
 	match state:
 		State.IDLE:
 			velocity = Vector2.ZERO
+			# À noite os Ecoados ficam mais atentos (e mais generosos).
+			var effective_range := aggro_range * (1.5 if GameState.is_night() else 1.0)
 			if _calm_timer <= 0.0 and player \
-					and global_position.distance_to(player.global_position) <= aggro_range:
+					and global_position.distance_to(player.global_position) <= effective_range:
 				state = State.CHASE
 		State.CHASE:
 			if player == null:
@@ -167,7 +169,7 @@ func _on_died() -> void:
 	hitbox_shape.set_deferred("disabled", true)
 	AudioManager.play_sfx("enemy_death")
 	var pickup := ECHO_PICKUP.instantiate()
-	pickup.amount = echoes_reward
+	pickup.amount = int(echoes_reward * (1.5 if GameState.is_night() else 1.0))
 	pickup.position = global_position
 	get_parent().add_child.call_deferred(pickup)
 	queue_free()

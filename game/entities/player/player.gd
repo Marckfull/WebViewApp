@@ -25,6 +25,7 @@ const GRAPPLE_RANGE := 170.0
 const GRAPPLE_SPEED := 400.0
 const BASE_DAMAGE := 12
 const DAMAGE_PER_FORGE := 4
+const FLASK_HEAL := 60
 
 var state: State = State.MOVE
 var facing := Vector2.DOWN
@@ -97,6 +98,8 @@ func _state_move() -> void:
 		_enter_attack()
 	elif Input.is_action_just_pressed("use_item"):
 		_try_grapple()
+	elif Input.is_action_just_pressed("heal"):
+		_drink_flask()
 
 
 func _enter_roll(dir: Vector2) -> void:
@@ -191,10 +194,24 @@ func respawn(at: Vector2) -> void:
 	$Camera2D.reset_smoothing()
 	health.heal_full()
 	stamina.refill()
+	GameState.refill_flasks()
 	_knockback = Vector2.ZERO
 	_iframes = 1.0
 	sprite.modulate = Color.WHITE
 	state = State.MOVE
+
+
+func _drink_flask() -> void:
+	if health.current >= health.max_health:
+		return
+	if not GameState.use_flask():
+		GameEvents.notify("Sem Essência. Descanse num santuário.")
+		return
+	health.heal(FLASK_HEAL)
+	AudioManager.play_sfx("drink")
+	sprite.modulate = Color(0.6, 1.6, 0.7)
+	var tween := create_tween()
+	tween.tween_property(sprite, "modulate", Color.WHITE, 0.35)
 
 
 func _try_grapple() -> void:

@@ -8,7 +8,6 @@ extends CharacterBody2D
 enum State { DORMANT, CHASE, TELEGRAPH, DASH, SWEEP, RECOVER, TRANSITION, DEAD }
 enum AttackKind { DASH, SWEEP }
 
-const BOSS_NAME := "Eco da Guardiã"
 const ECHO_PICKUP := preload("res://world/echo_pickup.tscn")
 # Tints de modulate sobre o sprite (que já é azulado).
 const COLOR_PHASE1 := Color.WHITE
@@ -17,6 +16,7 @@ const DASH_TIME := 0.3
 const SWEEP_TIME := 0.25
 const CHAIN_TELEGRAPH := 0.25
 
+@export var boss_name := "Eco da Guardiã"
 @export var chase_speed := 60.0
 @export var dash_speed := 330.0
 @export var sweep_range := 48.0
@@ -86,8 +86,8 @@ func activate() -> void:
 	if state != State.DORMANT:
 		return
 	state = State.CHASE
-	GameEvents.boss_engaged.emit(BOSS_NAME, health.max_health)
-	GameEvents.notify("ECO DA GUARDIÃ")
+	GameEvents.boss_engaged.emit(boss_name, health.max_health)
+	GameEvents.notify(boss_name.to_upper())
 
 
 ## Volta ao estado inicial (jogadora morreu ou descansou no santuário).

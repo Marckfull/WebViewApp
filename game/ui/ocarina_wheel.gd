@@ -6,12 +6,14 @@ var _open := false
 
 @onready var return_button: Button = %ReturnButton
 @onready var calm_button: Button = %CalmButton
+@onready var sun_button: Button = %SunButton
 
 
 func _ready() -> void:
 	visible = false
 	return_button.pressed.connect(_play.bind("retorno", "melody_return"))
 	calm_button.pressed.connect(_play.bind("acalento", "melody_calm"))
+	sun_button.pressed.connect(_play.bind("alvorada", "melody_sun"))
 
 
 func _process(_delta: float) -> void:

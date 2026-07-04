@@ -71,6 +71,36 @@ theme_override_colors/font_color = Color(1, 1, 1, 0.5)
 text = "ROLAR"
 horizontal_alignment = 1
 
+[node name="FlaskButton" type="TouchScreenButton" parent="."]
+position = Vector2(396, 280)
+texture_normal = SubResource("btn_tex_small")
+action = "heal"
+
+[node name="FlaskLabel" type="Label" parent="FlaskButton"]
+offset_left = 0.0
+offset_top = 18.0
+offset_right = 44.0
+offset_bottom = 30.0
+theme_override_font_sizes/font_size = 7
+theme_override_colors/font_color = Color(1, 1, 1, 0.5)
+text = "FRASCO"
+horizontal_alignment = 1
+
+[node name="MapButton" type="TouchScreenButton" parent="."]
+position = Vector2(482, 8)
+texture_normal = SubResource("btn_tex_small")
+action = "map"
+
+[node name="MapLabel" type="Label" parent="MapButton"]
+offset_left = 2.0
+offset_top = 18.0
+offset_right = 42.0
+offset_bottom = 30.0
+theme_override_font_sizes/font_size = 8
+theme_override_colors/font_color = Color(1, 1, 1, 0.5)
+text = "MAPA"
+horizontal_alignment = 1
+
 [node name="ItemButton" type="TouchScreenButton" parent="."]
 position = Vector2(452, 230)
 texture_normal = SubResource("btn_tex_small")

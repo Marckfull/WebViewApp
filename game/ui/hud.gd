@@ -10,6 +10,7 @@ var _msg_tween: Tween
 @onready var boss_ui: VBoxContainer = %BossUI
 @onready var boss_name_label: Label = %BossName
 @onready var boss_bar: ProgressBar = %BossBar
+@onready var flask_label: Label = %FlaskLabel
 
 
 func _ready() -> void:
@@ -21,6 +22,8 @@ func _ready() -> void:
 		_on_stamina_changed(player.stamina.current, player.stamina.max_stamina)
 	GameState.echoes_changed.connect(_on_echoes_changed)
 	_on_echoes_changed(GameState.echoes)
+	GameState.flasks_changed.connect(_on_flasks_changed)
+	_on_flasks_changed(GameState.flasks, GameState.flasks_max)
 	GameEvents.notified.connect(show_message)
 	GameEvents.boss_engaged.connect(_on_boss_engaged)
 	GameEvents.boss_health_changed.connect(_on_boss_health_changed)
@@ -39,6 +42,10 @@ func _on_stamina_changed(current: float, max_value: float) -> void:
 
 func _on_echoes_changed(amount: int) -> void:
 	echo_label.text = "Ecos: %d" % amount
+
+
+func _on_flasks_changed(current: int, _max_value: int) -> void:
+	flask_label.text = "×%d" % current
 
 
 func _on_boss_engaged(boss_name: String, max_health: int) -> void:

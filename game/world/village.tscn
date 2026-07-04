@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3]
+[gd_scene load_steps=25 format=3]
 
 [ext_resource type="Script" path="res://world/level.gd" id="1_level"]
 [ext_resource type="PackedScene" path="res://entities/player/player.tscn" id="2_player"]
@@ -18,6 +18,7 @@
 [ext_resource type="PackedScene" path="res://ui/ocarina_wheel.tscn" id="16_wheel"]
 [ext_resource type="Texture2D" path="res://assets/sprites/tiles/grass.png" id="17_grass"]
 [ext_resource type="Texture2D" path="res://assets/sprites/tiles/dirt.png" id="18_dirt"]
+[ext_resource type="PackedScene" path="res://ui/map_screen.tscn" id="19_map"]
 
 [sub_resource type="RectangleShape2D" id="wall_h"]
 size = Vector2(1280, 16)
@@ -47,7 +48,7 @@ polygon = PackedVector2Array(0, 0, 1280, 0, 1280, 720, 0, 720)
 [node name="PathH" type="Polygon2D" parent="Floor"]
 texture_repeat = 2
 texture = ExtResource("18_dirt")
-polygon = PackedVector2Array(120, 390, 1240, 390, 1240, 430, 120, 430)
+polygon = PackedVector2Array(40, 390, 1240, 390, 1240, 430, 40, 430)
 
 [node name="PathV" type="Polygon2D" parent="Floor"]
 texture_repeat = 2
@@ -187,6 +188,12 @@ target_scene = "res://world/crypt.tscn"
 target_spawn = "from_village"
 label_text = "Cripta das Guardiãs"
 
+[node name="PortalForest" parent="." instance=ExtResource("4_portal")]
+position = Vector2(40, 410)
+target_scene = "res://world/forest.tscn"
+target_spawn = "from_village"
+label_text = "Floresta Sussurrante"
+
 [node name="Spawns" type="Node2D" parent="."]
 
 [node name="default" type="Marker2D" parent="Spawns"]
@@ -197,6 +204,9 @@ position = Vector2(1170, 410)
 
 [node name="from_crypt" type="Marker2D" parent="Spawns"]
 position = Vector2(640, 130)
+
+[node name="from_forest" type="Marker2D" parent="Spawns"]
+position = Vector2(110, 410)
 
 [node name="Player" parent="." instance=ExtResource("2_player")]
 position = Vector2(340, 430)
@@ -210,3 +220,5 @@ position = Vector2(340, 430)
 [node name="InventoryScreen" parent="." instance=ExtResource("14_inventory")]
 
 [node name="OcarinaWheel" parent="." instance=ExtResource("16_wheel")]
+
+[node name="MapScreen" parent="." instance=ExtResource("19_map")]

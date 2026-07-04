@@ -1,0 +1,197 @@
+[gd_scene load_steps=21 format=3]
+
+[ext_resource type="Script" path="res://world/forest.gd" id="1_forest"]
+[ext_resource type="PackedScene" path="res://entities/player/player.tscn" id="2_player"]
+[ext_resource type="PackedScene" path="res://world/shrine.tscn" id="3_shrine"]
+[ext_resource type="Script" path="res://world/enemy_spawner.gd" id="4_spawner"]
+[ext_resource type="PackedScene" path="res://entities/enemies/espreitador.tscn" id="5_espreitador"]
+[ext_resource type="PackedScene" path="res://world/portal.tscn" id="6_portal"]
+[ext_resource type="PackedScene" path="res://ui/hud.tscn" id="7_hud"]
+[ext_resource type="PackedScene" path="res://ui/touch_controls.tscn" id="8_touch"]
+[ext_resource type="PackedScene" path="res://entities/enemies/alfa_do_bosque.tscn" id="9_alfa"]
+[ext_resource type="PackedScene" path="res://world/resource_node.tscn" id="10_resource"]
+[ext_resource type="PackedScene" path="res://world/grapple_point.tscn" id="11_grapple"]
+[ext_resource type="PackedScene" path="res://ui/inventory_screen.tscn" id="12_inventory"]
+[ext_resource type="PackedScene" path="res://ui/ocarina_wheel.tscn" id="13_wheel"]
+[ext_resource type="PackedScene" path="res://ui/map_screen.tscn" id="14_map"]
+[ext_resource type="PackedScene" path="res://world/tree.tscn" id="15_tree"]
+[ext_resource type="Texture2D" path="res://assets/sprites/tiles/grass.png" id="16_grass"]
+[ext_resource type="Texture2D" path="res://assets/sprites/tiles/dirt.png" id="17_dirt"]
+
+[sub_resource type="RectangleShape2D" id="wall_h"]
+size = Vector2(960, 16)
+
+[sub_resource type="RectangleShape2D" id="wall_v"]
+size = Vector2(16, 720)
+
+[sub_resource type="RectangleShape2D" id="trigger_shape"]
+size = Vector2(220, 30)
+
+[node name="Forest" type="Node2D"]
+script = ExtResource("1_forest")
+arena_size = Vector2(960, 720)
+intro_message = "Floresta Sussurrante. As árvores repetem seu nome."
+music = "forest"
+
+[node name="Floor" type="Polygon2D" parent="."]
+texture_repeat = 2
+color = Color(0.72, 0.85, 0.72, 1)
+texture = ExtResource("16_grass")
+polygon = PackedVector2Array(0, 0, 960, 0, 960, 720, 0, 720)
+
+[node name="PathH" type="Polygon2D" parent="Floor"]
+texture_repeat = 2
+texture = ExtResource("17_dirt")
+polygon = PackedVector2Array(200, 390, 920, 390, 920, 430, 200, 430)
+
+[node name="PathV" type="Polygon2D" parent="Floor"]
+texture_repeat = 2
+texture = ExtResource("17_dirt")
+polygon = PackedVector2Array(450, 160, 510, 160, 510, 430, 450, 430)
+
+[node name="Solids" type="StaticBody2D" parent="."]
+collision_layer = 1
+collision_mask = 0
+
+[node name="Top" type="CollisionShape2D" parent="Solids"]
+position = Vector2(480, 8)
+shape = SubResource("wall_h")
+
+[node name="Bottom" type="CollisionShape2D" parent="Solids"]
+position = Vector2(480, 712)
+shape = SubResource("wall_h")
+
+[node name="Left" type="CollisionShape2D" parent="Solids"]
+position = Vector2(8, 360)
+shape = SubResource("wall_v")
+
+[node name="Right" type="CollisionShape2D" parent="Solids"]
+position = Vector2(952, 360)
+shape = SubResource("wall_v")
+
+[node name="WallVisuals" type="Node2D" parent="."]
+
+[node name="TopV" type="Polygon2D" parent="WallVisuals"]
+color = Color(0.16, 0.3, 0.16, 1)
+polygon = PackedVector2Array(0, 0, 960, 0, 960, 16, 0, 16)
+
+[node name="BottomV" type="Polygon2D" parent="WallVisuals"]
+color = Color(0.16, 0.3, 0.16, 1)
+polygon = PackedVector2Array(0, 704, 960, 704, 960, 720, 0, 720)
+
+[node name="LeftV" type="Polygon2D" parent="WallVisuals"]
+color = Color(0.16, 0.3, 0.16, 1)
+polygon = PackedVector2Array(0, 0, 16, 0, 16, 720, 0, 720)
+
+[node name="RightV" type="Polygon2D" parent="WallVisuals"]
+color = Color(0.16, 0.3, 0.16, 1)
+polygon = PackedVector2Array(944, 0, 960, 0, 960, 720, 944, 720)
+
+[node name="Trees" type="Node2D" parent="."]
+
+[node name="Tree1" parent="Trees" instance=ExtResource("15_tree")]
+position = Vector2(150, 160)
+
+[node name="Tree2" parent="Trees" instance=ExtResource("15_tree")]
+position = Vector2(310, 90)
+
+[node name="Tree3" parent="Trees" instance=ExtResource("15_tree")]
+position = Vector2(700, 130)
+
+[node name="Tree4" parent="Trees" instance=ExtResource("15_tree")]
+position = Vector2(840, 240)
+
+[node name="Tree5" parent="Trees" instance=ExtResource("15_tree")]
+position = Vector2(180, 310)
+
+[node name="Tree6" parent="Trees" instance=ExtResource("15_tree")]
+position = Vector2(740, 330)
+
+[node name="Tree7" parent="Trees" instance=ExtResource("15_tree")]
+position = Vector2(280, 520)
+
+[node name="Tree8" parent="Trees" instance=ExtResource("15_tree")]
+position = Vector2(610, 560)
+
+[node name="Tree9" parent="Trees" instance=ExtResource("15_tree")]
+position = Vector2(840, 610)
+
+[node name="Tree10" parent="Trees" instance=ExtResource("15_tree")]
+position = Vector2(400, 640)
+
+[node name="Tree11" parent="Trees" instance=ExtResource("15_tree")]
+position = Vector2(120, 480)
+
+[node name="Shrine" parent="." instance=ExtResource("3_shrine")]
+position = Vector2(160, 580)
+
+[node name="Boss" parent="." instance=ExtResource("9_alfa")]
+position = Vector2(480, 150)
+
+[node name="BossTrigger" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BossTrigger"]
+position = Vector2(480, 270)
+shape = SubResource("trigger_shape")
+
+[node name="PortalVillage" parent="." instance=ExtResource("6_portal")]
+position = Vector2(920, 410)
+target_scene = "res://world/village.tscn"
+target_spawn = "from_forest"
+label_text = "Pedra-Alva"
+
+[node name="SpawnerA" type="Marker2D" parent="."]
+position = Vector2(420, 300)
+script = ExtResource("4_spawner")
+enemy_scene = ExtResource("5_espreitador")
+
+[node name="SpawnerB" type="Marker2D" parent="."]
+position = Vector2(640, 470)
+script = ExtResource("4_spawner")
+enemy_scene = ExtResource("5_espreitador")
+
+[node name="SpawnerC" type="Marker2D" parent="."]
+position = Vector2(320, 470)
+script = ExtResource("4_spawner")
+enemy_scene = ExtResource("5_espreitador")
+
+[node name="HerbA" parent="." instance=ExtResource("10_resource")]
+position = Vector2(700, 620)
+item_id = "erva_lunar"
+
+[node name="HerbB" parent="." instance=ExtResource("10_resource")]
+position = Vector2(150, 240)
+item_id = "erva_lunar"
+
+[node name="OreNode" parent="." instance=ExtResource("10_resource")]
+position = Vector2(880, 120)
+item_id = "minerio_eco"
+
+[node name="GrapplePostA" parent="." instance=ExtResource("11_grapple")]
+position = Vector2(250, 140)
+
+[node name="GrapplePostB" parent="." instance=ExtResource("11_grapple")]
+position = Vector2(700, 300)
+
+[node name="Spawns" type="Node2D" parent="."]
+
+[node name="default" type="Marker2D" parent="Spawns"]
+position = Vector2(860, 410)
+
+[node name="from_village" type="Marker2D" parent="Spawns"]
+position = Vector2(860, 410)
+
+[node name="Player" parent="." instance=ExtResource("2_player")]
+position = Vector2(860, 410)
+
+[node name="HUD" parent="." instance=ExtResource("7_hud")]
+
+[node name="TouchControls" parent="." instance=ExtResource("8_touch")]
+
+[node name="InventoryScreen" parent="." instance=ExtResource("12_inventory")]
+
+[node name="OcarinaWheel" parent="." instance=ExtResource("13_wheel")]
+
+[node name="MapScreen" parent="." instance=ExtResource("14_map")]

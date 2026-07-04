@@ -18,15 +18,31 @@ souls-like, exploração entre cenas, NPCs com diálogo e a primeira luta de bos
 - **Loop de morte souls-like**: Ecos dropados no local da morte,
   recuperáveis; santuários curam e repõem os inimigos.
 
-**Mundo (3 cenas conectadas por portais):**
+**Mundo (4 cenas conectadas por portais):**
 - **Pedra-Alva** (vila hub): 3 NPCs com diálogo (Mestra Odara, Corvo e Sela),
-  santuário e portais para as outras áreas.
+  forja, santuário e portais para as outras áreas.
 - **Cripta das Guardiãs**: corredor de Ecoados, santuário antes do boss e a
   luta contra o **Eco da Guardiã** — boss de 2 fases com barra própria no HUD:
   o portão fecha ao entrar, a fase 2 (≤50% de vida) fica mais rápida e ganha
   investida tripla, e o boss reseta se você morrer ou descansar. A vitória
   fica gravada (o boss não volta).
+- **Floresta Sussurrante** (a oeste da vila): novo bioma com árvores,
+  **Espreitadores** (rápidos, frágeis, telegraph curto) e o **Alfa do
+  Bosque** — segundo boss (mesma IA de 2 fases, mais veloz), que guarda
+  uma **Memória Perdida** de Lys numa clareira aberta.
 - **Campo de Treino**: a arena da Fase 0, para testar builds e números.
+
+**Sobrevivência e mundo vivo:**
+- **Frascos de Essência** (estilo Estus): 3 cargas que curam 60 de vida
+  [Q / FRASCO]; recarregam ao descansar no santuário. Contador no HUD.
+- **Ciclo dia/noite** (~5 min por ciclo): entardecer alaranjado e noite
+  azulada nas áreas externas; à noite os Ecoados enxergam 50% mais longe
+  e rendem 50% mais Ecos. A cripta é sempre escura.
+- **Canto do Sol** (3ª melodia da ocarina): alterna dia e noite, como o
+  clássico.
+- **Mapa da Cartógrafa** [V / MAPA]: o mapa da área **se desenha por onde
+  Aria passa** (mecânica temática do GDD); marca santuário, passagens e
+  a posição atual. Progresso do mapa salvo no save.
 
 **Interface e persistência:**
 - Tela de título com **Continuar / Novo Jogo**.
@@ -92,7 +108,9 @@ souls-like, exploração entre cenas, NPCs com diálogo e a primeira luta de bos
 | Rolar | K ou Espaço | A / Cruz |
 | Lock-on (alvo) | L ou Tab | R1 / RB |
 | Usar item (gancho) | H | B / Círculo |
+| Beber Frasco de Essência | Q | D-pad cima |
 | Ocarina (melodias) | M | L1 / LB |
+| Mapa | V | D-pad direita |
 | Bolsa (inventário) | I | Select / Back |
 | Interagir (falar/descansar/forjar) | E ou Enter | Y / Triângulo |
 
@@ -129,8 +147,8 @@ game/
 
 ## Próximos passos (ver GDD, seção 8)
 
-1. Playtest geral: combate, boss, gancho, melodias e economia da forja.
-2. Frascos de Essência (cura limitada recarregável no santuário).
-3. Ciclo dia/noite (+ melodia da ocarina para acelerá-lo).
-4. Segunda dungeon (Floresta Sussurrante) com novo bioma e boss.
-5. Mapa que se desenha conforme Aria explora (mecânica da cartógrafa).
+1. Playtest geral de tudo: combate, bosses, economia, dia/noite.
+2. Loja do Corvo (gastar Ecos em consumíveis e amuletos).
+3. Side quest com estrutura (Sela e as ervas; recompensa única).
+4. Atributos gastando Ecos no santuário (Vitalidade/Stamina/Força).
+5. Cutscene de abertura (o Silêncio chega a Pedra-Alva) e Ato 1.
