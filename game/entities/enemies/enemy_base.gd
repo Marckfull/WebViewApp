@@ -148,6 +148,8 @@ func _on_hit_received(from_hitbox: Hitbox) -> void:
 	health.damage(from_hitbox.damage)
 	_flash()
 	AudioManager.play_sfx("hit")
+	FX.hit_stop()
+	FX.spawn_hit(global_position)
 	if state == State.DEAD:
 		return
 	_knockback = (global_position - from_hitbox.global_position).normalized() \

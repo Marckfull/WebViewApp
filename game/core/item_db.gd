@@ -31,6 +31,13 @@ const DB := {
 		"icon": "res://assets/sprites/icons/talisma_sela.png",
 		"key": true,
 	},
+	"bomba_eco": {
+		"name": "Bomba de Eco",
+		"desc": "Som comprimido em pólvora. Lance com [B / BOMBA] — fere "
+				+ "inimigos e derruba paredes rachadas.",
+		"icon": "res://assets/sprites/icons/bomba_eco.png",
+		"key": true,
+	},
 	"memoria_lys": {
 		"name": "Memória Perdida: Lys",
 		"desc": "Um fragmento cristalizado. Dentro dele, a risada da sua "

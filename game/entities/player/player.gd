@@ -28,6 +28,8 @@ const DAMAGE_PER_FORGE := 4
 const FLASK_HEAL := 60
 const BASE_HEALTH := 100
 const BASE_STAMINA := 100.0
+const BOMB_SCENE := preload("res://world/bomb.tscn")
+const BOMB_COOLDOWN := 2.0
 
 var state: State = State.MOVE
 var facing := Vector2.DOWN
@@ -37,6 +39,7 @@ var _roll_dir := Vector2.ZERO
 var _knockback := Vector2.ZERO
 var _iframes := 0.0
 var _grapple_target := Vector2.ZERO
+var _bomb_cooldown := 0.0
 
 @onready var health: Health = $Health
 @onready var stamina: Stamina = $Stamina
@@ -89,6 +92,7 @@ func _stamina_cost(base: float) -> float:
 
 func _physics_process(delta: float) -> void:
 	_iframes = maxf(_iframes - delta, 0.0)
+	_bomb_cooldown = maxf(_bomb_cooldown - delta, 0.0)
 	_knockback = _knockback.move_toward(Vector2.ZERO, KNOCKBACK_DECAY * delta)
 	_update_lock()
 	match state:
@@ -130,6 +134,8 @@ func _state_move() -> void:
 		_try_grapple()
 	elif Input.is_action_just_pressed("heal"):
 		_drink_flask()
+	elif Input.is_action_just_pressed("bomb"):
+		_throw_bomb()
 
 
 func _enter_roll(dir: Vector2) -> void:
@@ -201,6 +207,8 @@ func _on_hit_received(from_hitbox: Hitbox) -> void:
 	_timer = HURT_DURATION
 	_flash()
 	AudioManager.play_sfx("hurt")
+	FX.shake(6.0)
+	FX.spawn_hit(global_position, Color(1.0, 0.5, 0.5))
 
 
 func _flash() -> void:
@@ -242,6 +250,16 @@ func _drink_flask() -> void:
 	sprite.modulate = Color(0.6, 1.6, 0.7)
 	var tween := create_tween()
 	tween.tween_property(sprite, "modulate", Color.WHITE, 0.35)
+
+
+func _throw_bomb() -> void:
+	if not GameState.has_item("bomba_eco") or _bomb_cooldown > 0.0:
+		return
+	_bomb_cooldown = BOMB_COOLDOWN
+	var bomb := BOMB_SCENE.instantiate()
+	bomb.position = global_position + facing * 28.0
+	get_parent().add_child(bomb)
+	AudioManager.play_sfx("blip")
 
 
 func _try_grapple() -> void:

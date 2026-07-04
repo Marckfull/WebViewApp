@@ -108,6 +108,22 @@ ALFA = [
     "...oo...oo....oo....",
 ]
 
+FORJADO_PALETTE = {
+    ".": None,
+    "o": (28, 30, 38, 255),
+    "r": (150, 158, 172, 255),  # armadura
+    "R": (100, 108, 122, 255),
+    "E": (255, 150, 60, 255),   # brasas nos olhos
+}
+
+GOLEM_PALETTE = {
+    ".": None,
+    "o": (30, 32, 40, 255),
+    "v": (150, 160, 175, 255),  # ferro
+    "V": (105, 115, 130, 255),
+    "E": (255, 150, 60, 255),   # brasas
+}
+
 BOSS_PALETTE = {
     ".": None,
     "o": (30, 30, 48, 255),
@@ -221,6 +237,12 @@ ICON_PALETTES = {
         "p": (232, 150, 190, 255),
         "w": (250, 226, 130, 255),
     },
+    "bomba_eco": {
+        ".": None,
+        "o": (26, 28, 36, 255),
+        "b": (52, 56, 70, 255),
+        "w": (150, 220, 235, 255),
+    },
 }
 
 ICONS = {
@@ -304,6 +326,17 @@ ICONS = {
         ".oppwppo.",
         "..opppo..",
         "....o....",
+    ],
+    "bomba_eco": [
+        "......ow.",
+        ".....oo..",
+        "...oboo..",
+        "..obbbbo.",
+        ".obbbbbbo",
+        ".obwbbbbo",
+        ".obbbbbbo",
+        "..obbbbo.",
+        "...oooo..",
     ],
 }
 
@@ -438,6 +471,24 @@ TILE_SPECS = {
 }
 
 
+def make_cracked_wall():
+    """Bloco de pedra rachado (destruível com Bomba de Eco)."""
+    rng = random.Random("crack")
+    img = Image.new("RGBA", (16, 16), (120, 122, 138, 255))
+    for i in range(16):
+        for x, y in ((i, 0), (i, 15), (0, i), (15, i)):
+            img.putpixel((x, y), (84, 86, 100, 255))
+    x = 8
+    for y in range(1, 15):
+        img.putpixel((x, y), (44, 44, 58, 255))
+        if y in (4, 9, 12):
+            img.putpixel((min(x + 1, 14), y), (44, 44, 58, 255))
+        x = max(2, min(13, x + rng.choice([-1, 0, 1])))
+    for x2 in range(3, 13, 2):
+        img.putpixel((x2, 7), (58, 58, 74, 255))
+    return img
+
+
 def make_tile(name, spec):
     """Tile 32x32 sem costura: base + salpicos determinísticos."""
     rng = random.Random(name)
@@ -489,11 +540,17 @@ def main():
     save(render(ECOADO, ESPREITADOR_PALETTE, 24, -1), "enemies/espreitador_1.png")
     save(render(ALFA, ALFA_PALETTE, 24), "enemies/alfa_0.png")
     save(render(ALFA, ALFA_PALETTE, 24, -1), "enemies/alfa_1.png")
+    save(render(ECOADO, FORJADO_PALETTE, 24), "enemies/forjado_0.png")
+    save(render(ECOADO, FORJADO_PALETTE, 24, -1), "enemies/forjado_1.png")
+    save(render(BRUTAMONTES, GOLEM_PALETTE, 32), "enemies/golem_0.png")
+    save(render(BRUTAMONTES, GOLEM_PALETTE, 32, -1), "enemies/golem_1.png")
     write_enemy_tres("ecoado", ROOT / "entities/enemies/ecoado_frames.tres")
     write_enemy_tres("brutamontes", ROOT / "entities/enemies/brutamontes_frames.tres")
     write_enemy_tres("boss", ROOT / "entities/enemies/boss_frames.tres")
     write_enemy_tres("espreitador", ROOT / "entities/enemies/espreitador_frames.tres")
     write_enemy_tres("alfa", ROOT / "entities/enemies/alfa_frames.tres")
+    write_enemy_tres("forjado", ROOT / "entities/enemies/forjado_frames.tres")
+    write_enemy_tres("golem", ROOT / "entities/enemies/golem_frames.tres")
 
     for name, palette in NPCS.items():
         save(render(DOWN_BASE, palette, 24), f"npcs/{name}.png")
@@ -506,6 +563,7 @@ def main():
     save(render(OCARINA, PROP_PALETTES["ocarina"], 16), "icons/ocarina_vidro.png")
     save(render(TREE, PROP_PALETTES["tree"], 24), "props/tree.png")
     save(render(STAND, PROP_PALETTES["stand"], 16), "props/stand.png")
+    save(make_cracked_wall(), "props/cracked_wall.png")
 
     for name, spec in TILE_SPECS.items():
         save(make_tile(name, spec), f"tiles/{name}.png")

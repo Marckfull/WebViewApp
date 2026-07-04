@@ -1,0 +1,27 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://world/bomb.gd" id="1_bomb"]
+[ext_resource type="Texture2D" path="res://assets/sprites/icons/bomba_eco.png" id="2_sprite"]
+[ext_resource type="Script" path="res://systems/hitbox.gd" id="3_hitbox"]
+
+[sub_resource type="CircleShape2D" id="blast_shape"]
+radius = 52.0
+
+[node name="Bomb" type="Node2D"]
+script = ExtResource("1_bomb")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+position = Vector2(0, -2)
+texture = ExtResource("2_sprite")
+
+[node name="Hitbox" type="Area2D" parent="."]
+collision_layer = 16
+collision_mask = 0
+monitoring = false
+script = ExtResource("3_hitbox")
+damage = 30
+knockback = 260.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
+shape = SubResource("blast_shape")
+disabled = true

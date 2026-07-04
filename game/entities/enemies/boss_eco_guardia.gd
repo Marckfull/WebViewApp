@@ -88,6 +88,7 @@ func activate() -> void:
 	state = State.CHASE
 	GameEvents.boss_engaged.emit(boss_name, health.max_health)
 	GameEvents.notify(boss_name.to_upper())
+	FX.shake(9.0)
 
 
 ## Volta ao estado inicial (jogadora morreu ou descansou no santuário).
@@ -219,6 +220,8 @@ func _on_hit_received(from_hitbox: Hitbox) -> void:
 	health.damage(from_hitbox.damage)
 	_flash()
 	AudioManager.play_sfx("hit")
+	FX.hit_stop()
+	FX.spawn_hit(global_position)
 
 
 func _on_health_changed(current: int, max_value: int) -> void:

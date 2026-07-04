@@ -146,6 +146,36 @@ theme_override_colors/font_color = Color(1, 1, 1, 0.5)
 text = "BOLSA"
 horizontal_alignment = 1
 
+[node name="BombButton" type="TouchScreenButton" parent="."]
+position = Vector2(452, 176)
+texture_normal = SubResource("btn_tex_small")
+action = "bomb"
+
+[node name="BombLabel" type="Label" parent="BombButton"]
+offset_left = 0.0
+offset_top = 18.0
+offset_right = 44.0
+offset_bottom = 30.0
+theme_override_font_sizes/font_size = 7
+theme_override_colors/font_color = Color(1, 1, 1, 0.5)
+text = "BOMBA"
+horizontal_alignment = 1
+
+[node name="PauseButton" type="TouchScreenButton" parent="."]
+position = Vector2(428, 8)
+texture_normal = SubResource("btn_tex_small")
+action = "pause"
+
+[node name="PauseLabel" type="Label" parent="PauseButton"]
+offset_left = 0.0
+offset_top = 18.0
+offset_right = 44.0
+offset_bottom = 30.0
+theme_override_font_sizes/font_size = 7
+theme_override_colors/font_color = Color(1, 1, 1, 0.5)
+text = "PAUSA"
+horizontal_alignment = 1
+
 [node name="LockButton" type="TouchScreenButton" parent="."]
 position = Vector2(516, 176)
 texture_normal = SubResource("btn_tex_small")

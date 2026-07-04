@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3]
+[gd_scene load_steps=23 format=3]
 
 [ext_resource type="Script" path="res://world/forest.gd" id="1_forest"]
 [ext_resource type="PackedScene" path="res://entities/player/player.tscn" id="2_player"]
@@ -18,6 +18,7 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/tiles/grass.png" id="16_grass"]
 [ext_resource type="Texture2D" path="res://assets/sprites/tiles/dirt.png" id="17_dirt"]
 [ext_resource type="PackedScene" path="res://ui/stats_screen.tscn" id="18_stats"]
+[ext_resource type="PackedScene" path="res://ui/pause_menu.tscn" id="19_pause"]
 
 [sub_resource type="RectangleShape2D" id="wall_h"]
 size = Vector2(960, 16)
@@ -198,3 +199,5 @@ position = Vector2(860, 410)
 [node name="MapScreen" parent="." instance=ExtResource("14_map")]
 
 [node name="StatsScreen" parent="." instance=ExtResource("18_stats")]
+
+[node name="PauseMenu" parent="." instance=ExtResource("19_pause")]

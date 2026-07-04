@@ -1,0 +1,218 @@
+[gd_scene load_steps=28 format=3]
+
+[ext_resource type="Script" path="res://world/forge_dungeon.gd" id="1_forge"]
+[ext_resource type="PackedScene" path="res://entities/player/player.tscn" id="2_player"]
+[ext_resource type="PackedScene" path="res://world/shrine.tscn" id="3_shrine"]
+[ext_resource type="Script" path="res://world/enemy_spawner.gd" id="4_spawner"]
+[ext_resource type="PackedScene" path="res://entities/enemies/forjado.tscn" id="5_forjado"]
+[ext_resource type="PackedScene" path="res://entities/enemies/ecoado.tscn" id="6_ecoado"]
+[ext_resource type="PackedScene" path="res://world/portal.tscn" id="7_portal"]
+[ext_resource type="PackedScene" path="res://ui/hud.tscn" id="8_hud"]
+[ext_resource type="PackedScene" path="res://ui/touch_controls.tscn" id="9_touch"]
+[ext_resource type="PackedScene" path="res://entities/enemies/coracao_da_forja.tscn" id="10_boss"]
+[ext_resource type="PackedScene" path="res://world/resource_node.tscn" id="11_resource"]
+[ext_resource type="PackedScene" path="res://world/grapple_point.tscn" id="12_grapple"]
+[ext_resource type="PackedScene" path="res://ui/inventory_screen.tscn" id="13_inventory"]
+[ext_resource type="PackedScene" path="res://ui/ocarina_wheel.tscn" id="14_wheel"]
+[ext_resource type="PackedScene" path="res://ui/map_screen.tscn" id="15_map"]
+[ext_resource type="PackedScene" path="res://ui/stats_screen.tscn" id="16_stats"]
+[ext_resource type="Texture2D" path="res://assets/sprites/tiles/stone.png" id="17_stone"]
+[ext_resource type="PackedScene" path="res://world/cracked_wall.tscn" id="18_wall"]
+[ext_resource type="PackedScene" path="res://ui/pause_menu.tscn" id="19_pause"]
+
+[sub_resource type="RectangleShape2D" id="wall_h"]
+size = Vector2(800, 16)
+
+[sub_resource type="RectangleShape2D" id="wall_v"]
+size = Vector2(16, 760)
+
+[sub_resource type="RectangleShape2D" id="pool_a"]
+size = Vector2(200, 120)
+
+[sub_resource type="RectangleShape2D" id="pool_b"]
+size = Vector2(250, 120)
+
+[sub_resource type="RectangleShape2D" id="divider"]
+size = Vector2(16, 200)
+
+[sub_resource type="RectangleShape2D" id="trigger_shape"]
+size = Vector2(220, 30)
+
+[sub_resource type="RectangleShape2D" id="pillar"]
+size = Vector2(36, 36)
+
+[sub_resource type="RectangleShape2D" id="niche_wall"]
+size = Vector2(16, 120)
+
+[node name="ForgeDungeon" type="Node2D"]
+script = ExtResource("1_forge")
+arena_size = Vector2(800, 760)
+intro_message = "Forja Afundada. A água engoliu o fogo — quase todo."
+music = "forge"
+outdoor = false
+
+[node name="Floor" type="Polygon2D" parent="."]
+texture_repeat = 2
+color = Color(0.75, 0.85, 0.95, 1)
+texture = ExtResource("17_stone")
+polygon = PackedVector2Array(0, 0, 800, 0, 800, 760, 0, 760)
+
+[node name="PoolAV" type="Polygon2D" parent="Floor"]
+color = Color(0.16, 0.32, 0.48, 1)
+polygon = PackedVector2Array(140, 220, 340, 220, 340, 340, 140, 340)
+
+[node name="PoolBV" type="Polygon2D" parent="Floor"]
+color = Color(0.16, 0.32, 0.48, 1)
+polygon = PackedVector2Array(430, 480, 680, 480, 680, 600, 430, 600)
+
+[node name="Solids" type="StaticBody2D" parent="."]
+collision_layer = 1
+collision_mask = 0
+
+[node name="Top" type="CollisionShape2D" parent="Solids"]
+position = Vector2(400, 8)
+shape = SubResource("wall_h")
+
+[node name="Bottom" type="CollisionShape2D" parent="Solids"]
+position = Vector2(400, 752)
+shape = SubResource("wall_h")
+
+[node name="Left" type="CollisionShape2D" parent="Solids"]
+position = Vector2(8, 380)
+shape = SubResource("wall_v")
+
+[node name="Right" type="CollisionShape2D" parent="Solids"]
+position = Vector2(792, 380)
+shape = SubResource("wall_v")
+
+[node name="PoolA" type="CollisionShape2D" parent="Solids"]
+position = Vector2(240, 280)
+shape = SubResource("pool_a")
+
+[node name="PoolB" type="CollisionShape2D" parent="Solids"]
+position = Vector2(555, 540)
+shape = SubResource("pool_b")
+
+[node name="Pillar1" type="CollisionShape2D" parent="Solids"]
+position = Vector2(560, 260)
+shape = SubResource("pillar")
+
+[node name="Pillar2" type="CollisionShape2D" parent="Solids"]
+position = Vector2(200, 480)
+shape = SubResource("pillar")
+
+[node name="NicheWall" type="CollisionShape2D" parent="Solids"]
+position = Vector2(712, 560)
+shape = SubResource("niche_wall")
+
+[node name="WallVisuals" type="Node2D" parent="."]
+
+[node name="TopV" type="Polygon2D" parent="WallVisuals"]
+color = Color(0.34, 0.38, 0.5, 1)
+polygon = PackedVector2Array(0, 0, 800, 0, 800, 16, 0, 16)
+
+[node name="BottomV" type="Polygon2D" parent="WallVisuals"]
+color = Color(0.34, 0.38, 0.5, 1)
+polygon = PackedVector2Array(0, 744, 800, 744, 800, 760, 0, 760)
+
+[node name="LeftV" type="Polygon2D" parent="WallVisuals"]
+color = Color(0.34, 0.38, 0.5, 1)
+polygon = PackedVector2Array(0, 0, 16, 0, 16, 760, 0, 760)
+
+[node name="RightV" type="Polygon2D" parent="WallVisuals"]
+color = Color(0.34, 0.38, 0.5, 1)
+polygon = PackedVector2Array(784, 0, 800, 0, 800, 760, 784, 760)
+
+[node name="Pillar1V" type="Polygon2D" parent="WallVisuals"]
+color = Color(0.48, 0.52, 0.64, 1)
+polygon = PackedVector2Array(542, 242, 578, 242, 578, 278, 542, 278)
+
+[node name="Pillar2V" type="Polygon2D" parent="WallVisuals"]
+color = Color(0.48, 0.52, 0.64, 1)
+polygon = PackedVector2Array(182, 462, 218, 462, 218, 498, 182, 498)
+
+[node name="NicheWallV" type="Polygon2D" parent="WallVisuals"]
+color = Color(0.48, 0.52, 0.64, 1)
+polygon = PackedVector2Array(704, 500, 720, 500, 720, 620, 704, 620)
+
+[node name="CrackedWall" parent="." instance=ExtResource("18_wall")]
+position = Vector2(712, 468)
+wall_id = "forja_nicho"
+
+[node name="Boss" parent="." instance=ExtResource("10_boss")]
+position = Vector2(400, 130)
+
+[node name="BossTrigger" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BossTrigger"]
+position = Vector2(400, 250)
+shape = SubResource("trigger_shape")
+
+[node name="Shrine" parent="." instance=ExtResource("3_shrine")]
+position = Vector2(120, 680)
+
+[node name="PortalVillage" parent="." instance=ExtResource("7_portal")]
+position = Vector2(400, 716)
+target_scene = "res://world/village.tscn"
+target_spawn = "from_forja"
+label_text = "Pedra-Alva"
+
+[node name="SpawnerA" type="Marker2D" parent="."]
+position = Vector2(300, 420)
+script = ExtResource("4_spawner")
+enemy_scene = ExtResource("5_forjado")
+
+[node name="SpawnerB" type="Marker2D" parent="."]
+position = Vector2(560, 340)
+script = ExtResource("4_spawner")
+enemy_scene = ExtResource("5_forjado")
+
+[node name="SpawnerC" type="Marker2D" parent="."]
+position = Vector2(220, 620)
+script = ExtResource("4_spawner")
+enemy_scene = ExtResource("6_ecoado")
+
+[node name="OreA" parent="." instance=ExtResource("11_resource")]
+position = Vector2(748, 580)
+item_id = "minerio_eco"
+
+[node name="OreB" parent="." instance=ExtResource("11_resource")]
+position = Vector2(748, 540)
+item_id = "minerio_eco"
+
+[node name="OreC" parent="." instance=ExtResource("11_resource")]
+position = Vector2(80, 100)
+item_id = "minerio_eco"
+
+[node name="GrapplePostA" parent="." instance=ExtResource("12_grapple")]
+position = Vector2(400, 460)
+
+[node name="GrapplePostB" parent="." instance=ExtResource("12_grapple")]
+position = Vector2(720, 300)
+
+[node name="Spawns" type="Node2D" parent="."]
+
+[node name="default" type="Marker2D" parent="Spawns"]
+position = Vector2(400, 650)
+
+[node name="from_village" type="Marker2D" parent="Spawns"]
+position = Vector2(400, 650)
+
+[node name="Player" parent="." instance=ExtResource("2_player")]
+position = Vector2(400, 650)
+
+[node name="HUD" parent="." instance=ExtResource("8_hud")]
+
+[node name="TouchControls" parent="." instance=ExtResource("9_touch")]
+
+[node name="InventoryScreen" parent="." instance=ExtResource("13_inventory")]
+
+[node name="OcarinaWheel" parent="." instance=ExtResource("14_wheel")]
+
+[node name="MapScreen" parent="." instance=ExtResource("15_map")]
+
+[node name="StatsScreen" parent="." instance=ExtResource("16_stats")]
+
+[node name="PauseMenu" parent="." instance=ExtResource("19_pause")]

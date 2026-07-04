@@ -220,6 +220,13 @@ def sfx_drink():
     return buf
 
 
+def sfx_explosion():
+    buf = []
+    mix(buf, tone(90, 0.5, "sine", vol=0.8, glide_to=32, release=0.35))
+    mix(buf, noise(0.4, vol=0.5, lowpass=3, attack=0.0, release=0.3))
+    return buf
+
+
 # --------------------------------------------------------------- músicas
 
 def melody(buf, beat, notes, wave_type="sine", vol=0.3, vib=5.0, depth=3.0):
@@ -305,6 +312,23 @@ def music_forest():
     return buf
 
 
+def music_forge():
+    beat = 0.55
+    buf = []
+    for i in range(16):
+        bass_note = "A1" if i % 4 != 3 else "C2"
+        mix(buf, tone(note_freq(bass_note), beat * 0.85, "saw", vol=0.15,
+                      release=0.1), i * beat)
+    for i in range(2, 16, 4):  # marteladas da forja afogada
+        mix(buf, tone(880, 0.14, "square", vol=0.06, glide_to=760,
+                      release=0.1), i * beat)
+        mix(buf, noise(0.04, vol=0.1, lowpass=2, release=0.03), i * beat)
+    melody(buf, beat, [
+        (0, "E4", 2), (4, "D4", 2), (8, "F4", 2), (12, "E4", 3),
+    ], wave_type="triangle", vol=0.12, vib=4.0, depth=2.0)
+    return buf
+
+
 def music_boss():
     beat = 0.4
     buf = []
@@ -340,14 +364,15 @@ def main():
         "victory": sfx_victory(), "roar": sfx_roar(), "blip": sfx_blip(),
         "forge": sfx_forge(), "melody_return": sfx_melody_return(),
         "melody_calm": sfx_melody_calm(), "melody_sun": sfx_melody_sun(),
-        "drink": sfx_drink(),
+        "drink": sfx_drink(), "explosion": sfx_explosion(),
     }
     for name, buf in sfx.items():
         write_wav(OUT / "sfx" / f"{name}.wav", buf)
     for name, buf in [("village", music_village()), ("crypt", music_crypt()),
-                      ("boss", music_boss()), ("forest", music_forest())]:
+                      ("boss", music_boss()), ("forest", music_forest()),
+                      ("forge", music_forge())]:
         write_wav(OUT / "music" / f"{name}.wav", buf)
-    print(f"OK: {len(sfx)} SFX + 4 músicas em {OUT}")
+    print(f"OK: {len(sfx)} SFX + 5 músicas em {OUT}")
 
 
 if __name__ == "__main__":

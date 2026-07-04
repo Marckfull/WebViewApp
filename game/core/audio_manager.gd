@@ -5,6 +5,13 @@ extends Node
 const SFX_PLAYERS := 8
 const SFX_DIR := "res://assets/audio/sfx/"
 const MUSIC_DIR := "res://assets/audio/music/"
+const SETTINGS_PATH := "user://settings.json"
+const MUSIC_BASE_DB := -11.0
+const SFX_BASE_DB := -4.0
+
+## Volumes de 0 a 10 (menu de pause); persistidos em user://.
+var music_volume := 8
+var sfx_volume := 8
 
 var _sfx_pool: Array[AudioStreamPlayer] = []
 var _music_player: AudioStreamPlayer
@@ -17,16 +24,61 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	for i in SFX_PLAYERS:
 		var p := AudioStreamPlayer.new()
-		p.volume_db = -6.0
 		add_child(p)
 		_sfx_pool.append(p)
 	_music_player = AudioStreamPlayer.new()
-	_music_player.volume_db = -13.0
 	add_child(_music_player)
+	_load_settings()
+	_apply_volumes()
 	GameEvents.player_died.connect(_on_player_died)
 	GameEvents.shrine_rested.connect(play_sfx.bind("shrine"))
 	GameEvents.boss_engaged.connect(_on_boss_engaged)
 	GameEvents.boss_ended.connect(_on_boss_ended)
+
+
+func set_music_volume(value: int) -> void:
+	music_volume = clampi(value, 0, 10)
+	_apply_volumes()
+	_save_settings()
+
+
+func set_sfx_volume(value: int) -> void:
+	sfx_volume = clampi(value, 0, 10)
+	_apply_volumes()
+	_save_settings()
+
+
+func _volume_db(volume: int, base: float) -> float:
+	if volume <= 0:
+		return -80.0
+	return linear_to_db(volume / 10.0) + base
+
+
+func _apply_volumes() -> void:
+	_music_player.volume_db = _volume_db(music_volume, MUSIC_BASE_DB)
+	for p in _sfx_pool:
+		p.volume_db = _volume_db(sfx_volume, SFX_BASE_DB)
+
+
+func _load_settings() -> void:
+	if not FileAccess.file_exists(SETTINGS_PATH):
+		return
+	var file := FileAccess.open(SETTINGS_PATH, FileAccess.READ)
+	if file == null:
+		return
+	var parsed: Variant = JSON.parse_string(file.get_as_text())
+	if typeof(parsed) == TYPE_DICTIONARY:
+		music_volume = clampi(int(parsed.get("music", 8)), 0, 10)
+		sfx_volume = clampi(int(parsed.get("sfx", 8)), 0, 10)
+
+
+func _save_settings() -> void:
+	var file := FileAccess.open(SETTINGS_PATH, FileAccess.WRITE)
+	if file == null:
+		return
+	file.store_string(JSON.stringify(
+			{"music": music_volume, "sfx": sfx_volume}))
+	file.close()
 
 
 func play_sfx(name: String) -> void:

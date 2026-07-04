@@ -18,7 +18,7 @@ souls-like, exploração entre cenas, NPCs com diálogo e a primeira luta de bos
 - **Loop de morte souls-like**: Ecos dropados no local da morte,
   recuperáveis; santuários curam e repõem os inimigos.
 
-**Mundo (4 cenas conectadas por portais):**
+**Mundo (5 cenas conectadas por portais):**
 - **Pedra-Alva** (vila hub): 3 NPCs com diálogo (Mestra Odara, Corvo e Sela),
   forja, santuário e portais para as outras áreas.
 - **Cripta das Guardiãs**: corredor de Ecoados, santuário antes do boss e a
@@ -30,6 +30,12 @@ souls-like, exploração entre cenas, NPCs com diálogo e a primeira luta de bos
   **Espreitadores** (rápidos, frágeis, telegraph curto) e o **Alfa do
   Bosque** — segundo boss (mesma IA de 2 fases, mais veloz), que guarda
   uma **Memória Perdida** de Lys numa clareira aberta.
+- **Forja Afundada** (ao sul da vila): dungeon alagada com **Forjados**
+  blindados (quase não atordoam), poças que forçam rotas (atravesse com
+  o gancho) e o **Coração da Forja** — terceiro boss, lento e brutal.
+  Recompensa: a **Bomba de Eco** [B / BOMBA], que fere em área e derruba
+  **paredes rachadas** (há uma escondendo um nicho de minério na própria
+  Forja).
 - **Campo de Treino**: a arena da Fase 0, para testar builds e números.
 
 **Progressão e economia:**
@@ -57,6 +63,12 @@ souls-like, exploração entre cenas, NPCs com diálogo e a primeira luta de bos
 - **Mapa da Cartógrafa** [V / MAPA]: o mapa da área **se desenha por onde
   Aria passa** (mecânica temática do GDD); marca santuário, passagens e
   a posição atual. Progresso do mapa salvo no save.
+
+**Game feel e opções:**
+- **Hit-stop** (micro-congelamento no impacto), **screen shake** e
+  **faíscas de partículas** em todos os golpes — o combate "morde".
+- **Menu de pause** [Esc / PAUSA]: continuar, volumes de música e sons
+  (persistidos em `user://settings.json`) e voltar ao título.
 
 **Interface e persistência:**
 - Tela de título com **Continuar / Novo Jogo**.
@@ -122,10 +134,12 @@ souls-like, exploração entre cenas, NPCs com diálogo e a primeira luta de bos
 | Rolar | K ou Espaço | A / Cruz |
 | Lock-on (alvo) | L ou Tab | R1 / RB |
 | Usar item (gancho) | H | B / Círculo |
+| Bomba de Eco | B | D-pad esquerda |
 | Beber Frasco de Essência | Q | D-pad cima |
 | Ocarina (melodias) | M | L1 / LB |
 | Mapa | V | D-pad direita |
 | Bolsa (inventário) | I | Select / Back |
+| Pause / opções | Esc | Start |
 | Interagir (falar/descansar/forjar) | E ou Enter | Y / Triângulo |
 
 No Android/touchscreen: arraste na metade esquerda da tela para mover;
@@ -161,10 +175,10 @@ game/
 
 ## Próximos passos (ver GDD, seção 8)
 
-1. **Playtest geral** — o protótipo cobre agora todos os sistemas
-   centrais do GDD; a prioridade é jogar e calibrar números.
-2. Menu de pause com opções (volume, resetar save).
-3. Terceira dungeon (Forja Afundada) com o item Bomba de Eco.
-4. Polimento de combate: hit-stop, partículas, screen shake.
-5. Export Android de teste (APK) e ajuste dos controles de toque
+1. **Playtest geral** — todos os sistemas centrais do GDD estão de pé;
+   a prioridade agora é jogar e calibrar números.
+2. **Export Android de teste (APK)** e ajuste dos controles de toque
    em aparelho real.
+3. Quarta dungeon (Torre dos Ventos) e o arco final do Ato 2.
+4. Mais variedade de golpes da jogadora (combo de 3, ataque carregado).
+5. Localização EN e preparação da page da loja.
