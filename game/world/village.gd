@@ -2,7 +2,7 @@ extends Level
 ## Pedra-Alva. Além do comportamento de cena-base, dispara a cutscene do
 ## Ato 3 quando os quatro Santuários do Eco são restaurados.
 
-const ACT3_CUTSCENE := PackedStringArray([
+static var ACT3_CUTSCENE := PackedStringArray([
 	"Quatro Santuários restaurados. Por toda Lirael, a névoa recua e as "
 			+ "cores voltam, hesitantes, como quem acorda de um sono longo.",
 	"No alto da vila, um selo de luz se abre: o caminho para o Coração "

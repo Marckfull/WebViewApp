@@ -74,7 +74,7 @@ func _process(delta: float) -> void:
 
 ## Dano que a jogadora RECEBE. Requiem bate mais forte; NG+ agrava.
 func enemy_damage_mult() -> float:
-	var base := [0.7, 1.0, 1.3][difficulty]
+	var base: float = [0.7, 1.0, 1.3][difficulty]
 	return base * (1.0 + 0.2 * ng_cycle)
 
 

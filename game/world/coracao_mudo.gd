@@ -2,7 +2,7 @@ extends Level
 ## O Coração Mudo: o confronto final com Selene. Ela fala antes de lutar;
 ## ao ser derrotada, a história chega ao dilema (tela de finais).
 
-const SELENE_LINES := PackedStringArray([
+static var SELENE_LINES := PackedStringArray([
 	"Você atravessou o Silêncio inteiro para chegar até aqui, cartógrafa.",
 	"Eu não o criei por maldade. Criei para não ouvir mais a canção que "
 			+ "me lembra tudo o que perdi.",

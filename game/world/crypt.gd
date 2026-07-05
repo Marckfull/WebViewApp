@@ -6,7 +6,7 @@ extends Level
 const RESOURCE_NODE := preload("res://world/resource_node.tscn")
 const GANCHO_POSITION := Vector2(320, 140)
 
-const ACT2_CUTSCENE := PackedStringArray([
+static var ACT2_CUTSCENE := PackedStringArray([
 	"A Guardiã cai, e da névoa surge uma Ocarina de Vidro — o instrumento "
 			+ "das Guardiãs, que só quem ouve a Canção pode tocar.",
 	"Aria entende, enfim: o Silêncio se prende a quatro Santuários do Eco "
