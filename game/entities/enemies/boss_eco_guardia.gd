@@ -17,6 +17,7 @@ const SWEEP_TIME := 0.25
 const CHAIN_TELEGRAPH := 0.25
 
 @export var boss_name := "Eco da Guardiã"
+@export var bestiary_id := "eco_guardia"
 @export var chase_speed := 60.0
 @export var dash_speed := 330.0
 @export var sweep_range := 48.0
@@ -262,6 +263,7 @@ func _flash() -> void:
 
 func _on_died() -> void:
 	state = State.DEAD
+	GameState.record_kill(bestiary_id)
 	_disable_hitboxes()
 	remove_from_group("enemies")
 	collision_layer = 0

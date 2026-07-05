@@ -53,6 +53,7 @@ func save_game() -> void:
 		"attributes": GameState.attributes,
 		"time_of_day": GameState.time_of_day,
 		"map_data": GameState.map_data,
+		"bestiary": GameState.bestiary,
 		"shrine_scene": GameState.last_shrine_scene,
 		"difficulty": GameState.difficulty,
 		"ng_cycle": GameState.ng_cycle,
@@ -90,6 +91,10 @@ func load_game() -> bool:
 	GameState.time_of_day = float(parsed.get("time_of_day", 0.15))
 	GameState.difficulty = clampi(int(parsed.get("difficulty", 1)), 0, 2)
 	GameState.ng_cycle = maxi(int(parsed.get("ng_cycle", 0)), 0)
+	var raw_bestiary: Dictionary = parsed.get("bestiary", {})
+	for id in raw_bestiary:
+		raw_bestiary[id] = int(raw_bestiary[id])
+	GameState.bestiary = raw_bestiary
 	var raw_map: Dictionary = parsed.get("map_data", {})
 	for scene in raw_map:
 		var entry: Dictionary = raw_map[scene]

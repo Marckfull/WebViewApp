@@ -3,7 +3,7 @@ extends Control
 ## o eco, completar a canção dela, ou — se reuniu as Memórias Perdidas —
 ## cantar a Canção do Mundo inteira (final verdadeiro).
 
-const MEMORIES_FOR_TRUE := 3
+const MEMORIES_FOR_TRUE := 12
 
 const DILEMMA := [
 	"Selene cai de joelhos. O Silêncio recua dela como maré vazante.",

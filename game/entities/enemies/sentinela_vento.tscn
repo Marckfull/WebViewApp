@@ -28,6 +28,7 @@ attack_lunge = 0.0
 melee_enabled = false
 recover_time = 0.95
 echoes_reward = 40
+bestiary_id = "sentinela"
 
 [node name="Visual" type="AnimatedSprite2D" parent="."]
 position = Vector2(0, -1)

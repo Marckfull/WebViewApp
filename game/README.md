@@ -58,6 +58,18 @@ souls-like, exploração entre cenas, NPCs com diálogo e a primeira luta de bos
   verdadeiro**, a Canção do Mundo).
 - **Campo de Treino**: a arena da Fase 0, para testar builds e números.
 
+**Diário, Memórias e Bestiário:**
+- **12 Memórias Perdidas** espalhadas pelo mundo: recompensas de boss,
+  segredos revelados pela **Lente da Verdade**, um esconderijo atrás de
+  parede rachada (Bomba), outro atrás de corrente de sal (Botas), compra
+  do Corvo, e recompensas da **Mestra Odara** (forjar a lâmina ao máximo)
+  e da **Sela** (após a quest das ervas). A última está no Coração Mudo.
+- **Diário** [N / DIÁRIO]: aba de **Memórias** (X/12, cada uma com sua
+  lore; as não achadas ficam "???") e aba de **Bestiário**, que se
+  preenche conforme você derrota cada criatura (nome, lore e nº de
+  abates). Tudo persistido no save.
+- Reunir as **12 Memórias** desbloqueia o **final verdadeiro**.
+
 **Dificuldade e longevidade:**
 - **3 modos**, escolhidos ao iniciar (tela "Como você quer ouvir esta canção?"):
   **Balada** (5 frascos, parry generoso, mantém os Ecos ao morrer), **Canção**
@@ -169,6 +181,7 @@ souls-like, exploração entre cenas, NPCs com diálogo e a primeira luta de bos
 | Beber Frasco de Essência | Q | D-pad cima |
 | Ocarina (melodias) | M | L1 / LB |
 | Mapa | V | D-pad direita |
+| Diário (memórias/bestiário) | N | L3 |
 | Bolsa (inventário) | I | Select / Back |
 | Pause / opções | Esc | Start |
 | Interagir (falar/descansar/forjar) | E ou Enter | Y / Triângulo |
@@ -213,6 +226,6 @@ trabalho é de refino e longevidade:
 1. **Playtest e balanceamento** — jogar de ponta a ponta e calibrar
    vida/dano/custos de cada boss e área (a prioridade real).
 2. **Export Android de teste (APK)** e ajuste dos controles de toque.
-3. Mais Memórias Perdidas (das 12) e side quests; bestiário/diário.
-4. Combo de 3 golpes / ataque carregado; mais armas com movesets.
+3. Combo de 3 golpes / ataque carregado; mais armas com movesets.
+4. Retratos ilustrados nos diálogos e cutscenes de transição.
 5. Localização EN e preparação da página da loja.

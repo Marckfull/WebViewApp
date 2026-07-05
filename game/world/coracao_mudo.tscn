@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3]
+[gd_scene load_steps=20 format=3]
 
 [ext_resource type="Script" path="res://world/coracao_mudo.gd" id="1_heart"]
 [ext_resource type="PackedScene" path="res://entities/player/player.tscn" id="2_player"]
@@ -14,6 +14,8 @@
 [ext_resource type="PackedScene" path="res://ui/pause_menu.tscn" id="12_pause"]
 [ext_resource type="Texture2D" path="res://assets/sprites/tiles/stone.png" id="13_stone"]
 [ext_resource type="PackedScene" path="res://ui/dialog_box.tscn" id="14_dialog"]
+[ext_resource type="PackedScene" path="res://ui/diary_screen.tscn" id="90_diary"]
+[ext_resource type="PackedScene" path="res://world/resource_node.tscn" id="50_resource"]
 
 [sub_resource type="RectangleShape2D" id="wall_h"]
 size = Vector2(720, 16)
@@ -86,6 +88,11 @@ collision_mask = 2
 position = Vector2(360, 280)
 shape = SubResource("trigger_shape")
 
+[node name="MemoryCoracao" parent="." instance=ExtResource("50_resource")]
+position = Vector2(600, 500)
+item_id = "memoria_coracao"
+one_time = true
+
 [node name="Shrine" parent="." instance=ExtResource("3_shrine")]
 position = Vector2(120, 500)
 
@@ -121,3 +128,5 @@ position = Vector2(360, 500)
 [node name="PauseMenu" parent="." instance=ExtResource("12_pause")]
 
 [node name="DialogBox" parent="." instance=ExtResource("14_dialog")]
+
+[node name="DiaryScreen" parent="." instance=ExtResource("90_diary")]

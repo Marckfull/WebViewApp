@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3]
+[gd_scene load_steps=29 format=3]
 
 [ext_resource type="Script" path="res://world/forge_dungeon.gd" id="1_forge"]
 [ext_resource type="PackedScene" path="res://entities/player/player.tscn" id="2_player"]
@@ -19,6 +19,7 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/tiles/stone.png" id="17_stone"]
 [ext_resource type="PackedScene" path="res://world/cracked_wall.tscn" id="18_wall"]
 [ext_resource type="PackedScene" path="res://ui/pause_menu.tscn" id="19_pause"]
+[ext_resource type="PackedScene" path="res://ui/diary_screen.tscn" id="90_diary"]
 
 [sub_resource type="RectangleShape2D" id="wall_h"]
 size = Vector2(800, 16)
@@ -186,6 +187,11 @@ item_id = "minerio_eco"
 position = Vector2(80, 100)
 item_id = "minerio_eco"
 
+[node name="MemoryForja" parent="." instance=ExtResource("11_resource")]
+position = Vector2(748, 500)
+item_id = "memoria_forja"
+one_time = true
+
 [node name="GrapplePostA" parent="." instance=ExtResource("12_grapple")]
 position = Vector2(400, 460)
 
@@ -216,3 +222,5 @@ position = Vector2(400, 650)
 [node name="StatsScreen" parent="." instance=ExtResource("16_stats")]
 
 [node name="PauseMenu" parent="." instance=ExtResource("19_pause")]
+
+[node name="DiaryScreen" parent="." instance=ExtResource("90_diary")]

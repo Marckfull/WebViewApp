@@ -37,6 +37,8 @@ var attributes: Dictionary = {"vit": 0, "fol": 0, "forca": 0}
 var time_of_day := 0.15
 ## Mapa da cartógrafa: cena -> {"cols", "rows", "cells": Array[int]}.
 var map_data: Dictionary = {}
+## Bestiário: id da criatura -> quantidade derrotada (ver BestiaryDB).
+var bestiary: Dictionary = {}
 ## Flags de progresso permanente (ex.: "cripta_boss_derrotado").
 var flags: Dictionary = {}
 ## Nome do Marker2D (em "Spawns/") onde a jogadora aparece na próxima cena.
@@ -117,6 +119,7 @@ func reset() -> void:
 	attributes = {"vit": 0, "fol": 0, "forca": 0}
 	time_of_day = 0.15
 	map_data = {}
+	bestiary = {}
 	next_spawn = ""
 	last_shrine_scene = "res://world/village.tscn"
 	difficulty = Difficulty.CANCAO
@@ -201,6 +204,22 @@ func has_item(id: String) -> bool:
 
 func item_count(id: String) -> int:
 	return int(inventory.get(id, 0))
+
+
+## Registra uma criatura derrotada no bestiário.
+func record_kill(id: String) -> void:
+	if id.is_empty():
+		return
+	bestiary[id] = int(bestiary.get(id, 0)) + 1
+
+
+## Ids de Memórias Perdidas já reunidas.
+func memories_collected() -> Array:
+	var found: Array = []
+	for id in inventory:
+		if str(id).begins_with("memoria_"):
+			found.append(id)
+	return found
 
 
 func upgrade_weapon() -> void:

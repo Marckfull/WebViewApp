@@ -18,6 +18,10 @@ const LINES_COMPLETE := [
 	"Tome. O talismã da minha mãe. Ela dizia que ele deixava o corpo leve.",
 	"Obrigada, Aria. Agora uma parte dela continua andando por Lirael.",
 ]
+const LINES_MEMORY := [
+	"Espere — enquanto arrumava o canteiro, achei mais uma coisa dela.",
+	"Uma lembrança. Guarde você; meu coração já está cheio do que lembro.",
+]
 const LINES_DONE := [
 	"O talismã combina com você. Mamãe teria gostado de te ver lutar.",
 ]
@@ -25,7 +29,13 @@ const LINES_DONE := [
 
 func _interact() -> void:
 	if GameState.flags.get("quest_sela_concluida", false):
-		GameEvents.dialog_requested.emit(npc_name, LINES_DONE)
+		if not GameState.has_item("memoria_sela"):
+			GameState.add_item("memoria_sela")
+			AudioManager.play_sfx("pickup")
+			GameEvents.dialog_requested.emit(npc_name, LINES_MEMORY)
+			GameEvents.notify("Recebeu: Memória Perdida — o Canteiro")
+		else:
+			GameEvents.dialog_requested.emit(npc_name, LINES_DONE)
 		return
 	if not GameState.flags.get("quest_sela_iniciada", false):
 		GameState.flags["quest_sela_iniciada"] = true

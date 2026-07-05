@@ -32,6 +32,7 @@ const CRIT_MULT := 2.5
 @export var poise_max := 0.0
 @export var poise_regen := 2.5
 @export var echoes_reward := 20
+@export var bestiary_id := "ecoado"
 
 var state := State.IDLE
 var _timer := 0.0
@@ -238,6 +239,7 @@ func _flash() -> void:
 func _on_died() -> void:
 	state = State.DEAD
 	hitbox_shape.set_deferred("disabled", true)
+	GameState.record_kill(bestiary_id)
 	AudioManager.play_sfx("enemy_death")
 	var pickup := ECHO_PICKUP.instantiate()
 	var reward := echoes_reward * GameState.echo_mult()

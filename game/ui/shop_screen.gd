@@ -57,6 +57,13 @@ func _offers() -> Array:
 			"price": 400,
 			"sold_out": GameState.has_item("amuleto_vento"),
 		},
+		{
+			"id": "memoria_corvo",
+			"name": "Memória Perdida (Corvo)",
+			"desc": "\"Uma lembrança que não me serve mais. A você, talvez.\"",
+			"price": 500,
+			"sold_out": GameState.has_item("memoria_corvo"),
+		},
 	]
 
 
@@ -106,7 +113,7 @@ func _buy(offer: Dictionary) -> void:
 		"frasco_max":
 			GameState.flasks_max += 1
 			GameState.refill_flasks()
-		"amuleto_eco", "amuleto_vento":
+		"amuleto_eco", "amuleto_vento", "memoria_corvo":
 			GameState.add_item(offer["id"])
 	AudioManager.play_sfx("pickup")
 	GameEvents.notify("Comprado: %s" % offer["name"])

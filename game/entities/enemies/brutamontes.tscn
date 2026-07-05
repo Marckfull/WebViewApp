@@ -29,6 +29,7 @@ recover_time = 1.1
 stagger_chance = 0.3
 poise_max = 4.0
 echoes_reward = 120
+bestiary_id = "brutamontes"
 
 [node name="Visual" type="AnimatedSprite2D" parent="."]
 position = Vector2(0, -1)

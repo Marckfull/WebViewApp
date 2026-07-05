@@ -29,6 +29,7 @@ recover_time = 0.85
 stagger_chance = 0.5
 poise_max = 3.0
 echoes_reward = 55
+bestiary_id = "carcaca"
 
 [node name="Visual" type="AnimatedSprite2D" parent="."]
 position = Vector2(0, -1)

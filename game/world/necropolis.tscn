@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3]
+[gd_scene load_steps=25 format=3]
 
 [ext_resource type="Script" path="res://world/necropolis.gd" id="1_necro"]
 [ext_resource type="PackedScene" path="res://entities/player/player.tscn" id="2_player"]
@@ -19,6 +19,7 @@
 [ext_resource type="PackedScene" path="res://ui/pause_menu.tscn" id="17_pause"]
 [ext_resource type="Texture2D" path="res://assets/sprites/tiles/stone.png" id="18_stone"]
 [ext_resource type="PackedScene" path="res://world/current_zone.tscn" id="19_current"]
+[ext_resource type="PackedScene" path="res://ui/diary_screen.tscn" id="90_diary"]
 
 [sub_resource type="RectangleShape2D" id="wall_h"]
 size = Vector2(800, 16)
@@ -182,3 +183,5 @@ position = Vector2(400, 650)
 [node name="StatsScreen" parent="." instance=ExtResource("16_stats")]
 
 [node name="PauseMenu" parent="." instance=ExtResource("17_pause")]
+
+[node name="DiaryScreen" parent="." instance=ExtResource("90_diary")]

@@ -29,6 +29,7 @@ recover_time = 0.9
 stagger_chance = 0.2
 poise_max = 4.0
 echoes_reward = 60
+bestiary_id = "forjado"
 
 [node name="Visual" type="AnimatedSprite2D" parent="."]
 position = Vector2(0, -1)

@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3]
+[gd_scene load_steps=25 format=3]
 
 [ext_resource type="Script" path="res://world/tower_of_winds.gd" id="1_tower"]
 [ext_resource type="PackedScene" path="res://entities/player/player.tscn" id="2_player"]
@@ -19,6 +19,7 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/tiles/stone.png" id="17_stone"]
 [ext_resource type="PackedScene" path="res://world/wind_zone.tscn" id="18_wind"]
 [ext_resource type="PackedScene" path="res://entities/enemies/espreitador.tscn" id="19_espreitador"]
+[ext_resource type="PackedScene" path="res://ui/diary_screen.tscn" id="90_diary"]
 
 [sub_resource type="RectangleShape2D" id="wall_h"]
 size = Vector2(640, 16)
@@ -160,6 +161,11 @@ item_id = "erva_lunar"
 position = Vector2(560, 820)
 item_id = "minerio_eco"
 
+[node name="MemoryTorre" parent="." instance=ExtResource("10_resource")]
+position = Vector2(560, 300)
+item_id = "memoria_torre"
+one_time = true
+
 [node name="Spawns" type="Node2D" parent="."]
 
 [node name="default" type="Marker2D" parent="Spawns"]
@@ -184,3 +190,5 @@ position = Vector2(320, 800)
 [node name="StatsScreen" parent="." instance=ExtResource("15_stats")]
 
 [node name="PauseMenu" parent="." instance=ExtResource("16_pause")]
+
+[node name="DiaryScreen" parent="." instance=ExtResource("90_diary")]

@@ -28,6 +28,7 @@ attack_lunge = 230.0
 recover_time = 0.55
 hurt_time = 0.2
 echoes_reward = 30
+bestiary_id = "espreitador"
 
 [node name="Visual" type="AnimatedSprite2D" parent="."]
 position = Vector2(0, -1)

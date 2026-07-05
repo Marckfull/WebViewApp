@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3]
+[gd_scene load_steps=26 format=3]
 
 [ext_resource type="Script" path="res://world/crypt.gd" id="1_crypt"]
 [ext_resource type="PackedScene" path="res://entities/player/player.tscn" id="2_player"]
@@ -17,6 +17,7 @@
 [ext_resource type="PackedScene" path="res://ui/map_screen.tscn" id="15_map"]
 [ext_resource type="PackedScene" path="res://ui/stats_screen.tscn" id="16_stats"]
 [ext_resource type="PackedScene" path="res://ui/pause_menu.tscn" id="17_pause"]
+[ext_resource type="PackedScene" path="res://ui/diary_screen.tscn" id="90_diary"]
 
 [sub_resource type="RectangleShape2D" id="wall_h"]
 size = Vector2(640, 16)
@@ -174,6 +175,12 @@ item_id = "minerio_eco"
 position = Vector2(80, 560)
 item_id = "minerio_eco"
 
+[node name="MemoryCripta" parent="." instance=ExtResource("10_resource")]
+position = Vector2(560, 560)
+item_id = "memoria_cripta"
+one_time = true
+requires_lens = true
+
 [node name="GrapplePostA" parent="." instance=ExtResource("11_grapple")]
 position = Vector2(80, 80)
 
@@ -214,3 +221,5 @@ position = Vector2(320, 790)
 [node name="StatsScreen" parent="." instance=ExtResource("16_stats")]
 
 [node name="PauseMenu" parent="." instance=ExtResource("17_pause")]
+
+[node name="DiaryScreen" parent="." instance=ExtResource("90_diary")]

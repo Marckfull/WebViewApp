@@ -23,6 +23,7 @@ collision_layer = 4
 collision_mask = 7
 script = ExtResource("1_boss")
 boss_name = "Selene, a Guardiã Caída"
+bestiary_id = "selene"
 chase_speed = 78.0
 dash_speed = 400.0
 sweep_range = 50.0
