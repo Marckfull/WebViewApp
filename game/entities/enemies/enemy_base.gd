@@ -4,13 +4,17 @@ extends CharacterBody2D
 ## recupera (janela de punição) e dropa Ecos ao morrer.
 ## Variantes (soldado, brutamontes) só mudam os exports na cena.
 
-enum State { IDLE, CHASE, TELEGRAPH, ATTACK, RECOVER, HURT, DEAD }
+enum State { IDLE, CHASE, TELEGRAPH, ATTACK, RECOVER, HURT, DEAD, STUNNED }
 
 const ECHO_PICKUP := preload("res://world/echo_pickup.tscn")
 const KNOCKBACK_DECAY := 500.0
 const CALM_RANGE := 170.0
 const CALM_DURATION := 4.0
 const CALM_TINT := Color(0.6, 0.8, 1.25)
+const STUN_DURATION := 1.8
+const STUN_TINT := Color(1.5, 1.4, 0.5)
+## Multiplicador de dano ao atingir um inimigo atordoado (finalização).
+const CRIT_MULT := 2.5
 
 @export var max_speed := 50.0
 @export var aggro_range := 140.0
@@ -22,6 +26,9 @@ const CALM_TINT := Color(0.6, 0.8, 1.25)
 @export var hurt_time := 0.25
 ## 1.0 = sempre atordoa ao levar dano; inimigos pesados resistem (poise).
 @export var stagger_chance := 1.0
+## Golpes seguidos para quebrar a postura (0 = só o parry atordoa).
+@export var poise_max := 0.0
+@export var poise_regen := 2.5
 @export var echoes_reward := 20
 
 var state := State.IDLE
@@ -29,6 +36,7 @@ var _timer := 0.0
 var _attack_dir := Vector2.RIGHT
 var _knockback := Vector2.ZERO
 var _calm_timer := 0.0
+var _poise := 0.0
 
 @onready var health: Health = $Health
 @onready var hurtbox: Hurtbox = $Hurtbox
@@ -49,6 +57,8 @@ func _physics_process(delta: float) -> void:
 		_calm_timer -= delta
 		if _calm_timer <= 0.0:
 			visual.modulate = Color.WHITE
+	if _poise > 0.0 and state != State.STUNNED:
+		_poise = maxf(_poise - poise_regen * delta, 0.0)
 	var player := _get_player()
 	match state:
 		State.IDLE:
@@ -90,6 +100,12 @@ func _physics_process(delta: float) -> void:
 			_timer -= delta
 			if _timer <= 0.0:
 				state = State.CHASE
+		State.STUNNED:
+			velocity = Vector2.ZERO
+			_timer -= delta
+			if _timer <= 0.0:
+				visual.modulate = Color.WHITE
+				state = State.CHASE
 		State.DEAD:
 			velocity = Vector2.ZERO
 	velocity += _knockback
@@ -113,6 +129,22 @@ func calm(duration: float) -> void:
 	velocity = Vector2.ZERO
 	hitbox_shape.set_deferred("disabled", true)
 	visual.modulate = CALM_TINT
+
+
+## Aparado pela jogadora: quebra de postura, aberto para a finalização.
+func on_parried() -> void:
+	if state == State.DEAD:
+		return
+	_enter_stun()
+
+
+func _enter_stun() -> void:
+	state = State.STUNNED
+	_timer = STUN_DURATION
+	_poise = 0.0
+	velocity = Vector2.ZERO
+	hitbox_shape.set_deferred("disabled", true)
+	visual.modulate = STUN_TINT
 
 
 func _get_player() -> Player:
@@ -145,15 +177,32 @@ func _exit_attack() -> void:
 func _on_hit_received(from_hitbox: Hitbox) -> void:
 	if state == State.DEAD:
 		return
-	health.damage(from_hitbox.damage)
+	var stunned := state == State.STUNNED
+	var dmg := from_hitbox.damage
+	if stunned:
+		dmg = int(round(dmg * CRIT_MULT))  # finalização
+	health.damage(dmg)
 	_flash()
-	AudioManager.play_sfx("hit")
 	FX.hit_stop()
-	FX.spawn_hit(global_position)
+	if stunned:
+		AudioManager.play_sfx("crit")
+		FX.shake(6.0)
+		FX.spawn_hit(global_position, Color(1.0, 0.85, 0.4))
+	else:
+		AudioManager.play_sfx("hit")
+		FX.spawn_hit(global_position)
 	if state == State.DEAD:
 		return
 	_knockback = (global_position - from_hitbox.global_position).normalized() \
 			* from_hitbox.knockback
+	if stunned:
+		return  # segue atordoado; continua recebendo críticos
+	# Postura: golpes seguidos quebram a guarda de inimigos pesados.
+	if poise_max > 0.0:
+		_poise += 1.0
+		if _poise >= poise_max:
+			_enter_stun()
+			return
 	if randf() <= stagger_chance:
 		hitbox_shape.set_deferred("disabled", true)
 		state = State.HURT

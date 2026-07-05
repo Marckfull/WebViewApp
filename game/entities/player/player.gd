@@ -5,7 +5,7 @@ extends CharacterBody2D
 
 signal died
 
-enum State { MOVE, ROLL, ATTACK, HURT, DEAD, GRAPPLE }
+enum State { MOVE, ROLL, ATTACK, HURT, DEAD, GRAPPLE, PARRY }
 
 const SPEED := 90.0
 const ROLL_SPEED := 200.0
@@ -30,6 +30,11 @@ const BASE_HEALTH := 100
 const BASE_STAMINA := 100.0
 const BOMB_SCENE := preload("res://world/bomb.tscn")
 const BOMB_COOLDOWN := 2.0
+const PARRY_COST := 12.0
+const PARRY_DURATION := 0.4
+## Janela ativa (no início do parry) em que um golpe é aparado.
+const PARRY_WINDOW := 0.18
+const PARRY_IFRAMES := 0.35
 
 var state: State = State.MOVE
 var facing := Vector2.DOWN
@@ -40,6 +45,7 @@ var _knockback := Vector2.ZERO
 var _iframes := 0.0
 var _grapple_target := Vector2.ZERO
 var _bomb_cooldown := 0.0
+var _parry_active := 0.0
 
 @onready var health: Health = $Health
 @onready var stamina: Stamina = $Stamina
@@ -106,6 +112,8 @@ func _physics_process(delta: float) -> void:
 			_state_hurt(delta)
 		State.GRAPPLE:
 			_state_grapple(delta)
+		State.PARRY:
+			_state_parry(delta)
 		State.DEAD:
 			velocity = Vector2.ZERO
 	velocity += _knockback
@@ -136,6 +144,9 @@ func _state_move() -> void:
 		_drink_flask()
 	elif Input.is_action_just_pressed("bomb"):
 		_throw_bomb()
+	elif Input.is_action_just_pressed("parry") \
+			and stamina.try_spend(_stamina_cost(PARRY_COST)):
+		_enter_parry()
 
 
 func _enter_roll(dir: Vector2) -> void:
@@ -192,7 +203,44 @@ func _state_hurt(delta: float) -> void:
 		state = State.MOVE
 
 
+func _enter_parry() -> void:
+	state = State.PARRY
+	_timer = PARRY_DURATION
+	_parry_active = PARRY_WINDOW
+	velocity = Vector2.ZERO
+	sprite.modulate = Color(0.7, 0.9, 1.4)
+	AudioManager.play_sfx("blip")
+
+
+func _state_parry(delta: float) -> void:
+	velocity = Vector2.ZERO
+	_parry_active = maxf(_parry_active - delta, 0.0)
+	_timer -= delta
+	if _timer <= 0.0:
+		sprite.modulate = Color.WHITE
+		state = State.MOVE
+
+
+## Aparou no tempo certo: atordoa o inimigo (abre para o crítico).
+func _resolve_parry(from_hitbox: Hitbox) -> void:
+	var src := from_hitbox.source()
+	if src and src.has_method("on_parried"):
+		src.on_parried()
+	_iframes = PARRY_IFRAMES
+	AudioManager.play_sfx("parry")
+	FX.hit_stop(0.09, 0.05)
+	FX.shake(5.0)
+	FX.spawn_hit(from_hitbox.global_position, Color(1.0, 0.95, 0.6))
+	sprite.modulate = Color(1.6, 1.6, 2.0)
+	var tween := create_tween()
+	tween.tween_property(sprite, "modulate", Color.WHITE, 0.25)
+
+
 func _on_hit_received(from_hitbox: Hitbox) -> void:
+	# Parry tem prioridade: no tempo certo, converte o golpe em atordoamento.
+	if state == State.PARRY and _parry_active > 0.0 and from_hitbox.parryable:
+		_resolve_parry(from_hitbox)
+		return
 	if _iframes > 0.0 or state == State.DEAD or state == State.ROLL:
 		return
 	health.damage(from_hitbox.damage)
@@ -316,7 +364,7 @@ func _update_animation() -> void:
 			_play("roll_" + _facing_name())
 		State.ATTACK:
 			pass  # disparada uma única vez em _enter_attack (não-loop)
-		State.HURT:
+		State.HURT, State.PARRY:
 			_play("idle_" + _facing_name())
 		State.DEAD:
 			_play("idle_down")

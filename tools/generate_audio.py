@@ -227,6 +227,25 @@ def sfx_explosion():
     return buf
 
 
+def sfx_parry():
+    # tilintar metálico agudo do aparo
+    buf = []
+    for freq in (1760, 2637, 3520):
+        mix(buf, tone(freq, 0.22, "sine", vol=0.16, release=0.2))
+    mix(buf, tone(1200, 0.1, "square", vol=0.1, glide_to=2400, release=0.08))
+    mix(buf, noise(0.05, vol=0.18, lowpass=2, release=0.04))
+    return buf
+
+
+def sfx_crit():
+    # finalização: impacto grave e "cheio"
+    buf = []
+    mix(buf, tone(180, 0.24, "sine", vol=0.7, glide_to=70, release=0.18))
+    mix(buf, tone(90, 0.28, "sine", vol=0.5, glide_to=45, release=0.2))
+    mix(buf, noise(0.1, vol=0.35, lowpass=2, release=0.07))
+    return buf
+
+
 # --------------------------------------------------------------- músicas
 
 def melody(buf, beat, notes, wave_type="sine", vol=0.3, vib=5.0, depth=3.0):
@@ -365,6 +384,7 @@ def main():
         "forge": sfx_forge(), "melody_return": sfx_melody_return(),
         "melody_calm": sfx_melody_calm(), "melody_sun": sfx_melody_sun(),
         "drink": sfx_drink(), "explosion": sfx_explosion(),
+        "parry": sfx_parry(), "crit": sfx_crit(),
     }
     for name, buf in sfx.items():
         write_wav(OUT / "sfx" / f"{name}.wav", buf)

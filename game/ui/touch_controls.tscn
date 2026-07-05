@@ -56,6 +56,21 @@ theme_override_colors/font_color = Color(1, 1, 1, 0.5)
 text = "ATACAR"
 horizontal_alignment = 1
 
+[node name="ParryButton" type="TouchScreenButton" parent="."]
+position = Vector2(392, 336)
+texture_normal = SubResource("btn_tex_medium")
+action = "parry"
+
+[node name="ParryLabel" type="Label" parent="ParryButton"]
+offset_left = 4.0
+offset_top = 22.0
+offset_right = 52.0
+offset_bottom = 34.0
+theme_override_font_sizes/font_size = 8
+theme_override_colors/font_color = Color(1, 1, 1, 0.5)
+text = "PARAR"
+horizontal_alignment = 1
+
 [node name="RollButton" type="TouchScreenButton" parent="."]
 position = Vector2(474, 292)
 texture_normal = SubResource("btn_tex_medium")

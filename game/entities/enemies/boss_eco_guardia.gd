@@ -214,6 +214,23 @@ func _disable_hitboxes() -> void:
 	sweep_shape.set_deferred("disabled", true)
 
 
+## Aparado: interrompe o golpe e leva dano de postura (não atordoa por
+## completo — bosses são resistentes), abrindo uma janela de punição.
+func on_parried() -> void:
+	if not is_engaged() or state == State.TRANSITION:
+		return
+	_disable_hitboxes()
+	_dash_chain = 0
+	_flash()
+	AudioManager.play_sfx("parry")
+	FX.hit_stop(0.09, 0.05)
+	FX.shake(6.0)
+	health.damage(28)
+	if state == State.DEAD or state == State.TRANSITION:
+		return
+	_enter_recover()
+
+
 func _on_hit_received(from_hitbox: Hitbox) -> void:
 	if state == State.DORMANT or state == State.DEAD:
 		return

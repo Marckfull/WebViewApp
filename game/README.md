@@ -11,6 +11,10 @@ souls-like, exploração entre cenas, NPCs com diálogo e a primeira luta de bos
 - Movimentação analógica em 8 direções (Aria, o retângulo verde-água 🙂).
 - Ataque com varredura de espada, custo de stamina e janela de acerto.
 - Esquiva-rolamento com i-frames; stamina com regeneração após pausa curta.
+- **Parry** [F / PARAR]: aparar um golpe na janela certa quebra a **postura**
+  do inimigo e o deixa atordoado — golpes num atordoado são **críticos**
+  (finalização, 2,5×). Inimigos pesados também têm a postura quebrada por
+  golpes seguidos; bosses resistem (o parry só os interrompe e chip de dano).
 - **Lock-on de alvo** (Z-targeting): trava a mira no inimigo mais próximo,
   pressione de novo para alternar entre alvos; movimento vira strafe.
 - Inimigos "Ecoados" com telegraph e janela de punição; mini-boss
@@ -132,6 +136,7 @@ souls-like, exploração entre cenas, NPCs com diálogo e a primeira luta de bos
 | Mover | WASD / setas | Analógico esquerdo |
 | Atacar | J ou Z | X / Quadrado |
 | Rolar | K ou Espaço | A / Cruz |
+| Aparar (parry) | F | R2 / RT |
 | Lock-on (alvo) | L ou Tab | R1 / RB |
 | Usar item (gancho) | H | B / Círculo |
 | Bomba de Eco | B | D-pad esquerda |
