@@ -22,7 +22,7 @@ souls-like, exploração entre cenas, NPCs com diálogo e a primeira luta de bos
 - **Loop de morte souls-like**: Ecos dropados no local da morte,
   recuperáveis; santuários curam e repõem os inimigos.
 
-**Mundo (6 cenas conectadas por portais):**
+**Mundo (8 cenas conectadas por portais):**
 - **Pedra-Alva** (vila hub): 3 NPCs com diálogo (Mestra Odara, Corvo e Sela),
   forja, santuário e portais para as outras áreas.
 - **Cripta das Guardiãs**: corredor de Ecoados, santuário antes do boss e a
@@ -46,6 +46,16 @@ souls-like, exploração entre cenas, NPCs com diálogo e a primeira luta de bos
   (não-aparáveis). No topo, o **Guardião dos Ventos** (4º boss) guarda a
   **Lente da Verdade**: com ela na bolsa, **segredos ocultos pelo Silêncio
   aparecem** — há uma Memória Perdida escondida à vista na própria vila.
+- **Necrópole de Sal** (a sudoeste): **Carcaças de Sal** entre **correntes
+  de sal** que varrem e ferem a Aria — a menos que ela calce as **Botas de
+  Corrente** (4º item de dungeon), recompensa da **Rainha de Sal** (5º boss).
+  As Botas também firmam a Aria contra o vento da Torre, e abrem uma corrente
+  que escondia uma Memória.
+- **Coração Mudo** (portão selado na vila, abre com os 4 Santuários do Eco
+  restaurados): o confronto final com **Selene, a Guardiã Caída** — ela fala
+  antes de lutar, e ao cair leva ao **dilema e aos finais** (silenciar o eco,
+  completar a canção dela, ou — com as Memórias Perdidas reunidas — o **final
+  verdadeiro**, a Canção do Mundo).
 - **Campo de Treino**: a arena da Fase 0, para testar builds e números.
 
 **Progressão e economia:**
@@ -186,10 +196,13 @@ game/
 
 ## Próximos passos (ver GDD, seção 8)
 
-1. **Playtest geral** — todos os sistemas centrais do GDD estão de pé;
-   a prioridade agora é jogar e calibrar números.
+A **campanha principal está content-complete**: Atos 1–3, 5 dungeons + 6
+bosses + Selene, os 4 itens de dungeon e os 3 finais. A partir daqui o
+trabalho é de refino e longevidade:
+
+1. **Playtest e balanceamento** — jogar de ponta a ponta e calibrar
+   vida/dano/custos de cada boss e área (a prioridade real).
 2. **Export Android de teste (APK)** e ajuste dos controles de toque.
-3. Quinta dungeon (Necrópole de Sal) e o item Botas de Corrente,
-   fechando o Ato 2.
-4. Ato 3: o Coração Mudo, a boss Selene, o dilema e os 2–3 finais.
+3. New Game+ e os 3 modos de dificuldade (Balada/Canção/Requiem).
+4. Mais Memórias Perdidas (das 12) e side quests; bestiário/diário.
 5. Combo de 3 golpes / ataque carregado; localização EN.

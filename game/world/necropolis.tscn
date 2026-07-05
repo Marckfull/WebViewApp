@@ -1,0 +1,184 @@
+[gd_scene load_steps=24 format=3]
+
+[ext_resource type="Script" path="res://world/necropolis.gd" id="1_necro"]
+[ext_resource type="PackedScene" path="res://entities/player/player.tscn" id="2_player"]
+[ext_resource type="PackedScene" path="res://world/shrine.tscn" id="3_shrine"]
+[ext_resource type="Script" path="res://world/enemy_spawner.gd" id="4_spawner"]
+[ext_resource type="PackedScene" path="res://entities/enemies/carcaca_de_sal.tscn" id="5_carcaca"]
+[ext_resource type="PackedScene" path="res://entities/enemies/ecoado.tscn" id="6_ecoado"]
+[ext_resource type="PackedScene" path="res://world/portal.tscn" id="7_portal"]
+[ext_resource type="PackedScene" path="res://ui/hud.tscn" id="8_hud"]
+[ext_resource type="PackedScene" path="res://ui/touch_controls.tscn" id="9_touch"]
+[ext_resource type="PackedScene" path="res://entities/enemies/rainha_de_sal.tscn" id="10_boss"]
+[ext_resource type="PackedScene" path="res://world/resource_node.tscn" id="11_resource"]
+[ext_resource type="PackedScene" path="res://world/grapple_point.tscn" id="12_grapple"]
+[ext_resource type="PackedScene" path="res://ui/inventory_screen.tscn" id="13_inventory"]
+[ext_resource type="PackedScene" path="res://ui/ocarina_wheel.tscn" id="14_wheel"]
+[ext_resource type="PackedScene" path="res://ui/map_screen.tscn" id="15_map"]
+[ext_resource type="PackedScene" path="res://ui/stats_screen.tscn" id="16_stats"]
+[ext_resource type="PackedScene" path="res://ui/pause_menu.tscn" id="17_pause"]
+[ext_resource type="Texture2D" path="res://assets/sprites/tiles/stone.png" id="18_stone"]
+[ext_resource type="PackedScene" path="res://world/current_zone.tscn" id="19_current"]
+
+[sub_resource type="RectangleShape2D" id="wall_h"]
+size = Vector2(800, 16)
+
+[sub_resource type="RectangleShape2D" id="wall_v"]
+size = Vector2(16, 760)
+
+[sub_resource type="RectangleShape2D" id="pillar"]
+size = Vector2(36, 36)
+
+[sub_resource type="RectangleShape2D" id="trigger_shape"]
+size = Vector2(220, 30)
+
+[node name="Necropolis" type="Node2D"]
+script = ExtResource("1_necro")
+arena_size = Vector2(800, 760)
+intro_message = "Necrópole de Sal. Aqui as Guardiãs foram sepultadas — e uma acordou."
+music = "necropolis"
+outdoor = false
+
+[node name="Floor" type="Polygon2D" parent="."]
+texture_repeat = 2
+color = Color(0.9, 0.86, 0.78, 1)
+texture = ExtResource("18_stone")
+polygon = PackedVector2Array(0, 0, 800, 0, 800, 760, 0, 760)
+
+[node name="AlcoveTint" type="Polygon2D" parent="Floor"]
+color = Color(0.8, 0.86, 0.78, 1)
+polygon = PackedVector2Array(620, 620, 784, 620, 784, 744, 620, 744)
+
+[node name="Solids" type="StaticBody2D" parent="."]
+collision_layer = 1
+collision_mask = 0
+
+[node name="Top" type="CollisionShape2D" parent="Solids"]
+position = Vector2(400, 8)
+shape = SubResource("wall_h")
+
+[node name="Bottom" type="CollisionShape2D" parent="Solids"]
+position = Vector2(400, 752)
+shape = SubResource("wall_h")
+
+[node name="Left" type="CollisionShape2D" parent="Solids"]
+position = Vector2(8, 380)
+shape = SubResource("wall_v")
+
+[node name="Right" type="CollisionShape2D" parent="Solids"]
+position = Vector2(792, 380)
+shape = SubResource("wall_v")
+
+[node name="Pillar1" type="CollisionShape2D" parent="Solids"]
+position = Vector2(280, 360)
+shape = SubResource("pillar")
+
+[node name="Pillar2" type="CollisionShape2D" parent="Solids"]
+position = Vector2(520, 480)
+shape = SubResource("pillar")
+
+[node name="WallVisuals" type="Node2D" parent="."]
+
+[node name="TopV" type="Polygon2D" parent="WallVisuals"]
+color = Color(0.5, 0.46, 0.4, 1)
+polygon = PackedVector2Array(0, 0, 800, 0, 800, 16, 0, 16)
+
+[node name="BottomV" type="Polygon2D" parent="WallVisuals"]
+color = Color(0.5, 0.46, 0.4, 1)
+polygon = PackedVector2Array(0, 744, 800, 744, 800, 760, 0, 760)
+
+[node name="LeftV" type="Polygon2D" parent="WallVisuals"]
+color = Color(0.5, 0.46, 0.4, 1)
+polygon = PackedVector2Array(0, 0, 16, 0, 16, 760, 0, 760)
+
+[node name="RightV" type="Polygon2D" parent="WallVisuals"]
+color = Color(0.5, 0.46, 0.4, 1)
+polygon = PackedVector2Array(784, 0, 800, 0, 800, 760, 784, 760)
+
+[node name="Pillar1V" type="Polygon2D" parent="WallVisuals"]
+color = Color(0.72, 0.68, 0.6, 1)
+polygon = PackedVector2Array(262, 342, 298, 342, 298, 378, 262, 378)
+
+[node name="Pillar2V" type="Polygon2D" parent="WallVisuals"]
+color = Color(0.72, 0.68, 0.6, 1)
+polygon = PackedVector2Array(502, 462, 538, 462, 538, 498, 502, 498)
+
+[node name="CurrentZone" parent="." instance=ExtResource("19_current")]
+position = Vector2(700, 570)
+flow = Vector2(0, -240)
+
+[node name="HiddenMemory" parent="." instance=ExtResource("11_resource")]
+position = Vector2(700, 690)
+item_id = "memoria_necropole"
+one_time = true
+
+[node name="Boss" parent="." instance=ExtResource("10_boss")]
+position = Vector2(400, 130)
+
+[node name="BossTrigger" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BossTrigger"]
+position = Vector2(400, 250)
+shape = SubResource("trigger_shape")
+
+[node name="Shrine" parent="." instance=ExtResource("3_shrine")]
+position = Vector2(120, 680)
+
+[node name="PortalVillage" parent="." instance=ExtResource("7_portal")]
+position = Vector2(400, 716)
+target_scene = "res://world/village.tscn"
+target_spawn = "from_necropole"
+label_text = "Pedra-Alva"
+
+[node name="SpawnerA" type="Marker2D" parent="."]
+position = Vector2(300, 430)
+script = ExtResource("4_spawner")
+enemy_scene = ExtResource("5_carcaca")
+
+[node name="SpawnerB" type="Marker2D" parent="."]
+position = Vector2(540, 350)
+script = ExtResource("4_spawner")
+enemy_scene = ExtResource("5_carcaca")
+
+[node name="SpawnerC" type="Marker2D" parent="."]
+position = Vector2(220, 600)
+script = ExtResource("4_spawner")
+enemy_scene = ExtResource("6_ecoado")
+
+[node name="OreA" parent="." instance=ExtResource("11_resource")]
+position = Vector2(90, 120)
+item_id = "minerio_eco"
+
+[node name="HerbA" parent="." instance=ExtResource("11_resource")]
+position = Vector2(120, 430)
+item_id = "erva_lunar"
+
+[node name="GrapplePostA" parent="." instance=ExtResource("12_grapple")]
+position = Vector2(400, 460)
+
+[node name="Spawns" type="Node2D" parent="."]
+
+[node name="default" type="Marker2D" parent="Spawns"]
+position = Vector2(400, 650)
+
+[node name="from_village" type="Marker2D" parent="Spawns"]
+position = Vector2(400, 650)
+
+[node name="Player" parent="." instance=ExtResource("2_player")]
+position = Vector2(400, 650)
+
+[node name="HUD" parent="." instance=ExtResource("8_hud")]
+
+[node name="TouchControls" parent="." instance=ExtResource("9_touch")]
+
+[node name="InventoryScreen" parent="." instance=ExtResource("13_inventory")]
+
+[node name="OcarinaWheel" parent="." instance=ExtResource("14_wheel")]
+
+[node name="MapScreen" parent="." instance=ExtResource("15_map")]
+
+[node name="StatsScreen" parent="." instance=ExtResource("16_stats")]
+
+[node name="PauseMenu" parent="." instance=ExtResource("17_pause")]

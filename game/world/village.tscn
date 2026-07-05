@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=3]
+[gd_scene load_steps=31 format=3]
 
 [ext_resource type="Script" path="res://world/level.gd" id="1_level"]
 [ext_resource type="PackedScene" path="res://entities/player/player.tscn" id="2_player"]
@@ -24,6 +24,7 @@
 [ext_resource type="PackedScene" path="res://ui/shop_screen.tscn" id="22_shop"]
 [ext_resource type="PackedScene" path="res://ui/stats_screen.tscn" id="23_stats"]
 [ext_resource type="PackedScene" path="res://ui/pause_menu.tscn" id="24_pause"]
+[ext_resource type="PackedScene" path="res://world/sealed_portal.tscn" id="25_sealed"]
 
 [sub_resource type="RectangleShape2D" id="wall_h"]
 size = Vector2(1280, 16)
@@ -214,11 +215,24 @@ target_scene = "res://world/tower_of_winds.tscn"
 target_spawn = "from_village"
 label_text = "Torre dos Ventos"
 
+[node name="PortalNecropole" parent="." instance=ExtResource("4_portal")]
+position = Vector2(40, 668)
+target_scene = "res://world/necropolis.tscn"
+target_spawn = "from_village"
+label_text = "Necrópole de Sal"
+
 [node name="HiddenMemory" parent="." instance=ExtResource("12_resource")]
 position = Vector2(770, 520)
 item_id = "memoria_pedra_alva"
 one_time = true
 requires_lens = true
+
+[node name="HeartGate" parent="." instance=ExtResource("25_sealed")]
+position = Vector2(1240, 130)
+target_scene = "res://world/coracao_mudo.tscn"
+target_spawn = "from_village"
+label_text = "Coração Mudo"
+required_flags = PackedStringArray("floresta_boss_derrotado", "forja_boss_derrotado", "torre_boss_derrotado", "necropole_boss_derrotado")
 
 [node name="Spawns" type="Node2D" parent="."]
 
@@ -239,6 +253,12 @@ position = Vector2(640, 600)
 
 [node name="from_torre" type="Marker2D" parent="Spawns"]
 position = Vector2(110, 190)
+
+[node name="from_necropole" type="Marker2D" parent="Spawns"]
+position = Vector2(110, 600)
+
+[node name="from_heart" type="Marker2D" parent="Spawns"]
+position = Vector2(1170, 190)
 
 [node name="Player" parent="." instance=ExtResource("2_player")]
 position = Vector2(340, 430)

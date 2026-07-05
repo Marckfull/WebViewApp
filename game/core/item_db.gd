@@ -45,6 +45,20 @@ const DB := {
 		"icon": "res://assets/sprites/icons/lente_verdade.png",
 		"key": true,
 	},
+	"botas_corrente": {
+		"name": "Botas de Corrente",
+		"desc": "Ferradas com sal-ímã. Você atravessa as correntes que "
+				+ "varreriam qualquer outro — e o vento perde a força.",
+		"icon": "res://assets/sprites/icons/botas_corrente.png",
+		"key": true,
+	},
+	"memoria_necropole": {
+		"name": "Memória Perdida: a Guardiã",
+		"desc": "O rosto de Selene antes da dor. Ela ria, um dia. A "
+				+ "corrente de sal guardava isto.",
+		"icon": "res://assets/sprites/icons/memoria_lys.png",
+		"key": true,
+	},
 	"memoria_lys": {
 		"name": "Memória Perdida: Lys",
 		"desc": "Um fragmento cristalizado. Dentro dele, a risada da sua "

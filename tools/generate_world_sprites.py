@@ -116,6 +116,14 @@ SENTINELA_PALETTE = {
     "E": (245, 255, 255, 255),  # olhos claros
 }
 
+CARCACA_PALETTE = {
+    ".": None,
+    "o": (40, 38, 44, 255),
+    "r": (216, 212, 224, 255),  # osso e sal
+    "R": (168, 164, 182, 255),
+    "E": (152, 62, 66, 255),     # olhos secos
+}
+
 FORJADO_PALETTE = {
     ".": None,
     "o": (28, 30, 38, 255),
@@ -160,6 +168,37 @@ BOSS_VENTO_PALETTE = {
     "w": (232, 246, 250, 255),
     "W": (168, 200, 208, 255),
     "g": (90, 74, 60, 255),
+}
+
+BOSS_SAL_PALETTE = {
+    ".": None,
+    "o": (44, 44, 54, 255),
+    "h": (234, 240, 246, 255),  # coroa de sal
+    "H": (190, 205, 216, 255),
+    "s": (238, 234, 240, 255),
+    "e": (150, 220, 235, 255),
+    "c": (240, 246, 250, 255),
+    "t": (200, 214, 224, 255),  # manto cristalino
+    "T": (150, 172, 186, 255),
+    "w": (240, 248, 250, 255),
+    "W": (180, 200, 210, 255),
+    "g": (120, 110, 100, 255),
+}
+
+# Selene, a Guardiã Caída — cores mudas de violeta e cinza (ela é o Silêncio).
+BOSS_SELENE_PALETTE = {
+    ".": None,
+    "o": (30, 26, 38, 255),
+    "h": (122, 110, 152, 255),
+    "H": (88, 80, 116, 255),
+    "s": (182, 172, 198, 255),
+    "e": (232, 120, 152, 255),  # olhos de luto
+    "c": (150, 140, 172, 255),
+    "t": (98, 86, 130, 255),
+    "T": (66, 56, 92, 255),
+    "w": (212, 202, 226, 255),
+    "W": (150, 140, 172, 255),
+    "g": (80, 70, 60, 255),
 }
 
 BOSS = [
@@ -273,6 +312,13 @@ ICON_PALETTES = {
         "g": (170, 230, 240, 255),
         "w": (245, 255, 255, 255),
     },
+    "botas_corrente": {
+        ".": None,
+        "o": (34, 30, 40, 255),
+        "b": (128, 92, 60, 255),
+        "B": (90, 64, 42, 255),
+        "m": (150, 200, 220, 255),
+    },
 }
 
 ICONS = {
@@ -378,6 +424,17 @@ ICONS = {
         "...ooao..",
         ".....oao.",
         "......oo.",
+    ],
+    "botas_corrente": [
+        ".oo...oo.",
+        ".obo..obo",
+        ".obo..obo",
+        ".obo..obo",
+        ".obbooobb",
+        ".obbbbbbb",
+        ".ommmmmmm",
+        ".obbbbbbb",
+        ".oooooooo",
     ],
 }
 
@@ -589,6 +646,12 @@ def main():
     save(render(ECOADO, SENTINELA_PALETTE, 24, -1), "enemies/sentinela_1.png")
     save(render(BOSS, BOSS_VENTO_PALETTE, 32), "enemies/vento_0.png")
     save(render(BOSS, BOSS_VENTO_PALETTE, 32, -1), "enemies/vento_1.png")
+    save(render(ECOADO, CARCACA_PALETTE, 24), "enemies/carcaca_0.png")
+    save(render(ECOADO, CARCACA_PALETTE, 24, -1), "enemies/carcaca_1.png")
+    save(render(BOSS, BOSS_SAL_PALETTE, 32), "enemies/rainha_0.png")
+    save(render(BOSS, BOSS_SAL_PALETTE, 32, -1), "enemies/rainha_1.png")
+    save(render(BOSS, BOSS_SELENE_PALETTE, 32), "enemies/selene_0.png")
+    save(render(BOSS, BOSS_SELENE_PALETTE, 32, -1), "enemies/selene_1.png")
     write_enemy_tres("ecoado", ROOT / "entities/enemies/ecoado_frames.tres")
     write_enemy_tres("brutamontes", ROOT / "entities/enemies/brutamontes_frames.tres")
     write_enemy_tres("boss", ROOT / "entities/enemies/boss_frames.tres")
@@ -598,6 +661,9 @@ def main():
     write_enemy_tres("golem", ROOT / "entities/enemies/golem_frames.tres")
     write_enemy_tres("sentinela", ROOT / "entities/enemies/sentinela_frames.tres")
     write_enemy_tres("vento", ROOT / "entities/enemies/vento_frames.tres")
+    write_enemy_tres("carcaca", ROOT / "entities/enemies/carcaca_frames.tres")
+    write_enemy_tres("rainha", ROOT / "entities/enemies/rainha_frames.tres")
+    write_enemy_tres("selene", ROOT / "entities/enemies/selene_frames.tres")
 
     for name, palette in NPCS.items():
         save(render(DOWN_BASE, palette, 24), f"npcs/{name}.png")

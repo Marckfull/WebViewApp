@@ -366,6 +366,42 @@ def music_winds():
     return buf
 
 
+def music_necropolis():
+    buf = []
+    dur = 18.0
+    mix(buf, tone(note_freq("C2"), dur, "sine", vol=0.12, attack=2.0, release=3.0))
+    mix(buf, tone(note_freq("G2"), dur, "sine", vol=0.07, attack=2.5, release=3.0))
+    # dobre distante, fúnebre
+    for at, n in [(1.5, "C4"), (5.0, "D#4"), (8.5, "G4"), (12.0, "F4"), (15.0, "D4")]:
+        mix(buf, tone(note_freq(n), 2.6, "sine", vol=0.13,
+                      attack=0.5, release=2.0, vibrato_hz=3, vibrato_depth=1.5), at)
+    mix(buf, noise(dur, vol=0.015, lowpass=50, attack=3.0, release=3.0))
+    return buf
+
+
+def music_heart():
+    # A Canção do Mundo, enfim completa — o leitmotiv resolvido e caloroso.
+    beat = 0.7
+    buf = []
+    chords(buf, beat, [
+        ["A2", "E3", "A3", "C4"], ["F2", "C3", "F3", "A3"],
+        ["C3", "G3", "C4", "E4"], ["G2", "D3", "G3", "B3"],
+        ["F2", "C3", "F3", "A3"], ["G2", "D3", "G3", "B3"],
+        ["A2", "E3", "A3", "C4"], ["A2", "E3", "A3", "E4"],
+    ], vol=0.09)
+    melody(buf, beat, [
+        (0, "E5", 1.5), (1.5, "C5", 0.5), (2, "D5", 1), (3, "A4", 1),
+        (4, "C5", 1.5), (5.5, "A4", 0.5), (6, "B4", 2),
+        (8, "E5", 1), (9, "G5", 1), (10, "A5", 2),
+        (12, "G5", 1), (13, "E5", 1), (14, "D5", 1), (15, "C5", 1),
+        (16, "A4", 1), (17, "C5", 1), (18, "E5", 1), (19, "G5", 1),
+        (20, "A5", 3), (23, "E5", 1),
+        (24, "F5", 1.5), (25.5, "E5", 0.5), (26, "D5", 1), (27, "C5", 1),
+        (28, "B4", 1), (29, "D5", 1), (30, "C5", 2),
+    ], vol=0.28, vib=5.0, depth=4.0)
+    return buf
+
+
 def music_boss():
     beat = 0.4
     buf = []
@@ -408,9 +444,10 @@ def main():
         write_wav(OUT / "sfx" / f"{name}.wav", buf)
     for name, buf in [("village", music_village()), ("crypt", music_crypt()),
                       ("boss", music_boss()), ("forest", music_forest()),
-                      ("forge", music_forge()), ("winds", music_winds())]:
+                      ("forge", music_forge()), ("winds", music_winds()),
+                      ("necropolis", music_necropolis()), ("heart", music_heart())]:
         write_wav(OUT / "music" / f"{name}.wav", buf)
-    print(f"OK: {len(sfx)} SFX + 6 músicas em {OUT}")
+    print(f"OK: {len(sfx)} SFX + 8 músicas em {OUT}")
 
 
 if __name__ == "__main__":

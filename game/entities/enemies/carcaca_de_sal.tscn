@@ -1,0 +1,67 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://entities/enemies/enemy_base.gd" id="1_enemy"]
+[ext_resource type="Script" path="res://systems/health.gd" id="2_health"]
+[ext_resource type="Script" path="res://systems/hurtbox.gd" id="3_hurtbox"]
+[ext_resource type="Script" path="res://systems/hitbox.gd" id="4_hitbox"]
+[ext_resource type="SpriteFrames" path="res://entities/enemies/carcaca_frames.tres" id="5_frames"]
+
+[sub_resource type="CircleShape2D" id="body_shape"]
+radius = 6.0
+
+[sub_resource type="RectangleShape2D" id="hurt_shape"]
+size = Vector2(14, 18)
+
+[sub_resource type="RectangleShape2D" id="hit_shape"]
+size = Vector2(18, 12)
+
+[node name="CarcacaDeSal" type="CharacterBody2D" groups=["enemies"]]
+collision_layer = 4
+collision_mask = 7
+script = ExtResource("1_enemy")
+max_speed = 44.0
+aggro_range = 150.0
+attack_range = 30.0
+telegraph_time = 0.55
+attack_time = 0.24
+attack_lunge = 190.0
+recover_time = 0.85
+stagger_chance = 0.5
+poise_max = 3.0
+echoes_reward = 55
+
+[node name="Visual" type="AnimatedSprite2D" parent="."]
+position = Vector2(0, -1)
+sprite_frames = ExtResource("5_frames")
+autoplay = "idle"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 3)
+shape = SubResource("body_shape")
+
+[node name="Health" type="Node" parent="."]
+script = ExtResource("2_health")
+max_health = 60
+
+[node name="Hurtbox" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 16
+script = ExtResource("3_hurtbox")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+shape = SubResource("hurt_shape")
+
+[node name="HitboxPivot" type="Node2D" parent="."]
+
+[node name="Hitbox" type="Area2D" parent="HitboxPivot"]
+collision_layer = 32
+collision_mask = 0
+monitoring = false
+script = ExtResource("4_hitbox")
+damage = 13
+knockback = 160.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitboxPivot/Hitbox"]
+position = Vector2(14, 0)
+shape = SubResource("hit_shape")
+disabled = true

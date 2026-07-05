@@ -1,0 +1,123 @@
+[gd_scene load_steps=18 format=3]
+
+[ext_resource type="Script" path="res://world/coracao_mudo.gd" id="1_heart"]
+[ext_resource type="PackedScene" path="res://entities/player/player.tscn" id="2_player"]
+[ext_resource type="PackedScene" path="res://world/shrine.tscn" id="3_shrine"]
+[ext_resource type="PackedScene" path="res://world/portal.tscn" id="4_portal"]
+[ext_resource type="PackedScene" path="res://entities/enemies/selene.tscn" id="5_selene"]
+[ext_resource type="PackedScene" path="res://ui/hud.tscn" id="6_hud"]
+[ext_resource type="PackedScene" path="res://ui/touch_controls.tscn" id="7_touch"]
+[ext_resource type="PackedScene" path="res://ui/inventory_screen.tscn" id="8_inventory"]
+[ext_resource type="PackedScene" path="res://ui/ocarina_wheel.tscn" id="9_wheel"]
+[ext_resource type="PackedScene" path="res://ui/map_screen.tscn" id="10_map"]
+[ext_resource type="PackedScene" path="res://ui/stats_screen.tscn" id="11_stats"]
+[ext_resource type="PackedScene" path="res://ui/pause_menu.tscn" id="12_pause"]
+[ext_resource type="Texture2D" path="res://assets/sprites/tiles/stone.png" id="13_stone"]
+[ext_resource type="PackedScene" path="res://ui/dialog_box.tscn" id="14_dialog"]
+
+[sub_resource type="RectangleShape2D" id="wall_h"]
+size = Vector2(720, 16)
+
+[sub_resource type="RectangleShape2D" id="wall_v"]
+size = Vector2(16, 600)
+
+[sub_resource type="RectangleShape2D" id="trigger_shape"]
+size = Vector2(240, 30)
+
+[node name="CoracaoMudo" type="Node2D"]
+script = ExtResource("1_heart")
+arena_size = Vector2(720, 600)
+intro_message = "O Coração Mudo. Aqui a Canção do Mundo emudeceu."
+music = "crypt"
+outdoor = false
+
+[node name="Floor" type="Polygon2D" parent="."]
+texture_repeat = 2
+color = Color(0.6, 0.55, 0.7, 1)
+texture = ExtResource("13_stone")
+polygon = PackedVector2Array(0, 0, 720, 0, 720, 600, 0, 600)
+
+[node name="Solids" type="StaticBody2D" parent="."]
+collision_layer = 1
+collision_mask = 0
+
+[node name="Top" type="CollisionShape2D" parent="Solids"]
+position = Vector2(360, 8)
+shape = SubResource("wall_h")
+
+[node name="Bottom" type="CollisionShape2D" parent="Solids"]
+position = Vector2(360, 592)
+shape = SubResource("wall_h")
+
+[node name="Left" type="CollisionShape2D" parent="Solids"]
+position = Vector2(8, 300)
+shape = SubResource("wall_v")
+
+[node name="Right" type="CollisionShape2D" parent="Solids"]
+position = Vector2(712, 300)
+shape = SubResource("wall_v")
+
+[node name="WallVisuals" type="Node2D" parent="."]
+
+[node name="TopV" type="Polygon2D" parent="WallVisuals"]
+color = Color(0.32, 0.28, 0.42, 1)
+polygon = PackedVector2Array(0, 0, 720, 0, 720, 16, 0, 16)
+
+[node name="BottomV" type="Polygon2D" parent="WallVisuals"]
+color = Color(0.32, 0.28, 0.42, 1)
+polygon = PackedVector2Array(0, 584, 720, 584, 720, 600, 0, 600)
+
+[node name="LeftV" type="Polygon2D" parent="WallVisuals"]
+color = Color(0.32, 0.28, 0.42, 1)
+polygon = PackedVector2Array(0, 0, 16, 0, 16, 600, 0, 600)
+
+[node name="RightV" type="Polygon2D" parent="WallVisuals"]
+color = Color(0.32, 0.28, 0.42, 1)
+polygon = PackedVector2Array(704, 0, 720, 0, 720, 600, 704, 600)
+
+[node name="Boss" parent="." instance=ExtResource("5_selene")]
+position = Vector2(360, 150)
+
+[node name="BossTrigger" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BossTrigger"]
+position = Vector2(360, 280)
+shape = SubResource("trigger_shape")
+
+[node name="Shrine" parent="." instance=ExtResource("3_shrine")]
+position = Vector2(120, 500)
+
+[node name="PortalVillage" parent="." instance=ExtResource("4_portal")]
+position = Vector2(360, 556)
+target_scene = "res://world/village.tscn"
+target_spawn = "from_heart"
+label_text = "Pedra-Alva"
+
+[node name="Spawns" type="Node2D" parent="."]
+
+[node name="default" type="Marker2D" parent="Spawns"]
+position = Vector2(360, 500)
+
+[node name="from_village" type="Marker2D" parent="Spawns"]
+position = Vector2(360, 500)
+
+[node name="Player" parent="." instance=ExtResource("2_player")]
+position = Vector2(360, 500)
+
+[node name="HUD" parent="." instance=ExtResource("6_hud")]
+
+[node name="TouchControls" parent="." instance=ExtResource("7_touch")]
+
+[node name="InventoryScreen" parent="." instance=ExtResource("8_inventory")]
+
+[node name="OcarinaWheel" parent="." instance=ExtResource("9_wheel")]
+
+[node name="MapScreen" parent="." instance=ExtResource("10_map")]
+
+[node name="StatsScreen" parent="." instance=ExtResource("11_stats")]
+
+[node name="PauseMenu" parent="." instance=ExtResource("12_pause")]
+
+[node name="DialogBox" parent="." instance=ExtResource("14_dialog")]

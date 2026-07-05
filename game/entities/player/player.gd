@@ -129,6 +129,18 @@ func push(force: Vector2) -> void:
 	_push_accum += force
 
 
+## Dano de ambiente (correntes de sal, etc.): sem knockback nem troca de
+## estado, mas respeita i-frames e pode matar.
+func take_environmental_damage(amount: int) -> void:
+	if state == State.DEAD or _iframes > 0.0:
+		return
+	health.damage(amount)
+	if state == State.DEAD:
+		return
+	_flash()
+	AudioManager.play_sfx("hurt")
+
+
 func is_alive() -> bool:
 	return state != State.DEAD
 

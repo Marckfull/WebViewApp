@@ -12,7 +12,8 @@ func _ready() -> void:
 
 
 func _physics_process(_delta: float) -> void:
-	if _player and _player.is_alive():
+	# As Botas de Corrente firmam a Aria contra o vento.
+	if _player and _player.is_alive() and not GameState.has_item("botas_corrente"):
 		_player.push(force)
 
 
