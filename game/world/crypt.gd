@@ -6,6 +6,15 @@ extends Level
 const RESOURCE_NODE := preload("res://world/resource_node.tscn")
 const GANCHO_POSITION := Vector2(320, 140)
 
+const ACT2_CUTSCENE := PackedStringArray([
+	"A Guardiã cai, e da névoa surge uma Ocarina de Vidro — o instrumento "
+			+ "das Guardiãs, que só quem ouve a Canção pode tocar.",
+	"Aria entende, enfim: o Silêncio se prende a quatro Santuários do Eco "
+			+ "espalhados por Lirael — Floresta, Forja, Torre e Necrópole.",
+	"Restaure os quatro, e o caminho até o coração do Silêncio se abrirá. "
+			+ "Só então ela reencontrará Lys.",
+])
+
 @onready var boss: BossEcoGuardia = $Boss
 @onready var gate_shape: CollisionShape2D = $Gate/CollisionShape2D
 @onready var gate_visual: Polygon2D = $Gate/Visual
@@ -39,7 +48,18 @@ func _on_boss_ended(victory: bool) -> void:
 	if victory:
 		GameState.flags["cripta_boss_derrotado"] = true
 		_spawn_gancho()
+		if not GameState.flags.get("cutscene_act2", false):
+			GameState.flags["cutscene_act2"] = true
+			_play_act2_cutscene()
 	_set_gate(false)
+
+
+func _play_act2_cutscene() -> void:
+	await get_tree().create_timer(2.2).timeout
+	GameState.pending_cutscene = ACT2_CUTSCENE
+	GameState.cutscene_return = "res://world/crypt.tscn"
+	GameState.next_spawn = "default"
+	get_tree().change_scene_to_file("res://ui/cutscene.tscn")
 
 
 ## Recompensa da dungeon: o Gancho-corda surge onde a Guardiã caiu.

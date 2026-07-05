@@ -143,6 +143,22 @@ const DB := {
 		"icon": "res://assets/sprites/icons/ocarina_vidro.png",
 		"key": true,
 	},
+	"adaga": {
+		"name": "Adaga Dupla",
+		"desc": "Rápida e barata, mas fraca. Encadeia até quatro golpes. "
+				+ "Equipe pela bolsa.",
+		"icon": "res://assets/sprites/icons/adaga.png",
+		"key": true,
+		"weapon": true,
+	},
+	"martelo": {
+		"name": "Martelo da Forja",
+		"desc": "Lento e pesado: dano alto, recuo enorme, quebra guardas. "
+				+ "Equipe pela bolsa.",
+		"icon": "res://assets/sprites/icons/martelo.png",
+		"key": true,
+		"weapon": true,
+	},
 	"gancho_corda": {
 		"name": "Gancho-corda",
 		"desc": "Ferramenta das Guardiãs. Use-a [H / ITEM] perto de um poste "

@@ -5,7 +5,7 @@ extends CharacterBody2D
 
 signal died
 
-enum State { MOVE, ROLL, ATTACK, HURT, DEAD, GRAPPLE, PARRY }
+enum State { MOVE, ROLL, ATTACK, HURT, DEAD, GRAPPLE, PARRY, CHARGE }
 
 const SPEED := 90.0
 const ROLL_SPEED := 200.0
@@ -13,8 +13,9 @@ const ROLL_DURATION := 0.32
 const ROLL_COST := 22.0
 const ATTACK_COST := 14.0
 const ATTACK_DURATION := 0.3
-const ATTACK_HIT_START := 0.06
-const ATTACK_HIT_END := 0.2
+## Janela de acerto como fração da duração do golpe (independe da arma).
+const HIT_START_FRAC := 0.2
+const HIT_END_FRAC := 0.67
 const ATTACK_LUNGE := 55.0
 ## Combo de 3 golpes: o 3º é uma finalização mais larga, forte e longe.
 const FINISHER_LUNGE := 95.0
@@ -38,6 +39,15 @@ const BOMB_COOLDOWN := 2.0
 const PARRY_COST := 12.0
 const PARRY_DURATION := 0.4
 const PARRY_IFRAMES := 0.35
+## Ataque carregado: segurar [U / CARGA] acumula força e solta um golpe forte.
+const CHARGE_MIN := 0.3
+const CHARGE_MAX := 1.0
+const CHARGE_COST := 30.0
+const CHARGE_MOVE := 34.0
+const CHARGE_MIN_MULT := 2.0
+const CHARGE_MAX_MULT := 3.3
+const CHARGE_LUNGE := 110.0
+const CHARGE_KNOCKBACK := 320.0
 
 var state: State = State.MOVE
 var facing := Vector2.DOWN
@@ -56,6 +66,10 @@ var _base_hit_damage := 12
 var _sweep_from := -0.9
 var _sweep_to := 0.9
 var _lunge := ATTACK_LUNGE
+var _weapon: Dictionary = WeaponDB.DB["espada"]
+var _max_combo := 2
+var _atk_duration := ATTACK_DURATION
+var _charge_t := 0.0
 
 @onready var health: Health = $Health
 @onready var stamina: Stamina = $Stamina
@@ -71,7 +85,8 @@ var _lunge := ATTACK_LUNGE
 func _ready() -> void:
 	hurtbox.hit_received.connect(_on_hit_received)
 	health.died.connect(_on_died)
-	GameState.weapon_changed.connect(_apply_weapon_level)
+	GameState.weapon_changed.connect(func(_level: int) -> void: _apply_stats())
+	GameState.weapon_equipped.connect(func(_id: String) -> void: _apply_stats())
 	GameState.attributes_changed.connect(_apply_stats)
 	GameState.inventory_changed.connect(_apply_stats)
 	_apply_stats()
@@ -93,18 +108,28 @@ func _apply_stats() -> void:
 	stamina.max_stamina = max_stamina
 	stamina.current = minf(stamina.current, max_stamina)
 	stamina.changed.emit(stamina.current, max_stamina)
-	_apply_weapon_level(GameState.weapon_level)
+	_refresh_weapon()
 
 
-func _apply_weapon_level(level: int) -> void:
-	_base_hit_damage = BASE_DAMAGE + DAMAGE_PER_FORGE * level \
+## Aplica o perfil da arma empunhada (dano, alcance, combo máximo).
+func _refresh_weapon() -> void:
+	_weapon = GameState.weapon()
+	_max_combo = int(_weapon.get("combo", 2))
+	var raw := BASE_DAMAGE + DAMAGE_PER_FORGE * GameState.weapon_level \
 			+ 2 * int(GameState.attributes["forca"])
+	_base_hit_damage = int(round(raw * float(_weapon.get("dmg", 1.0))))
 	hitbox.damage = _base_hit_damage
+	hitbox_pivot.scale = Vector2.ONE * float(_weapon.get("reach", 1.0))
 
 
 ## O Talismã de Sela reduz o custo de vigor em 20%.
 func _stamina_cost(base: float) -> float:
 	return base * (0.8 if GameState.has_item("talisma_sela") else 1.0)
+
+
+## Custo de vigor de um golpe, escalado pela arma.
+func _attack_stamina() -> float:
+	return _stamina_cost(ATTACK_COST * float(_weapon.get("stamina", 1.0)))
 
 
 func _physics_process(delta: float) -> void:
@@ -125,6 +150,8 @@ func _physics_process(delta: float) -> void:
 			_state_grapple(delta)
 		State.PARRY:
 			_state_parry(delta)
+		State.CHARGE:
+			_state_charge(delta)
 		State.DEAD:
 			velocity = Vector2.ZERO
 	velocity += _knockback + _push_accum
@@ -166,8 +193,10 @@ func _state_move() -> void:
 			and stamina.try_spend(_stamina_cost(ROLL_COST)):
 		_enter_roll(dir.normalized())
 	elif Input.is_action_just_pressed("attack") \
-			and stamina.try_spend(_stamina_cost(ATTACK_COST)):
+			and stamina.try_spend(_attack_stamina()):
 		_enter_attack()
+	elif Input.is_action_just_pressed("heavy") and stamina.current >= 10.0:
+		_enter_charge()
 	elif Input.is_action_just_pressed("use_item"):
 		_try_grapple()
 	elif Input.is_action_just_pressed("heal"):
@@ -199,7 +228,8 @@ func _state_roll(delta: float) -> void:
 
 func _enter_attack(combo := 0) -> void:
 	state = State.ATTACK
-	_timer = ATTACK_DURATION
+	_atk_duration = ATTACK_DURATION * float(_weapon.get("speed", 1.0))
+	_timer = _atk_duration
 	_combo = combo
 	_combo_queued = false
 	sword_visual.visible = true
@@ -207,44 +237,45 @@ func _enter_attack(combo := 0) -> void:
 	# a animação não-loop a cada golpe.
 	sprite.flip_h = _is_side() and facing.x < 0.0
 	sprite.play("attack_" + _facing_name())
-	# Cada elo do combo alterna a varredura; o 3º é a finalização.
-	match combo:
-		0:
-			_sweep_from = -0.9
-			_sweep_to = 0.9
-			_lunge = ATTACK_LUNGE
-			hitbox.damage = _base_hit_damage
-			hitbox.knockback = BASE_KNOCKBACK
-		1:
-			_sweep_from = 0.9
-			_sweep_to = -0.9
-			_lunge = ATTACK_LUNGE
-			hitbox.damage = _base_hit_damage
-			hitbox.knockback = BASE_KNOCKBACK
-		_:
-			_sweep_from = -1.3
-			_sweep_to = 1.3
-			_lunge = FINISHER_LUNGE
-			hitbox.damage = int(round(_base_hit_damage * FINISHER_MULT))
-			hitbox.knockback = FINISHER_KNOCKBACK
-	AudioManager.play_sfx("crit" if combo >= 2 else "swing")
+	var knock := float(_weapon.get("knockback", 1.0))
+	var lunge_mult := float(_weapon.get("lunge", 1.0))
+	# Cada elo do combo alterna a varredura; o último é a finalização.
+	if combo >= _max_combo:
+		_sweep_from = -1.3
+		_sweep_to = 1.3
+		_lunge = FINISHER_LUNGE * lunge_mult
+		hitbox.damage = int(round(_base_hit_damage * FINISHER_MULT))
+		hitbox.knockback = FINISHER_KNOCKBACK * knock
+	elif combo % 2 == 0:
+		_sweep_from = -0.9
+		_sweep_to = 0.9
+		_lunge = ATTACK_LUNGE * lunge_mult
+		hitbox.damage = _base_hit_damage
+		hitbox.knockback = BASE_KNOCKBACK * knock
+	else:
+		_sweep_from = 0.9
+		_sweep_to = -0.9
+		_lunge = ATTACK_LUNGE * lunge_mult
+		hitbox.damage = _base_hit_damage
+		hitbox.knockback = BASE_KNOCKBACK * knock
+	AudioManager.play_sfx("crit" if combo >= _max_combo else "swing")
 
 
 func _state_attack(delta: float) -> void:
 	_timer -= delta
-	var t := ATTACK_DURATION - _timer
+	var frac := (_atk_duration - _timer) / _atk_duration
 	# Varredura do golpe: o pivô gira ao redor da direção encarada.
-	hitbox_pivot.rotation = facing.angle() + lerpf(_sweep_from, _sweep_to, t / ATTACK_DURATION)
-	velocity = facing * _lunge * maxf(1.0 - t / ATTACK_DURATION, 0.0)
-	var active := t >= ATTACK_HIT_START and t <= ATTACK_HIT_END
+	hitbox_pivot.rotation = facing.angle() + lerpf(_sweep_from, _sweep_to, frac)
+	velocity = facing * _lunge * maxf(1.0 - frac, 0.0)
+	var active := frac >= HIT_START_FRAC and frac <= HIT_END_FRAC
 	hitbox_shape.set_deferred("disabled", not active)
 	# Encadear: apertar ataque na 2ª metade do golpe compra o próximo elo.
-	if _combo < 2 and not _combo_queued and t >= ATTACK_HIT_START \
+	if _combo < _max_combo and not _combo_queued and frac >= HIT_START_FRAC \
 			and Input.is_action_just_pressed("attack") \
-			and stamina.try_spend(_stamina_cost(ATTACK_COST)):
+			and stamina.try_spend(_attack_stamina()):
 		_combo_queued = true
 	if _timer <= 0.0:
-		if _combo_queued and _combo < 2:
+		if _combo_queued and _combo < _max_combo:
 			_enter_attack(_combo + 1)
 		else:
 			_exit_attack()
@@ -256,6 +287,52 @@ func _exit_attack() -> void:
 	_combo = 0
 	_combo_queued = false
 	state = State.MOVE
+
+
+func _enter_charge() -> void:
+	state = State.CHARGE
+	_charge_t = 0.0
+	velocity = Vector2.ZERO
+
+
+func _state_charge(delta: float) -> void:
+	var dir := Input.get_vector("move_left", "move_right", "move_up", "move_down")
+	velocity = dir * CHARGE_MOVE
+	if lock_target == null and dir.length() > 0.1:
+		facing = dir.normalized()
+	_charge_t = minf(_charge_t + delta, CHARGE_MAX)
+	var g := _charge_t / CHARGE_MAX
+	sprite.modulate = Color(1.0 + g * 1.4, 1.0 + g * 0.5, 1.0 - g * 0.4)
+	if not Input.is_action_pressed("heavy"):
+		_release_charge()
+
+
+func _release_charge() -> void:
+	sprite.modulate = Color.WHITE
+	if _charge_t < CHARGE_MIN or not stamina.try_spend(_stamina_cost(CHARGE_COST)):
+		state = State.MOVE
+		return
+	var t := clampf((_charge_t - CHARGE_MIN) / (CHARGE_MAX - CHARGE_MIN), 0.0, 1.0)
+	_enter_charged(lerpf(CHARGE_MIN_MULT, CHARGE_MAX_MULT, t))
+
+
+## Golpe carregado: um único ataque forte e largo (sem encadeamento).
+func _enter_charged(power: float) -> void:
+	state = State.ATTACK
+	_combo = 99  # bloqueia o encadeamento
+	_combo_queued = false
+	_atk_duration = ATTACK_DURATION * 1.3 * float(_weapon.get("speed", 1.0))
+	_timer = _atk_duration
+	sword_visual.visible = true
+	sprite.flip_h = _is_side() and facing.x < 0.0
+	sprite.play("attack_" + _facing_name())
+	_sweep_from = -1.5
+	_sweep_to = 1.5
+	_lunge = CHARGE_LUNGE * float(_weapon.get("lunge", 1.0))
+	hitbox.damage = int(round(_base_hit_damage * power))
+	hitbox.knockback = CHARGE_KNOCKBACK * float(_weapon.get("knockback", 1.0))
+	AudioManager.play_sfx("crit")
+	FX.shake(6.0)
 
 
 func _state_hurt(delta: float) -> void:
@@ -426,7 +503,7 @@ func _update_animation() -> void:
 			_play("roll_" + _facing_name())
 		State.ATTACK:
 			pass  # disparada uma única vez em _enter_attack (não-loop)
-		State.HURT, State.PARRY:
+		State.HURT, State.PARRY, State.CHARGE:
 			_play("idle_" + _facing_name())
 		State.DEAD:
 			_play("idle_down")

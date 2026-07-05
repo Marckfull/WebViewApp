@@ -13,6 +13,14 @@ souls-like, exploração entre cenas, NPCs com diálogo e a primeira luta de bos
   cortes; o 3º é uma **finalização** mais larga, com mais alcance, dano
   (×1,7) e recuo. Cada elo custa stamina.
 - Esquiva-rolamento com i-frames; stamina com regeneração após pausa curta.
+- **Combo de 3 golpes**: encadeie apertando ataque na 2ª metade de cada
+  golpe; o 3º é uma **finalização** mais larga e forte.
+- **Ataque carregado** [U / CARGA]: segure para acumular e solte um golpe
+  pesado (2×–3,3× de dano, recuo enorme), gastando bastante vigor.
+- **Armas com movesets** (equipe pela Bolsa): **Espada** equilibrada,
+  **Adaga Dupla** (rápida, fraca, combo de 4) e **Martelo da Forja**
+  (lento, devastador, recuo enorme) — cada uma muda dano, alcance,
+  velocidade, recuo e o tamanho do combo. Vendidas pelo Corvo.
 - **Parry** [F / PARAR]: aparar um golpe na janela certa quebra a **postura**
   do inimigo e o deixa atordoado — golpes num atordoado são **críticos**
   (finalização, 2,5×). Inimigos pesados também têm a postura quebrada por
@@ -93,8 +101,10 @@ souls-like, exploração entre cenas, NPCs com diálogo e a primeira luta de bos
 - **Side quest de Sela** ("O canteiro da mamãe"): leve 5 Ervas-lunares
   e receba o **Talismã de Sela** (ataques/esquivas gastam 20% menos
   vigor) — com diálogos por etapa da quest.
-- **Cutscene de abertura** ao iniciar Novo Jogo: o Silêncio chega a
-  Pedra-Alva (slides com fade, puláveis).
+- **Cutscenes entre atos** (slides com fade, puláveis): a abertura (o
+  Silêncio chega a Pedra-Alva), a passagem ao Ato 2 (ao vencer a Cripta,
+  Aria descobre os 4 Santuários) e ao Ato 3 (quando os 4 são restaurados
+  e o Coração Mudo se abre).
 
 **Sobrevivência e mundo vivo:**
 - **Frascos de Essência** (estilo Estus): 3 cargas que curam 60 de vida
@@ -175,7 +185,8 @@ souls-like, exploração entre cenas, NPCs com diálogo e a primeira luta de bos
 | Ação | Tecla | Gamepad |
 |---|---|---|
 | Mover | WASD / setas | Analógico esquerdo |
-| Atacar | J ou Z | X / Quadrado |
+| Atacar (combo) | J ou Z | X / Quadrado |
+| Ataque carregado (segurar) | U | RT |
 | Rolar | K ou Espaço | A / Cruz |
 | Aparar (parry) | F | R2 / RT |
 | Lock-on (alvo) | L ou Tab | R1 / RB |

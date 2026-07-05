@@ -1,0 +1,56 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://ui/cutscene.gd" id="1_cut"]
+
+[node name="Cutscene" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1_cut")
+
+[node name="Background" type="ColorRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.04, 0.04, 0.07, 1)
+
+[node name="TapArea" type="Button" parent="."]
+unique_name_in_owner = true
+anchor_right = 1.0
+anchor_bottom = 1.0
+flat = true
+
+[node name="SlideLabel" type="Label" parent="."]
+unique_name_in_owner = true
+anchor_left = 0.1
+anchor_top = 0.2
+anchor_right = 0.9
+anchor_bottom = 0.8
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(0.85, 0.83, 0.78, 1)
+theme_override_constants/line_spacing = 6
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="SkipButton" type="Button" parent="."]
+unique_name_in_owner = true
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -76.0
+offset_top = -30.0
+offset_right = -12.0
+offset_bottom = -10.0
+theme_override_font_sizes/font_size = 8
+text = "Pular >>"
+
+[node name="Hint" type="Label" parent="."]
+anchor_top = 1.0
+anchor_right = 0.6
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = -24.0
+offset_bottom = -10.0
+theme_override_font_sizes/font_size = 7
+theme_override_colors/font_color = Color(0.5, 0.5, 0.58, 1)
+text = "toque / [E] para continuar"

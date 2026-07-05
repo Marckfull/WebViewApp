@@ -7,6 +7,7 @@ signal inventory_changed
 signal weapon_changed(level: int)
 signal flasks_changed(current: int, max_value: int)
 signal attributes_changed
+signal weapon_equipped(id: String)
 
 enum Difficulty { BALADA, CANCAO, REQUIEM }
 
@@ -28,6 +29,8 @@ var echoes: int = 0
 var inventory: Dictionary = {}
 ## Nível de forja da lâmina (0 a 3) — ver forge.gd e player.gd.
 var weapon_level: int = 0
+## Arma empunhada (ver WeaponDB).
+var equipped_weapon := "espada"
 ## Frascos de Essência (cura limitada, recarregada no santuário).
 var flasks: int = 3
 var flasks_max: int = 3
@@ -50,6 +53,17 @@ var last_shrine_scene := "res://world/village.tscn"
 var difficulty: int = Difficulty.CANCAO
 ## Ciclo de New Game+ (0 = primeira jogada); escala os inimigos.
 var ng_cycle: int = 0
+## Cutscene pendente (transitório): falas e cena para retornar depois.
+var pending_cutscene: PackedStringArray = []
+var cutscene_return := ""
+
+
+## Os 4 Santuários do Eco foram restaurados? (abre o Coração Mudo.)
+func act2_complete() -> bool:
+	return flags.get("floresta_boss_derrotado", false) \
+			and flags.get("forja_boss_derrotado", false) \
+			and flags.get("torre_boss_derrotado", false) \
+			and flags.get("necropole_boss_derrotado", false)
 
 
 func _process(delta: float) -> void:
@@ -114,6 +128,7 @@ func reset() -> void:
 	flags = {}
 	inventory = {}
 	weapon_level = 0
+	equipped_weapon = "espada"
 	flasks = 3
 	flasks_max = 3
 	attributes = {"vit": 0, "fol": 0, "forca": 0}
@@ -225,6 +240,16 @@ func memories_collected() -> Array:
 func upgrade_weapon() -> void:
 	weapon_level += 1
 	weapon_changed.emit(weapon_level)
+
+
+func equip_weapon(id: String) -> void:
+	if WeaponDB.DB.has(id):
+		equipped_weapon = id
+		weapon_equipped.emit(id)
+
+
+func weapon() -> Dictionary:
+	return WeaponDB.get_weapon(equipped_weapon)
 
 
 func spend_echoes(amount: int) -> bool:

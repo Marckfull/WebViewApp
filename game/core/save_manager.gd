@@ -48,6 +48,7 @@ func save_game() -> void:
 		"flags": GameState.flags,
 		"inventory": GameState.inventory,
 		"weapon_level": GameState.weapon_level,
+		"equipped_weapon": GameState.equipped_weapon,
 		"flasks": GameState.flasks,
 		"flasks_max": GameState.flasks_max,
 		"attributes": GameState.attributes,
@@ -83,6 +84,7 @@ func load_game() -> bool:
 		inv[id] = int(inv[id])  # JSON devolve números como float
 	GameState.inventory = inv
 	GameState.weapon_level = int(parsed.get("weapon_level", 0))
+	GameState.equipped_weapon = str(parsed.get("equipped_weapon", "espada"))
 	GameState.flasks_max = int(parsed.get("flasks_max", 3))
 	GameState.flasks = int(parsed.get("flasks", GameState.flasks_max))
 	var attrs: Dictionary = parsed.get("attributes", {})
