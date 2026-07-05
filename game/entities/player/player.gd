@@ -16,6 +16,11 @@ const ATTACK_DURATION := 0.3
 const ATTACK_HIT_START := 0.06
 const ATTACK_HIT_END := 0.2
 const ATTACK_LUNGE := 55.0
+## Combo de 3 golpes: o 3º é uma finalização mais larga, forte e longe.
+const FINISHER_LUNGE := 95.0
+const FINISHER_MULT := 1.7
+const BASE_KNOCKBACK := 150.0
+const FINISHER_KNOCKBACK := 250.0
 const HURT_DURATION := 0.35
 const HURT_IFRAMES := 0.7
 const KNOCKBACK_DECAY := 480.0
@@ -45,6 +50,12 @@ var _grapple_target := Vector2.ZERO
 var _bomb_cooldown := 0.0
 var _parry_active := 0.0
 var _push_accum := Vector2.ZERO
+var _combo := 0
+var _combo_queued := false
+var _base_hit_damage := 12
+var _sweep_from := -0.9
+var _sweep_to := 0.9
+var _lunge := ATTACK_LUNGE
 
 @onready var health: Health = $Health
 @onready var stamina: Stamina = $Stamina
@@ -86,8 +97,9 @@ func _apply_stats() -> void:
 
 
 func _apply_weapon_level(level: int) -> void:
-	hitbox.damage = BASE_DAMAGE + DAMAGE_PER_FORGE * level \
+	_base_hit_damage = BASE_DAMAGE + DAMAGE_PER_FORGE * level \
 			+ 2 * int(GameState.attributes["forca"])
+	hitbox.damage = _base_hit_damage
 
 
 ## O Talismã de Sela reduz o custo de vigor em 20%.
@@ -185,32 +197,64 @@ func _state_roll(delta: float) -> void:
 		state = State.MOVE
 
 
-func _enter_attack() -> void:
+func _enter_attack(combo := 0) -> void:
 	state = State.ATTACK
 	_timer = ATTACK_DURATION
+	_combo = combo
+	_combo_queued = false
 	sword_visual.visible = true
 	# play() direto (fora do guard de _update_animation) para reiniciar
 	# a animação não-loop a cada golpe.
 	sprite.flip_h = _is_side() and facing.x < 0.0
 	sprite.play("attack_" + _facing_name())
-	AudioManager.play_sfx("swing")
+	# Cada elo do combo alterna a varredura; o 3º é a finalização.
+	match combo:
+		0:
+			_sweep_from = -0.9
+			_sweep_to = 0.9
+			_lunge = ATTACK_LUNGE
+			hitbox.damage = _base_hit_damage
+			hitbox.knockback = BASE_KNOCKBACK
+		1:
+			_sweep_from = 0.9
+			_sweep_to = -0.9
+			_lunge = ATTACK_LUNGE
+			hitbox.damage = _base_hit_damage
+			hitbox.knockback = BASE_KNOCKBACK
+		_:
+			_sweep_from = -1.3
+			_sweep_to = 1.3
+			_lunge = FINISHER_LUNGE
+			hitbox.damage = int(round(_base_hit_damage * FINISHER_MULT))
+			hitbox.knockback = FINISHER_KNOCKBACK
+	AudioManager.play_sfx("crit" if combo >= 2 else "swing")
 
 
 func _state_attack(delta: float) -> void:
 	_timer -= delta
 	var t := ATTACK_DURATION - _timer
 	# Varredura do golpe: o pivô gira ao redor da direção encarada.
-	hitbox_pivot.rotation = facing.angle() + lerpf(-0.9, 0.9, t / ATTACK_DURATION)
-	velocity = facing * ATTACK_LUNGE * maxf(1.0 - t / ATTACK_DURATION, 0.0)
+	hitbox_pivot.rotation = facing.angle() + lerpf(_sweep_from, _sweep_to, t / ATTACK_DURATION)
+	velocity = facing * _lunge * maxf(1.0 - t / ATTACK_DURATION, 0.0)
 	var active := t >= ATTACK_HIT_START and t <= ATTACK_HIT_END
 	hitbox_shape.set_deferred("disabled", not active)
+	# Encadear: apertar ataque na 2ª metade do golpe compra o próximo elo.
+	if _combo < 2 and not _combo_queued and t >= ATTACK_HIT_START \
+			and Input.is_action_just_pressed("attack") \
+			and stamina.try_spend(_stamina_cost(ATTACK_COST)):
+		_combo_queued = true
 	if _timer <= 0.0:
-		_exit_attack()
+		if _combo_queued and _combo < 2:
+			_enter_attack(_combo + 1)
+		else:
+			_exit_attack()
 
 
 func _exit_attack() -> void:
 	sword_visual.visible = false
 	hitbox_shape.set_deferred("disabled", true)
+	_combo = 0
+	_combo_queued = false
 	state = State.MOVE
 
 

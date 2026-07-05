@@ -9,7 +9,9 @@ souls-like, exploração entre cenas, NPCs com diálogo e a primeira luta de bos
 
 **Combate (núcleo souls-like):**
 - Movimentação analógica em 8 direções (Aria, o retângulo verde-água 🙂).
-- Ataque com varredura de espada, custo de stamina e janela de acerto.
+- **Combo de 3 golpes**: apertar ataque no tempo certo encadeia até três
+  cortes; o 3º é uma **finalização** mais larga, com mais alcance, dano
+  (×1,7) e recuo. Cada elo custa stamina.
 - Esquiva-rolamento com i-frames; stamina com regeneração após pausa curta.
 - **Parry** [F / PARAR]: aparar um golpe na janela certa quebra a **postura**
   do inimigo e o deixa atordoado — golpes num atordoado são **críticos**
@@ -119,7 +121,8 @@ souls-like, exploração entre cenas, NPCs com diálogo e a primeira luta de bos
   para segundo plano (essencial em Android). Ao continuar, a jogadora
   acorda no último santuário onde descansou — regra souls.
 - HUD: vida, stamina, Ecos, mensagens de evento e barra de boss.
-- Caixa de diálogo que pausa o jogo (avança com interact/ataque).
+- Caixa de diálogo que pausa o jogo (avança com interact/ataque), com
+  **retrato do personagem** que fala (Aria, Odara, Corvo, Sela, Selene).
 - Controles de toque: joystick virtual + botões ATACAR/ROLAR/ALVO/USAR
   (aparecem só em dispositivos com touchscreen).
 
@@ -226,6 +229,6 @@ trabalho é de refino e longevidade:
 1. **Playtest e balanceamento** — jogar de ponta a ponta e calibrar
    vida/dano/custos de cada boss e área (a prioridade real).
 2. **Export Android de teste (APK)** e ajuste dos controles de toque.
-3. Combo de 3 golpes / ataque carregado; mais armas com movesets.
-4. Retratos ilustrados nos diálogos e cutscenes de transição.
+3. Ataque carregado e mais armas com movesets próprios.
+4. Cutscenes de transição entre atos (além da abertura).
 5. Localização EN e preparação da página da loja.

@@ -7,7 +7,7 @@ Rode da raiz do repositório:  python3 tools/generate_world_sprites.py
 import random
 from pathlib import Path
 
-from PIL import Image
+from PIL import Image, ImageDraw
 
 from generate_aria_sprites import DOWN_BASE, PALETTE as ARIA_PALETTE
 
@@ -587,6 +587,51 @@ def make_cracked_wall():
     return img
 
 
+# ------------------------------------------------------- retratos (busts)
+
+BUST_PALETTES = {
+    "aria": {"hair": (200, 96, 48), "hair2": (152, 64, 36), "skin": (252, 216, 168),
+             "eye": (32, 40, 56), "tunic": (64, 192, 160), "collar": (248, 232, 168)},
+    "odara": {"hair": (172, 164, 158), "hair2": (128, 120, 116), "skin": (232, 200, 170),
+              "eye": (40, 44, 52), "tunic": (152, 82, 52), "collar": (96, 88, 92)},
+    "corvo": {"hair": (46, 46, 62), "hair2": (28, 28, 40), "skin": (214, 184, 152),
+              "eye": (28, 30, 40), "tunic": (60, 62, 86), "collar": (32, 32, 44)},
+    "sela": {"hair": (206, 176, 100), "hair2": (156, 128, 66), "skin": (238, 208, 178),
+             "eye": (56, 60, 44), "tunic": (110, 152, 84), "collar": (240, 236, 226)},
+    "selene": {"hair": (124, 112, 154), "hair2": (88, 80, 116), "skin": (184, 174, 200),
+               "eye": (232, 120, 152), "tunic": (98, 86, 130), "collar": (152, 142, 174)},
+}
+
+BUST_OUTLINE = (34, 30, 40, 255)
+
+
+def _rgba(color):
+    return color if len(color) == 4 else (color[0], color[1], color[2], 255)
+
+
+def make_bust(pal):
+    """Retrato 40x40 em pixel art: cabelo, rosto, olhos e ombros."""
+    img = Image.new("RGBA", (40, 40), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    o = BUST_OUTLINE
+    # ombros / veste
+    d.rectangle([2, 33, 37, 39], fill=_rgba(pal["tunic"]), outline=o)
+    d.rectangle([14, 32, 25, 37], fill=_rgba(pal["collar"]), outline=o)
+    # cabelo (atrás)
+    d.ellipse([6, 3, 33, 31], fill=_rgba(pal["hair"]), outline=o)
+    # rosto
+    d.ellipse([10, 9, 29, 32], fill=_rgba(pal["skin"]), outline=o)
+    # franja
+    d.pieslice([9, 5, 30, 26], start=180, end=360, fill=_rgba(pal["hair"]))
+    d.line([10, 15, 29, 15], fill=_rgba(pal["hair2"]))
+    # olhos
+    d.rectangle([15, 18, 17, 21], fill=_rgba(pal["eye"]))
+    d.rectangle([22, 18, 24, 21], fill=_rgba(pal["eye"]))
+    # sombra do queixo
+    d.line([14, 30, 25, 30], fill=_rgba(pal["hair2"]))
+    return img
+
+
 def make_tile(name, spec):
     """Tile 32x32 sem costura: base + salpicos determinísticos."""
     rng = random.Random(name)
@@ -680,6 +725,9 @@ def main():
 
     for name, spec in TILE_SPECS.items():
         save(make_tile(name, spec), f"tiles/{name}.png")
+
+    for name, pal in BUST_PALETTES.items():
+        save(make_bust(pal), f"portraits/{name}.png")
     print("OK: sprites do mundo gerados em", SPRITES)
 
 

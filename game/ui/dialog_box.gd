@@ -8,6 +8,7 @@ var _skip_frame := false
 
 @onready var speaker_label: Label = %SpeakerLabel
 @onready var text_label: Label = %TextLabel
+@onready var portrait: TextureRect = %Portrait
 
 
 func _ready() -> void:
@@ -35,6 +36,9 @@ func open(speaker: String, lines: PackedStringArray) -> void:
 	_index = 0
 	speaker_label.text = speaker
 	text_label.text = lines[0]
+	var face := PortraitDB.get_portrait(speaker)
+	portrait.texture = face
+	portrait.visible = face != null
 	visible = true
 	_skip_frame = true
 	get_tree().paused = true
