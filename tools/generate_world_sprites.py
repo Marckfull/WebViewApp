@@ -605,6 +605,46 @@ TILE_SPECS = {
 }
 
 
+# Retratos de diálogo — bustos desenhados (não pixel-a-pixel) por
+# personagem: cabelo, pele, roupa e olhos vindos das cores de cada um.
+PORTRAITS = {
+	"aria":   {"hair": (200, 96, 48),  "skin": (252, 216, 168), "cloth": (64, 192, 160), "eye": (40, 52, 70)},
+	"odara":  {"hair": (176, 168, 158), "skin": (236, 206, 178), "cloth": (152, 82, 52),  "eye": (56, 46, 46)},
+	"corvo":  {"hair": (46, 46, 62),   "skin": (212, 182, 150), "cloth": (58, 60, 82),   "eye": (40, 40, 52)},
+	"sela":   {"hair": (204, 172, 96),  "skin": (240, 214, 178), "cloth": (110, 152, 84), "eye": (60, 52, 40)},
+	"selene": {"hair": (128, 114, 156), "skin": (188, 176, 202), "cloth": (100, 88, 132), "eye": (232, 120, 152)},
+}
+OUTLINE = (38, 32, 40, 255)
+
+
+def _shade(color, factor):
+	return tuple(int(c * factor) for c in color[:3]) + (255,)
+
+
+def make_portrait(spec):
+	"""Busto 48x48: ombros, pescoço, cabeça, cabelo e olhos."""
+	img = Image.new("RGBA", (48, 48), (0, 0, 0, 0))
+	d = ImageDraw.Draw(img)
+	skin = tuple(spec["skin"]) + (255,)
+	hair = tuple(spec["hair"]) + (255,)
+	cloth = tuple(spec["cloth"]) + (255,)
+	eye = tuple(spec["eye"]) + (255,)
+	# ombros
+	d.ellipse((4, 36, 44, 60), fill=cloth, outline=OUTLINE, width=1)
+	d.rectangle((20, 30, 28, 40), fill=skin, outline=OUTLINE)  # pescoço
+	# cabelo (cap) e rosto
+	d.ellipse((9, 5, 39, 35), fill=hair, outline=OUTLINE, width=1)
+	d.ellipse((12, 12, 36, 40), fill=skin, outline=OUTLINE, width=1)
+	# franja
+	d.chord((9, 5, 39, 30), 180, 360, fill=hair)
+	# olhos
+	d.ellipse((18, 22, 22, 26), fill=eye)
+	d.ellipse((26, 22, 30, 26), fill=eye)
+	# brilho no cabelo
+	d.line((14, 10, 22, 8), fill=_shade(spec["hair"], 1.35), width=1)
+	return img
+
+
 def make_cracked_wall():
     """Bloco de pedra rachado (destruível com Bomba de Eco)."""
     rng = random.Random("crack")
