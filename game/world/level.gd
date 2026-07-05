@@ -83,7 +83,8 @@ func _on_melody_played(melody_id: String) -> void:
 
 
 func _on_player_died(death_position: Vector2) -> void:
-	var lost := GameState.lose_all_echoes()
+	# Na Balada, a jogadora conserva os Ecos ao cair.
+	var lost := 0 if GameState.keeps_echoes_on_death() else GameState.lose_all_echoes()
 	if lost > 0:
 		# Regra souls-like: um novo drop substitui o anterior não coletado.
 		if is_instance_valid(_death_drop):

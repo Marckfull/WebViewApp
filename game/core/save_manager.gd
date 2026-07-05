@@ -27,6 +27,20 @@ func has_save() -> bool:
 	return FileAccess.file_exists(SAVE_PATH)
 
 
+## O save existente já zerou o jogo? (habilita o New Game+ no título.)
+func save_is_completed() -> bool:
+	if not has_save():
+		return false
+	var file := FileAccess.open(SAVE_PATH, FileAccess.READ)
+	if file == null:
+		return false
+	var parsed: Variant = JSON.parse_string(file.get_as_text())
+	if typeof(parsed) != TYPE_DICTIONARY:
+		return false
+	var saved_flags: Dictionary = parsed.get("flags", {})
+	return bool(saved_flags.get("jogo_concluido", false))
+
+
 func save_game() -> void:
 	var data := {
 		"version": SAVE_VERSION,
@@ -40,6 +54,8 @@ func save_game() -> void:
 		"time_of_day": GameState.time_of_day,
 		"map_data": GameState.map_data,
 		"shrine_scene": GameState.last_shrine_scene,
+		"difficulty": GameState.difficulty,
+		"ng_cycle": GameState.ng_cycle,
 	}
 	var tmp_path := SAVE_PATH + ".tmp"
 	var file := FileAccess.open(tmp_path, FileAccess.WRITE)
@@ -72,6 +88,8 @@ func load_game() -> bool:
 	for key in GameState.attributes:
 		GameState.attributes[key] = int(attrs.get(key, 0))
 	GameState.time_of_day = float(parsed.get("time_of_day", 0.15))
+	GameState.difficulty = clampi(int(parsed.get("difficulty", 1)), 0, 2)
+	GameState.ng_cycle = maxi(int(parsed.get("ng_cycle", 0)), 0)
 	var raw_map: Dictionary = parsed.get("map_data", {})
 	for scene in raw_map:
 		var entry: Dictionary = raw_map[scene]

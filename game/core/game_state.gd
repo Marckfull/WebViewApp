@@ -8,10 +8,20 @@ signal weapon_changed(level: int)
 signal flasks_changed(current: int, max_value: int)
 signal attributes_changed
 
+enum Difficulty { BALADA, CANCAO, REQUIEM }
+
 ## Segundos de jogo para um ciclo completo de dia+noite.
 const DAY_LENGTH := 300.0
 ## Tamanho (px) da célula do mapa da cartógrafa.
 const MAP_CELL := 80.0
+
+## Flags de progresso zeradas ao entrar em New Game+ (bosses e história);
+## itens coletados e quests são mantidos para não duplicar recompensas.
+const NG_RESET_FLAGS := [
+	"cripta_boss_derrotado", "floresta_boss_derrotado", "forja_boss_derrotado",
+	"torre_boss_derrotado", "necropole_boss_derrotado", "selene_derrotada",
+	"jogo_concluido", "final_silenciar", "final_completar", "final_cancao",
+]
 
 var echoes: int = 0
 ## Inventário: id do item -> quantidade (ver ItemDB).
@@ -34,10 +44,67 @@ var flags: Dictionary = {}
 var next_spawn := ""
 ## Cena do último santuário onde a jogadora descansou (ponto de load).
 var last_shrine_scene := "res://world/village.tscn"
+## Modo de dificuldade escolhido na criação da run.
+var difficulty: int = Difficulty.CANCAO
+## Ciclo de New Game+ (0 = primeira jogada); escala os inimigos.
+var ng_cycle: int = 0
 
 
 func _process(delta: float) -> void:
 	time_of_day = fmod(time_of_day + delta / DAY_LENGTH, 1.0)
+
+
+# --- Multiplicadores de dificuldade + New Game+ (ponto central) ---
+
+## Dano que a jogadora RECEBE. Requiem bate mais forte; NG+ agrava.
+func enemy_damage_mult() -> float:
+	var base := [0.7, 1.0, 1.3][difficulty]
+	return base * (1.0 + 0.2 * ng_cycle)
+
+
+## Vida dos inimigos — só escala no New Game+.
+func enemy_health_mult() -> float:
+	return 1.0 + 0.4 * ng_cycle
+
+
+## Ecos ganhos — mais generoso a cada ciclo de NG+.
+func echo_mult() -> float:
+	return 1.0 + 0.5 * ng_cycle
+
+
+## Janela ativa do parry (segundos): generosa na Balada, apertada no Requiem.
+func parry_window() -> float:
+	return [0.28, 0.18, 0.12][difficulty]
+
+
+func flasks_for_difficulty() -> int:
+	return [5, 3, 2][difficulty]
+
+
+## Na Balada, a jogadora não perde os Ecos ao morrer.
+func keeps_echoes_on_death() -> bool:
+	return difficulty == Difficulty.BALADA
+
+
+func difficulty_name() -> String:
+	return ["Balada", "Canção", "Requiem"][difficulty]
+
+
+## Começa uma volta de New Game+: mantém progressão (itens, atributos,
+## forja, frascos, Ecos), zera os avanços de história e agrava os inimigos.
+func start_ng_plus() -> void:
+	ng_cycle += 1
+	for flag in NG_RESET_FLAGS:
+		flags.erase(flag)
+	flasks = flasks_max
+	time_of_day = 0.15
+	map_data = {}
+	next_spawn = ""
+	last_shrine_scene = "res://world/village.tscn"
+	echoes_changed.emit(echoes)
+	inventory_changed.emit()
+	flasks_changed.emit(flasks, flasks_max)
+	attributes_changed.emit()
 
 
 func reset() -> void:
@@ -52,6 +119,8 @@ func reset() -> void:
 	map_data = {}
 	next_spawn = ""
 	last_shrine_scene = "res://world/village.tscn"
+	difficulty = Difficulty.CANCAO
+	ng_cycle = 0
 	echoes_changed.emit(echoes)
 	inventory_changed.emit()
 	flasks_changed.emit(flasks, flasks_max)

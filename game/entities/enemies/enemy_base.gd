@@ -51,6 +51,16 @@ func _ready() -> void:
 	hurtbox.hit_received.connect(_on_hit_received)
 	health.died.connect(_on_died)
 	GameEvents.melody_played.connect(_on_melody_played)
+	_scale_health()
+
+
+## Vida escalada pelo ciclo de New Game+.
+func _scale_health() -> void:
+	var mult := GameState.enemy_health_mult()
+	if mult != 1.0:
+		health.max_health = int(round(health.max_health * mult))
+		health.current = health.max_health
+		health.changed.emit(health.current, health.max_health)
 
 
 func _physics_process(delta: float) -> void:
@@ -230,7 +240,10 @@ func _on_died() -> void:
 	hitbox_shape.set_deferred("disabled", true)
 	AudioManager.play_sfx("enemy_death")
 	var pickup := ECHO_PICKUP.instantiate()
-	pickup.amount = int(echoes_reward * (1.5 if GameState.is_night() else 1.0))
+	var reward := echoes_reward * GameState.echo_mult()
+	if GameState.is_night():
+		reward *= 1.5
+	pickup.amount = int(round(reward))
 	pickup.position = global_position
 	get_parent().add_child.call_deferred(pickup)
 	queue_free()

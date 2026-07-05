@@ -58,6 +58,16 @@ souls-like, exploração entre cenas, NPCs com diálogo e a primeira luta de bos
   verdadeiro**, a Canção do Mundo).
 - **Campo de Treino**: a arena da Fase 0, para testar builds e números.
 
+**Dificuldade e longevidade:**
+- **3 modos**, escolhidos ao iniciar (tela "Como você quer ouvir esta canção?"):
+  **Balada** (5 frascos, parry generoso, mantém os Ecos ao morrer), **Canção**
+  (a experiência pretendida) e **Requiem** (souls puro: inimigos batem mais
+  forte, 2 frascos, janela de parry apertada). Persistido no save.
+- **New Game+**: ao zerar o jogo, o título libera o NG+ — você recomeça a
+  história **mantendo** itens, atributos, forja e frascos, mas os inimigos
+  ficam mais duros e mais valiosos a cada ciclo. O modo e o ciclo aparecem
+  no menu de pause.
+
 **Progressão e economia:**
 - **Atributos no santuário** (level up souls-like): ao descansar, abre a
   tela de fortalecimento — gaste Ecos em **Vitalidade** (+10 PV),
@@ -203,6 +213,6 @@ trabalho é de refino e longevidade:
 1. **Playtest e balanceamento** — jogar de ponta a ponta e calibrar
    vida/dano/custos de cada boss e área (a prioridade real).
 2. **Export Android de teste (APK)** e ajuste dos controles de toque.
-3. New Game+ e os 3 modos de dificuldade (Balada/Canção/Requiem).
-4. Mais Memórias Perdidas (das 12) e side quests; bestiário/diário.
-5. Combo de 3 golpes / ataque carregado; localização EN.
+3. Mais Memórias Perdidas (das 12) e side quests; bestiário/diário.
+4. Combo de 3 golpes / ataque carregado; mais armas com movesets.
+5. Localização EN e preparação da página da loja.

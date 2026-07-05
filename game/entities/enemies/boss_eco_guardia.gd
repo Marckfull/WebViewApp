@@ -44,6 +44,10 @@ func _ready() -> void:
 	hurtbox.hit_received.connect(_on_hit_received)
 	health.changed.connect(_on_health_changed)
 	health.died.connect(_on_died)
+	var mult := GameState.enemy_health_mult()
+	if mult != 1.0:
+		health.max_health = int(round(health.max_health * mult))
+		health.current = health.max_health
 
 
 func _physics_process(delta: float) -> void:
@@ -265,7 +269,7 @@ func _on_died() -> void:
 	set_collision_mask_value(3, false)
 	visual.modulate = Color(0.35, 0.35, 0.45)
 	var pickup := ECHO_PICKUP.instantiate()
-	pickup.amount = echoes_reward
+	pickup.amount = int(round(echoes_reward * GameState.echo_mult()))
 	pickup.position = global_position
 	get_parent().add_child.call_deferred(pickup)
 	GameEvents.boss_ended.emit(true)

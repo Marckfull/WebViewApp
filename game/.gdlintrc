@@ -1,0 +1,3 @@
+# O autoload GameState é o estado central da run e legitimamente expõe
+# mais de 20 acessores (economia, atributos, dificuldade, NG+).
+max-public-methods: 40

@@ -32,8 +32,6 @@ const BOMB_SCENE := preload("res://world/bomb.tscn")
 const BOMB_COOLDOWN := 2.0
 const PARRY_COST := 12.0
 const PARRY_DURATION := 0.4
-## Janela ativa (no início do parry) em que um golpe é aparado.
-const PARRY_WINDOW := 0.18
 const PARRY_IFRAMES := 0.35
 
 var state: State = State.MOVE
@@ -134,7 +132,7 @@ func push(force: Vector2) -> void:
 func take_environmental_damage(amount: int) -> void:
 	if state == State.DEAD or _iframes > 0.0:
 		return
-	health.damage(amount)
+	health.damage(int(round(amount * GameState.enemy_damage_mult())))
 	if state == State.DEAD:
 		return
 	_flash()
@@ -226,7 +224,7 @@ func _state_hurt(delta: float) -> void:
 func _enter_parry() -> void:
 	state = State.PARRY
 	_timer = PARRY_DURATION
-	_parry_active = PARRY_WINDOW
+	_parry_active = GameState.parry_window()
 	velocity = Vector2.ZERO
 	sprite.modulate = Color(0.7, 0.9, 1.4)
 	AudioManager.play_sfx("blip")
@@ -263,7 +261,7 @@ func _on_hit_received(from_hitbox: Hitbox) -> void:
 		return
 	if _iframes > 0.0 or state == State.DEAD or state == State.ROLL:
 		return
-	health.damage(from_hitbox.damage)
+	health.damage(int(round(from_hitbox.damage * GameState.enemy_damage_mult())))
 	if state == State.DEAD:
 		return
 	_iframes = HURT_IFRAMES

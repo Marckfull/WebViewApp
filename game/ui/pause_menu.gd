@@ -11,6 +11,7 @@ var _open := false
 @onready var music_plus: Button = %MusicPlus
 @onready var sfx_minus: Button = %SfxMinus
 @onready var sfx_plus: Button = %SfxPlus
+@onready var run_info: Label = %RunInfo
 
 
 func _ready() -> void:
@@ -69,3 +70,7 @@ func _change_sfx(delta: int) -> void:
 func _refresh() -> void:
 	music_label.text = "Música: %d" % AudioManager.music_volume
 	sfx_label.text = "Sons: %d" % AudioManager.sfx_volume
+	var info := "Modo " + GameState.difficulty_name()
+	if GameState.ng_cycle > 0:
+		info += " · Ciclo +%d" % GameState.ng_cycle
+	run_info.text = info
