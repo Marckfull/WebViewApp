@@ -22,7 +22,7 @@ souls-like, exploração entre cenas, NPCs com diálogo e a primeira luta de bos
 - **Loop de morte souls-like**: Ecos dropados no local da morte,
   recuperáveis; santuários curam e repõem os inimigos.
 
-**Mundo (5 cenas conectadas por portais):**
+**Mundo (6 cenas conectadas por portais):**
 - **Pedra-Alva** (vila hub): 3 NPCs com diálogo (Mestra Odara, Corvo e Sela),
   forja, santuário e portais para as outras áreas.
 - **Cripta das Guardiãs**: corredor de Ecoados, santuário antes do boss e a
@@ -40,6 +40,12 @@ souls-like, exploração entre cenas, NPCs com diálogo e a primeira luta de bos
   Recompensa: a **Bomba de Eco** [B / BOMBA], que fere em área e derruba
   **paredes rachadas** (há uma escondendo um nicho de minério na própria
   Forja).
+- **Torre dos Ventos** (a noroeste da vila): **correntes de vento** que
+  empurram a Aria enquanto ela luta, e um arquétipo novo — a **Sentinela
+  do Vento**, inimigo **à distância** que dispara rajadas telegrafadas
+  (não-aparáveis). No topo, o **Guardião dos Ventos** (4º boss) guarda a
+  **Lente da Verdade**: com ela na bolsa, **segredos ocultos pelo Silêncio
+  aparecem** — há uma Memória Perdida escondida à vista na própria vila.
 - **Campo de Treino**: a arena da Fase 0, para testar builds e números.
 
 **Progressão e economia:**
@@ -182,8 +188,8 @@ game/
 
 1. **Playtest geral** — todos os sistemas centrais do GDD estão de pé;
    a prioridade agora é jogar e calibrar números.
-2. **Export Android de teste (APK)** e ajuste dos controles de toque
-   em aparelho real.
-3. Quarta dungeon (Torre dos Ventos) e o arco final do Ato 2.
-4. Mais variedade de golpes da jogadora (combo de 3, ataque carregado).
-5. Localização EN e preparação da page da loja.
+2. **Export Android de teste (APK)** e ajuste dos controles de toque.
+3. Quinta dungeon (Necrópole de Sal) e o item Botas de Corrente,
+   fechando o Ato 2.
+4. Ato 3: o Coração Mudo, a boss Selene, o dilema e os 2–3 finais.
+5. Combo de 3 golpes / ataque carregado; localização EN.

@@ -22,6 +22,8 @@ const CRIT_MULT := 2.5
 @export var telegraph_time := 0.5
 @export var attack_time := 0.22
 @export var attack_lunge := 180.0
+## Desligue para inimigos à distância (que atacam via _on_attack_start).
+@export var melee_enabled := true
 @export var recover_time := 0.8
 @export var hurt_time := 0.25
 ## 1.0 = sempre atordoa ao levar dano; inimigos pesados resistem (poise).
@@ -165,7 +167,15 @@ func _enter_attack() -> void:
 	state = State.ATTACK
 	_timer = attack_time
 	visual.modulate = Color.WHITE
-	hitbox_shape.set_deferred("disabled", false)
+	if melee_enabled:
+		hitbox_shape.set_deferred("disabled", false)
+	_on_attack_start()
+
+
+## Gancho para subclasses: disparar projétil, invocar, etc. Chamado no
+## início do golpe. _attack_dir já aponta para a jogadora.
+func _on_attack_start() -> void:
+	pass
 
 
 func _exit_attack() -> void:

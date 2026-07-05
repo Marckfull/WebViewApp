@@ -6,6 +6,8 @@ extends Area2D
 @export var item_id := "minerio_eco"
 @export var amount := 1
 @export var one_time := false
+## Só aparece/coleta com a Lente da Verdade na bolsa (segredo revelado).
+@export var requires_lens := false
 
 var _collected := false
 
@@ -22,10 +24,22 @@ func _ready() -> void:
 	body_entered.connect(_on_body_entered)
 	if not one_time:
 		GameEvents.shrine_rested.connect(_respawn)
+	if requires_lens:
+		GameState.inventory_changed.connect(_update_lens)
+		_update_lens()
+
+
+## A Lente da Verdade revela o que o Silêncio escondeu.
+func _update_lens() -> void:
+	var seen := GameState.has_item("lente_verdade")
+	visible = seen
+	set_deferred("monitoring", seen and not _collected)
 
 
 func _on_body_entered(body: Node2D) -> void:
 	if _collected or not (body is Player) or not body.is_alive():
+		return
+	if requires_lens and not GameState.has_item("lente_verdade"):
 		return
 	_collected = true
 	GameState.add_item(item_id, amount)

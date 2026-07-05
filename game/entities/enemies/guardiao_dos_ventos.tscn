@@ -1,0 +1,79 @@
+[gd_scene load_steps=10 format=3]
+
+[ext_resource type="Script" path="res://entities/enemies/boss_eco_guardia.gd" id="1_boss"]
+[ext_resource type="Script" path="res://systems/health.gd" id="2_health"]
+[ext_resource type="Script" path="res://systems/hurtbox.gd" id="3_hurtbox"]
+[ext_resource type="Script" path="res://systems/hitbox.gd" id="4_hitbox"]
+[ext_resource type="SpriteFrames" path="res://entities/enemies/vento_frames.tres" id="5_frames"]
+
+[sub_resource type="CircleShape2D" id="body_shape"]
+radius = 11.0
+
+[sub_resource type="RectangleShape2D" id="hurt_shape"]
+size = Vector2(26, 32)
+
+[sub_resource type="RectangleShape2D" id="dash_shape"]
+size = Vector2(24, 16)
+
+[sub_resource type="RectangleShape2D" id="sweep_shape"]
+size = Vector2(46, 30)
+
+[node name="Boss" type="CharacterBody2D" groups=["enemies"]]
+collision_layer = 4
+collision_mask = 7
+script = ExtResource("1_boss")
+boss_name = "Guardião dos Ventos"
+chase_speed = 92.0
+dash_speed = 430.0
+sweep_range = 44.0
+dash_range = 270.0
+echoes_reward = 800
+
+[node name="Visual" type="AnimatedSprite2D" parent="."]
+position = Vector2(0, -2)
+sprite_frames = ExtResource("5_frames")
+autoplay = "idle"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 4)
+shape = SubResource("body_shape")
+
+[node name="Health" type="Node" parent="."]
+script = ExtResource("2_health")
+max_health = 360
+
+[node name="Hurtbox" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 16
+script = ExtResource("3_hurtbox")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+shape = SubResource("hurt_shape")
+
+[node name="HitboxPivot" type="Node2D" parent="."]
+
+[node name="DashHitbox" type="Area2D" parent="HitboxPivot"]
+collision_layer = 32
+collision_mask = 0
+monitoring = false
+script = ExtResource("4_hitbox")
+damage = 18
+knockback = 210.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitboxPivot/DashHitbox"]
+position = Vector2(15, 0)
+shape = SubResource("dash_shape")
+disabled = true
+
+[node name="SweepHitbox" type="Area2D" parent="HitboxPivot"]
+collision_layer = 32
+collision_mask = 0
+monitoring = false
+script = ExtResource("4_hitbox")
+damage = 24
+knockback = 250.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitboxPivot/SweepHitbox"]
+position = Vector2(20, 0)
+shape = SubResource("sweep_shape")
+disabled = true

@@ -108,6 +108,14 @@ ALFA = [
     "...oo...oo....oo....",
 ]
 
+SENTINELA_PALETTE = {
+    ".": None,
+    "o": (24, 42, 54, 255),
+    "r": (126, 206, 230, 255),  # corpo ciano-vento
+    "R": (84, 154, 186, 255),
+    "E": (245, 255, 255, 255),  # olhos claros
+}
+
 FORJADO_PALETTE = {
     ".": None,
     "o": (28, 30, 38, 255),
@@ -137,6 +145,21 @@ BOSS_PALETTE = {
     "w": (222, 226, 238, 255),  # lâmina
     "W": (160, 168, 190, 255),
     "g": (90, 62, 40, 255),
+}
+
+BOSS_VENTO_PALETTE = {
+    ".": None,
+    "o": (28, 44, 52, 255),
+    "h": (198, 238, 246, 255),  # véu de vento
+    "H": (150, 200, 214, 255),
+    "s": (224, 240, 240, 255),
+    "e": (120, 235, 220, 255),
+    "c": (232, 246, 220, 255),
+    "t": (120, 196, 208, 255),  # veste ciano
+    "T": (86, 150, 166, 255),
+    "w": (232, 246, 250, 255),
+    "W": (168, 200, 208, 255),
+    "g": (90, 74, 60, 255),
 }
 
 BOSS = [
@@ -243,6 +266,13 @@ ICON_PALETTES = {
         "b": (52, 56, 70, 255),
         "w": (150, 220, 235, 255),
     },
+    "lente_verdade": {
+        ".": None,
+        "o": (40, 40, 56, 255),
+        "a": (150, 120, 66, 255),
+        "g": (170, 230, 240, 255),
+        "w": (245, 255, 255, 255),
+    },
 }
 
 ICONS = {
@@ -337,6 +367,17 @@ ICONS = {
         ".obbbbbbo",
         "..obbbbo.",
         "...oooo..",
+    ],
+    "lente_verdade": [
+        "...oooo..",
+        "..oggggo.",
+        ".oggwggo.",
+        ".ogwwwgo.",
+        ".oggwggo.",
+        "..ogggo..",
+        "...ooao..",
+        ".....oao.",
+        "......oo.",
     ],
 }
 
@@ -544,6 +585,10 @@ def main():
     save(render(ECOADO, FORJADO_PALETTE, 24, -1), "enemies/forjado_1.png")
     save(render(BRUTAMONTES, GOLEM_PALETTE, 32), "enemies/golem_0.png")
     save(render(BRUTAMONTES, GOLEM_PALETTE, 32, -1), "enemies/golem_1.png")
+    save(render(ECOADO, SENTINELA_PALETTE, 24), "enemies/sentinela_0.png")
+    save(render(ECOADO, SENTINELA_PALETTE, 24, -1), "enemies/sentinela_1.png")
+    save(render(BOSS, BOSS_VENTO_PALETTE, 32), "enemies/vento_0.png")
+    save(render(BOSS, BOSS_VENTO_PALETTE, 32, -1), "enemies/vento_1.png")
     write_enemy_tres("ecoado", ROOT / "entities/enemies/ecoado_frames.tres")
     write_enemy_tres("brutamontes", ROOT / "entities/enemies/brutamontes_frames.tres")
     write_enemy_tres("boss", ROOT / "entities/enemies/boss_frames.tres")
@@ -551,6 +596,8 @@ def main():
     write_enemy_tres("alfa", ROOT / "entities/enemies/alfa_frames.tres")
     write_enemy_tres("forjado", ROOT / "entities/enemies/forjado_frames.tres")
     write_enemy_tres("golem", ROOT / "entities/enemies/golem_frames.tres")
+    write_enemy_tres("sentinela", ROOT / "entities/enemies/sentinela_frames.tres")
+    write_enemy_tres("vento", ROOT / "entities/enemies/vento_frames.tres")
 
     for name, palette in NPCS.items():
         save(render(DOWN_BASE, palette, 24), f"npcs/{name}.png")

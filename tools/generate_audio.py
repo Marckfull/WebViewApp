@@ -348,6 +348,24 @@ def music_forge():
     return buf
 
 
+def music_winds():
+    beat = 0.5
+    buf = []
+    # pad arejado sustentado + arpejo alto e cristalino
+    pads = [["D3", "A3", "D4"], ["A2", "E3", "A3"],
+            ["B2", "F#3", "B3"], ["G2", "D3", "G3"]]
+    for i, chord in enumerate(pads):
+        for n in chord:
+            mix(buf, tone(note_freq(n), 8 * beat, "sine", vol=0.06,
+                          attack=1.0, release=1.5), i * 8 * beat)
+    arp = ["D5", "A5", "F#5", "A5", "E5", "B5", "A5", "E5",
+           "F#5", "D6", "A5", "D6", "G5", "D5", "B5", "G5"]
+    for i, n in enumerate(arp):
+        mix(buf, tone(note_freq(n), beat * 0.8, "triangle", vol=0.07,
+                      attack=0.02, release=0.25), (i * 2) * beat)
+    return buf
+
+
 def music_boss():
     beat = 0.4
     buf = []
@@ -390,9 +408,9 @@ def main():
         write_wav(OUT / "sfx" / f"{name}.wav", buf)
     for name, buf in [("village", music_village()), ("crypt", music_crypt()),
                       ("boss", music_boss()), ("forest", music_forest()),
-                      ("forge", music_forge())]:
+                      ("forge", music_forge()), ("winds", music_winds())]:
         write_wav(OUT / "music" / f"{name}.wav", buf)
-    print(f"OK: {len(sfx)} SFX + 5 músicas em {OUT}")
+    print(f"OK: {len(sfx)} SFX + 6 músicas em {OUT}")
 
 
 if __name__ == "__main__":

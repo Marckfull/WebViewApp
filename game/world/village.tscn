@@ -208,6 +208,18 @@ target_scene = "res://world/forge_dungeon.tscn"
 target_spawn = "from_village"
 label_text = "Forja Afundada"
 
+[node name="PortalTower" parent="." instance=ExtResource("4_portal")]
+position = Vector2(40, 130)
+target_scene = "res://world/tower_of_winds.tscn"
+target_spawn = "from_village"
+label_text = "Torre dos Ventos"
+
+[node name="HiddenMemory" parent="." instance=ExtResource("12_resource")]
+position = Vector2(770, 520)
+item_id = "memoria_pedra_alva"
+one_time = true
+requires_lens = true
+
 [node name="Spawns" type="Node2D" parent="."]
 
 [node name="default" type="Marker2D" parent="Spawns"]
@@ -224,6 +236,9 @@ position = Vector2(110, 410)
 
 [node name="from_forja" type="Marker2D" parent="Spawns"]
 position = Vector2(640, 600)
+
+[node name="from_torre" type="Marker2D" parent="Spawns"]
+position = Vector2(110, 190)
 
 [node name="Player" parent="." instance=ExtResource("2_player")]
 position = Vector2(340, 430)

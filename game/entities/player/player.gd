@@ -46,6 +46,7 @@ var _iframes := 0.0
 var _grapple_target := Vector2.ZERO
 var _bomb_cooldown := 0.0
 var _parry_active := 0.0
+var _push_accum := Vector2.ZERO
 
 @onready var health: Health = $Health
 @onready var stamina: Stamina = $Stamina
@@ -116,9 +117,16 @@ func _physics_process(delta: float) -> void:
 			_state_parry(delta)
 		State.DEAD:
 			velocity = Vector2.ZERO
-	velocity += _knockback
+	velocity += _knockback + _push_accum
 	move_and_slide()
+	_push_accum = Vector2.ZERO
 	_update_animation()
+
+
+## Força externa contínua (correntes de vento). Somada uma vez por quadro
+## e zerada em seguida — sem acúmulo entre zonas.
+func push(force: Vector2) -> void:
+	_push_accum += force
 
 
 func is_alive() -> bool:

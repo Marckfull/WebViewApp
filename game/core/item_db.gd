@@ -38,10 +38,24 @@ const DB := {
 		"icon": "res://assets/sprites/icons/bomba_eco.png",
 		"key": true,
 	},
+	"lente_verdade": {
+		"name": "Lente da Verdade",
+		"desc": "Um cristal polido pelas Guardiãs. Revela o que o Silêncio "
+				+ "escondeu — segredos surgem só com ela na bolsa.",
+		"icon": "res://assets/sprites/icons/lente_verdade.png",
+		"key": true,
+	},
 	"memoria_lys": {
 		"name": "Memória Perdida: Lys",
 		"desc": "Um fragmento cristalizado. Dentro dele, a risada da sua "
 				+ "irmã — a floresta a guardava.",
+		"icon": "res://assets/sprites/icons/memoria_lys.png",
+		"key": true,
+	},
+	"memoria_pedra_alva": {
+		"name": "Memória Perdida: o Sino",
+		"desc": "O sino da praça, tocando ao anoitecer. A Lente o trouxe "
+				+ "de volta do Silêncio — escondido à vista de todos.",
 		"icon": "res://assets/sprites/icons/memoria_lys.png",
 		"key": true,
 	},

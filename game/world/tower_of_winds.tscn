@@ -1,0 +1,186 @@
+[gd_scene load_steps=24 format=3]
+
+[ext_resource type="Script" path="res://world/tower_of_winds.gd" id="1_tower"]
+[ext_resource type="PackedScene" path="res://entities/player/player.tscn" id="2_player"]
+[ext_resource type="PackedScene" path="res://world/shrine.tscn" id="3_shrine"]
+[ext_resource type="Script" path="res://world/enemy_spawner.gd" id="4_spawner"]
+[ext_resource type="PackedScene" path="res://entities/enemies/sentinela_vento.tscn" id="5_sentinela"]
+[ext_resource type="PackedScene" path="res://world/portal.tscn" id="6_portal"]
+[ext_resource type="PackedScene" path="res://ui/hud.tscn" id="7_hud"]
+[ext_resource type="PackedScene" path="res://ui/touch_controls.tscn" id="8_touch"]
+[ext_resource type="PackedScene" path="res://entities/enemies/guardiao_dos_ventos.tscn" id="9_boss"]
+[ext_resource type="PackedScene" path="res://world/resource_node.tscn" id="10_resource"]
+[ext_resource type="PackedScene" path="res://world/grapple_point.tscn" id="11_grapple"]
+[ext_resource type="PackedScene" path="res://ui/inventory_screen.tscn" id="12_inventory"]
+[ext_resource type="PackedScene" path="res://ui/ocarina_wheel.tscn" id="13_wheel"]
+[ext_resource type="PackedScene" path="res://ui/map_screen.tscn" id="14_map"]
+[ext_resource type="PackedScene" path="res://ui/stats_screen.tscn" id="15_stats"]
+[ext_resource type="PackedScene" path="res://ui/pause_menu.tscn" id="16_pause"]
+[ext_resource type="Texture2D" path="res://assets/sprites/tiles/stone.png" id="17_stone"]
+[ext_resource type="PackedScene" path="res://world/wind_zone.tscn" id="18_wind"]
+[ext_resource type="PackedScene" path="res://entities/enemies/espreitador.tscn" id="19_espreitador"]
+
+[sub_resource type="RectangleShape2D" id="wall_h"]
+size = Vector2(640, 16)
+
+[sub_resource type="RectangleShape2D" id="wall_v"]
+size = Vector2(16, 900)
+
+[sub_resource type="RectangleShape2D" id="pillar"]
+size = Vector2(36, 36)
+
+[sub_resource type="RectangleShape2D" id="trigger_shape"]
+size = Vector2(220, 30)
+
+[node name="TowerOfWinds" type="Node2D"]
+script = ExtResource("1_tower")
+arena_size = Vector2(640, 900)
+intro_message = "Torre dos Ventos. O ar aqui tem vontade própria."
+music = "winds"
+
+[node name="Floor" type="Polygon2D" parent="."]
+texture_repeat = 2
+color = Color(0.72, 0.82, 0.92, 1)
+texture = ExtResource("17_stone")
+polygon = PackedVector2Array(0, 0, 640, 0, 640, 900, 0, 900)
+
+[node name="Solids" type="StaticBody2D" parent="."]
+collision_layer = 1
+collision_mask = 0
+
+[node name="Top" type="CollisionShape2D" parent="Solids"]
+position = Vector2(320, 8)
+shape = SubResource("wall_h")
+
+[node name="Bottom" type="CollisionShape2D" parent="Solids"]
+position = Vector2(320, 892)
+shape = SubResource("wall_h")
+
+[node name="Left" type="CollisionShape2D" parent="Solids"]
+position = Vector2(8, 450)
+shape = SubResource("wall_v")
+
+[node name="Right" type="CollisionShape2D" parent="Solids"]
+position = Vector2(632, 450)
+shape = SubResource("wall_v")
+
+[node name="Pillar1" type="CollisionShape2D" parent="Solids"]
+position = Vector2(200, 470)
+shape = SubResource("pillar")
+
+[node name="Pillar2" type="CollisionShape2D" parent="Solids"]
+position = Vector2(440, 470)
+shape = SubResource("pillar")
+
+[node name="WallVisuals" type="Node2D" parent="."]
+
+[node name="TopV" type="Polygon2D" parent="WallVisuals"]
+color = Color(0.4, 0.5, 0.62, 1)
+polygon = PackedVector2Array(0, 0, 640, 0, 640, 16, 0, 16)
+
+[node name="BottomV" type="Polygon2D" parent="WallVisuals"]
+color = Color(0.4, 0.5, 0.62, 1)
+polygon = PackedVector2Array(0, 884, 640, 884, 640, 900, 0, 900)
+
+[node name="LeftV" type="Polygon2D" parent="WallVisuals"]
+color = Color(0.4, 0.5, 0.62, 1)
+polygon = PackedVector2Array(0, 0, 16, 0, 16, 900, 0, 900)
+
+[node name="RightV" type="Polygon2D" parent="WallVisuals"]
+color = Color(0.4, 0.5, 0.62, 1)
+polygon = PackedVector2Array(624, 0, 640, 0, 640, 900, 624, 900)
+
+[node name="Pillar1V" type="Polygon2D" parent="WallVisuals"]
+color = Color(0.56, 0.64, 0.76, 1)
+polygon = PackedVector2Array(182, 452, 218, 452, 218, 488, 182, 488)
+
+[node name="Pillar2V" type="Polygon2D" parent="WallVisuals"]
+color = Color(0.56, 0.64, 0.76, 1)
+polygon = PackedVector2Array(422, 452, 458, 452, 458, 488, 422, 488)
+
+[node name="WindA" parent="." instance=ExtResource("18_wind")]
+position = Vector2(320, 580)
+force = Vector2(90, 0)
+
+[node name="WindB" parent="." instance=ExtResource("18_wind")]
+position = Vector2(320, 360)
+force = Vector2(-90, 0)
+
+[node name="Boss" parent="." instance=ExtResource("9_boss")]
+position = Vector2(320, 150)
+
+[node name="BossTrigger" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BossTrigger"]
+position = Vector2(320, 270)
+shape = SubResource("trigger_shape")
+
+[node name="Shrine" parent="." instance=ExtResource("3_shrine")]
+position = Vector2(140, 800)
+
+[node name="PortalVillage" parent="." instance=ExtResource("6_portal")]
+position = Vector2(320, 856)
+target_scene = "res://world/village.tscn"
+target_spawn = "from_torre"
+label_text = "Pedra-Alva"
+
+[node name="SentinelaA" type="Marker2D" parent="."]
+position = Vector2(110, 520)
+script = ExtResource("4_spawner")
+enemy_scene = ExtResource("5_sentinela")
+
+[node name="SentinelaB" type="Marker2D" parent="."]
+position = Vector2(530, 400)
+script = ExtResource("4_spawner")
+enemy_scene = ExtResource("5_sentinela")
+
+[node name="SentinelaC" type="Marker2D" parent="."]
+position = Vector2(120, 300)
+script = ExtResource("4_spawner")
+enemy_scene = ExtResource("5_sentinela")
+
+[node name="EspreitadorA" type="Marker2D" parent="."]
+position = Vector2(400, 640)
+script = ExtResource("4_spawner")
+enemy_scene = ExtResource("19_espreitador")
+
+[node name="GrapplePostA" parent="." instance=ExtResource("11_grapple")]
+position = Vector2(520, 560)
+
+[node name="GrapplePostB" parent="." instance=ExtResource("11_grapple")]
+position = Vector2(120, 380)
+
+[node name="HerbA" parent="." instance=ExtResource("10_resource")]
+position = Vector2(80, 560)
+item_id = "erva_lunar"
+
+[node name="OreA" parent="." instance=ExtResource("10_resource")]
+position = Vector2(560, 820)
+item_id = "minerio_eco"
+
+[node name="Spawns" type="Node2D" parent="."]
+
+[node name="default" type="Marker2D" parent="Spawns"]
+position = Vector2(320, 800)
+
+[node name="from_village" type="Marker2D" parent="Spawns"]
+position = Vector2(320, 800)
+
+[node name="Player" parent="." instance=ExtResource("2_player")]
+position = Vector2(320, 800)
+
+[node name="HUD" parent="." instance=ExtResource("7_hud")]
+
+[node name="TouchControls" parent="." instance=ExtResource("8_touch")]
+
+[node name="InventoryScreen" parent="." instance=ExtResource("12_inventory")]
+
+[node name="OcarinaWheel" parent="." instance=ExtResource("13_wheel")]
+
+[node name="MapScreen" parent="." instance=ExtResource("14_map")]
+
+[node name="StatsScreen" parent="." instance=ExtResource("15_stats")]
+
+[node name="PauseMenu" parent="." instance=ExtResource("16_pause")]
