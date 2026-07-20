@@ -16,7 +16,7 @@ extends CharacterBody2D
 @export var flask_max: int = 3          ## Frascos de Essência (§3.2)
 @export var flask_heal_ratio: float = 0.4
 
-enum State { FREE, ATTACKING, DODGING, GUARDING, STUNNED }
+enum State { FREE, ATTACKING, DODGING, GUARDING, STUNNED, GRAPPLING }
 var state: State = State.FREE
 
 @onready var health: HealthComponent = $HealthComponent
@@ -98,6 +98,8 @@ func _physics_process(delta: float) -> void:
 			_process_dodge(delta)
 		State.ATTACKING:
 			_process_attack(delta)
+		State.GRAPPLING:
+			velocity = Vector2.ZERO  ## movimento via tween do gancho
 		_:
 			_process_free()
 	move_and_slide()
@@ -136,7 +138,7 @@ func _update_visual() -> void:
 ## Polling das ações (não _unhandled_input): assim os botões touch do HUD, que
 ## disparam Input.action_press/release, acionam as mesmas ações que teclado/gamepad.
 func _poll_actions() -> void:
-	if state == State.STUNNED:
+	if state == State.STUNNED or state == State.GRAPPLING:
 		return
 	# Interagir funciona mesmo travado? Não: o diálogo consome o input à parte.
 	if GameConfig.gameplay_locked:
@@ -271,6 +273,20 @@ func full_restore() -> void:
 	health.heal(health.max_health)
 	flasks = flask_max
 	GameEvents.flasks_changed.emit(flasks, flask_max)
+
+## Gancho-corda (§3.3): puxa Aria através de um abismo até o destino, com i-frames.
+func grapple_to(target: Vector2) -> void:
+	if state == State.GRAPPLING:
+		return
+	state = State.GRAPPLING
+	hurtbox.invulnerable = true
+	var t := create_tween()
+	t.tween_property(self, "global_position", target, 0.35).set_trans(Tween.TRANS_SINE)
+	t.tween_callback(_end_grapple)
+
+func _end_grapple() -> void:
+	hurtbox.invulnerable = false
+	state = State.FREE
 
 ## Renasce no santuário após a morte (chamado pelo GameWorld).
 func revive() -> void:

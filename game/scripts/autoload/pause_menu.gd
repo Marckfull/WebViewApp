@@ -116,6 +116,9 @@ func _bestiary_text() -> String:
 		text += "• %s\n" % String(id).capitalize()
 	for id in bosses:
 		text += "★ %s (boss)\n" % String(id).capitalize()
+	var items: Array = SaveManager.state.get("items", [])
+	var memories: Array = SaveManager.state.get("memories", [])
+	text += "\nItens: %d   Memórias: %d/12" % [items.size(), memories.size()]
 	return text.strip_edges()
 
 func _show_root() -> void:

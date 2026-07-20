@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3]
+[gd_scene load_steps=21 format=3]
 
 [ext_resource type="Script" path="res://scripts/world/game_world.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/world/day_night.gd" id="11"]
@@ -11,12 +11,23 @@
 [ext_resource type="Script" path="res://scripts/ui/hud.gd" id="8"]
 [ext_resource type="PackedScene" path="res://scenes/enemies/guardia_boss.tscn" id="9"]
 [ext_resource type="PackedScene" path="res://scenes/world/door.tscn" id="10"]
+[ext_resource type="PackedScene" path="res://scenes/world/item_pickup.tscn" id="12"]
+[ext_resource type="PackedScene" path="res://scenes/world/grapple_gate.tscn" id="13"]
+[ext_resource type="Resource" path="res://data/dialogue/gancho_pickup.tres" id="14"]
+[ext_resource type="Resource" path="res://data/dialogue/gate_locked.tres" id="15"]
+[ext_resource type="Resource" path="res://data/dialogue/memoria_01.tres" id="16"]
 
 [sub_resource type="RectangleShape2D" id="wall_h"]
 size = Vector2(800, 16)
 
 [sub_resource type="RectangleShape2D" id="wall_v"]
 size = Vector2(16, 480)
+
+[sub_resource type="RectangleShape2D" id="inner_v"]
+size = Vector2(16, 128)
+
+[sub_resource type="RectangleShape2D" id="inner_h"]
+size = Vector2(232, 16)
 
 [node name="CriptaDasGuardias" type="Node2D"]
 script = ExtResource("1")
@@ -91,6 +102,50 @@ position = Vector2(690, 200)
 position = Vector2(768, 240)
 target_scene = "res://scenes/world/cripta_ala2.tscn"
 spawn_point = Vector2(70, 240)
+
+[node name="InnerWalls" type="StaticBody2D" parent="."]
+collision_layer = 1
+collision_mask = 0
+
+[node name="InnerV" type="CollisionShape2D" parent="InnerWalls"]
+position = Vector2(240, 400)
+shape = SubResource("inner_v")
+
+[node name="InnerH" type="CollisionShape2D" parent="InnerWalls"]
+position = Vector2(132, 344)
+shape = SubResource("inner_h")
+
+[node name="InnerVVisual" type="Polygon2D" parent="InnerWalls"]
+color = Color(0.18, 0.18, 0.24, 1)
+polygon = PackedVector2Array(232, 336, 248, 336, 248, 464, 232, 464)
+
+[node name="InnerHVisual" type="Polygon2D" parent="InnerWalls"]
+color = Color(0.18, 0.18, 0.24, 1)
+polygon = PackedVector2Array(16, 336, 248, 336, 248, 352, 16, 352)
+
+[node name="GanchoPickup" parent="." instance=ExtResource("12")]
+position = Vector2(720, 360)
+item_id = &"gancho"
+collection = "items"
+dialogue = ExtResource("14")
+
+[node name="MemoriaPickup" parent="." instance=ExtResource("12")]
+position = Vector2(90, 410)
+item_id = &"memoria_01"
+collection = "memories"
+dialogue = ExtResource("16")
+
+[node name="GrappleGateIn" parent="." instance=ExtResource("13")]
+position = Vector2(275, 410)
+required_item = &"gancho"
+landing = Vector2(150, 410)
+locked_dialogue = ExtResource("15")
+
+[node name="GrappleGateOut" parent="." instance=ExtResource("13")]
+position = Vector2(200, 410)
+required_item = &"gancho"
+landing = Vector2(300, 410)
+locked_dialogue = ExtResource("15")
 
 [node name="UI" type="CanvasLayer" parent="."]
 

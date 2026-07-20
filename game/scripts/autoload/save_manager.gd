@@ -27,6 +27,7 @@ func _default_state() -> Dictionary:
 			"eco_drop": {},         ## drop de Ecos persistido entre sessões (§3.2/§3.6)
 		},
 		"bestiary": [],
+		"items": [],     ## itens-chave de dungeon: gancho, bomba, lente... (§3.3)
 		"memories": [],  ## 12 Memórias Perdidas -> final secreto (§2, §3.3)
 		"playtime": 0.0,
 	}

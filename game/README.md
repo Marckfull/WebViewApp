@@ -56,6 +56,9 @@ próprio export da engine — o app WebView legado na raiz do repositório **nã
 - **Feedback de hit** (§5): flash de dano (Aria, Ecoados, boss) + tremor de câmera ao ser atingida.
 - **Inimigos noturnos** (§3.5): o **Ecoado Noturno** (mais rápido/perigoso) só aparece à noite —
   dormente e invisível de dia. Respawn preserva a variante (`EnemyData`).
+- **Metroidvania leve** (§3.3): o **Gancho-corda** (item de dungeon) abre uma passagem antes
+  bloqueada — uma alcova selada com a **1ª Memória Perdida** (§2). Sem o gancho, a porta dá a dica;
+  com ele, Aria se puxa pelo vão. Itens/memórias persistem e aparecem no Diário (pausa).
 
 ## Estrutura
 

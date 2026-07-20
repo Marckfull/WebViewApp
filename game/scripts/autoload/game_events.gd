@@ -33,6 +33,7 @@ signal rested_at_shrine(shrine_id: StringName)   ## santuário/bonfire (§3.2)
 signal melody_played(melody_id: StringName)      ## ocarina (§3.1)
 signal day_time_changed(value: float)            ## ciclo dia/noite (§3.5, §4)
 signal area_discovered(area_id: StringName)      ## mapa que se desenha (§3.5)
+signal item_obtained(item_id: StringName)        ## item-chave de dungeon (§3.3)
 signal bestiary_entry_unlocked(enemy_id: StringName)
 
 ## Meta

@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/dialogue_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"memoria_01"
+speaker = ""
+lines = Array[String](["Uma Memória Perdida vibra na sua mão.", "...a voz de Lys, rindo perto do rio. O som quase tem cor.", "Aria a guarda como quem segura água entre os dedos. (1 de 12)"])
