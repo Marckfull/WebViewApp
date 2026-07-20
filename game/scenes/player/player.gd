@@ -41,6 +41,9 @@ var flasks: int = 0
 var _weapons: Array[WeaponData] = []
 var _weapon_index: int = 0
 var equipped_weapon: WeaponData
+const COMBO_WINDOW := 0.55
+var _combo_index: int = 0
+var _combo_timer: float = 0.0
 
 func _ready() -> void:
 	add_to_group("player")
@@ -82,6 +85,10 @@ func apply_attributes() -> void:
 
 func _physics_process(delta: float) -> void:
 	_poll_actions()
+	if _combo_timer > 0.0:
+		_combo_timer -= delta
+		if _combo_timer <= 0.0:
+			_combo_index = 0  ## janela expirou: combo reinicia
 	match state:
 		State.DODGING:
 			_process_dodge(delta)
@@ -171,9 +178,19 @@ func _try_attack() -> void:
 	if not stamina.try_spend(cost):
 		return  ## sem stamina = não ataca (§3.2)
 	state = State.ATTACKING
+	# Encadeia o combo: cada golpe na janela avança até combo_length; o golpe
+	# final é um finalizador (mais dano de postura, §3.2/§3.3).
+	var combo_len := equipped_weapon.combo_length if equipped_weapon else 3
+	if _combo_timer > 0.0 and _combo_index < combo_len:
+		_combo_index += 1
+	else:
+		_combo_index = 1
+	_combo_timer = COMBO_WINDOW
+	var is_finisher := _combo_index >= combo_len
 	if equipped_weapon:
-		attack_hitbox.damage = equipped_weapon.base_damage
-		attack_hitbox.poise_damage = equipped_weapon.poise_damage
+		var dmg_mult := 1.0 + 0.15 * (_combo_index - 1)
+		attack_hitbox.damage = equipped_weapon.base_damage * dmg_mult
+		attack_hitbox.poise_damage = equipped_weapon.poise_damage * (1.6 if is_finisher else 1.0)
 		_attack_timer = 0.35 / maxf(equipped_weapon.attack_speed, 0.1)
 	else:
 		_attack_timer = 0.35

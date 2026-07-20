@@ -31,3 +31,22 @@ func test_longer_than_full_not_prefix() -> void:
 
 func test_empty_is_prefix() -> void:
 	assert_true(MelodyMatcher.is_prefix([], _cancao.notes))
+
+func _crepusculo() -> MelodyData:
+	var m := MelodyData.new()
+	m.id = &"cancao_do_crepusculo"
+	m.notes = [4, 3, 2, 1, 0]
+	return m
+
+func test_disambiguates_between_two_melodies() -> void:
+	var lib := [_cancao, _crepusculo()]
+	assert_eq(MelodyMatcher.exact_match([0, 2, 4, 2, 0], lib).id, &"cancao_do_mundo")
+	assert_eq(MelodyMatcher.exact_match([4, 3, 2, 1, 0], lib).id, &"cancao_do_crepusculo")
+
+func test_prefix_matches_correct_melody() -> void:
+	var lib := [_cancao, _crepusculo()]
+	# [4] só é prefixo do crepúsculo; [0] só do mundo — ambos ainda possíveis.
+	assert_true(MelodyMatcher.any_prefix([4], lib))
+	assert_true(MelodyMatcher.any_prefix([0], lib))
+	# [4,2] não é prefixo de nenhuma (crepúsculo é 4,3,...).
+	assert_false(MelodyMatcher.any_prefix([4, 2], lib))

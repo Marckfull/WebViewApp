@@ -6,7 +6,10 @@ extends Node
 ## A Canção do Mundo acalma os Ecoados (stagger). Data-driven via MelodyData.
 
 const NOTE_NAMES := ["Dó", "Ré", "Mi", "Fá", "Sol"]
-const MELODY_PATHS := ["res://data/melodies/cancao_do_mundo.tres"]
+const MELODY_PATHS := [
+	"res://data/melodies/cancao_do_mundo.tres",
+	"res://data/melodies/cancao_do_crepusculo.tres",
+]
 
 var _melodies: Array[MelodyData] = []
 var _entered: Array[int] = []
@@ -95,7 +98,9 @@ func _apply_effect(melody: MelodyData) -> void:
 					e.stagger()
 		MelodyData.Effect.DAY_NIGHT:
 			var t: float = SaveManager.state["world"]["day_time"]
-			SaveManager.state["world"]["day_time"] = 0.5 if t < 0.5 else 0.0
+			var novo := 0.5 if t < 0.5 else 0.0
+			SaveManager.state["world"]["day_time"] = novo
+			GameEvents.day_time_changed.emit(novo)
 		_:
 			pass
 

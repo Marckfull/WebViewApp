@@ -49,6 +49,10 @@ próprio export da engine — o app WebView legado na raiz do repositório **nã
 - **Dungeon em alas** (§3.6): a Cripta tem 2 salas ligadas por **portas**; atravessar recria a
   sala (streaming leve) e reposiciona Aria na entrada — cada ala é um **checkpoint** natural.
   O EcoDrop guarda a sala onde caiu (não reaparece na ala errada).
+- **Combos** (§3.2/§3.3): encadear golpes na janela avança o combo até `combo_length` da arma;
+  o golpe final é um **finalizador** (mais dano de postura). Muda o ritmo por arma.
+- **Ciclo dia/noite** (§3.5/§4): a **Canção do Crepúsculo** (2ª melodia da Ocarina) alterna
+  dia↔noite; um `CanvasModulate` tinge a cena (azul-frio à noite) — "a cor conta a história".
 
 ## Estrutura
 

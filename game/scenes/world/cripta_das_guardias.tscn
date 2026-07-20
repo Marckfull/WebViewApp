@@ -1,6 +1,7 @@
-[gd_scene load_steps=13 format=3]
+[gd_scene load_steps=14 format=3]
 
 [ext_resource type="Script" path="res://scripts/world/game_world.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/world/day_night.gd" id="11"]
 [ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/enemies/dummy_enemy.tscn" id="3"]
 [ext_resource type="PackedScene" path="res://scenes/world/shrine.tscn" id="4"]
@@ -19,6 +20,9 @@ size = Vector2(16, 480)
 
 [node name="CriptaDasGuardias" type="Node2D"]
 script = ExtResource("1")
+
+[node name="DayNight" type="CanvasModulate" parent="."]
+script = ExtResource("11")
 
 [node name="Floor" type="Polygon2D" parent="."]
 color = Color(0.1, 0.11, 0.14, 1)
