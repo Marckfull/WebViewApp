@@ -1,7 +1,8 @@
-[gd_scene load_steps=12 format=3]
+[gd_scene load_steps=13 format=3]
 
 [ext_resource type="Script" path="res://scripts/world/game_world.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/world/day_night.gd" id="8"]
+[ext_resource type="Script" path="res://scripts/ui/minimap.gd" id="10"]
 [ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/enemies/dummy_enemy.tscn" id="3"]
 [ext_resource type="PackedScene" path="res://scenes/world/shrine.tscn" id="4"]
@@ -101,3 +102,13 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 script = ExtResource("7")
+
+[node name="MiniMap" type="Control" parent="UI"]
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -130.0
+offset_top = 44.0
+offset_right = -10.0
+offset_bottom = 116.0
+mouse_filter = 2
+script = ExtResource("10")

@@ -59,6 +59,8 @@ próprio export da engine — o app WebView legado na raiz do repositório **nã
 - **Metroidvania leve** (§3.3): o **Gancho-corda** (item de dungeon) abre uma passagem antes
   bloqueada — uma alcova selada com a **1ª Memória Perdida** (§2). Sem o gancho, a porta dá a dica;
   com ele, Aria se puxa pelo vão. Itens/memórias persistem e aparecem no Diário (pausa).
+- **Mini-mapa que se desenha** (§3.5): Aria é cartógrafa — o mapa no canto revela-se conforme
+  ela explora (fog-of-war), marca pontos de interesse descobertos e **persiste por sala** no save.
 
 ## Estrutura
 

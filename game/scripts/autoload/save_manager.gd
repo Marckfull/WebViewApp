@@ -25,6 +25,7 @@ func _default_state() -> Dictionary:
 			"shrines": [], "areas_discovered": [], "melodies": [], "day_time": 0.0,
 			"bosses_defeated": [],  ## bosses não renascem após carregar
 			"eco_drop": {},         ## drop de Ecos persistido entre sessões (§3.2/§3.6)
+			"map": {},              ## fog-of-war do mini-mapa por sala (§3.5)
 		},
 		"bestiary": [],
 		"items": [],     ## itens-chave de dungeon: gancho, bomba, lente... (§3.3)
