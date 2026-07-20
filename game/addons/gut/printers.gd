@@ -1,7 +1,7 @@
 # ------------------------------------------------------------------------------
 # Interface and some basic functionality for all printers.
 # ------------------------------------------------------------------------------
-class GutPrinter:
+class Printer:
 	var _format_enabled = true
 	var _disabled = false
 	var _printer_name = 'NOT SET'
@@ -45,14 +45,13 @@ class GutPrinter:
 # Responsible for sending text to a GUT gui.
 # ------------------------------------------------------------------------------
 class GutGuiPrinter:
-	extends GutPrinter
+	extends Printer
 	var _textbox = null
 
 	var _colors = {
 			red = Color.RED,
 			yellow = Color.YELLOW,
-			green = Color.GREEN,
-			blue = Color.BLUE
+			green = Color.GREEN
 	}
 
 	func _init():
@@ -127,8 +126,8 @@ class GutGuiPrinter:
 # result in duplicate output.  printraw does not print to the console so i had
 # to make another one.
 # ------------------------------------------------------------------------------
-class GutConsolePrinter:
-	extends GutPrinter
+class ConsolePrinter:
+	extends Printer
 	var _buffer = ''
 
 	func _init():
@@ -146,15 +145,14 @@ class GutConsolePrinter:
 # ------------------------------------------------------------------------------
 # Prints text to terminal, formats some words.
 # ------------------------------------------------------------------------------
-class GutTerminalPrinter:
-	extends GutPrinter
+class TerminalPrinter:
+	extends Printer
 
 	var escape = PackedByteArray([0x1b]).get_string_from_ascii()
 	var cmd_colors  = {
 		red = escape + '[31m',
 		yellow = escape + '[33m',
 		green = escape + '[32m',
-		blue = escape + '[34m',
 
 		underline = escape + '[4m',
 		bold = escape + '[1m',

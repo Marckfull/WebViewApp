@@ -52,7 +52,7 @@ class BaseGutPanelControl:
 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
-class GpcNumber:
+class NumberControl:
 	extends BaseGutPanelControl
 
 	var value_ctrl = SpinBox.new()
@@ -80,18 +80,7 @@ class GpcNumber:
 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
-class GpcFloat:
-	extends GpcNumber
-
-	func _init(title, val, step, v_min, v_max, hint=""):
-		super._init(title, val, v_min, v_max, hint)
-		value_ctrl.step = step
-		value_ctrl.value = val
-
-
-# ------------------------------------------------------------------------------
-# ------------------------------------------------------------------------------
-class GpcString:
+class StringControl:
 	extends BaseGutPanelControl
 
 	var value_ctrl = LineEdit.new()
@@ -104,8 +93,6 @@ class GpcString:
 		value_ctrl.text_changed.connect(_on_text_changed)
 		value_ctrl.select_all_on_focus = true
 		add_child(value_ctrl)
-		if(title == ''):
-			label.visible = false
 
 	func _on_text_changed(new_value):
 		changed.emit()
@@ -120,37 +107,7 @@ class GpcString:
 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
-class GpcMultiLineString:
-	extends BaseGutPanelControl
-
-	var value_ctrl = TextEdit.new()
-
-	func _init(title, val, hint=""):
-		super._init(title, val, hint)
-		var vbox = VBoxContainer.new()
-		vbox.size_flags_horizontal = SIZE_EXPAND_FILL
-		add_child(vbox)
-		label.reparent(vbox)
-		value_ctrl.size_flags_horizontal = value_ctrl.SIZE_EXPAND_FILL
-		value_ctrl.text = val
-		value_ctrl.text_changed.connect(_on_text_changed)
-		value_ctrl.scroll_fit_content_height = true
-		vbox.add_child(value_ctrl)
-
-	func _on_text_changed(new_value):
-		changed.emit()
-
-	func get_value():
-		return value_ctrl.text
-
-	func set_value(val):
-		value_ctrl.text = val
-
-
-
-# ------------------------------------------------------------------------------
-# ------------------------------------------------------------------------------
-class GpcBoolean:
+class BooleanControl:
 	extends BaseGutPanelControl
 
 	var value_ctrl = CheckBox.new()
@@ -176,7 +133,7 @@ class GpcBoolean:
 # value is "selected" and is gettable and settable
 # text is the text value of the selected item, it is gettable only
 # ------------------------------------------------------------------------------
-class GpcSelect:
+class SelectControl:
 	extends BaseGutPanelControl
 
 	var value_ctrl = OptionButton.new()
@@ -210,7 +167,7 @@ class GpcSelect:
 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
-class GpcColor:
+class ColorControl:
 	extends BaseGutPanelControl
 
 	var value_ctrl = ColorPickerButton.new()
@@ -230,7 +187,7 @@ class GpcColor:
 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
-class GpcDirectory:
+class DirectoryControl:
 	extends BaseGutPanelControl
 
 	var value_ctrl := LineEdit.new()
@@ -300,7 +257,7 @@ class GpcDirectory:
 # Features:
 # 	Buttons to pick res://, user://, or anywhere on the OS.
 # ------------------------------------------------------------------------------
-class GpcFileDialogSuperPlus:
+class FileDialogSuperPlus:
 	extends FileDialog
 
 	var show_diretory_types = true :
@@ -371,14 +328,14 @@ class GpcFileDialogSuperPlus:
 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
-class GpcSaveLoad:
+class SaveLoadControl:
 	extends BaseGutPanelControl
 
 	var btn_load = Button.new()
 	var btn_save = Button.new()
 
-	var dlg_load := GpcFileDialogSuperPlus.new()
-	var dlg_save := GpcFileDialogSuperPlus.new()
+	var dlg_load := FileDialogSuperPlus.new()
+	var dlg_save := FileDialogSuperPlus.new()
 
 	signal save_path_chosen(path)
 	signal load_path_chosen(path)

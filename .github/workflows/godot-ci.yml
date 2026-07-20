@@ -17,10 +17,17 @@ on:
       - ".github/workflows/godot-ci.yml"
   workflow_dispatch:
 
+# Cancela runs anteriores da mesma branch quando um novo push chega — evita
+# acumular execuções travadas.
+concurrency:
+  group: godot-ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   smoke-test:
     name: Import + boot headless
     runs-on: ubuntu-latest
+    timeout-minutes: 15   # nenhum hang de CI dura horas
     container:
       image: barichello/godot-ci:4.3
     steps:
@@ -37,6 +44,7 @@ jobs:
 
       - name: Testes unitários (GUT)
         working-directory: game
+        timeout-minutes: 5
         run: godot --headless -s res://addons/gut/gut_cmdln.gd -gdir=res://test/unit -ginclude_subdirs -glog=1 -gexit
 
   # -----------------------------------------------------------------------------
