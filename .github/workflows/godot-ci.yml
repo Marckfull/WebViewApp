@@ -1,0 +1,62 @@
+name: Godot CI
+
+# Smoke test headless do projeto Godot em /game (§6.3 do GDD).
+# Importa o projeto e inicializa a cena principal por alguns frames — isso
+# pega erros de parse de GDScript e de carregamento de cena a cada push, de graça.
+# O export Android assinado (AAB) entra como job separado quando houver keystore/secrets.
+
+on:
+  push:
+    branches: ["**"]
+    paths:
+      - "game/**"
+      - ".github/workflows/godot-ci.yml"
+  pull_request:
+    paths:
+      - "game/**"
+      - ".github/workflows/godot-ci.yml"
+  workflow_dispatch:
+
+jobs:
+  smoke-test:
+    name: Import + boot headless
+    runs-on: ubuntu-latest
+    container:
+      image: barichello/godot-ci:4.3
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Importar projeto (gera .godot, valida scripts)
+        working-directory: game
+        run: godot --headless --import
+
+      - name: Smoke test — inicializar a cena principal
+        working-directory: game
+        run: godot --headless --quit-after 180 res://scenes/world/greybox_gym.tscn
+
+  # -----------------------------------------------------------------------------
+  # Export Android (AAB) — desabilitado até existirem os secrets do keystore.
+  # Requer: templates de export do Godot + variáveis GODOT_ANDROID_KEYSTORE_*, etc.
+  # Habilitar trocando `if: false` e configurando export_presets.cfg.
+  # -----------------------------------------------------------------------------
+  android-export:
+    name: Export Android AAB
+    if: false
+    needs: smoke-test
+    runs-on: ubuntu-latest
+    container:
+      image: barichello/godot-ci:4.3
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Export AAB
+        working-directory: game
+        run: |
+          mkdir -p build/android
+          godot --headless --export-release "Android" build/android/ecos-de-lirael.aab
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ecos-de-lirael-aab
+          path: game/build/android/*.aab

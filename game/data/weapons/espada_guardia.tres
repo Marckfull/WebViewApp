@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/weapon_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"espada_guardia"
+display_name = "Espada da Guardiã"
+weapon_class = 1
+base_damage = 18.0
+poise_damage = 22.0
+stamina_cost = 20.0
+attack_speed = 1.0
+combo_length = 3
+lore = "Forjada por Odara com aço que 'lembra' o som. Vibra baixinho perto do Silêncio."

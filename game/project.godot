@@ -1,0 +1,44 @@
+; Engine configuration file.
+; Ecos de Lirael — projeto Godot 4.x (Fase 0: fundação de combate greybox)
+; Ver docs/ECOS_DE_LIRAEL_recursos_gratuitos.md e o GDD para contexto.
+
+config_version=5
+
+[application]
+
+config/name="Ecos de Lirael"
+config/description="Ação-aventura souls-like com pixel art HD para Android. Protagonista: Aria."
+run/main_scene="res://scenes/world/greybox_gym.tscn"
+config/features=PackedStringArray("4.3", "GL Compatibility")
+config/icon="res://icon.svg"
+
+[autoload]
+
+GameConfig="*res://scripts/autoload/game_config.gd"
+GameEvents="*res://scripts/autoload/game_events.gd"
+SaveManager="*res://scripts/autoload/save_manager.gd"
+
+[display]
+
+; Resolução interna 640x360 (§4 Direção de Arte), escalada por inteiro.
+window/size/viewport_width=640
+window/size/viewport_height=360
+window/size/window_width_override=1280
+window/size/window_height_override=720
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+; Android: orientação travada em landscape (§1 Plataforma).
+window/handheld/orientation=1
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+; Pixel art: sem filtro, sem mipmaps.
+textures/canvas_textures/default_texture_filter=0
+2d/snap/snap_2d_transforms_to_pixel=true
+2d/snap/snap_2d_vertices_to_pixel=true
+
+[physics]
+
+common/physics_ticks_per_second=60
