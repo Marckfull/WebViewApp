@@ -25,6 +25,8 @@ var state: State = State.FREE
 @onready var lock_on: LockOnSystem = $LockOnSystem
 @onready var attack_hitbox: Hitbox = $AttackHitbox
 @onready var interaction_detector: Area2D = $InteractionDetector
+@onready var body_visual: Polygon2D = $Visual
+@onready var camera: Camera2D = $Camera2D
 ## Opcional: se um AnimatedSprite2D "Sprite" for adicionado (swap de arte —
 ## Ninja Adventure CC0), ele é dirigido pelo estado. Ausente = greybox, sem efeito.
 @onready var sprite: AnimatedSprite2D = get_node_or_null("Sprite")
@@ -44,11 +46,13 @@ var equipped_weapon: WeaponData
 const COMBO_WINDOW := 0.55
 var _combo_index: int = 0
 var _combo_timer: float = 0.0
+var _shake_time: float = 0.0
 
 func _ready() -> void:
 	add_to_group("player")
 	health.is_player = true
 	health.died.connect(_on_died)
+	hurtbox.hit_taken.connect(_on_hurt)
 	GameEvents.parry_success.connect(_on_parry_success)
 	flasks = flask_max
 	GameEvents.flasks_changed.emit(flasks, flask_max)
@@ -98,6 +102,20 @@ func _physics_process(delta: float) -> void:
 			_process_free()
 	move_and_slide()
 	_update_visual()
+	_apply_shake(delta)
+
+## Feedback de dano: flash no corpo + tremor de câmera (§5 hit-feedback "crocante").
+func _on_hurt(_hitbox: Hitbox) -> void:
+	body_visual.modulate = Color(4, 4, 4)
+	create_tween().tween_property(body_visual, "modulate", Color(1, 1, 1), 0.15)
+	_shake_time = 0.18
+
+func _apply_shake(delta: float) -> void:
+	if _shake_time > 0.0:
+		_shake_time -= delta
+		camera.offset = Vector2(randf_range(-2.5, 2.5), randf_range(-2.5, 2.5))
+	elif camera.offset != Vector2.ZERO:
+		camera.offset = Vector2.ZERO
 
 ## Dirige o AnimatedSprite2D opcional pelo estado/facing (pronto para o swap de
 ## arte). No greybox, `sprite` é null e este método é um no-op.

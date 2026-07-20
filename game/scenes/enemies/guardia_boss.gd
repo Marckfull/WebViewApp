@@ -37,6 +37,7 @@ func _ready() -> void:
 	health.health_changed.connect(_on_health_changed)
 	health.died.connect(_on_died)
 	health.poise_broken.connect(_on_poise_broken)
+	($Hurtbox as Hurtbox).hit_taken.connect(_on_hurt)
 	# Adiado: o HUD (último filho da cena) precisa estar conectado antes do anúncio.
 	_announce.call_deferred()
 
@@ -115,6 +116,11 @@ func _enter_phase2() -> void:
 	visual.color = Color(1, 0.4, 0.4)
 	sweep_hitbox.deactivate()
 	GameEvents.boss_phase_changed.emit(2)
+
+## Flash de dano (§5) — via modulate, independente da cor de telegrafo/fase.
+func _on_hurt(_hitbox: Hitbox) -> void:
+	visual.modulate = Color(4, 4, 4)
+	create_tween().tween_property(visual, "modulate", Color(1, 1, 1), 0.12)
 
 func _on_poise_broken() -> void:
 	if state == State.DEAD:

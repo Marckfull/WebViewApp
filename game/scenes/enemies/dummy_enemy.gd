@@ -19,11 +19,13 @@ enum State { IDLE, CHASE, TELEGRAPH, ATTACK, RECOVER, STAGGERED }
 @onready var health: HealthComponent = $HealthComponent
 @onready var attack_hitbox: Hitbox = $ContactHitbox
 @onready var visual: Polygon2D = $Visual
+@onready var hurtbox: Hurtbox = $Hurtbox
 
 var state: State = State.IDLE
 var _player: Node2D
 var _timer: float = 0.0
 var _base_color: Color
+var _dormant: bool = false
 
 func _ready() -> void:
 	add_to_group("enemies")
@@ -36,8 +38,31 @@ func _ready() -> void:
 	_base_color = visual.color
 	health.died.connect(_on_died)
 	health.poise_broken.connect(_on_poise_broken)
+	hurtbox.hit_taken.connect(_on_hurt)
+	# Inimigos noturnos (§3.5): dormentes/invisíveis de dia, ativos à noite.
+	GameEvents.day_time_changed.connect(_on_day_time_changed)
+	_update_dormancy(SaveManager.state["world"].get("day_time", 0.0))
+
+func _on_day_time_changed(value: float) -> void:
+	_update_dormancy(value)
+
+func _update_dormancy(day_time: float) -> void:
+	_dormant = data != null and data.nocturnal and day_time < 0.5
+	visible = not _dormant
+	hurtbox.monitorable = not _dormant  ## dormente não pode ser atingido
+	if _dormant:
+		state = State.IDLE
+		attack_hitbox.deactivate()
+
+## Flash de dano ao ser atingido (§5).
+func _on_hurt(_hitbox: Hitbox) -> void:
+	visual.modulate = Color(4, 4, 4)
+	create_tween().tween_property(visual, "modulate", Color(1, 1, 1), 0.12)
 
 func _physics_process(delta: float) -> void:
+	if _dormant:
+		velocity = Vector2.ZERO
+		return
 	_player = _find_player()
 	match state:
 		State.IDLE:

@@ -70,10 +70,14 @@ func _record_enemy_spawns() -> void:
 		if e.is_in_group("boss"):
 			continue
 		if e is Node2D:
-			_enemy_spawns.append({
+			var entry := {
 				"scene": (e as Node).scene_file_path,
 				"position": (e as Node2D).global_position,
-			})
+			}
+			# Preserva o EnemyData (ex.: variante noturna) para o respawn ser fiel.
+			if "data" in e and e.data != null:
+				entry["data"] = e.data.resource_path
+			_enemy_spawns.append(entry)
 
 func _on_player_died(death_position: Vector2, ecos_dropped: int) -> void:
 	_spawn_drop(death_position, ecos_dropped)
@@ -113,5 +117,7 @@ func _respawn_enemies() -> void:
 			continue
 		var scene: PackedScene = load(spawn["scene"])
 		var enemy := scene.instantiate()
+		if spawn.has("data") and spawn["data"] != "":
+			enemy.data = load(spawn["data"])  ## reaplica antes do _ready
 		add_child(enemy)
 		(enemy as Node2D).global_position = spawn["position"]

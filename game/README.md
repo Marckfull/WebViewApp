@@ -53,6 +53,9 @@ próprio export da engine — o app WebView legado na raiz do repositório **nã
   o golpe final é um **finalizador** (mais dano de postura). Muda o ritmo por arma.
 - **Ciclo dia/noite** (§3.5/§4): a **Canção do Crepúsculo** (2ª melodia da Ocarina) alterna
   dia↔noite; um `CanvasModulate` tinge a cena (azul-frio à noite) — "a cor conta a história".
+- **Feedback de hit** (§5): flash de dano (Aria, Ecoados, boss) + tremor de câmera ao ser atingida.
+- **Inimigos noturnos** (§3.5): o **Ecoado Noturno** (mais rápido/perigoso) só aparece à noite —
+  dormente e invisível de dia. Respawn preserva a variante (`EnemyData`).
 
 ## Estrutura
 
