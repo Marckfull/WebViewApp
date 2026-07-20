@@ -20,16 +20,23 @@ func _ready() -> void:
 	add_to_group("world")
 	_player = get_tree().get_first_node_in_group("player") as Player
 	if _player:
+		# Chegou por uma porta? Posiciona na entrada correspondente (§3.6).
+		if GameConfig.has_next_spawn:
+			_player.global_position = GameConfig.next_spawn
+			GameConfig.has_next_spawn = false
 		_respawn_point = _player.global_position
 		_apply_camera_limits()
 	_record_enemy_spawns()
 	_restore_drop_from_save()
 	GameEvents.player_died.connect(_on_player_died)
 
-## Recria o drop de Ecos salvo (se o jogador fechou o app antes de recuperá-lo).
+## Recria o drop de Ecos salvo — só na sala onde a morte ocorreu (a cena é
+## registrada no drop para não reaparecer na ala errada).
 func _restore_drop_from_save() -> void:
 	var d: Variant = SaveManager.state["world"].get("eco_drop", {})
 	if d is Dictionary and d.has("amount") and d.has("position"):
+		if d.get("scene", "") != scene_file_path:
+			return
 		var pos := Vector2(d["position"][0], d["position"][1])
 		_active_drop = _make_drop(int(d["amount"]), pos)
 
@@ -84,7 +91,9 @@ func _spawn_drop(pos: Vector2, amount: int) -> void:
 	if is_instance_valid(_active_drop):
 		_active_drop.queue_free()
 	_active_drop = _make_drop(amount, pos)
-	SaveManager.state["world"]["eco_drop"] = { "amount": amount, "position": [pos.x, pos.y] }
+	SaveManager.state["world"]["eco_drop"] = {
+		"amount": amount, "position": [pos.x, pos.y], "scene": scene_file_path,
+	}
 
 func _make_drop(amount: int, pos: Vector2) -> Node:
 	var drop := eco_drop_scene.instantiate()

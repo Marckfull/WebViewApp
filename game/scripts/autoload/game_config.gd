@@ -23,6 +23,10 @@ var difficulty: Difficulty = Difficulty.CANCAO
 ## Sistemas checam esta flag; o diálogo processa seu próprio input à parte.
 var gameplay_locked: bool = false
 
+## Onde posicionar Aria ao carregar a próxima sala (portas entre alas, §3.6).
+var next_spawn: Vector2 = Vector2.ZERO
+var has_next_spawn: bool = false
+
 func _enter_tree() -> void:
 	_register_actions()
 

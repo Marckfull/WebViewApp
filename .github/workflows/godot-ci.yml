@@ -46,6 +46,10 @@ jobs:
         working-directory: game
         run: godot --headless --quit-after 180 res://scenes/world/cripta_das_guardias.tscn
 
+      - name: Smoke test — dungeon (Cripta Ala 2)
+        working-directory: game
+        run: godot --headless --quit-after 120 res://scenes/world/cripta_ala2.tscn
+
       - name: Testes unitários (GUT)
         working-directory: game
         timeout-minutes: 5

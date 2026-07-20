@@ -46,6 +46,9 @@ próprio export da engine — o app WebView legado na raiz do repositório **nã
 - **Persistência** (§3.6): autosave em marcos (morte, boss, melodia); **boss derrotado
   não renasce** após carregar; **EcoDrop persiste** (fechou o app, os Ecos continuam lá).
 - **Bestiário automático** (§3.6): preenche ao derrotar inimigos; visualizável no menu de pausa.
+- **Dungeon em alas** (§3.6): a Cripta tem 2 salas ligadas por **portas**; atravessar recria a
+  sala (streaming leve) e reposiciona Aria na entrada — cada ala é um **checkpoint** natural.
+  O EcoDrop guarda a sala onde caiu (não reaparece na ala errada).
 
 ## Estrutura
 
