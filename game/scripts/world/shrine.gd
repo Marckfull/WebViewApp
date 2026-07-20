@@ -3,11 +3,9 @@ extends Interactable
 ## ponto de respawn e renasce os inimigos comuns. Em produção: também menu de
 ## atributos (gastar Ecos), fast-travel por melodia e roda da ocarina.
 
-@export var dialogue: DialogueData
-
 func interact(_player: Node) -> void:
 	var world := get_tree().get_first_node_in_group("world") as GameWorld
 	if world:
 		world.rest_at(global_position)
-	if dialogue:
-		DialogueManager.start(dialogue)
+	# Abre o menu de atributos (descansar + gastar Ecos, §3.3).
+	ShrineMenu.open()

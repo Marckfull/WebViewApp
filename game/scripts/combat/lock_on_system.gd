@@ -16,6 +16,19 @@ var current_target: Node2D = null
 func _process(_delta: float) -> void:
 	if current_target and not _is_valid(current_target):
 		current_target = null
+	queue_redraw()  # atualiza o reticle
+
+## Reticle visual sobre o alvo travado (§3.1 — feedback do "Z-targeting").
+func _draw() -> void:
+	if current_target == null:
+		return
+	var local := current_target.global_position - global_position
+	var color := Color(1, 0.9, 0.3)
+	draw_arc(local, 16.0, 0.0, TAU, 24, color, 1.5, true)
+	# Quatro tracinhos nos cantos, estilo mira.
+	for a in [PI * 0.25, PI * 0.75, PI * 1.25, PI * 1.75]:
+		var dir := Vector2.RIGHT.rotated(a)
+		draw_line(local + dir * 12.0, local + dir * 20.0, color, 1.5)
 
 ## Alterna o lock: se travado, destrava; senão trava no mais próximo.
 func toggle() -> void:

@@ -41,6 +41,14 @@ func _ready() -> void:
 	GameEvents.parry_success.connect(_on_parry_success)
 	flasks = flask_max
 	GameEvents.flasks_changed.emit(flasks, flask_max)
+	apply_attributes()
+
+## Aplica os atributos salvos aos stats derivados (§3.3). Chamado ao nascer e
+## sempre que Aria sobe um atributo no santuário.
+func apply_attributes() -> void:
+	var attrs: Dictionary = SaveManager.state["attributes"]
+	health.set_max_health(Attributes.max_hp_for(int(attrs["vitalidade"])))
+	stamina.set_max(Attributes.max_stamina_for(int(attrs["stamina"])))
 
 func _physics_process(delta: float) -> void:
 	_poll_actions()

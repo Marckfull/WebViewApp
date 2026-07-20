@@ -36,3 +36,10 @@ func try_spend(amount: float) -> bool:
 
 func has_at_least(amount: float) -> bool:
 	return current >= amount
+
+## Ajusta a stamina máxima (ex.: subir o atributo Stamina, §3.3), já aplicando o
+## multiplicador de dificuldade. Recompleta a stamina.
+func set_max(base_value: float) -> void:
+	max_stamina = base_value * GameConfig.current_rules()["stamina_mult"]
+	current = max_stamina
+	GameEvents.stamina_changed.emit(current, max_stamina)

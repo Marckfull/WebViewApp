@@ -121,6 +121,15 @@ func _build_buttons() -> void:
 	ocarina_btn.pressed.connect(func(): OcarinaManager.toggle())
 	add_child(ocarina_btn)
 
+	# Pausa (canto superior direito).
+	var pause_btn := Button.new()
+	pause_btn.text = "II"
+	pause_btn.custom_minimum_size = Vector2(36, 30)
+	pause_btn.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	pause_btn.position = Vector2(-44, 8)
+	pause_btn.pressed.connect(func(): PauseMenu.toggle())
+	add_child(pause_btn)
+
 func _on_health(current: float, maximum: float) -> void:
 	_hp.max_value = maximum
 	_hp.value = current

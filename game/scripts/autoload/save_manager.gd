@@ -11,16 +11,25 @@ const SAVE_VERSION := 1
 const AUTOSAVE_SLOT := 0
 
 ## Estado do jogo em memória. Data-driven: qualquer sistema lê/escreve aqui e o
-## SaveManager só serializa. Mantido simples de propósito na Fase 0.
-var state := {
-	"version": SAVE_VERSION,
-	"aria": { "hp": 100.0, "max_hp": 100.0, "ecos": 0, "position": [0.0, 0.0] },
-	"attributes": { "vitalidade": 1, "stamina": 1, "forca": 1, "destreza": 1, "harmonia": 1 },
-	"world": { "shrines": [], "areas_discovered": [], "melodies": [], "day_time": 0.0 },
-	"bestiary": [],
-	"memories": [],  ## 12 Memórias Perdidas -> final secreto (§2, §3.3)
-	"playtime": 0.0,
-}
+## SaveManager só serializa.
+var state: Dictionary = _default_state()
+
+## Estado inicial de um jogo novo. Função (não literal compartilhado) para que
+## cada Novo Jogo receba uma cópia limpa, sem vazar dados entre partidas.
+func _default_state() -> Dictionary:
+	return {
+		"version": SAVE_VERSION,
+		"aria": { "hp": 100.0, "max_hp": 100.0, "ecos": 0, "position": [0.0, 0.0] },
+		"attributes": { "vitalidade": 1, "stamina": 1, "forca": 1, "destreza": 1, "harmonia": 1 },
+		"world": { "shrines": [], "areas_discovered": [], "melodies": [], "day_time": 0.0 },
+		"bestiary": [],
+		"memories": [],  ## 12 Memórias Perdidas -> final secreto (§2, §3.3)
+		"playtime": 0.0,
+	}
+
+## Reinicia para um jogo novo (usado pelo menu "Novo Jogo").
+func reset_state() -> void:
+	state = _default_state()
 
 func _ready() -> void:
 	DirAccess.make_dir_recursive_absolute(SAVE_DIR)

@@ -8,6 +8,8 @@ extends Node2D
 
 @export var respawn_delay: float = 1.5
 @export var eco_drop_scene: PackedScene = preload("res://scenes/world/eco_drop.tscn")
+## Limites da câmera = fronteiras da sala (a câmera não mostra além das paredes).
+@export var room_bounds: Rect2 = Rect2(0, 0, 800, 480)
 
 var _player: Player
 var _respawn_point: Vector2
@@ -19,8 +21,18 @@ func _ready() -> void:
 	_player = get_tree().get_first_node_in_group("player") as Player
 	if _player:
 		_respawn_point = _player.global_position
+		_apply_camera_limits()
 	_record_enemy_spawns()
 	GameEvents.player_died.connect(_on_player_died)
+
+func _apply_camera_limits() -> void:
+	var cam := _player.get_node_or_null("Camera2D") as Camera2D
+	if cam == null:
+		return
+	cam.limit_left = int(room_bounds.position.x)
+	cam.limit_top = int(room_bounds.position.y)
+	cam.limit_right = int(room_bounds.position.x + room_bounds.size.x)
+	cam.limit_bottom = int(room_bounds.position.y + room_bounds.size.y)
 
 ## Chamado pelo Santuário ao descansar (§3.2): salva, cura, renasce inimigos.
 func rest_at(point: Vector2) -> void:

@@ -52,3 +52,12 @@ func heal(amount: float) -> void:
 	health = minf(health + amount, max_health)
 	if is_player:
 		GameEvents.health_changed.emit(health, max_health)
+
+## Ajusta a vida máxima (ex.: subir Vitalidade num santuário, §3.3).
+## `refill` recompleta a vida; senão preserva a proporção atual.
+func set_max_health(value: float, refill: bool = true) -> void:
+	max_health = maxf(value, 1.0)
+	health = max_health if refill else minf(health, max_health)
+	health_changed.emit(health, max_health)
+	if is_player:
+		GameEvents.health_changed.emit(health, max_health)
