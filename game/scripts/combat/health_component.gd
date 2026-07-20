@@ -5,6 +5,7 @@ extends Node
 
 signal died
 signal poise_broken
+signal health_changed(current: float, maximum: float)  ## local (bosses, barras próprias)
 
 @export var max_health: float = 100.0
 @export var max_poise: float = 50.0
@@ -28,6 +29,7 @@ func take_damage(amount: float, poise_damage: float = 0.0) -> void:
 	if health <= 0.0:
 		return
 	health = maxf(health - amount, 0.0)
+	health_changed.emit(health, max_health)
 	if is_player:
 		GameEvents.health_changed.emit(health, max_health)
 	if poise_damage > 0.0 and not _stunned:

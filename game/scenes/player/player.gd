@@ -25,6 +25,9 @@ var state: State = State.FREE
 @onready var lock_on: LockOnSystem = $LockOnSystem
 @onready var attack_hitbox: Hitbox = $AttackHitbox
 @onready var interaction_detector: Area2D = $InteractionDetector
+## Opcional: se um AnimatedSprite2D "Sprite" for adicionado (swap de arte —
+## Ninja Adventure CC0), ele é dirigido pelo estado. Ausente = greybox, sem efeito.
+@onready var sprite: AnimatedSprite2D = get_node_or_null("Sprite")
 
 var _facing: Vector2 = Vector2.DOWN
 var _dodge_timer: float = 0.0
@@ -49,6 +52,23 @@ func _physics_process(delta: float) -> void:
 		_:
 			_process_free()
 	move_and_slide()
+	_update_visual()
+
+## Dirige o AnimatedSprite2D opcional pelo estado/facing (pronto para o swap de
+## arte). No greybox, `sprite` é null e este método é um no-op.
+func _update_visual() -> void:
+	if sprite == null or sprite.sprite_frames == null:
+		return
+	var anim := "idle"
+	match state:
+		State.DODGING: anim = "dodge"
+		State.ATTACKING: anim = "attack"
+		State.STUNNED: anim = "hurt"
+		_: anim = "walk" if velocity.length() > 5.0 else "idle"
+	if sprite.sprite_frames.has_animation(anim):
+		sprite.play(anim)
+	if absf(_facing.x) > 0.01:
+		sprite.flip_h = _facing.x < 0.0
 
 ## Polling das ações (não _unhandled_input): assim os botões touch do HUD, que
 ## disparam Input.action_press/release, acionam as mesmas ações que teclado/gamepad.

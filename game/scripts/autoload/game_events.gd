@@ -11,6 +11,12 @@ signal poise_broken(target: Node)         ## postura quebrada -> finalização (
 signal parry_success(target: Node)        ## parry no tempo certo -> crítico (§3.2)
 signal damage_dealt(target: Node, amount: float)
 
+## Boss (§3.2 — 2 fases, leitura de padrões)
+signal boss_spawned(boss_name: String, max_hp: float)
+signal boss_health_changed(current: float, maximum: float)
+signal boss_phase_changed(phase: int)
+signal boss_defeated(boss_id: StringName)
+
 ## Recursos e progressão
 signal ecos_changed(total: int)           ## moeda de XP/compra (§3.2)
 signal stamina_changed(current: float, maximum: float)

@@ -9,16 +9,22 @@ var _hp: ProgressBar
 var _stamina: ProgressBar
 var _ecos: Label
 var _flasks: Label
+var _boss_bar: ProgressBar
+var _boss_label: Label
 
 func _ready() -> void:
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_build_bars()
+	_build_boss_bar()
 	_build_buttons()
 	GameEvents.health_changed.connect(_on_health)
 	GameEvents.stamina_changed.connect(_on_stamina)
 	GameEvents.ecos_changed.connect(_on_ecos)
 	GameEvents.flasks_changed.connect(_on_flasks)
+	GameEvents.boss_spawned.connect(_on_boss_spawned)
+	GameEvents.boss_health_changed.connect(_on_boss_health)
+	GameEvents.boss_defeated.connect(_on_boss_defeated)
 
 func _build_bars() -> void:
 	_hp = _make_bar(Color(0.9, 0.25, 0.3), Vector2(12, 10))
@@ -46,6 +52,45 @@ func _make_bar(color: Color, pos: Vector2) -> ProgressBar:
 	add_child(bar)
 	return bar
 
+## Barra de vida do boss no topo — só aparece durante o encontro (§3.2).
+func _build_boss_bar() -> void:
+	_boss_label = Label.new()
+	_boss_label.anchor_left = 0.5
+	_boss_label.anchor_right = 0.5
+	_boss_label.position = Vector2(-120, 8)
+	_boss_label.custom_minimum_size = Vector2(240, 0)
+	_boss_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_boss_label.visible = false
+	add_child(_boss_label)
+
+	_boss_bar = ProgressBar.new()
+	_boss_bar.anchor_left = 0.5
+	_boss_bar.anchor_right = 0.5
+	_boss_bar.position = Vector2(-160, 28)
+	_boss_bar.custom_minimum_size = Vector2(320, 10)
+	_boss_bar.show_percentage = false
+	_boss_bar.max_value = 100.0
+	_boss_bar.value = 100.0
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = Color(0.75, 0.2, 0.55)
+	_boss_bar.add_theme_stylebox_override("fill", sb)
+	_boss_bar.visible = false
+	add_child(_boss_bar)
+
+func _on_boss_spawned(boss_name: String, max_hp: float) -> void:
+	_boss_label.text = boss_name
+	_boss_label.visible = true
+	_boss_bar.max_value = max_hp
+	_boss_bar.value = max_hp
+	_boss_bar.visible = true
+
+func _on_boss_health(current: float, _maximum: float) -> void:
+	_boss_bar.value = current
+
+func _on_boss_defeated(_id: StringName) -> void:
+	_boss_bar.visible = false
+	_boss_label.visible = false
+
 ## Botões de ação no canto inferior direito (layout do §3.1: customizável em prod).
 func _build_buttons() -> void:
 	var actions := [
@@ -66,6 +111,15 @@ func _build_buttons() -> void:
 		btn.button_down.connect(func(): Input.action_press(action))
 		btn.button_up.connect(func(): Input.action_release(action))
 		add_child(btn)
+
+	# Ocarina abre a roda de melodias — chama o autoload direto (não via ação).
+	var ocarina_btn := Button.new()
+	ocarina_btn.text = "OCARINA"
+	ocarina_btn.custom_minimum_size = Vector2(70, 60)
+	ocarina_btn.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
+	ocarina_btn.position = Vector2(-70, -210)
+	ocarina_btn.pressed.connect(func(): OcarinaManager.toggle())
+	add_child(ocarina_btn)
 
 func _on_health(current: float, maximum: float) -> void:
 	_hp.max_value = maximum

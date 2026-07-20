@@ -37,6 +37,9 @@ func clear_active_drop() -> void:
 
 func _record_enemy_spawns() -> void:
 	for e in get_tree().get_nodes_in_group("enemies"):
+		# Bosses não renascem ao descansar — são encontros únicos (§3.2).
+		if e.is_in_group("boss"):
+			continue
 		if e is Node2D:
 			_enemy_spawns.append({
 				"scene": (e as Node).scene_file_path,
@@ -65,6 +68,9 @@ func _spawn_drop(pos: Vector2, amount: int) -> void:
 
 func _respawn_enemies() -> void:
 	for e in get_tree().get_nodes_in_group("enemies"):
+		# Preserva o boss vivo: descansar não o remove nem o ressuscita.
+		if e.is_in_group("boss"):
+			continue
 		e.queue_free()
 	for spawn in _enemy_spawns:
 		if spawn["scene"] == "":

@@ -29,7 +29,11 @@ próprio export da engine — o app WebView legado na raiz do repositório **nã
 - **Frascos de Essência** (cura tipo Estus, limitada, recarregável no santuário).
 - **Sistema de interação** + **diálogo data-driven** (NPC **Corvo**, tutorial diegético,
   descrições em `.tres`).
-- **Ocarina de Vidro**: item que registra a Canção do Mundo (§2).
+- **Ocarina de Vidro**: item que registra a Canção do Mundo (§2), e a **roda de melodias**
+  (mini-teclado de 5 notas). Tocar a Canção do Mundo **acalma os Ecoados** (§3.1).
+- **1º Boss — Guardiã do Eco**: máquina de estados, ataques telegrafados, **2 fases**
+  (a 50% de vida acelera e muda o padrão) e barra de vida própria (§3.2).
+- **Gancho de animação** no Player: pronto para dirigir um `AnimatedSprite2D` no swap de arte.
 
 ## Estrutura
 
@@ -75,13 +79,13 @@ game/
 
 ## Próximos passos (completar a Vertical Slice)
 
-- **Arte**: substituir os `Polygon2D` por **Ninja Adventure (CC0)** — sprites de Aria
-  (AnimatedSprite2D, 8 direções), tiles da Cripta via `TileMapLayer` + **Tiled**.
-- **Roda de melodias da Ocarina** (mini-teclado de 5 notas) + efeito da Canção do Mundo
-  (fast-travel entre santuários, §3.1).
-- **1º boss** da Cripta (2 fases, exige a mecânica da dungeon).
+- **Arte**: substituir os `Polygon2D` por **Ninja Adventure (CC0)** — o Player já tem o gancho
+  para um `AnimatedSprite2D` "Sprite" (idle/walk/attack/dodge/hurt, 8 direções); tiles da Cripta
+  via `TileMapLayer` + **Tiled**.
+- **Mais melodias da Ocarina** (fast-travel entre santuários, dia/noite) — sistema já é
+  data-driven (`MelodyData`), basta novos `.tres`.
 - **Iluminação 2D** (tochas, dessaturação do Silêncio) e áudio (SFX Kenney CC0 + leitmotiv).
-- **GUT**: testes de save, stamina e economia de Ecos (§6.3).
+- **GUT**: testes de save, stamina, economia de Ecos e matching de melodias (§6.3).
 - Em produção, avaliar troca do diálogo próprio pelo **godot_dialogue_manager** (i18n PT-BR/EN).
 
 ## Testes e CI
