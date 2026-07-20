@@ -8,6 +8,7 @@ extends Control
 var _hp: ProgressBar
 var _stamina: ProgressBar
 var _ecos: Label
+var _flasks: Label
 
 func _ready() -> void:
 	set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -17,6 +18,7 @@ func _ready() -> void:
 	GameEvents.health_changed.connect(_on_health)
 	GameEvents.stamina_changed.connect(_on_stamina)
 	GameEvents.ecos_changed.connect(_on_ecos)
+	GameEvents.flasks_changed.connect(_on_flasks)
 
 func _build_bars() -> void:
 	_hp = _make_bar(Color(0.9, 0.25, 0.3), Vector2(12, 10))
@@ -25,6 +27,11 @@ func _build_bars() -> void:
 	_ecos.position = Vector2(12, 42)
 	_ecos.text = "Ecos: 0"
 	add_child(_ecos)
+	_flasks = Label.new()
+	_flasks.position = Vector2(12, 60)
+	_flasks.add_theme_color_override("font_color", Color(0.6, 0.9, 0.7))
+	_flasks.text = "Frascos: 3"
+	add_child(_flasks)
 
 func _make_bar(color: Color, pos: Vector2) -> ProgressBar:
 	var bar := ProgressBar.new()
@@ -46,7 +53,8 @@ func _build_buttons() -> void:
 		["DODGE", "dodge", Vector2(-140, -40)],
 		["GUARD", "guard", Vector2(-40, -140)],
 		["LOCK", "lock_on", Vector2(-140, -110)],
-		["OCARINA", "ocarina", Vector2(-70, -180)],
+		["USAR", "interact", Vector2(-210, -70)],
+		["HEAL", "heal", Vector2(-210, -140)],
 	]
 	for a in actions:
 		var btn := Button.new()
@@ -69,3 +77,6 @@ func _on_stamina(current: float, maximum: float) -> void:
 
 func _on_ecos(total: int) -> void:
 	_ecos.text = "Ecos: %d" % total
+
+func _on_flasks(current: int, _maximum: int) -> void:
+	_flasks.text = "Frascos: %d" % current

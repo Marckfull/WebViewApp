@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/dialogue_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"corvo_intro"
+speaker = "Corvo"
+lines = Array[String](["Ah... uma que ainda escuta. Raro, nestes dias de Silêncio.", "Guarde seus Ecos, cartógrafa. Onde você cai, eles ficam — e nem sempre esperam por você.", "Se sobreviver à Cripta, me procure. Tenho coisas que vão querer ser compradas."])

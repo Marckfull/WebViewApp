@@ -16,6 +16,9 @@ size = Vector2(14, 14)
 [sub_resource type="RectangleShape2D" id="hit_shape"]
 size = Vector2(18, 16)
 
+[sub_resource type="CircleShape2D" id="interact_shape"]
+radius = 26.0
+
 [node name="Player" type="CharacterBody2D" groups=["player"]]
 collision_layer = 1
 collision_mask = 1
@@ -56,3 +59,13 @@ poise_damage = 22.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AttackHitbox"]
 shape = SubResource("hit_shape")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position_smoothing_enabled = true
+
+[node name="InteractionDetector" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 32
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionDetector"]
+shape = SubResource("interact_shape")

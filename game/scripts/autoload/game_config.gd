@@ -19,6 +19,10 @@ const DIFFICULTY_TABLE := {
 
 var difficulty: Difficulty = Difficulty.CANCAO
 
+## Trava a jogabilidade (movimento/combate) durante diálogos e cutscenes.
+## Sistemas checam esta flag; o diálogo processa seu próprio input à parte.
+var gameplay_locked: bool = false
+
 func _enter_tree() -> void:
 	_register_actions()
 
@@ -38,6 +42,8 @@ func _register_actions() -> void:
 	_add_key_action("guard",   KEY_K, JOY_BUTTON_RIGHT_SHOULDER)
 	_add_key_action("lock_on", KEY_Q, JOY_BUTTON_LEFT_SHOULDER)
 	_add_key_action("ocarina", KEY_F, JOY_BUTTON_B)
+	_add_key_action("heal",    KEY_H, JOY_BUTTON_DPAD_UP)      ## Frasco de Essência (§3.2)
+	_add_key_action("interact", KEY_E, JOY_BUTTON_Y)           ## NPCs, santuários, itens
 
 func _add_action(action_name: StringName, key: Key, axis: int, axis_value: float) -> void:
 	if InputMap.has_action(action_name):

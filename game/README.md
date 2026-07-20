@@ -7,17 +7,29 @@ surda de um ouvido que escuta a Canção do Mundo. Ver o **GDD completo** e o
 Este diretório é o projeto **Godot 4.x**. O wrapper Android (APK/AAB) é gerado pelo
 próprio export da engine — o app WebView legado na raiz do repositório **não** é a base do jogo.
 
-## Estado atual: Fase 0 — Fundação de combate (greybox)
+## Estado atual: Fase 0 (combate) + fundação da Fase 1 (vertical slice)
 
-Implementado o esqueleto jogável que responde ao *gate* do GDD ("o combate é divertido?"):
+**Fase 0 — combate greybox** (responde ao *gate* do GDD, "o combate é divertido?"):
 
 - **Movimento 8-direções** (teclado/gamepad + **stick virtual touch**).
 - **Combate souls-like**: stamina governando ataque/esquiva/defesa, **i-frames** na esquiva,
   **parry** com janela por dificuldade, **poise/postura** → atordoamento → finalização.
 - **Lock-on touch** ("Z-targeting" adaptado) — o risco nº 1 do projeto, prototipado primeiro.
-- **Morte com peso**: dropa Ecos no local; regra de perda conforme dificuldade.
 - **Save** JSON versionado com escrita atômica (autoload).
 - **Arquitetura data-driven**: armas e inimigos em `Resource`/`.tres`.
+
+**Fase 1 — vertical slice (fundação)**: o loop souls completo e a 1ª dungeon:
+
+- **Cripta das Guardiãs** (`cripta_das_guardias.tscn`, cena principal): sala com paredes,
+  câmera que segue Aria, NPC, santuário, itens e Ecoados.
+- **Santuário (bonfire)**: descansar restaura vida/frascos, **salva**, define ponto de respawn
+  e **renasce os inimigos** comuns.
+- **Morte com peso**: ao morrer, Aria dropa os Ecos no local; recupera interagindo — morrer de
+  novo antes apaga o drop. Renasce no último santuário.
+- **Frascos de Essência** (cura tipo Estus, limitada, recarregável no santuário).
+- **Sistema de interação** + **diálogo data-driven** (NPC **Corvo**, tutorial diegético,
+  descrições em `.tres`).
+- **Ocarina de Vidro**: item que registra a Canção do Mundo (§2).
 
 ## Estrutura
 
@@ -25,15 +37,18 @@ Implementado o esqueleto jogável que responde ao *gate* do GDD ("o combate é d
 game/
 ├── project.godot              # 640×360 interna, landscape, autoloads, GL Compatibility (low-end)
 ├── scenes/
-│   ├── world/greybox_gym.*    # CENA PRINCIPAL — gym de combate (§6.3)
-│   ├── player/player.*        # Aria
-│   └── enemies/dummy_enemy.*  # Ecoado de treino
+│   ├── world/                 # cripta_das_guardias (PRINCIPAL), greybox_gym, shrine, eco_drop, ocarina
+│   ├── player/player.*        # Aria (+ Camera2D, InteractionDetector)
+│   ├── enemies/dummy_enemy.*  # Ecoado
+│   └── npc/corvo.*            # mercador Corvo
 ├── scripts/
-│   ├── autoload/              # GameConfig (input+dificuldade), GameEvents (sinais), SaveManager
+│   ├── autoload/              # GameConfig, GameEvents, SaveManager, DialogueManager
 │   ├── combat/                # hitbox, hurtbox, health(+poise), stamina, lock_on
-│   ├── data/                  # weapon_data, enemy_data (data-driven §6.2)
+│   ├── systems/               # interactable, npc
+│   ├── world/                 # game_world (loop souls), shrine, eco_drop, melody_pickup
+│   ├── data/                  # weapon_data, enemy_data, dialogue_data (data-driven §6.2)
 │   └── ui/                    # virtual_joystick, hud
-├── data/                      # instâncias .tres (espada, ecoado)
+├── data/                      # .tres: armas, inimigos, diálogos
 └── assets/                    # vazio — ver assets/README.md para sourcing
 ```
 
@@ -41,8 +56,9 @@ game/
 
 1. Instalar **Godot 4.3** (standard, não .NET).
 2. Abrir `game/project.godot`.
-3. **F5** — abre a `greybox_gym`. No desktop: WASD mover, **J** atacar, **Espaço** esquivar,
-   **K** defender/parry, **Q** lock-on. No touch: stick à esquerda, botões à direita.
+3. **F5** — abre a **Cripta das Guardiãs**. Pegue a Ocarina (E/USAR), fale com o Corvo,
+   descanse no Santuário e enfrente os Ecoados. A `greybox_gym.tscn` continua disponível
+   para tuning isolado de combate.
 
 ## Controles
 
@@ -53,15 +69,20 @@ game/
 | Esquivar | Espaço | A | botão DODGE |
 | Defender/Parry | K | R1 | botão GUARD |
 | Lock-on | Q | L1 | botão LOCK / tocar inimigo |
-| Ocarina | F | B | botão OCARINA |
+| Interagir | E | Y | botão USAR |
+| Curar (frasco) | H | D-pad ↑ | botão HEAL |
+| Ocarina | F | B | — |
 
-## Próximos passos (Fase 1 — Vertical Slice)
+## Próximos passos (completar a Vertical Slice)
 
-- Substituir formas geométricas por **Ninja Adventure (CC0)** — Aria + 1 dungeon.
-- Integrar **godot_dialogue_manager** (NPCs, Corvo, tutorial diegético).
-- Santuários (bonfire): descanso, save, respawn, fast-travel por melodia.
-- Roda de melodias da Ocarina (mini-teclado de 5 notas).
-- Ligar **GUT** (testes) e o **CI de export** (ver `.github/workflows/`).
+- **Arte**: substituir os `Polygon2D` por **Ninja Adventure (CC0)** — sprites de Aria
+  (AnimatedSprite2D, 8 direções), tiles da Cripta via `TileMapLayer` + **Tiled**.
+- **Roda de melodias da Ocarina** (mini-teclado de 5 notas) + efeito da Canção do Mundo
+  (fast-travel entre santuários, §3.1).
+- **1º boss** da Cripta (2 fases, exige a mecânica da dungeon).
+- **Iluminação 2D** (tochas, dessaturação do Silêncio) e áudio (SFX Kenney CC0 + leitmotiv).
+- **GUT**: testes de save, stamina e economia de Ecos (§6.3).
+- Em produção, avaliar troca do diálogo próprio pelo **godot_dialogue_manager** (i18n PT-BR/EN).
 
 ## Testes e CI
 

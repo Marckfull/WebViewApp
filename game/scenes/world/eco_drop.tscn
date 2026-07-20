@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/world/eco_drop.gd" id="1"]
+
+[sub_resource type="CircleShape2D" id="shape"]
+radius = 9.0
+
+[node name="EcoDrop" type="Area2D"]
+collision_layer = 32
+collision_mask = 0
+script = ExtResource("1")
+prompt = "Recuperar Ecos"
+
+[node name="Visual" type="Polygon2D" parent="."]
+color = Color(0.55, 0.8, 1, 0.85)
+polygon = PackedVector2Array(0, -8, 7, 0, 0, 8, -7, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("shape")

@@ -13,6 +13,8 @@ extends CharacterBody2D
 @export var dodge_iframes: float = 0.18
 @export var dodge_stamina: float = 25.0
 @export var attack_stamina: float = 20.0
+@export var flask_max: int = 3          ## Frascos de Essência (§3.2)
+@export var flask_heal_ratio: float = 0.4
 
 enum State { FREE, ATTACKING, DODGING, GUARDING, STUNNED }
 var state: State = State.FREE
@@ -22,15 +24,20 @@ var state: State = State.FREE
 @onready var hurtbox: Hurtbox = $Hurtbox
 @onready var lock_on: LockOnSystem = $LockOnSystem
 @onready var attack_hitbox: Hitbox = $AttackHitbox
+@onready var interaction_detector: Area2D = $InteractionDetector
 
 var _facing: Vector2 = Vector2.DOWN
 var _dodge_timer: float = 0.0
 var _attack_timer: float = 0.0
+var flasks: int = 0
 
 func _ready() -> void:
+	add_to_group("player")
 	health.is_player = true
 	health.died.connect(_on_died)
 	GameEvents.parry_success.connect(_on_parry_success)
+	flasks = flask_max
+	GameEvents.flasks_changed.emit(flasks, flask_max)
 
 func _physics_process(delta: float) -> void:
 	_poll_actions()
@@ -48,6 +55,13 @@ func _physics_process(delta: float) -> void:
 func _poll_actions() -> void:
 	if state == State.STUNNED:
 		return
+	# Interagir funciona mesmo travado? Não: o diálogo consome o input à parte.
+	if GameConfig.gameplay_locked:
+		return
+	if Input.is_action_just_pressed("interact"):
+		_try_interact()
+	if Input.is_action_just_pressed("heal"):
+		use_flask()
 	if Input.is_action_just_pressed("lock_on"):
 		lock_on.toggle()
 	if Input.is_action_just_pressed("attack"):
@@ -66,6 +80,9 @@ func _unhandled_input(event: InputEvent) -> void:
 		_try_touch_target(event.position)
 
 func _process_free() -> void:
+	if GameConfig.gameplay_locked:
+		velocity = Vector2.ZERO
+		return
 	var dir := Input.get_vector("move_left", "move_right", "move_up", "move_down")
 	velocity = dir * speed
 	if dir != Vector2.ZERO:
@@ -126,6 +143,43 @@ func _set_guard(active: bool) -> void:
 		if state == State.GUARDING:
 			state = State.FREE
 
+## Interage com o Interactable mais próximo dentro do alcance (§3.1).
+func _try_interact() -> void:
+	var best: Interactable = null
+	var best_d := INF
+	for a in interaction_detector.get_overlapping_areas():
+		if a is Interactable:
+			var d := global_position.distance_squared_to((a as Node2D).global_position)
+			if d < best_d:
+				best_d = d
+				best = a
+	if best:
+		best.interact(self)
+
+## Frasco de Essência: cura limitada, recarregável nos santuários (§3.2).
+func use_flask() -> void:
+	if flasks <= 0 or state == State.STUNNED:
+		return
+	flasks -= 1
+	health.heal(health.max_health * flask_heal_ratio)
+	GameEvents.flasks_changed.emit(flasks, flask_max)
+
+## Restaura tudo ao descansar num santuário (§3.2).
+func full_restore() -> void:
+	health.heal(health.max_health)
+	flasks = flask_max
+	GameEvents.flasks_changed.emit(flasks, flask_max)
+
+## Renasce no santuário após a morte (chamado pelo GameWorld).
+func revive() -> void:
+	state = State.FREE
+	hurtbox.invulnerable = false
+	hurtbox.guarding = false
+	hurtbox.parry_active = false
+	health.recover_poise()
+	full_restore()
+	set_physics_process(true)
+
 func _try_touch_target(screen_pos: Vector2) -> void:
 	var world := get_global_mouse_position() if screen_pos == Vector2.ZERO \
 		else get_canvas_transform().affine_inverse() * screen_pos
@@ -147,8 +201,11 @@ func _on_parry_success(target: Node) -> void:
 
 func _on_died() -> void:
 	# "Morte com peso": dropa os Ecos no local (§3.2). Regras por dificuldade.
-	var ecos: int = SaveManager.state["aria"]["ecos"]
+	# Em Balada mantém-se os Ecos, então nada é dropado (dropped = 0).
+	var dropped := 0
 	if not GameConfig.current_rules()["keep_ecos"]:
+		dropped = SaveManager.state["aria"]["ecos"]
 		SaveManager.state["aria"]["ecos"] = 0
-	GameEvents.player_died.emit(global_position, ecos)
+		GameEvents.ecos_changed.emit(0)
+	GameEvents.player_died.emit(global_position, dropped)
 	set_physics_process(false)
