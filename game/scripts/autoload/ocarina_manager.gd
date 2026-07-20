@@ -37,13 +37,17 @@ func toggle() -> void:
 	elif not GameConfig.gameplay_locked and _knows_any():
 		_open_wheel()
 
-## Só toca melodias que Aria realmente aprendeu (pegou a Ocarina / a melodia).
-func _knows_any() -> bool:
+## Melodias que Aria realmente aprendeu (pegou a Ocarina / a melodia).
+func _known_melodies() -> Array:
 	var learned: Array = SaveManager.state["world"]["melodies"]
+	var out: Array = []
 	for m in _melodies:
 		if learned.has(String(m.id)):
-			return true
-	return false
+			out.append(m)
+	return out
+
+func _knows_any() -> bool:
+	return not _known_melodies().is_empty()
 
 func _open_wheel() -> void:
 	_open = true
@@ -65,29 +69,16 @@ func _press_note(index: int) -> void:
 	_evaluate()
 
 ## Casa a sequência: toca no acerto exato; reinicia se deixar de ser prefixo de
-## qualquer melodia conhecida.
+## qualquer melodia conhecida. Lógica pura em MelodyMatcher (testável).
 func _evaluate() -> void:
-	var learned: Array = SaveManager.state["world"]["melodies"]
-	var still_possible := false
-	for m in _melodies:
-		if not learned.has(String(m.id)):
-			continue
-		if _entered == m.notes:
-			_play(m)
-			return
-		if _is_prefix(_entered, m.notes):
-			still_possible = true
-	if not still_possible:
+	var known := _known_melodies()
+	var hit := MelodyMatcher.exact_match(_entered, known)
+	if hit:
+		_play(hit)
+		return
+	if not MelodyMatcher.any_prefix(_entered, known):
 		_entered = []
 		_update_labels()
-
-func _is_prefix(seq: Array[int], full: Array[int]) -> bool:
-	if seq.size() > full.size():
-		return false
-	for i in seq.size():
-		if seq[i] != full[i]:
-			return false
-	return true
 
 func _play(melody: MelodyData) -> void:
 	GameEvents.melody_played.emit(melody.id)

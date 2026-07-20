@@ -90,7 +90,16 @@ game/
 
 ## Testes e CI
 
-Testes unitários planejados com **GUT** (§6.3) para inventário, save, stamina e quests.
-O workflow em `.github/workflows/godot-ci.yml` faz *smoke test* headless (importa e inicializa
-a cena principal, pegando erros de script). O export Android assinado (AAB) é a etapa final,
-adicionada quando houver keystore/secrets.
+**Testes unitários com GUT** (`addons/gut/`, MIT) em `test/unit/` — cobrem save
+(round-trip, versão), economia de stamina, regras de dificuldade e o matching de
+melodias da Ocarina (§6.3).
+
+Rodar localmente:
+
+```
+godot --headless -s res://addons/gut/gut_cmdln.gd -gdir=res://test/unit -ginclude_subdirs -gexit
+```
+
+O workflow `.github/workflows/godot-ci.yml` a cada push: (1) importa o projeto e valida
+os scripts, (2) *smoke test* — inicializa a Cripta em headless, (3) roda a suíte GUT.
+O export Android assinado (AAB) é a etapa final, adicionada quando houver keystore/secrets.

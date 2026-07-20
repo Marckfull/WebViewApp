@@ -9,6 +9,7 @@
 | Item | Autor | Licença | Uso |
 |------|-------|---------|-----|
 | Godot Engine | Godot Foundation | MIT | Engine |
+| GUT (Godot Unit Test) 9.6.1 | Butch Wesley | MIT | Testes unitários (`addons/gut/`, ver `addons/gut/LICENSE.md`) |
 
 ## Arte
 

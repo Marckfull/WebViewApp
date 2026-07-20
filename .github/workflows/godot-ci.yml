@@ -33,7 +33,11 @@ jobs:
 
       - name: Smoke test — inicializar a cena principal
         working-directory: game
-        run: godot --headless --quit-after 180 res://scenes/world/greybox_gym.tscn
+        run: godot --headless --quit-after 180 res://scenes/world/cripta_das_guardias.tscn
+
+      - name: Testes unitários (GUT)
+        working-directory: game
+        run: godot --headless -s res://addons/gut/gut_cmdln.gd -gdir=res://test/unit -ginclude_subdirs -glog=1 -gexit
 
   # -----------------------------------------------------------------------------
   # Export Android (AAB) — desabilitado até existirem os secrets do keystore.
