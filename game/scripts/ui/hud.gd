@@ -11,6 +11,7 @@ var _ecos: Label
 var _flasks: Label
 var _boss_bar: ProgressBar
 var _boss_label: Label
+var _weapon: Label
 
 func _ready() -> void:
 	set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -25,6 +26,7 @@ func _ready() -> void:
 	GameEvents.boss_spawned.connect(_on_boss_spawned)
 	GameEvents.boss_health_changed.connect(_on_boss_health)
 	GameEvents.boss_defeated.connect(_on_boss_defeated)
+	GameEvents.weapon_changed.connect(_on_weapon)
 
 func _build_bars() -> void:
 	_hp = _make_bar(Color(0.9, 0.25, 0.3), Vector2(12, 10))
@@ -38,6 +40,11 @@ func _build_bars() -> void:
 	_flasks.add_theme_color_override("font_color", Color(0.6, 0.9, 0.7))
 	_flasks.text = "Frascos: 3"
 	add_child(_flasks)
+	_weapon = Label.new()
+	_weapon.position = Vector2(12, 78)
+	_weapon.add_theme_color_override("font_color", Color(0.85, 0.8, 0.6))
+	_weapon.text = "Arma: —"
+	add_child(_weapon)
 
 func _make_bar(color: Color, pos: Vector2) -> ProgressBar:
 	var bar := ProgressBar.new()
@@ -100,6 +107,7 @@ func _build_buttons() -> void:
 		["LOCK", "lock_on", Vector2(-140, -110)],
 		["USAR", "interact", Vector2(-210, -70)],
 		["HEAL", "heal", Vector2(-210, -140)],
+		["SWAP", "swap_weapon", Vector2(-210, -210)],
 	]
 	for a in actions:
 		var btn := Button.new()
@@ -143,3 +151,6 @@ func _on_ecos(total: int) -> void:
 
 func _on_flasks(current: int, _maximum: int) -> void:
 	_flasks.text = "Frascos: %d" % current
+
+func _on_weapon(display_name: String) -> void:
+	_weapon.text = "Arma: %s" % display_name

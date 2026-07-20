@@ -29,10 +29,18 @@ var state: State = State.FREE
 ## Ninja Adventure CC0), ele é dirigido pelo estado. Ausente = greybox, sem efeito.
 @onready var sprite: AnimatedSprite2D = get_node_or_null("Sprite")
 
+const WEAPON_PATHS := [
+	"res://data/weapons/espada_guardia.tres",
+	"res://data/weapons/adaga_dupla.tres",
+]
+
 var _facing: Vector2 = Vector2.DOWN
 var _dodge_timer: float = 0.0
 var _attack_timer: float = 0.0
 var flasks: int = 0
+var _weapons: Array[WeaponData] = []
+var _weapon_index: int = 0
+var equipped_weapon: WeaponData
 
 func _ready() -> void:
 	add_to_group("player")
@@ -42,6 +50,28 @@ func _ready() -> void:
 	flasks = flask_max
 	GameEvents.flasks_changed.emit(flasks, flask_max)
 	apply_attributes()
+	# Adiado: o HUD (último filho da cena) precisa estar conectado ao weapon_changed.
+	_load_weapons.call_deferred()
+
+func _load_weapons() -> void:
+	for p in WEAPON_PATHS:
+		var w := load(p) as WeaponData
+		if w:
+			_weapons.append(w)
+	if not _weapons.is_empty():
+		equip(0)
+
+## Equipa a arma de índice `i` — cada arma muda dano/postura/custo/velocidade (§3.3).
+func equip(i: int) -> void:
+	if i < 0 or i >= _weapons.size():
+		return
+	_weapon_index = i
+	equipped_weapon = _weapons[i]
+	GameEvents.weapon_changed.emit(equipped_weapon.display_name)
+
+func swap_weapon() -> void:
+	if _weapons.size() > 1:
+		equip((_weapon_index + 1) % _weapons.size())
 
 ## Aplica os atributos salvos aos stats derivados (§3.3). Chamado ao nascer e
 ## sempre que Aria sobe um atributo no santuário.
@@ -90,6 +120,8 @@ func _poll_actions() -> void:
 		_try_interact()
 	if Input.is_action_just_pressed("heal"):
 		use_flask()
+	if Input.is_action_just_pressed("swap_weapon"):
+		swap_weapon()
 	if Input.is_action_just_pressed("lock_on"):
 		lock_on.toggle()
 	if Input.is_action_just_pressed("attack"):
@@ -134,10 +166,17 @@ func _process_attack(delta: float) -> void:
 func _try_attack() -> void:
 	if state != State.FREE:
 		return
-	if not stamina.try_spend(attack_stamina):
+	# Custo/dano/velocidade vêm da arma equipada (§3.3); fallback se não houver.
+	var cost := equipped_weapon.stamina_cost if equipped_weapon else attack_stamina
+	if not stamina.try_spend(cost):
 		return  ## sem stamina = não ataca (§3.2)
 	state = State.ATTACKING
-	_attack_timer = 0.35
+	if equipped_weapon:
+		attack_hitbox.damage = equipped_weapon.base_damage
+		attack_hitbox.poise_damage = equipped_weapon.poise_damage
+		_attack_timer = 0.35 / maxf(equipped_weapon.attack_speed, 0.1)
+	else:
+		_attack_timer = 0.35
 	# Direciona o hitbox para o alvo travado, se houver; senão para o facing.
 	var aim := _facing
 	if lock_on.current_target:

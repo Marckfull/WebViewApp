@@ -45,6 +45,7 @@ func _register_actions() -> void:
 	_add_key_action("heal",    KEY_H, JOY_BUTTON_DPAD_UP)      ## Frasco de Essência (§3.2)
 	_add_key_action("interact", KEY_E, JOY_BUTTON_Y)           ## NPCs, santuários, itens
 	_add_key_action("pause",   KEY_ESCAPE, JOY_BUTTON_START)   ## menu de pausa
+	_add_key_action("swap_weapon", KEY_TAB, JOY_BUTTON_DPAD_RIGHT)  ## trocar de arma (§3.3)
 
 func _add_action(action_name: StringName, key: Key, axis: int, axis_value: float) -> void:
 	if InputMap.has_action(action_name):

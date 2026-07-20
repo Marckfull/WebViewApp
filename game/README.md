@@ -39,6 +39,10 @@ próprio export da engine — o app WebView legado na raiz do repositório **nã
 - **Progressão nos santuários**: gastar Ecos para subir **Vitalidade/Stamina** (custo
   escala com o nível total, estilo souls) — aplica os stats na hora (§3.3).
 - **Legibilidade de combate**: câmera com limites da sala + **reticle de lock-on** (§3.1).
+- **Ecoados com combate justo**: aggro por distância, **ataque telegrafado** (aviso visual),
+  janela curta de acerto e recuperação, + separação para não empilharem (§3.2).
+- **Armas com moveset** (§3.3): Espada da Guardiã (forte/lenta) vs. Adagas Gêmeas
+  (rápidas/fracas). Trocar muda dano, postura, custo de stamina e velocidade do golpe.
 
 ## Estrutura
 
@@ -81,6 +85,7 @@ game/
 | Interagir | E | Y | botão USAR |
 | Curar (frasco) | H | D-pad ↑ | botão HEAL |
 | Ocarina | F | B | botão OCARINA |
+| Trocar arma | Tab | D-pad → | botão SWAP |
 | Pausa / Opções | Esc | Start | botão II |
 
 ## Próximos passos (completar a Vertical Slice)

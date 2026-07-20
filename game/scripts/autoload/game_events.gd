@@ -22,6 +22,7 @@ signal ecos_changed(total: int)           ## moeda de XP/compra (§3.2)
 signal stamina_changed(current: float, maximum: float)
 signal health_changed(current: float, maximum: float)
 signal flasks_changed(current: int, maximum: int)  ## Frascos de Essência (§3.2)
+signal weapon_changed(display_name: String)        ## arma equipada (§3.3)
 
 ## Diálogo (§3.5 lore, NPCs)
 signal dialogue_started
