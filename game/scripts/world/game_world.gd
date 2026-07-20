@@ -23,7 +23,15 @@ func _ready() -> void:
 		_respawn_point = _player.global_position
 		_apply_camera_limits()
 	_record_enemy_spawns()
+	_restore_drop_from_save()
 	GameEvents.player_died.connect(_on_player_died)
+
+## Recria o drop de Ecos salvo (se o jogador fechou o app antes de recuperá-lo).
+func _restore_drop_from_save() -> void:
+	var d: Variant = SaveManager.state["world"].get("eco_drop", {})
+	if d is Dictionary and d.has("amount") and d.has("position"):
+		var pos := Vector2(d["position"][0], d["position"][1])
+		_active_drop = _make_drop(int(d["amount"]), pos)
 
 func _apply_camera_limits() -> void:
 	var cam := _player.get_node_or_null("Camera2D") as Camera2D
@@ -46,6 +54,8 @@ func rest_at(point: Vector2) -> void:
 
 func clear_active_drop() -> void:
 	_active_drop = null
+	SaveManager.state["world"]["eco_drop"] = {}
+	SaveManager.save_game()  # recuperou os Ecos: persiste o estado limpo
 
 func _record_enemy_spawns() -> void:
 	for e in get_tree().get_nodes_in_group("enemies"):
@@ -60,6 +70,7 @@ func _record_enemy_spawns() -> void:
 
 func _on_player_died(death_position: Vector2, ecos_dropped: int) -> void:
 	_spawn_drop(death_position, ecos_dropped)
+	SaveManager.save_game()  # autosave: a morte é um marco (§3.6)
 	await get_tree().create_timer(respawn_delay).timeout
 	_respawn_enemies()
 	if _player:
@@ -72,11 +83,15 @@ func _spawn_drop(pos: Vector2, amount: int) -> void:
 		return
 	if is_instance_valid(_active_drop):
 		_active_drop.queue_free()
+	_active_drop = _make_drop(amount, pos)
+	SaveManager.state["world"]["eco_drop"] = { "amount": amount, "position": [pos.x, pos.y] }
+
+func _make_drop(amount: int, pos: Vector2) -> Node:
 	var drop := eco_drop_scene.instantiate()
 	drop.amount = amount
 	add_child(drop)
 	(drop as Node2D).global_position = pos
-	_active_drop = drop
+	return drop
 
 func _respawn_enemies() -> void:
 	for e in get_tree().get_nodes_in_group("enemies"):

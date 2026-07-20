@@ -21,6 +21,7 @@ DialogueManager="*res://scripts/autoload/dialogue_manager.gd"
 OcarinaManager="*res://scripts/autoload/ocarina_manager.gd"
 ShrineMenu="*res://scripts/autoload/shrine_menu.gd"
 PauseMenu="*res://scripts/autoload/pause_menu.gd"
+GameProgress="*res://scripts/autoload/game_progress.gd"
 
 [display]
 

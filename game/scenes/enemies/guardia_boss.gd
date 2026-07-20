@@ -26,6 +26,11 @@ var _player: Node2D
 var _base_color: Color
 
 func _ready() -> void:
+	# Boss já derrotado numa sessão anterior não reaparece (§3.2, persistência).
+	var defeated: Array = SaveManager.state["world"].get("bosses_defeated", [])
+	if defeated.has("guardia_do_eco"):
+		queue_free()
+		return
 	add_to_group("enemies")
 	add_to_group("boss")
 	_base_color = visual.color

@@ -43,6 +43,9 @@ próprio export da engine — o app WebView legado na raiz do repositório **nã
   janela curta de acerto e recuperação, + separação para não empilharem (§3.2).
 - **Armas com moveset** (§3.3): Espada da Guardiã (forte/lenta) vs. Adagas Gêmeas
   (rápidas/fracas). Trocar muda dano, postura, custo de stamina e velocidade do golpe.
+- **Persistência** (§3.6): autosave em marcos (morte, boss, melodia); **boss derrotado
+  não renasce** após carregar; **EcoDrop persiste** (fechou o app, os Ecos continuam lá).
+- **Bestiário automático** (§3.6): preenche ao derrotar inimigos; visualizável no menu de pausa.
 
 ## Estrutura
 
