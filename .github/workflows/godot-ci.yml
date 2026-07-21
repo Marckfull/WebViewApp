@@ -42,6 +42,10 @@ jobs:
         working-directory: game
         run: godot --headless --quit-after 60 res://scenes/ui/main_menu.tscn
 
+      - name: Smoke test — prólogo
+        working-directory: game
+        run: godot --headless --quit-after 60 res://scenes/ui/intro.tscn
+
       - name: Smoke test — dungeon (Cripta)
         working-directory: game
         run: godot --headless --quit-after 180 res://scenes/world/cripta_das_guardias.tscn
