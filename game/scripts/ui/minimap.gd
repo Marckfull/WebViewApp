@@ -70,7 +70,7 @@ func _draw() -> void:
 		draw_rect(Rect2(p, Vector2(cw + 0.5, ch + 0.5)), Color(0.3, 0.34, 0.42, 0.9))
 	# Pontos de interesse já descobertos (santuários, portas, itens).
 	for node in get_tree().get_nodes_in_group("interactables"):
-		if node is Node2D:
+		if node is Node2D and (node as CanvasItem).visible:
 			var gp: Vector2 = (node as Node2D).global_position
 			var cc := int(floor((gp.x - _room.position.x) / CELL_WORLD))
 			var cr := int(floor((gp.y - _room.position.y) / CELL_WORLD))

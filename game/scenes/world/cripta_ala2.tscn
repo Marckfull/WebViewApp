@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3]
+[gd_scene load_steps=23 format=3]
 
 [ext_resource type="Script" path="res://scripts/world/game_world.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/world/day_night.gd" id="8"]
@@ -11,6 +11,7 @@
 [ext_resource type="Resource" path="res://data/dialogue/pocao_pickup.tres" id="16"]
 [ext_resource type="PackedScene" path="res://scenes/world/alchemist.tscn" id="17"]
 [ext_resource type="Resource" path="res://data/dialogue/erva_pickup.tres" id="18"]
+[ext_resource type="Resource" path="res://data/dialogue/lente_pickup.tres" id="19"]
 [ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/enemies/dummy_enemy.tscn" id="3"]
 [ext_resource type="PackedScene" path="res://scenes/world/shrine.tscn" id="4"]
@@ -132,6 +133,12 @@ dialogue = ExtResource("16")
 
 [node name="Alchemist" parent="." instance=ExtResource("17")]
 position = Vector2(150, 120)
+
+[node name="LentePickup" parent="." instance=ExtResource("11")]
+position = Vector2(400, 120)
+item_id = &"lente"
+collection = "items"
+dialogue = ExtResource("19")
 
 [node name="ErvaPickup1" parent="." instance=ExtResource("15")]
 position = Vector2(500, 180)
