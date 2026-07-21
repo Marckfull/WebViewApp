@@ -22,6 +22,8 @@ OcarinaManager="*res://scripts/autoload/ocarina_manager.gd"
 ShrineMenu="*res://scripts/autoload/shrine_menu.gd"
 PauseMenu="*res://scripts/autoload/pause_menu.gd"
 GameProgress="*res://scripts/autoload/game_progress.gd"
+EndingScreen="*res://scripts/autoload/ending_screen.gd"
+CombatFx="*res://scripts/autoload/combat_fx.gd"
 
 [display]
 

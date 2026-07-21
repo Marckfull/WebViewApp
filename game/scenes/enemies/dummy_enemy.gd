@@ -54,10 +54,11 @@ func _update_dormancy(day_time: float) -> void:
 		state = State.IDLE
 		attack_hitbox.deactivate()
 
-## Flash de dano ao ser atingido (§5).
+## Flash + faísca de dano ao ser atingido (§5).
 func _on_hurt(_hitbox: Hitbox) -> void:
 	visual.modulate = Color(4, 4, 4)
 	create_tween().tween_property(visual, "modulate", Color(1, 1, 1), 0.12)
+	CombatFx.spark(self)
 
 func _physics_process(delta: float) -> void:
 	if _dormant:

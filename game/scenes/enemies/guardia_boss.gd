@@ -117,10 +117,11 @@ func _enter_phase2() -> void:
 	sweep_hitbox.deactivate()
 	GameEvents.boss_phase_changed.emit(2)
 
-## Flash de dano (§5) — via modulate, independente da cor de telegrafo/fase.
+## Flash + faísca de dano (§5) — modulate independente da cor de telegrafo/fase.
 func _on_hurt(_hitbox: Hitbox) -> void:
 	visual.modulate = Color(4, 4, 4)
 	create_tween().tween_property(visual, "modulate", Color(1, 1, 1), 0.12)
+	CombatFx.spark(self)
 
 func _on_poise_broken() -> void:
 	if state == State.DEAD:

@@ -61,6 +61,9 @@ próprio export da engine — o app WebView legado na raiz do repositório **nã
   com ele, Aria se puxa pelo vão. Itens/memórias persistem e aparecem no Diário (pausa).
 - **Mini-mapa que se desenha** (§3.5): Aria é cartógrafa — o mapa no canto revela-se conforme
   ela explora (fog-of-war), marca pontos de interesse descobertos e **persiste por sala** no save.
+- **Partículas de impacto** (§5): faísca a cada golpe acertado (Aria, Ecoados, boss), via `CombatFx`.
+- **Desfecho da fatia** (§7): derrotar a Guardiã do Eco dispara a tela de **fim da demonstração**
+  (fade + fecho temático) e volta ao menu — o slice tem começo, meio e fim.
 
 ## Estrutura
 

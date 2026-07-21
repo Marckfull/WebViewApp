@@ -106,11 +106,12 @@ func _physics_process(delta: float) -> void:
 	_update_visual()
 	_apply_shake(delta)
 
-## Feedback de dano: flash no corpo + tremor de câmera (§5 hit-feedback "crocante").
+## Feedback de dano: flash no corpo + tremor de câmera + faísca (§5).
 func _on_hurt(_hitbox: Hitbox) -> void:
 	body_visual.modulate = Color(4, 4, 4)
 	create_tween().tween_property(body_visual, "modulate", Color(1, 1, 1), 0.15)
 	_shake_time = 0.18
+	CombatFx.spark(self)
 
 func _apply_shake(delta: float) -> void:
 	if _shake_time > 0.0:
