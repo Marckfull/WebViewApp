@@ -67,6 +67,11 @@ próxima Guardiã — no lugar de Selene. Restaurar os Santuários acelera isso.
     Guardiãs e Selene retornam por um instante como som; o mundo lembra de todos os nomes,
     inclusive o da pessoa perdida. Nem apagar, nem carregar sozinha: **lembrar em coro.**
 
+> Nota de produção: o Coração Mudo (`coracao_mudo.tscn`) já é jogável — acessível pela
+> descida na Cripta Ala 2. Selene (`selene_boss`) tem 2 fases: fase 1 telegrafada; fase 2
+> vira **duelo de melodias** (tocar a Canção do Mundo cede a resistência dela). Ao resolver,
+> o `EndingScreen` apresenta os 3 finais (o secreto só com as 12 Memórias); depois: Novo Jogo+.
+
 ## As 12 Memórias Perdidas
 
 Fragmentos que Aria coleta pelo mundo; completá-las abre o final secreto. Cada uma é uma

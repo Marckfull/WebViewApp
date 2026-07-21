@@ -196,6 +196,11 @@ dialogue = ExtResource("18")
 position = Vector2(280, 240)
 cutscene = ExtResource("25")
 
+[node name="DescidaCoracaoMudo" parent="." instance=ExtResource("5")]
+position = Vector2(600, 130)
+target_scene = "res://scenes/world/coracao_mudo.tscn"
+spawn_point = Vector2(110, 240)
+
 [node name="Memoria09" parent="." instance=ExtResource("11")]
 position = Vector2(250, 400)
 item_id = &"memoria_09"

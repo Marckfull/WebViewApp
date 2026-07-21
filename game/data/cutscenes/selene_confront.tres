@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="CutsceneData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/cutscene_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"selene_confront"
+pages = Array[String](["O Coração Mudo. No centro, ajoelhada, Selene canta a Canção do Mundo ao contrário — há séculos, sem parar.", "— \"Cartógrafa. Você trouxe barulho para o único lugar que finalmente sossegou.\"", "— \"Eu tirei a dor do mundo. Foi só isso. Tirei a dor, e o resto veio junto.\"", "Aria ergue a Ocarina de Vidro. O ouvido surdo já sabe: a canção dela pode ser cantada para a frente. Basta alguém insistir."])

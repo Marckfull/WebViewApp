@@ -19,8 +19,8 @@
 | Memórias Perdidas | 🟢 | **12 de 12** implementadas como `.tres` + pontos de coleta (o final secreto já é completável na fatia) |
 | NPCs | 🟡 | Corvo (agora **mercador com loja**), "Sobrevivente" (quest). Faltam **Lys, Selene (Guardiã Caída), Mestra Odara** como personagens |
 | Roteiro dos 3 atos | 🟡 | Story bible escrito (`ECOS_DE_LIRAEL_roteiro.md`); em cena só o Ato 1 (prólogo + Cripta) |
-| Cutscenes | 🟡 | Sistema pronto; **3 cutscenes narradas** (aproximação do boss, palavras da Guardiã ao cair, eco de Selene). Faltam as ilustradas (§4) |
-| Finais | 🟡 | Só "fim da demonstração". Faltam **2 finais + 1 secreto** (12 memórias) |
+| Cutscenes | 🟡 | Sistema pronto; **4 cutscenes narradas** (aproximação do boss, palavras da Guardiã ao cair, eco de Selene, confronto no Coração Mudo). Faltam as ilustradas (§4) |
+| Finais | 🟢 | **2 finais + 1 secreto** implementados (escolha no Coração Mudo ao derrotar Selene; o secreto exige as 12 Memórias). Falta arte/epílogos ilustrados |
 | Bestiário/diário (lore) | 🟡 | Preenche ids automaticamente; faltam textos ricos e arte |
 | Localização | 🟡 | Só PT-BR hardcoded. Falta **EN** e sistema gettext/CSV (§Alpha→Beta) |
 | Diálogo ramificado | ⬜ | Sistema atual é linear (1 falante). GDD/Corvo pedem ramificação (ou trocar por godot_dialogue_manager) |
@@ -36,7 +36,7 @@ dificuldade), poise/postura, lock-on touch, combos, morte com drop de Ecos, fras
 | Forja / upgrade | ✅ | Funcional (Ecos+minério, até +5) |
 | Armaduras + amuletos | ⬜ | 4 conjuntos + amuletos com passivas e slots de build — nada |
 | Atributos | 🟡 | Vitalidade/Stamina afetam stats; **Força/Destreza/Harmonia não fazem nada ainda** |
-| Bosses | 🟡 | **1 de 8** principais (+4 opcionais). Falta mecânica única por dungeon (filosofia Zelda) |
+| Bosses | 🟡 | **2 de 8** principais (Guardiã do Eco; Selene, boss final com duelo de melodias na fase 2). Faltam os 6 e a mecânica única por dungeon (filosofia Zelda) |
 | Inimigos | 🟡 | **3 variantes** (comum/noturno/couraçado) de ~35. Faltam ranged, voadores, especiais |
 | Itens de dungeon | ✅ | Gancho, Bomba, Lente implementados. Falta **Botas de Corrente** (água/ímã) |
 | Ocarina (melodias) | ✅ | 4 melodias funcionais (acalmar/dia-noite/viagem/selo). GDD prevê 8 |

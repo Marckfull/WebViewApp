@@ -38,6 +38,7 @@ func _default_state() -> Dictionary:
 		"items": [],     ## itens-chave de dungeon: gancho, bomba, lente... (§3.3)
 		"memories": [],  ## 12 Memórias Perdidas -> final secreto (§2, §3.3)
 		"playtime": 0.0,
+		"ending_chosen": "",  ## fim escolhido no Coração Mudo (§2): silenciar/completar/secreto
 		"ng_cycle": 0,        ## ciclo de New Game+ (0 = primeira run, §3.6)
 		"current_scene": "",  ## cena atual, para retomar ao carregar (§3.6)
 		"settings": { "telemetry": false },  ## telemetria opt-in de playtest (§6.3)
