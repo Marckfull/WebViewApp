@@ -36,7 +36,12 @@ const WEAPON_PATHS := [
 	"res://data/weapons/adaga_dupla.tres",
 	"res://data/weapons/lanca.tres",
 	"res://data/weapons/martelo.tres",
+	"res://data/weapons/arco.tres",
 ]
+
+const PROJECTILE_SCENE := preload("res://scenes/combat/projectile.tscn")
+const PLAYER_HITBOX_LAYER := 8   ## camada de hitbox do jogador
+const ENEMY_HURTBOX_LAYER := 4   ## camada de hurtbox dos inimigos (alvo do arco)
 
 var _facing: Vector2 = Vector2.DOWN
 var _dodge_timer: float = 0.0
@@ -312,8 +317,21 @@ func _try_attack() -> void:
 	if lock_on.current_target:
 		aim = (lock_on.current_target.global_position - global_position).normalized()
 		_facing = aim
-	attack_hitbox.position = aim * (equipped_weapon.reach if equipped_weapon else 18.0)
-	attack_hitbox.activate()
+	# Arco dispara projétil; as demais armas ativam o golpe corpo-a-corpo.
+	if equipped_weapon and equipped_weapon.weapon_class == WeaponData.WeaponClass.ARCO:
+		_fire_projectile(aim, attack_hitbox.damage, attack_hitbox.poise_damage)
+	else:
+		attack_hitbox.position = aim * (equipped_weapon.reach if equipped_weapon else 18.0)
+		attack_hitbox.activate()
+
+## Cria um projétil do arco na direção `dir`, com o dano já calculado (§3.3).
+func _fire_projectile(dir: Vector2, dmg: float, poise: float) -> void:
+	var proj := PROJECTILE_SCENE.instantiate() as Projectile
+	proj.setup(dir, dmg, poise, PLAYER_HITBOX_LAYER, ENEMY_HURTBOX_LAYER)
+	var host := get_tree().current_scene
+	if host:
+		host.add_child(proj)
+		proj.global_position = global_position + dir * 14.0
 
 func _try_dodge() -> void:
 	if state == State.ATTACKING or state == State.STUNNED:

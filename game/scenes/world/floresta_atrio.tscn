@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3]
+[gd_scene load_steps=18 format=3]
 
 [ext_resource type="Script" path="res://scripts/world/game_world.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/world/day_night.gd" id="2"]
@@ -13,6 +13,8 @@
 [ext_resource type="Resource" path="res://data/dialogue/gate_locked.tres" id="11"]
 [ext_resource type="PackedScene" path="res://scenes/world/consumable_pickup.tscn" id="12"]
 [ext_resource type="Resource" path="res://data/dialogue/erva_pickup.tres" id="13"]
+[ext_resource type="PackedScene" path="res://scenes/world/item_pickup.tscn" id="14"]
+[ext_resource type="Resource" path="res://data/dialogue/arco_pickup.tres" id="15"]
 
 [sub_resource type="RectangleShape2D" id="wall_h"]
 size = Vector2(800, 16)
@@ -113,6 +115,12 @@ consumable_id = &"erva"
 amount = 2
 bag = "resources"
 dialogue = ExtResource("13")
+
+[node name="ArcoPickup" parent="." instance=ExtResource("14")]
+position = Vector2(620, 240)
+item_id = &"arco"
+collection = "weapons"
+dialogue = ExtResource("15")
 
 [node name="DoorInner" parent="." instance=ExtResource("8")]
 position = Vector2(720, 240)

@@ -35,6 +35,12 @@ func test_lanca_reaches_farther() -> void:
 	assert_gt(lanca.reach, espada.reach)
 	assert_gt(lanca.reach, martelo.reach)
 
+func test_arco_is_ranged_class() -> void:
+	var arco: WeaponData = load("res://data/weapons/arco.tres")
+	assert_not_null(arco)
+	assert_eq(arco.id, &"arco")
+	assert_eq(arco.weapon_class, WeaponData.WeaponClass.ARCO)
+
 func test_martelo_is_heavy_hitter() -> void:
 	# Martelo: mais dano e MUITO mais quebra de postura, porém lento e caro.
 	assert_gt(martelo.base_damage, espada.base_damage)

@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/dialogue_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"arco_pickup"
+speaker = ""
+lines = Array[String](["Pendurado num galho seco, um Arco de Cordas-Mudas.", "As cordas vibram sem som — o Silêncio não ouve a flecha chegar. Fere de longe.", "(Nova arma no arsenal: equipe pelo botão de troca ou no Santuário. Atacar dispara flechas.)"])

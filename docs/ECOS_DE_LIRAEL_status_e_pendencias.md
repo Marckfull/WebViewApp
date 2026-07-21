@@ -32,7 +32,7 @@ dificuldade), poise/postura, lock-on touch, combos, morte com drop de Ecos, fras
 
 | Item | Estado | Falta |
 |---|---|---|
-| Armas | 🟡 | **4 de 6** (espada, adagas, **lança** — alcance longo, **martelo** — quebra-postura). As novas são **loot** (lança na Floresta, martelo na Forja), guardadas no save. Faltam arco (projétil) e chicote |
+| Armas | 🟡 | **5 de 6** (espada, adagas, lança, martelo e **arco** — dispara flechas via projétil). Todas as novas são **loot** guardado no save. Falta só o chicote |
 | Forja / upgrade | ✅ | Funcional (Ecos+minério, até +5) |
 | Armaduras + amuletos | 🟢 | Sistema completo (`EquipmentData`/`Equipment`): 2 slots com **redução de dano, vida e regen de stamina**, peças como loot (Couraça de Sal, Amuleto do Eco), **tela de equipar no Santuário** (trocar arma/armadura/amuleto entre as possuídas) + persistência. Faltam mais peças e builds |
 | Atributos | 🟢 | Os **5** ligados ao jogo: Vitalidade→vida, Stamina→stamina, **Força→dano, Destreza→custo de stamina, Harmonia→janela de parry** (efeitos puros e testados) |
@@ -117,7 +117,7 @@ unificado (teclado/gamepad/touch), telemetria opt-in, CI (import+smoke+GUT), **1
 |---|---|---|
 | Animação de ataque | 🟡 | Timing por timer; falta **AnimationPlayer** ligando hitbox a frames de sprite |
 | Streaming de mundo (chunks) | ⬜ | Cenas inteiras hoje; GDD §6.2 pede chunks por proximidade |
-| Sistema de projétil | ⬜ | Necessário para arco e inimigos ranged |
+| Sistema de projétil | 🟡 | `Projectile` (estende Hitbox): move, dano por Hitbox/Hurtbox, camadas por disparador. Usado pelo **arco**. Falta ligar a inimigos ranged |
 | Sistema de loja | ⬜ | Comprar/vender |
 | Inventário (backend) | 🟡 | Equipar arma/armadura/amuleto pronto (tela no Santuário, `EquipMenu`). Falta grade/categorias geral |
 | Sistema de cutscene | ⬜ | Player de cutscene + skip |
