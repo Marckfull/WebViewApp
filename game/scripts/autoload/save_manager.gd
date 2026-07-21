@@ -87,10 +87,9 @@ func load_game(slot: int = AUTOSAVE_SLOT) -> bool:
 func has_save(slot: int) -> bool:
 	return FileAccess.file_exists(_slot_path(slot))
 
-## Ponto de extensão para migração entre versões de save (§6.2: save versionado).
+## Migração entre versões de save (§6.2: save versionado + robusto). Mescla os
+## defaults atuais para que saves antigos ganhem as chaves novas sem quebrar.
 func _migrate(data: Dictionary) -> Dictionary:
-	var v: int = int(data.get("version", 0))
-	if v < SAVE_VERSION:
-		# Futuras migrações campo a campo entram aqui.
-		data["version"] = SAVE_VERSION
+	data = SaveMigration.merge_defaults(data, _default_state())
+	data["version"] = SAVE_VERSION
 	return data
