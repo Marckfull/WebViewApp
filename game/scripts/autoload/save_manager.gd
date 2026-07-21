@@ -29,6 +29,7 @@ func _default_state() -> Dictionary:
 			"walls_broken": [],     ## paredes rachadas já estilhaçadas (Bomba, §3.3)
 		},
 		"bestiary": [],
+		"consumables": {}, ## poções e afins: id -> quantidade (§3.5)
 		"items": [],     ## itens-chave de dungeon: gancho, bomba, lente... (§3.3)
 		"memories": [],  ## 12 Memórias Perdidas -> final secreto (§2, §3.3)
 		"playtime": 0.0,

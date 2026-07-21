@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3]
+[gd_scene load_steps=25 format=3]
 
 [ext_resource type="Script" path="res://scripts/world/game_world.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/world/day_night.gd" id="11"]
@@ -18,6 +18,8 @@
 [ext_resource type="Resource" path="res://data/dialogue/gate_locked.tres" id="15"]
 [ext_resource type="Resource" path="res://data/dialogue/memoria_01.tres" id="16"]
 [ext_resource type="Resource" path="res://data/dialogue/bomba_pickup.tres" id="18"]
+[ext_resource type="PackedScene" path="res://scenes/world/consumable_pickup.tscn" id="19"]
+[ext_resource type="Resource" path="res://data/dialogue/pocao_pickup.tres" id="20"]
 
 [sub_resource type="RectangleShape2D" id="wall_h"]
 size = Vector2(800, 16)
@@ -142,6 +144,12 @@ position = Vector2(400, 120)
 item_id = &"bomba"
 collection = "items"
 dialogue = ExtResource("18")
+
+[node name="PocaoPickup" parent="." instance=ExtResource("19")]
+position = Vector2(600, 400)
+consumable_id = &"pocao_vigor"
+amount = 1
+dialogue = ExtResource("20")
 
 [node name="GrappleGateIn" parent="." instance=ExtResource("13")]
 position = Vector2(275, 410)

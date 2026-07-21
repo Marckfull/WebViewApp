@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/dialogue_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"pocao_pickup"
+speaker = "Aria"
+lines = Array[String](["Uma Poção de Vigor. Cheira a ervas do rio de Pedra-Alva.", "Um gole e o fôlego volta — bom para não baixar a guarda na hora errada."])

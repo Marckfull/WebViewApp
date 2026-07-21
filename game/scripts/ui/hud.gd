@@ -12,6 +12,7 @@ var _flasks: Label
 var _boss_bar: ProgressBar
 var _boss_label: Label
 var _weapon: Label
+var _vigor: Label
 
 func _ready() -> void:
 	set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -27,6 +28,7 @@ func _ready() -> void:
 	GameEvents.boss_health_changed.connect(_on_boss_health)
 	GameEvents.boss_defeated.connect(_on_boss_defeated)
 	GameEvents.weapon_changed.connect(_on_weapon)
+	GameEvents.consumable_changed.connect(_on_consumable)
 
 func _build_bars() -> void:
 	_hp = _make_bar(Color(0.9, 0.25, 0.3), Vector2(12, 10))
@@ -45,6 +47,11 @@ func _build_bars() -> void:
 	_weapon.add_theme_color_override("font_color", Color(0.85, 0.8, 0.6))
 	_weapon.text = "Arma: —"
 	add_child(_weapon)
+	_vigor = Label.new()
+	_vigor.position = Vector2(12, 96)
+	_vigor.add_theme_color_override("font_color", Color(0.4, 0.8, 0.55))
+	_vigor.text = "Vigor: %d" % int(SaveManager.state["consumables"].get("pocao_vigor", 0))
+	add_child(_vigor)
 
 func _make_bar(color: Color, pos: Vector2) -> ProgressBar:
 	var bar := ProgressBar.new()
@@ -108,6 +115,7 @@ func _build_buttons() -> void:
 		["USAR", "interact", Vector2(-210, -70)],
 		["HEAL", "heal", Vector2(-210, -140)],
 		["SWAP", "swap_weapon", Vector2(-210, -210)],
+		["VIGOR", "consumable", Vector2(-280, -140)],
 	]
 	for a in actions:
 		var btn := Button.new()
@@ -154,3 +162,7 @@ func _on_flasks(current: int, _maximum: int) -> void:
 
 func _on_weapon(display_name: String) -> void:
 	_weapon.text = "Arma: %s" % display_name
+
+func _on_consumable(id: StringName, count: int) -> void:
+	if id == &"pocao_vigor":
+		_vigor.text = "Vigor: %d" % count

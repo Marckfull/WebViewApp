@@ -148,6 +148,8 @@ func _poll_actions() -> void:
 		_try_interact()
 	if Input.is_action_just_pressed("heal"):
 		use_flask()
+	if Input.is_action_just_pressed("consumable"):
+		use_vigor()
 	if Input.is_action_just_pressed("swap_weapon"):
 		swap_weapon()
 	if Input.is_action_just_pressed("lock_on"):
@@ -260,6 +262,14 @@ func _try_interact() -> void:
 				best = a
 	if best:
 		best.interact(self)
+
+## Poção de Vigor: restaura a stamina na hora (§3.5). Distinta do frasco (vida).
+func use_vigor() -> void:
+	if Consumables.consume(&"pocao_vigor", SaveManager.state["consumables"]):
+		stamina.current = stamina.max_stamina
+		GameEvents.stamina_changed.emit(stamina.current, stamina.max_stamina)
+		GameEvents.consumable_changed.emit(
+			&"pocao_vigor", Consumables.count(&"pocao_vigor", SaveManager.state["consumables"]))
 
 ## Frasco de Essência: cura limitada, recarregável nos santuários (§3.2).
 func use_flask() -> void:

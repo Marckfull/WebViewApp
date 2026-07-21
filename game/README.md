@@ -67,6 +67,8 @@ próprio export da engine — o app WebView legado na raiz do repositório **nã
 - **2ª habilidade — Bomba de Eco** (§3.3): estilhaça uma **parede rachada** (gating diferente do
   gancho: remove barreira), abrindo uma câmara selada com a **2ª Memória Perdida** na Ala 2.
   Paredes quebradas persistem no save.
+- **Consumível — Poção de Vigor** (§3.5): coletável nas salas; usar (tecla G / botão VIGOR)
+  restaura a stamina na hora. Contagem persiste no save; slot no HUD.
 
 ## Estrutura
 
