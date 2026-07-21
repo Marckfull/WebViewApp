@@ -34,6 +34,12 @@ func _ready() -> void:
 	add_to_group("enemies")
 	add_to_group("boss")
 	_base_color = visual.color
+	# Remix de New Game+ (§3.6).
+	var cyc := int(SaveManager.state.get("ng_cycle", 0))
+	if cyc > 0:
+		health.max_health *= NewGamePlus.health_mult(cyc)
+		health.health = health.max_health
+		sweep_hitbox.damage *= NewGamePlus.damage_mult(cyc)
 	health.health_changed.connect(_on_health_changed)
 	health.died.connect(_on_died)
 	health.poise_broken.connect(_on_poise_broken)

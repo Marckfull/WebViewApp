@@ -36,6 +36,12 @@ func _ready() -> void:
 		attack_hitbox.damage = data.contact_damage
 		health.health = data.max_health
 		visual.color = data.tint  ## variedade visual no greybox
+	# Remix de New Game+ (§3.6): inimigos mais fortes a cada ciclo.
+	var cyc := int(SaveManager.state.get("ng_cycle", 0))
+	if cyc > 0:
+		health.max_health *= NewGamePlus.health_mult(cyc)
+		health.health = health.max_health
+		attack_hitbox.damage *= NewGamePlus.damage_mult(cyc)
 	_base_color = visual.color
 	health.died.connect(_on_died)
 	health.poise_broken.connect(_on_poise_broken)

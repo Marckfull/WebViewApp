@@ -130,6 +130,9 @@ func _bestiary_text() -> String:
 	var items: Array = SaveManager.state.get("items", [])
 	var memories: Array = SaveManager.state.get("memories", [])
 	text += "\nItens: %d   Memórias: %d/12" % [items.size(), memories.size()]
+	var ng: int = int(SaveManager.state.get("ng_cycle", 0))
+	if ng > 0:
+		text += "   New Game+ %d" % ng
 	return text.strip_edges()
 
 func _show_root() -> void:

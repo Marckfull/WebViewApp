@@ -73,7 +73,10 @@ próprio export da engine — o app WebView legado na raiz do repositório **nã
   ela explora (fog-of-war), marca pontos de interesse descobertos e **persiste por sala** no save.
 - **Partículas de impacto** (§5): faísca a cada golpe acertado (Aria, Ecoados, boss), via `CombatFx`.
 - **Desfecho da fatia** (§7): derrotar a Guardiã do Eco dispara a tela de **fim da demonstração**
-  (fade + fecho temático) e volta ao menu — o slice tem começo, meio e fim.
+  (fade + fecho temático) com opção de **voltar ao menu** ou **Novo Jogo+**.
+- **New Game+** (§3.6): rejogar mantendo a progressão (atributos, armas, itens, melodias,
+  memórias, recursos) com o mundo **remixado mais difícil** (inimigos +vida/+dano por ciclo).
+  Barato de produzir, dobra a longevidade. Ciclo mostrado no Diário.
 - **2ª habilidade — Bomba de Eco** (§3.3): estilhaça uma **parede rachada** (gating diferente do
   gancho: remove barreira), abrindo uma câmara selada com a **2ª Memória Perdida** na Ala 2.
   Paredes quebradas persistem no save.

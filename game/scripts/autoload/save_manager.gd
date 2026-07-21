@@ -36,6 +36,7 @@ func _default_state() -> Dictionary:
 		"items": [],     ## itens-chave de dungeon: gancho, bomba, lente... (§3.3)
 		"memories": [],  ## 12 Memórias Perdidas -> final secreto (§2, §3.3)
 		"playtime": 0.0,
+		"ng_cycle": 0,        ## ciclo de New Game+ (0 = primeira run, §3.6)
 		"current_scene": "",  ## cena atual, para retomar ao carregar (§3.6)
 		"settings": { "telemetry": false },  ## telemetria opt-in de playtest (§6.3)
 	}
@@ -43,6 +44,11 @@ func _default_state() -> Dictionary:
 ## Reinicia para um jogo novo (usado pelo menu "Novo Jogo").
 func reset_state() -> void:
 	state = _default_state()
+
+## Inicia um ciclo de New Game+ mantendo a progressão (§3.6).
+func start_ng_plus() -> void:
+	NewGamePlus.reset_run(state)
+	save_game()
 
 func _ready() -> void:
 	DirAccess.make_dir_recursive_absolute(SAVE_DIR)
