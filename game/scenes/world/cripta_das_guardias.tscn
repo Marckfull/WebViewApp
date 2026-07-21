@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3]
+[gd_scene load_steps=34 format=3]
 
 [ext_resource type="Script" path="res://scripts/world/game_world.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/world/day_night.gd" id="11"]
@@ -24,6 +24,11 @@
 [ext_resource type="PackedScene" path="res://scenes/world/forge.tscn" id="22"]
 [ext_resource type="Resource" path="res://data/dialogue/minerio_pickup.tres" id="23"]
 [ext_resource type="Resource" path="res://data/dialogue/memoria_03.tres" id="24"]
+[ext_resource type="PackedScene" path="res://scenes/world/quest_giver.tscn" id="25"]
+[ext_resource type="Resource" path="res://data/quests/matar_couracado.tres" id="26"]
+[ext_resource type="Resource" path="res://data/dialogue/quest_offer.tres" id="27"]
+[ext_resource type="Resource" path="res://data/dialogue/quest_progress.tres" id="28"]
+[ext_resource type="Resource" path="res://data/dialogue/quest_complete.tres" id="29"]
 
 [sub_resource type="RectangleShape2D" id="wall_h"]
 size = Vector2(800, 16)
@@ -161,6 +166,13 @@ dialogue = ExtResource("20")
 
 [node name="Forge" parent="." instance=ExtResource("22")]
 position = Vector2(220, 300)
+
+[node name="QuestGiver" parent="." instance=ExtResource("25")]
+position = Vector2(150, 180)
+quest = ExtResource("26")
+offer_dialogue = ExtResource("27")
+progress_dialogue = ExtResource("28")
+complete_dialogue = ExtResource("29")
 
 [node name="MinerioPickup1" parent="." instance=ExtResource("19")]
 position = Vector2(500, 150)

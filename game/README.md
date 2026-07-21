@@ -78,6 +78,9 @@ próprio export da engine — o app WebView legado na raiz do repositório **nã
   subir o nível da arma equipada (mais dano, até +5). Nível persiste e aparece no rótulo da arma.
 - **Alquimia** (§3.5): coletar **ervas** e destilá-las em Poções de Vigor na alquimista
   (2 ervas → 1 poção). Fecha o ciclo coletar-recurso → craft → consumível.
+- **Side quest** (§3.5): NPC oferece "A Casca Teimosa" (derrote o Ecoado Couraçado); o
+  `QuestManager` acompanha o progresso via eventos e o NPC paga a recompensa. Data-driven
+  (`QuestData`), estado persiste no save.
 - **Telemetria opt-in** (§6.3): desligada por padrão; ligável nas Opções (pausa). Registra
   localmente onde Aria morre/descansa/derrota bosses (JSONL em `user://telemetry/`) para
   balancear a dificuldade com dados. Nada sai do dispositivo.

@@ -32,6 +32,7 @@ func _default_state() -> Dictionary:
 		"consumables": {}, ## poções e afins: id -> quantidade (§3.5)
 		"resources": {},   ## recursos de craft: minério, madeira... id -> quantidade (§3.5)
 		"weapon_levels": {}, ## nível de upgrade por arma na forja (§3.3)
+		"quests": {},      ## side quests: id -> { status, progress } (§3.5)
 		"items": [],     ## itens-chave de dungeon: gancho, bomba, lente... (§3.3)
 		"memories": [],  ## 12 Memórias Perdidas -> final secreto (§2, §3.3)
 		"playtime": 0.0,

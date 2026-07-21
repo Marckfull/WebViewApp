@@ -27,6 +27,7 @@ CombatFx="*res://scripts/autoload/combat_fx.gd"
 TelemetryLogger="*res://scripts/autoload/telemetry_logger.gd"
 ForgeMenu="*res://scripts/autoload/forge_menu.gd"
 AlchemyMenu="*res://scripts/autoload/alchemy_menu.gd"
+QuestManager="*res://scripts/autoload/quest_manager.gd"
 
 [display]
 
