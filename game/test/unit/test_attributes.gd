@@ -41,3 +41,25 @@ func test_try_level_up_does_not_mutate_input() -> void:
 	var attrs := _fresh_attrs()
 	Attributes.try_level_up("vitalidade", attrs, 9999)
 	assert_eq(int(attrs["vitalidade"]), 1, "o dicionário original não deve mudar")
+
+func test_forca_boosts_damage() -> void:
+	assert_almost_eq(Attributes.damage_mult_for(1), 1.0, 0.001)
+	assert_gt(Attributes.damage_mult_for(5), Attributes.damage_mult_for(1))
+	# monotônico
+	assert_gt(Attributes.damage_mult_for(10), Attributes.damage_mult_for(5))
+
+func test_destreza_reduces_stamina_cost() -> void:
+	assert_almost_eq(Attributes.stamina_cost_mult_for(1), 1.0, 0.001)
+	assert_lt(Attributes.stamina_cost_mult_for(4), 1.0)
+	# nunca abaixo do piso (evita ações de graça)
+	assert_gte(Attributes.stamina_cost_mult_for(999), Attributes.STAMINA_DISCOUNT_FLOOR)
+
+func test_harmonia_widens_parry_window() -> void:
+	assert_almost_eq(Attributes.parry_window_mult_for(1), 1.0, 0.001)
+	assert_gt(Attributes.parry_window_mult_for(6), Attributes.parry_window_mult_for(1))
+
+func test_effects_clamp_below_level_one() -> void:
+	# valores inválidos (0/negativos) não devem punir abaixo da base
+	assert_almost_eq(Attributes.damage_mult_for(0), 1.0, 0.001)
+	assert_almost_eq(Attributes.stamina_cost_mult_for(0), 1.0, 0.001)
+	assert_almost_eq(Attributes.parry_window_mult_for(0), 1.0, 0.001)

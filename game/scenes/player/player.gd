@@ -38,6 +38,10 @@ const WEAPON_PATHS := [
 
 var _facing: Vector2 = Vector2.DOWN
 var _dodge_timer: float = 0.0
+## Multiplicadores derivados dos atributos (recalculados em apply_attributes, §3.3).
+var _forca_dmg_mult: float = 1.0
+var _dex_stamina_mult: float = 1.0
+var _harmonia_parry_mult: float = 1.0
 var _attack_timer: float = 0.0
 var flasks: int = 0
 var _selected_slot: int = 0
@@ -104,6 +108,10 @@ func apply_attributes() -> void:
 	var attrs: Dictionary = SaveManager.state["attributes"]
 	health.set_max_health(Attributes.max_hp_for(int(attrs["vitalidade"])))
 	stamina.set_max(Attributes.max_stamina_for(int(attrs["stamina"])))
+	# Força/Destreza/Harmonia entram no combate via multiplicadores em cache (§3.3).
+	_forca_dmg_mult = Attributes.damage_mult_for(int(attrs["forca"]))
+	_dex_stamina_mult = Attributes.stamina_cost_mult_for(int(attrs["destreza"]))
+	_harmonia_parry_mult = Attributes.parry_window_mult_for(int(attrs["harmonia"]))
 
 func _physics_process(delta: float) -> void:
 	_poll_actions()
@@ -217,7 +225,7 @@ func _try_attack() -> void:
 	if state != State.FREE:
 		return
 	# Custo/dano/velocidade vêm da arma equipada (§3.3); fallback se não houver.
-	var cost := equipped_weapon.stamina_cost if equipped_weapon else attack_stamina
+	var cost := (equipped_weapon.stamina_cost if equipped_weapon else attack_stamina) * _dex_stamina_mult
 	if not stamina.try_spend(cost):
 		return  ## sem stamina = não ataca (§3.2)
 	state = State.ATTACKING
@@ -233,7 +241,7 @@ func _try_attack() -> void:
 	if equipped_weapon:
 		# Combo escala o dano; a forja (nível) multiplica por cima (§3.3).
 		var dmg_mult := (1.0 + 0.15 * (_combo_index - 1)) * WeaponUpgrade.damage_multiplier(weapon_level())
-		attack_hitbox.damage = equipped_weapon.base_damage * dmg_mult
+		attack_hitbox.damage = equipped_weapon.base_damage * dmg_mult * _forca_dmg_mult
 		attack_hitbox.poise_damage = equipped_weapon.poise_damage * (1.6 if is_finisher else 1.0)
 		_attack_timer = 0.35 / maxf(equipped_weapon.attack_speed, 0.1)
 	else:
@@ -249,7 +257,7 @@ func _try_attack() -> void:
 func _try_dodge() -> void:
 	if state == State.ATTACKING or state == State.STUNNED:
 		return
-	if not stamina.try_spend(dodge_stamina):
+	if not stamina.try_spend(dodge_stamina * _dex_stamina_mult):
 		return
 	state = State.DODGING
 	_dodge_timer = dodge_duration
@@ -263,7 +271,7 @@ func _set_guard(active: bool) -> void:
 		hurtbox.guarding = true
 		hurtbox.parry_active = true
 		# Janela de parry conforme dificuldade (§3.4).
-		var window: float = GameConfig.current_rules()["parry_window"]
+		var window: float = GameConfig.current_rules()["parry_window"] * _harmonia_parry_mult
 		get_tree().create_timer(window).timeout.connect(func(): hurtbox.parry_active = false)
 	elif not active:
 		hurtbox.guarding = false

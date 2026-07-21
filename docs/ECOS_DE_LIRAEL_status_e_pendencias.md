@@ -35,7 +35,7 @@ dificuldade), poise/postura, lock-on touch, combos, morte com drop de Ecos, fras
 | Armas | 🟡 | **2 de 6** (espada, adagas). Faltam lança, martelo, arco (projétil), chicote — cada uma um moveset |
 | Forja / upgrade | ✅ | Funcional (Ecos+minério, até +5) |
 | Armaduras + amuletos | ⬜ | 4 conjuntos + amuletos com passivas e slots de build — nada |
-| Atributos | 🟡 | Vitalidade/Stamina afetam stats; **Força/Destreza/Harmonia não fazem nada ainda** |
+| Atributos | 🟢 | Os **5** ligados ao jogo: Vitalidade→vida, Stamina→stamina, **Força→dano, Destreza→custo de stamina, Harmonia→janela de parry** (efeitos puros e testados) |
 | Bosses | 🟡 | **6 de 8** principais (Guardiã do Eco; Coro Enraizado, Martelo Mudo, Sino Invertido, Maré Salgada nas 4 dungeons; Selene, final com duelo de melodias). Os 4 de dungeon usam o `DungeonBoss` reutilizável (variam ritmo/vida/cor). Faltam 2 e tornar a mecânica de cada boss mais própria |
 | Inimigos | 🟡 | **3 variantes** (comum/noturno/couraçado) de ~35. Faltam ranged, voadores, especiais |
 | Itens de dungeon | ✅ | Os **4** implementados: Gancho, Bomba, Lente e **Botas de Corrente** (cruzam correntes de sal, `CurrentGate`) |
@@ -126,7 +126,7 @@ unificado (teclado/gamepad/touch), telemetria opt-in, CI (import+smoke+GUT), **1
 | Export Android (AAB) assinado | 🟡 | Job de CI existe **desabilitado**; faltam keystore/secrets + presets |
 | Performance low-end | ⬜ | Perfilar 60 FPS Moto G, RAM <700 MB, APK <300 MB; object pooling |
 | Botas de Corrente | ✅ | Cruzam correntes de sal (`CurrentGate`), item-chave da Necrópole |
-| Efeitos de Força/Destreza/Harmonia | ⬜ | Ligar atributos a dano/velocidade/poder de melodia |
+| Efeitos de Força/Destreza/Harmonia | ✅ | Força→dano corpo-a-corpo, Destreza→desconto no custo de stamina, Harmonia→janela de parry (`Attributes`, testado) |
 | Combat gym / tuning | 🟡 | Cena greybox existe; falta ferramenta de tuning com dummies configuráveis |
 | Testes de integração de combate | 🟡 | Testes puros OK; faltam i-frames/dodge/hitbox em cena |
 

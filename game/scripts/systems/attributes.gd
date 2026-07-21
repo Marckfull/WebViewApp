@@ -13,6 +13,14 @@ const STAMINA_PER_STA := 12.0
 const BASE_COST := 25
 const COST_PER_LEVEL := 15
 
+## Efeitos de combate por atributo (§3.3). Cada ponto acima de 1 melhora um eixo:
+## Força = dano corpo-a-corpo, Destreza = custo de stamina das ações (agilidade),
+## Harmonia = janela de parry (sintonia com o ritmo do mundo).
+const DAMAGE_PER_FORCA := 0.08
+const STAMINA_DISCOUNT_PER_DEX := 0.05
+const STAMINA_DISCOUNT_FLOOR := 0.5   ## no máximo -50% de custo
+const PARRY_BONUS_PER_HARMONIA := 0.06
+
 ## Custo em Ecos do PRÓXIMO ponto, dado o nível total já investido.
 static func cost_for_total_level(total_level: int) -> int:
 	return BASE_COST + COST_PER_LEVEL * maxi(total_level, 0)
@@ -29,6 +37,18 @@ static func max_hp_for(vitalidade: int) -> float:
 
 static func max_stamina_for(stamina_attr: int) -> float:
 	return BASE_STAMINA + STAMINA_PER_STA * (stamina_attr - 1)
+
+## Multiplicador de dano corpo-a-corpo pela Força.
+static func damage_mult_for(forca: int) -> float:
+	return 1.0 + DAMAGE_PER_FORCA * (maxi(forca, 1) - 1)
+
+## Multiplicador do custo de stamina pela Destreza (menor = mais barato).
+static func stamina_cost_mult_for(destreza: int) -> float:
+	return maxf(STAMINA_DISCOUNT_FLOOR, 1.0 - STAMINA_DISCOUNT_PER_DEX * (maxi(destreza, 1) - 1))
+
+## Multiplicador da janela de parry pela Harmonia (maior = mais tolerante).
+static func parry_window_mult_for(harmonia: int) -> float:
+	return 1.0 + PARRY_BONUS_PER_HARMONIA * (maxi(harmonia, 1) - 1)
 
 ## Tenta gastar Ecos para subir um atributo. Retorna o dicionário atualizado
 ## {ok, ecos, attrs}. Não muta os argumentos.
