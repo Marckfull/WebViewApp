@@ -54,6 +54,10 @@ jobs:
         working-directory: game
         run: godot --headless --quit-after 120 res://scenes/world/cripta_ala2.tscn
 
+      - name: Smoke test — hub (Encruzilhada)
+        working-directory: game
+        run: godot --headless --quit-after 120 res://scenes/world/encruzilhada.tscn
+
       - name: Smoke test — final (Coração Mudo)
         working-directory: game
         run: godot --headless --quit-after 120 res://scenes/world/coracao_mudo.tscn

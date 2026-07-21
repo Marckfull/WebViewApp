@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/dialogue_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"santuarios_locked"
+speaker = ""
+lines = Array[String](["A escada afunda no escuro, mas o Silêncio aqui é grosso demais para atravessar.", "Os quatro Santuários do Eco ainda não cantam. Restaure-os — e o caminho ao Coração Mudo se abre.", "(Derrote os guardiões das quatro dungeons.)"])

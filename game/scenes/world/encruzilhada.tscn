@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3]
+[gd_scene load_steps=14 format=3]
 
 [ext_resource type="Script" path="res://scripts/world/game_world.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/world/day_night.gd" id="2"]
@@ -9,9 +9,8 @@
 [ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="7"]
 [ext_resource type="PackedScene" path="res://scenes/world/door.tscn" id="8"]
 [ext_resource type="PackedScene" path="res://scenes/world/shrine.tscn" id="9"]
-[ext_resource type="PackedScene" path="res://scenes/enemies/selene_boss.tscn" id="10"]
-[ext_resource type="PackedScene" path="res://scenes/world/cutscene_trigger.tscn" id="11"]
-[ext_resource type="Resource" path="res://data/cutscenes/selene_confront.tres" id="12"]
+[ext_resource type="PackedScene" path="res://scenes/world/gated_stairs.tscn" id="10"]
+[ext_resource type="Resource" path="res://data/dialogue/santuarios_locked.tres" id="11"]
 
 [sub_resource type="RectangleShape2D" id="wall_h"]
 size = Vector2(800, 16)
@@ -19,37 +18,32 @@ size = Vector2(800, 16)
 [sub_resource type="RectangleShape2D" id="wall_v"]
 size = Vector2(16, 480)
 
-[node name="CoracaoMudo" type="Node2D"]
+[node name="Encruzilhada" type="Node2D"]
 script = ExtResource("1")
 
 [node name="DayNight" type="CanvasModulate" parent="."]
 script = ExtResource("2")
 
 [node name="Floor" type="Polygon2D" parent="."]
-color = Color(0.07, 0.08, 0.12, 1)
+color = Color(0.1, 0.12, 0.13, 1)
 polygon = PackedVector2Array(0, 0, 800, 0, 800, 480, 0, 480)
-
-[node name="Heart" type="Polygon2D" parent="."]
-color = Color(0.12, 0.14, 0.22, 1)
-position = Vector2(680, 240)
-polygon = PackedVector2Array(-70, 0, 0, -70, 70, 0, 0, 70)
 
 [node name="WallVisuals" type="Node2D" parent="."]
 
 [node name="Top" type="Polygon2D" parent="WallVisuals"]
-color = Color(0.14, 0.15, 0.2, 1)
+color = Color(0.17, 0.18, 0.2, 1)
 polygon = PackedVector2Array(0, 0, 800, 0, 800, 16, 0, 16)
 
 [node name="Bottom" type="Polygon2D" parent="WallVisuals"]
-color = Color(0.14, 0.15, 0.2, 1)
+color = Color(0.17, 0.18, 0.2, 1)
 polygon = PackedVector2Array(0, 464, 800, 464, 800, 480, 0, 480)
 
 [node name="Left" type="Polygon2D" parent="WallVisuals"]
-color = Color(0.14, 0.15, 0.2, 1)
+color = Color(0.17, 0.18, 0.2, 1)
 polygon = PackedVector2Array(0, 0, 16, 0, 16, 480, 0, 480)
 
 [node name="Right" type="Polygon2D" parent="WallVisuals"]
-color = Color(0.14, 0.15, 0.2, 1)
+color = Color(0.17, 0.18, 0.2, 1)
 polygon = PackedVector2Array(784, 0, 800, 0, 800, 480, 784, 480)
 
 [node name="Walls" type="StaticBody2D" parent="."]
@@ -73,24 +67,48 @@ position = Vector2(792, 240)
 shape = SubResource("wall_v")
 
 [node name="Player" parent="." instance=ExtResource("7")]
-position = Vector2(110, 240)
+position = Vector2(400, 240)
 
 [node name="DoorBack" parent="." instance=ExtResource("8")]
 position = Vector2(28, 240)
-target_scene = "res://scenes/world/encruzilhada.tscn"
-spawn_point = Vector2(650, 240)
+target_scene = "res://scenes/world/cripta_ala2.tscn"
+spawn_point = Vector2(600, 130)
+prompt = "Voltar à Cripta"
 
 [node name="Shrine" parent="." instance=ExtResource("9")]
-position = Vector2(110, 400)
-shrine_id = &"coracao_mudo"
-shrine_name = "Coração Mudo — Limiar"
+position = Vector2(400, 400)
+shrine_id = &"encruzilhada"
+shrine_name = "Encruzilhada dos Ecos"
 
-[node name="SeleneBoss" parent="." instance=ExtResource("10")]
-position = Vector2(680, 240)
+[node name="DoorFloresta" parent="." instance=ExtResource("8")]
+position = Vector2(180, 90)
+target_scene = "res://scenes/world/floresta_sussurrante.tscn"
+spawn_point = Vector2(110, 240)
+prompt = "Floresta Sussurrante"
 
-[node name="ConfrontTrigger" parent="." instance=ExtResource("11")]
-position = Vector2(400, 240)
-cutscene = ExtResource("12")
+[node name="DoorForja" parent="." instance=ExtResource("8")]
+position = Vector2(620, 90)
+target_scene = "res://scenes/world/forja_afundada.tscn"
+spawn_point = Vector2(110, 240)
+prompt = "Forja Afundada"
+
+[node name="DoorTorre" parent="." instance=ExtResource("8")]
+position = Vector2(620, 390)
+target_scene = "res://scenes/world/torre_dos_ventos.tscn"
+spawn_point = Vector2(110, 240)
+prompt = "Torre dos Ventos"
+
+[node name="DoorNecropole" parent="." instance=ExtResource("8")]
+position = Vector2(180, 390)
+target_scene = "res://scenes/world/necropole_de_sal.tscn"
+spawn_point = Vector2(110, 240)
+prompt = "Necrópole de Sal"
+
+[node name="DescidaCoracaoMudo" parent="." instance=ExtResource("10")]
+position = Vector2(720, 240)
+target_scene = "res://scenes/world/coracao_mudo.tscn"
+spawn_point = Vector2(110, 240)
+locked_dialogue = ExtResource("11")
 
 [node name="UI" type="CanvasLayer" parent="."]
 
