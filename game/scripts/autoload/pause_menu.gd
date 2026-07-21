@@ -68,10 +68,11 @@ func _build_ui() -> void:
 	_layer.add_child(_root_panel)
 	var title := _make_label("Pausa", Vector2(12, 8), Color(0.85, 0.9, 1))
 	_root_panel.add_child(title)
-	_add_button(_root_panel, "Continuar", Vector2(12, 40), _resume)
-	_add_button(_root_panel, "Opções", Vector2(12, 76), func(): _show_options())
-	_add_button(_root_panel, "Bestiário", Vector2(12, 112), func(): _show_bestiary())
-	_add_button(_root_panel, "Menu principal", Vector2(12, 148), _to_main_menu)
+	_add_button(_root_panel, "Continuar", Vector2(12, 34), _resume)
+	_add_button(_root_panel, "Salvar", Vector2(12, 66), func(): SaveSlotsMenu.open_for_save())
+	_add_button(_root_panel, "Opções", Vector2(12, 98), func(): _show_options())
+	_add_button(_root_panel, "Bestiário", Vector2(12, 130), func(): _show_bestiary())
+	_add_button(_root_panel, "Menu principal", Vector2(12, 162), _to_main_menu)
 
 	_options_panel = _make_panel()
 	_options_panel.visible = false

@@ -35,18 +35,27 @@ func _build() -> void:
 	add_child(subtitle)
 
 	_add_button("Novo Jogo", Vector2(62, 150), _new_game)
-	_continue_btn = _add_button("Continuar", Vector2(62, 190), _continue_game)
+	_continue_btn = _add_button("Continuar", Vector2(62, 186), _continue_game)
 	_continue_btn.disabled = not SaveManager.has_save(SaveManager.AUTOSAVE_SLOT)
-	_diff_btn = _add_button("Dificuldade: %s" % DIFFICULTY_NAMES[GameConfig.difficulty], Vector2(62, 230), _cycle_difficulty)
-	_add_button("Sair", Vector2(62, 270), func(): get_tree().quit())
+	_add_button("Carregar", Vector2(62, 222), func(): SaveSlotsMenu.open_for_load())
+	_diff_btn = _add_button("Dificuldade: %s" % DIFFICULTY_NAMES[GameConfig.difficulty], Vector2(62, 258), _cycle_difficulty)
+	_add_button("Sair", Vector2(62, 294), func(): get_tree().quit())
 
 func _new_game() -> void:
 	SaveManager.reset_state()
 	get_tree().change_scene_to_file(GAME_SCENE)
 
 func _continue_game() -> void:
-	if SaveManager.load_game(SaveManager.AUTOSAVE_SLOT):
-		get_tree().change_scene_to_file(GAME_SCENE)
+	if not SaveManager.load_game(SaveManager.AUTOSAVE_SLOT):
+		return
+	var scene := String(SaveManager.state.get("current_scene", ""))
+	if scene == "":
+		scene = GAME_SCENE
+	else:
+		var pos: Array = SaveManager.state["aria"].get("position", [0.0, 0.0])
+		GameConfig.next_spawn = Vector2(pos[0], pos[1])
+		GameConfig.has_next_spawn = true
+	get_tree().change_scene_to_file(scene)
 
 func _cycle_difficulty() -> void:
 	var next := (int(GameConfig.difficulty) + 1) % DIFFICULTY_NAMES.size()

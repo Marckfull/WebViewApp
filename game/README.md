@@ -34,8 +34,10 @@ próprio export da engine — o app WebView legado na raiz do repositório **nã
 - **1º Boss — Guardiã do Eco**: máquina de estados, ataques telegrafados, **2 fases**
   (a 50% de vida acelera e muda o padrão) e barra de vida própria (§3.2).
 - **Gancho de animação** no Player: pronto para dirigir um `AnimatedSprite2D` no swap de arte.
-- **Menu principal** (Novo Jogo / Continuar / Dificuldade / Sair) e **menu de pausa**
-  com opções de dificuldade em tempo real (§3.4, §3.6).
+- **Menu principal** (Novo Jogo / Continuar / Carregar / Dificuldade / Sair) e **menu de pausa**
+  (Continuar / Salvar / Opções / Bestiário / Menu) com dificuldade em tempo real (§3.4, §3.6).
+- **Save slots (3 manuais)** (§3.6): salvar pela pausa e carregar pelo menu, com resumo por slot
+  (Ecos, Memórias). Além do autosave. Carregar retoma a **cena e posição** salvas.
 - **Progressão nos santuários**: gastar Ecos para subir **Vitalidade/Stamina** (custo
   escala com o nível total, estilo souls) — aplica os stats na hora (§3.3).
 - **Legibilidade de combate**: câmera com limites da sala + **reticle de lock-on** (§3.1).

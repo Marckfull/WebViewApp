@@ -36,6 +36,7 @@ func _default_state() -> Dictionary:
 		"items": [],     ## itens-chave de dungeon: gancho, bomba, lente... (§3.3)
 		"memories": [],  ## 12 Memórias Perdidas -> final secreto (§2, §3.3)
 		"playtime": 0.0,
+		"current_scene": "",  ## cena atual, para retomar ao carregar (§3.6)
 		"settings": { "telemetry": false },  ## telemetria opt-in de playtest (§6.3)
 	}
 
@@ -49,8 +50,31 @@ func _ready() -> void:
 func _slot_path(slot: int) -> String:
 	return "%s/slot_%d.json" % [SAVE_DIR, slot]
 
+## Captura a cena atual e a posição de Aria (para retomar ao carregar, §3.6).
+func _capture_context() -> void:
+	var cs := get_tree().current_scene
+	if cs and cs.scene_file_path != "":
+		state["current_scene"] = cs.scene_file_path
+	var p := get_tree().get_first_node_in_group("player") as Node2D
+	if p:
+		state["aria"]["position"] = [p.global_position.x, p.global_position.y]
+
+## Lê o resumo de um slot sem alterar o estado atual (para a UI de slots).
+## Retorna {} se o slot estiver vazio.
+func peek(slot: int) -> Dictionary:
+	var path := _slot_path(slot)
+	if not FileAccess.file_exists(path):
+		return {}
+	var f := FileAccess.open(path, FileAccess.READ)
+	if f == null:
+		return {}
+	var parsed: Variant = JSON.parse_string(f.get_as_text())
+	f.close()
+	return parsed if parsed is Dictionary else {}
+
 ## Gravação atômica: escreve em .tmp, depois renomeia sobre o alvo.
 func save_game(slot: int = AUTOSAVE_SLOT) -> bool:
+	_capture_context()
 	state["version"] = SAVE_VERSION
 	var path := _slot_path(slot)
 	var tmp := path + ".tmp"
