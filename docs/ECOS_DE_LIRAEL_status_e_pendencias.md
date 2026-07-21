@@ -17,9 +17,9 @@
 |---|---|---|
 | Lore ambiental (itens, diálogos) | 🟡 | Fragmentos existem; falta densidade e revisão |
 | Memórias Perdidas | 🟢 | **12 de 12** implementadas como `.tres` + pontos de coleta (o final secreto já é completável na fatia) |
-| NPCs | 🟡 | Corvo (agora **mercador com loja**), "Sobrevivente" (quest). Faltam **Lys, Selene (Guardiã Caída), Mestra Odara** como personagens |
-| Roteiro dos 3 atos | 🟡 | Story bible escrito (`ECOS_DE_LIRAEL_roteiro.md`); jogáveis em greybox o Ato 1 (prólogo + Cripta), o Ato 2 (Encruzilhada + 4 dungeons com suas revelações) e o Ato 3 (Coração Mudo + Selene + finais). Falta a vila de Pedra-Alva e densidade de cena |
-| Cutscenes | 🟡 | Sistema pronto; **4 cutscenes narradas** (aproximação do boss, palavras da Guardiã ao cair, eco de Selene, confronto no Coração Mudo). Faltam as ilustradas (§4) |
+| NPCs | 🟢 | Em cena: Corvo (mercador com loja), **Lys** (irmã, na vila e no Ato 3), **Mestra Odara** (Cripta e Forja), **Selene** (fala nas cutscenes e no duelo), aldeões, "Sobrevivente" (quest). Falta profundidade (rotinas, ramificação) |
+| Roteiro dos 3 atos | 🟢 | Jogáveis em greybox os 3 atos: Ato 1 (**vila de Pedra-Alva** jogável + prólogo + Cripta), Ato 2 (Encruzilhada + 4 dungeons de **2 salas** com revelações) e Ato 3 (Coração Mudo + Lys + Selene + finais). Falta densidade de cena e arte/som |
+| Cutscenes | 🟡 | Sistema pronto; **10+ cutscenes narradas** (vila/rapto de Lys, aproximação e queda da Guardiã, eco/confronto/duelo de Selene, reencontro de Lys, 4 revelações de dungeon). Faltam as ilustradas (§4) |
 | Finais | 🟢 | **2 finais + 1 secreto** implementados (escolha no Coração Mudo ao derrotar Selene; o secreto exige as 12 Memórias). Falta arte/epílogos ilustrados |
 | Bestiário/diário (lore) | 🟡 | Preenche ids automaticamente; faltam textos ricos e arte |
 | Localização | 🟡 | Só PT-BR hardcoded. Falta **EN** e sistema gettext/CSV (§Alpha→Beta) |
@@ -52,10 +52,10 @@ dificuldade), poise/postura, lock-on touch, combos, morte com drop de Ecos, fras
 
 | Item | Estado | Falta |
 |---|---|---|
-| Salas greybox | 🟡 | 9 salas jogáveis (2 da Cripta, Encruzilhada, 4 dungeons do Ato 2, Coração Mudo). Formas geométricas, sem tilemap real |
+| Salas greybox | 🟡 | **13 salas jogáveis** (vila, 2 da Cripta, Encruzilhada, 4 dungeons × 2 salas, Coração Mudo). Formas geométricas, sem tilemap real |
 | Overworld / hub | 🟡 | Encruzilhada dos Ecos liga as 4 dungeons e a descida ao Coração Mudo. Falta o mundo aberto em chunks (streaming, §6.2) |
-| Vila de Pedra-Alva (Ato 1) | ⬜ | Área de tutorial diegético — não existe |
-| 5 dungeons | 🟡 | Cripta (2 salas) + as 4 do Ato 2 (Floresta/Forja/Torre/Necrópole), cada uma com sua mecânica-chave e boss. Faltam multi-salas e a densidade de uma dungeon real |
+| Vila de Pedra-Alva (Ato 1) | 🟡 | **Jogável** (`vila_pedra_alva.tscn`): prólogo com Lys, aldeões e o rapto pelo Silêncio. Falta arte/tutorial completo de combate |
+| 5 dungeons | 🟡 | Cripta (2 salas) + as 4 do Ato 2, **cada uma com átrio + sala do boss** (2 salas), mecânica-chave e boss. Faltam mais salas e a densidade de uma dungeon real |
 | Alas de 10–15 min c/ checkpoints | 🟡 | Estrutura de portas/checkpoint pronta; falta conteúdo de nível |
 | Densidade de segredos | 🟡 | Alguns (memórias). GDD pede "cada tela esconde algo" |
 | Paralaxe (3+ camadas) | ⛔ | Depende de arte de cenário |

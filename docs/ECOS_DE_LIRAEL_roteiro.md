@@ -31,6 +31,9 @@ Silêncio** para apagar uma dor insuportável.
 - **Prólogo (jogável, narração):** Pedra-Alva ao anoitecer. A névoa do Silêncio engole a vila;
   sons, cores e nomes se apagam. Lys é levada. Aria, no meio do Silêncio, **ouve** — pelo
   ouvido surdo — uma melodia. Tutorial diegético: mover, atacar, rolar enquanto foge.
+  > Nota de produção: já jogável em `vila_pedra_alva.tscn` — narração de abertura → vila com
+  > Lys e aldeões → cutscene `lys_taken` (rapto) → a descida à Cripta se abre. `vila.gd` (extends
+  > GameWorld) roteiriza o evento. Lys reaparece no Ato 3 (reencontro + hesitação).
 - **Cripta das Guardiãs (1ª dungeon):** Aria desce atrás do eco. Encontra a **Ocarina de
   Vidro** e a Mestra Odara, que reconhece o dom. Aprende a Canção do Mundo.
 - **1º Boss — Guardiã do Eco:** uma casca do que foi uma Guardiã, presa entre proteger e
@@ -58,7 +61,8 @@ próxima Guardiã — no lugar de Selene. Restaurar os Santuários acelera isso.
 > travada até os 4 bosses caírem (`ActProgress`). Cada dungeon tem sua mecânica-chave —
 > Floresta/gancho, Forja/bomba, Torre/lente (parede-ilusão), Necrópole/**Botas de Corrente**
 > (`CurrentGate`, achadas na própria dungeon) — um boss (`DungeonBoss` parametrizado) e uma
-> cutscene de **revelação** ao restaurar o Santuário (`verdade_*`).
+> cutscene de **revelação** ao restaurar o Santuário (`verdade_*`). Cada dungeon tem **2 salas**
+> (átrio de aproximação + sala do boss) ligadas por porta. Odara aparece em cena na Forja.
 
 ### Ato 3 — A Canção Final (~1h30)
 - **O Coração Mudo:** o santuário central, onde Selene canta a Canção ao contrário há séculos.
