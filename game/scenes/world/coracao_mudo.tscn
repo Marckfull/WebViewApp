@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3]
+[gd_scene load_steps=18 format=3]
 
 [ext_resource type="Script" path="res://scripts/world/game_world.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/world/day_night.gd" id="2"]
@@ -12,6 +12,9 @@
 [ext_resource type="PackedScene" path="res://scenes/enemies/selene_boss.tscn" id="10"]
 [ext_resource type="PackedScene" path="res://scenes/world/cutscene_trigger.tscn" id="11"]
 [ext_resource type="Resource" path="res://data/cutscenes/selene_confront.tres" id="12"]
+[ext_resource type="PackedScene" path="res://scenes/npc/lys.tscn" id="13"]
+[ext_resource type="Resource" path="res://data/cutscenes/lys_reencontro.tres" id="14"]
+[ext_resource type="Resource" path="res://data/dialogue/lys_ato3.tres" id="15"]
 
 [sub_resource type="RectangleShape2D" id="wall_h"]
 size = Vector2(800, 16)
@@ -88,8 +91,16 @@ shrine_name = "Coração Mudo — Limiar"
 [node name="SeleneBoss" parent="." instance=ExtResource("10")]
 position = Vector2(680, 240)
 
+[node name="Lys" parent="." instance=ExtResource("13")]
+position = Vector2(650, 110)
+dialogue = ExtResource("15")
+
+[node name="LysReencontroTrigger" parent="." instance=ExtResource("11")]
+position = Vector2(250, 240)
+cutscene = ExtResource("14")
+
 [node name="ConfrontTrigger" parent="." instance=ExtResource("11")]
-position = Vector2(400, 240)
+position = Vector2(430, 240)
 cutscene = ExtResource("12")
 
 [node name="UI" type="CanvasLayer" parent="."]

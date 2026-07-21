@@ -135,6 +135,8 @@ func _enter_phase2() -> void:
 	GameEvents.boss_phase_changed.emit(2)
 	# A barra começa cheia: cada Canção do Mundo a esvazia até a harmonia.
 	GameEvents.boss_health_changed.emit(health.max_health, health.max_health)
+	# Selene fala ao virar o duelo (§2): dá voz à dor por trás do Silêncio.
+	CutsceneManager.play_once(load("res://data/cutscenes/selene_duelo.tres"))
 
 ## Cada Canção do Mundo cede a resistência de Selene (§2). Ao completar a
 ## harmonia, o duelo resolve e o EndingScreen assume com a escolha do fim.

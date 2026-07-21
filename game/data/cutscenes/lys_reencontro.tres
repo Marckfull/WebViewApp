@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="CutsceneData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/cutscene_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"lys_reencontro"
+pages = Array[String](["No limiar do Coração Mudo, uma silhueta pequena. Aria reconhece antes de ver: Lys, viva, de pé, os olhos vidrados numa canção que não é dela.", "— A... ri... a. (A voz de Lys sai afinada demais, limpa demais.) O Silêncio está me ensinando a não doer. Diz que eu vou ser a próxima. No lugar dela.", "Por um instante, Lys hesita — e nessa hesitação ainda cabe a irmã que canta desafinado. Aria segura essa hesitação como quem segura a última nota.", "— Eu não vim te calar, Lys. Vim te lembrar. Espera aqui. Eu ainda sei a nossa canção."])

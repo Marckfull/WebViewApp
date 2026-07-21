@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3]
+[gd_scene load_steps=21 format=3]
 
 [ext_resource type="Script" path="res://scripts/world/game_world.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/world/day_night.gd" id="2"]
@@ -15,6 +15,8 @@
 [ext_resource type="PackedScene" path="res://scenes/world/cutscene_trigger.tscn" id="13"]
 [ext_resource type="Resource" path="res://data/cutscenes/verdade_forja.tres" id="14"]
 [ext_resource type="Resource" path="res://data/dialogue/wall_locked.tres" id="15"]
+[ext_resource type="PackedScene" path="res://scenes/npc/corvo.tscn" id="16"]
+[ext_resource type="Resource" path="res://data/dialogue/odara_forja.tres" id="17"]
 
 [sub_resource type="RectangleShape2D" id="wall_h"]
 size = Vector2(800, 16)
@@ -101,6 +103,10 @@ position = Vector2(28, 240)
 target_scene = "res://scenes/world/encruzilhada.tscn"
 spawn_point = Vector2(620, 130)
 prompt = "Voltar à Encruzilhada"
+
+[node name="Odara" parent="." instance=ExtResource("16")]
+position = Vector2(200, 350)
+dialogue = ExtResource("17")
 
 [node name="BreakableWall" parent="." instance=ExtResource("11")]
 position = Vector2(440, 240)

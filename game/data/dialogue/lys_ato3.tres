@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/dialogue_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"lys_ato3"
+speaker = "Lys"
+lines = Array[String](["Não chega perto dela com raiva, Aria. Ela não é braba. Ela é... cansada. Eu sinto daqui.", "Quando você tocar, eu vou querer cantar junto. O Silêncio vai mandar eu parar. Não deixa eu parar, tá?", "(baixinho, quase a Lys de sempre) ...eu inventei uma estrofe nova pro rio. Guardei pra você."])

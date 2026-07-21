@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="CutsceneData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/cutscene_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"selene_duelo"
+pages = Array[String](["Selene cambaleia. O aço de Aria não a feriu — mas a Canção do Mundo, tocada de verdade, encontrou uma fresta.", "— Pare... pare de tocar isso. Essa canção lembra. Eu passei séculos desaprendendo a lembrar.", "Sem querer, a voz de Selene acompanha a melodia por uma nota — e nessa nota há uma dor tão antiga que Aria quase para de tocar por pena.", "— Se você me obrigar a ouvir até o fim, cartógrafa, eu vou ter que sentir tudo de novo. Toque. Toque e vamos ver quem aguenta."])
