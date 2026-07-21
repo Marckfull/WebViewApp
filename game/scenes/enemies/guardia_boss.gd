@@ -117,6 +117,10 @@ func _enter_phase2() -> void:
 	sweep_hitbox.deactivate()
 	GameEvents.boss_phase_changed.emit(2)
 
+## True ao telegrafar/atacar — para o indicador de ameaça fora da tela (§3.6).
+func is_threatening() -> bool:
+	return state == State.TELEGRAPH or state == State.ATTACK
+
 ## Flash + faísca de dano (§5) — modulate independente da cor de telegrafo/fase.
 func _on_hurt(_hitbox: Hitbox) -> void:
 	visual.modulate = Color(4, 4, 4)

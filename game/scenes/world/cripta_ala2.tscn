@@ -1,8 +1,9 @@
-[gd_scene load_steps=23 format=3]
+[gd_scene load_steps=24 format=3]
 
 [ext_resource type="Script" path="res://scripts/world/game_world.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/world/day_night.gd" id="8"]
 [ext_resource type="Script" path="res://scripts/ui/minimap.gd" id="10"]
+[ext_resource type="Script" path="res://scripts/ui/threat_indicator.gd" id="20"]
 [ext_resource type="PackedScene" path="res://scenes/world/item_pickup.tscn" id="11"]
 [ext_resource type="PackedScene" path="res://scenes/world/breakable_wall.tscn" id="12"]
 [ext_resource type="Resource" path="res://data/dialogue/memoria_02.tres" id="13"]
@@ -177,3 +178,9 @@ offset_right = -10.0
 offset_bottom = 116.0
 mouse_filter = 2
 script = ExtResource("10")
+
+[node name="ThreatIndicator" type="Control" parent="UI"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("20")

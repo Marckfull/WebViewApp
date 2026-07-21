@@ -55,6 +55,8 @@ próprio export da engine — o app WebView legado na raiz do repositório **nã
 - **Ciclo dia/noite** (§3.5/§4): a **Canção do Crepúsculo** (2ª melodia da Ocarina) alterna
   dia↔noite; um `CanvasModulate` tinge a cena (azul-frio à noite) — "a cor conta a história".
 - **Feedback de hit** (§5): flash de dano (Aria, Ecoados, boss) + tremor de câmera ao ser atingida.
+- **Acessibilidade — indicador de ameaça** (§3.6): Aria é surda de um ouvido, então ataques de
+  inimigos **fora da tela** viram uma **seta na borda** apontando para a ameaça (o que ela "ouviria").
 - **Inimigos noturnos** (§3.5): o **Ecoado Noturno** (mais rápido/perigoso) só aparece à noite —
   dormente e invisível de dia. Respawn preserva a variante (`EnemyData`).
 - **Variedade de inimigos** (§3.2): **Ecoado Couraçado** (tanque, lento, postura alta — exige

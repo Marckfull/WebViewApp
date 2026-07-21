@@ -1,8 +1,9 @@
-[gd_scene load_steps=34 format=3]
+[gd_scene load_steps=35 format=3]
 
 [ext_resource type="Script" path="res://scripts/world/game_world.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/world/day_night.gd" id="11"]
 [ext_resource type="Script" path="res://scripts/ui/minimap.gd" id="17"]
+[ext_resource type="Script" path="res://scripts/ui/threat_indicator.gd" id="30"]
 [ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/enemies/dummy_enemy.tscn" id="3"]
 [ext_resource type="PackedScene" path="res://scenes/world/shrine.tscn" id="4"]
@@ -230,3 +231,9 @@ offset_right = -10.0
 offset_bottom = 116.0
 mouse_filter = 2
 script = ExtResource("17")
+
+[node name="ThreatIndicator" type="Control" parent="UI"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("30")

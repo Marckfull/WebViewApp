@@ -135,6 +135,11 @@ func _enter_attack() -> void:
 		attack_hitbox.position = dir * 14.0
 	attack_hitbox.activate()
 
+## True quando está telegrafando/executando um golpe — usado pelo indicador de
+## ameaça fora da tela (§3.6, acessibilidade).
+func is_threatening() -> bool:
+	return state == State.TELEGRAPH or state == State.ATTACK
+
 ## Chamado pelo parry do jogador / Canção do Mundo (§3.1/§3.2) — abre finalização.
 func stagger() -> void:
 	state = State.STAGGERED
