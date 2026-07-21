@@ -58,6 +58,14 @@ jobs:
         working-directory: game
         run: godot --headless --quit-after 120 res://scenes/world/encruzilhada.tscn
 
+      - name: Smoke test — dungeon (Floresta Sussurrante)
+        working-directory: game
+        run: godot --headless --quit-after 120 res://scenes/world/floresta_sussurrante.tscn
+
+      - name: Smoke test — dungeon (Forja Afundada)
+        working-directory: game
+        run: godot --headless --quit-after 120 res://scenes/world/forja_afundada.tscn
+
       - name: Smoke test — final (Coração Mudo)
         working-directory: game
         run: godot --headless --quit-after 120 res://scenes/world/coracao_mudo.tscn
