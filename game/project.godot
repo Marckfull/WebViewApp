@@ -25,6 +25,7 @@ GameProgress="*res://scripts/autoload/game_progress.gd"
 EndingScreen="*res://scripts/autoload/ending_screen.gd"
 CombatFx="*res://scripts/autoload/combat_fx.gd"
 TelemetryLogger="*res://scripts/autoload/telemetry_logger.gd"
+ForgeMenu="*res://scripts/autoload/forge_menu.gd"
 
 [display]
 

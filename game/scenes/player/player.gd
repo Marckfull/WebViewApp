@@ -74,7 +74,23 @@ func equip(i: int) -> void:
 		return
 	_weapon_index = i
 	equipped_weapon = _weapons[i]
-	GameEvents.weapon_changed.emit(equipped_weapon.display_name)
+	refresh_weapon_label()
+
+## Nível de upgrade da arma equipada (forja, §3.3).
+func weapon_level() -> int:
+	if equipped_weapon == null:
+		return 0
+	return int(SaveManager.state["weapon_levels"].get(String(equipped_weapon.id), 0))
+
+## Reemite o rótulo da arma com o nível atual (após forjar).
+func refresh_weapon_label() -> void:
+	if equipped_weapon == null:
+		return
+	var lvl := weapon_level()
+	var label := equipped_weapon.display_name
+	if lvl > 0:
+		label += " +%d" % lvl
+	GameEvents.weapon_changed.emit(label)
 
 func swap_weapon() -> void:
 	if _weapons.size() > 1:
@@ -211,7 +227,8 @@ func _try_attack() -> void:
 	_combo_timer = COMBO_WINDOW
 	var is_finisher := _combo_index >= combo_len
 	if equipped_weapon:
-		var dmg_mult := 1.0 + 0.15 * (_combo_index - 1)
+		# Combo escala o dano; a forja (nível) multiplica por cima (§3.3).
+		var dmg_mult := (1.0 + 0.15 * (_combo_index - 1)) * WeaponUpgrade.damage_multiplier(weapon_level())
 		attack_hitbox.damage = equipped_weapon.base_damage * dmg_mult
 		attack_hitbox.poise_damage = equipped_weapon.poise_damage * (1.6 if is_finisher else 1.0)
 		_attack_timer = 0.35 / maxf(equipped_weapon.attack_speed, 0.1)

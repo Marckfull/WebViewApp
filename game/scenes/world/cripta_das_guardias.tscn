@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3]
+[gd_scene load_steps=28 format=3]
 
 [ext_resource type="Script" path="res://scripts/world/game_world.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/world/day_night.gd" id="11"]
@@ -21,6 +21,8 @@
 [ext_resource type="PackedScene" path="res://scenes/world/consumable_pickup.tscn" id="19"]
 [ext_resource type="Resource" path="res://data/dialogue/pocao_pickup.tres" id="20"]
 [ext_resource type="Resource" path="res://data/enemies/ecoado_couracado.tres" id="21"]
+[ext_resource type="PackedScene" path="res://scenes/world/forge.tscn" id="22"]
+[ext_resource type="Resource" path="res://data/dialogue/minerio_pickup.tres" id="23"]
 
 [sub_resource type="RectangleShape2D" id="wall_h"]
 size = Vector2(800, 16)
@@ -155,6 +157,23 @@ position = Vector2(600, 400)
 consumable_id = &"pocao_vigor"
 amount = 1
 dialogue = ExtResource("20")
+
+[node name="Forge" parent="." instance=ExtResource("22")]
+position = Vector2(220, 300)
+
+[node name="MinerioPickup1" parent="." instance=ExtResource("19")]
+position = Vector2(500, 150)
+consumable_id = &"minerio"
+amount = 2
+bag = "resources"
+dialogue = ExtResource("23")
+
+[node name="MinerioPickup2" parent="." instance=ExtResource("19")]
+position = Vector2(360, 320)
+consumable_id = &"minerio"
+amount = 1
+bag = "resources"
+dialogue = ExtResource("23")
 
 [node name="GrappleGateIn" parent="." instance=ExtResource("13")]
 position = Vector2(275, 410)
