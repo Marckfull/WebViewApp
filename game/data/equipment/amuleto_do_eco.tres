@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="EquipmentData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/equipment_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"amuleto_do_eco"
+display_name = "Amuleto do Eco"
+slot = 1
+damage_reduction = 0.0
+max_hp_bonus = 15.0
+stamina_regen_bonus = 15.0
+lore = "Um caco de sino que ainda guarda uma nota. Pendurado ao peito, devolve o fôlego mais rápido — como se o mundo respirasse por Aria."

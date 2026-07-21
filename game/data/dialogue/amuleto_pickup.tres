@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/dialogue_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"amuleto_pickup"
+speaker = ""
+lines = Array[String](["Preso ao badalo partido do Sino Invertido, um caco que ainda canta baixinho.", "O Amuleto do Eco: mais vida e fôlego que volta mais rápido.", "(Amuleto equipado.)"])

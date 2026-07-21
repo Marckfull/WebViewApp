@@ -11,6 +11,8 @@ signal health_changed(current: float, maximum: float)  ## local (bosses, barras 
 @export var max_poise: float = 50.0
 @export var poise_regen_per_second: float = 20.0
 @export var is_player: bool = false
+## Fração de dano absorvida por armadura/amuleto (§3.3). 0 = sem redução.
+@export var damage_reduction: float = 0.0
 
 var health: float
 var poise: float
@@ -28,7 +30,8 @@ func _process(delta: float) -> void:
 func take_damage(amount: float, poise_damage: float = 0.0) -> void:
 	if health <= 0.0:
 		return
-	health = maxf(health - amount, 0.0)
+	var dealt := amount * (1.0 - clampf(damage_reduction, 0.0, 0.9))
+	health = maxf(health - dealt, 0.0)
 	health_changed.emit(health, max_health)
 	if is_player:
 		GameEvents.health_changed.emit(health, max_health)

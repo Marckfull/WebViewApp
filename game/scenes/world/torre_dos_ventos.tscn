@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3]
+[gd_scene load_steps=22 format=3]
 
 [ext_resource type="Script" path="res://scripts/world/game_world.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/world/day_night.gd" id="2"]
@@ -15,6 +15,9 @@
 [ext_resource type="PackedScene" path="res://scenes/world/cutscene_trigger.tscn" id="13"]
 [ext_resource type="Resource" path="res://data/cutscenes/verdade_torre.tres" id="14"]
 [ext_resource type="Resource" path="res://data/dialogue/illusion_locked.tres" id="15"]
+[ext_resource type="PackedScene" path="res://scenes/world/equipment_pickup.tscn" id="16"]
+[ext_resource type="Resource" path="res://data/equipment/amuleto_do_eco.tres" id="17"]
+[ext_resource type="Resource" path="res://data/dialogue/amuleto_pickup.tres" id="18"]
 
 [sub_resource type="RectangleShape2D" id="wall_h"]
 size = Vector2(800, 16)
@@ -135,6 +138,11 @@ shrine_name = "Santuário da Torre"
 [node name="RevelacaoTrigger" parent="." instance=ExtResource("13")]
 position = Vector2(720, 240)
 cutscene = ExtResource("14")
+
+[node name="AmuletoPickup" parent="." instance=ExtResource("16")]
+position = Vector2(680, 350)
+equipment = ExtResource("17")
+dialogue = ExtResource("18")
 
 [node name="UI" type="CanvasLayer" parent="."]
 

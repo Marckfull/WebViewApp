@@ -44,6 +44,9 @@ var _dodge_timer: float = 0.0
 var _forca_dmg_mult: float = 1.0
 var _dex_stamina_mult: float = 1.0
 var _harmonia_parry_mult: float = 1.0
+## Bônus de equipamento (armadura/amuleto, §3.3).
+var _equip_hp_bonus: float = 0.0
+var _base_stamina_regen: float = 45.0
 var _attack_timer: float = 0.0
 var flasks: int = 0
 var _selected_slot: int = 0
@@ -65,7 +68,8 @@ func _ready() -> void:
 	flasks = flask_max
 	GameEvents.flasks_changed.emit(flasks, flask_max)
 	GameEvents.consumable_slot_selected.emit(_selected_slot)
-	apply_attributes()
+	_base_stamina_regen = stamina.regen_per_second
+	apply_equipment()  ## já chama apply_attributes() com o bônus de vida embutido
 	# Adiado: o HUD (último filho da cena) precisa estar conectado ao weapon_changed.
 	_load_weapons.call_deferred()
 
@@ -133,12 +137,28 @@ func swap_weapon() -> void:
 ## sempre que Aria sobe um atributo no santuário.
 func apply_attributes() -> void:
 	var attrs: Dictionary = SaveManager.state["attributes"]
-	health.set_max_health(Attributes.max_hp_for(int(attrs["vitalidade"])))
+	health.set_max_health(Attributes.max_hp_for(int(attrs["vitalidade"])) + _equip_hp_bonus)
 	stamina.set_max(Attributes.max_stamina_for(int(attrs["stamina"])))
 	# Força/Destreza/Harmonia entram no combate via multiplicadores em cache (§3.3).
 	_forca_dmg_mult = Attributes.damage_mult_for(int(attrs["forca"]))
 	_dex_stamina_mult = Attributes.stamina_cost_mult_for(int(attrs["destreza"]))
 	_harmonia_parry_mult = Attributes.parry_window_mult_for(int(attrs["harmonia"]))
+
+## Aplica os bônus do equipamento (armadura+amuleto): redução de dano, vida extra
+## e regeneração de stamina (§3.3). Chamado ao nascer e ao trocar de peça.
+func apply_equipment() -> void:
+	var eq: Dictionary = SaveManager.state.get("equipment", {})
+	var items: Array = []
+	for slot_id in [eq.get("armor", ""), eq.get("amulet", "")]:
+		if String(slot_id) != "":
+			var e := Equipment.by_id(StringName(slot_id))
+			if e:
+				items.append(e)
+	var agg := Equipment.aggregate(items)
+	_equip_hp_bonus = agg["max_hp_bonus"]
+	health.damage_reduction = agg["damage_reduction"]
+	stamina.regen_per_second = _base_stamina_regen + float(agg["stamina_regen_bonus"])
+	apply_attributes()  ## recomputa a vida máxima já com o bônus de equipamento
 
 func _physics_process(delta: float) -> void:
 	_poll_actions()
