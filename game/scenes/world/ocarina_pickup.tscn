@@ -12,7 +12,7 @@ collision_mask = 0
 script = ExtResource("1")
 prompt = "Pegar"
 melody_id = &"cancao_do_mundo"
-extra_melodies = Array[String](["cancao_do_crepusculo", "cancao_do_retorno"])
+extra_melodies = Array[String](["cancao_do_crepusculo", "cancao_do_retorno", "cancao_do_selo"])
 dialogue = ExtResource("2")
 
 [node name="Visual" type="Polygon2D" parent="."]

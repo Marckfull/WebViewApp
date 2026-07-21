@@ -1,9 +1,12 @@
-[gd_scene load_steps=24 format=3]
+[gd_scene load_steps=28 format=3]
 
 [ext_resource type="Script" path="res://scripts/world/game_world.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/world/day_night.gd" id="8"]
 [ext_resource type="Script" path="res://scripts/ui/minimap.gd" id="10"]
 [ext_resource type="Script" path="res://scripts/ui/threat_indicator.gd" id="20"]
+[ext_resource type="PackedScene" path="res://scenes/world/sealed_door.tscn" id="21"]
+[ext_resource type="Resource" path="res://data/dialogue/memoria_04.tres" id="22"]
+[ext_resource type="Resource" path="res://data/dialogue/seal_locked.tres" id="23"]
 [ext_resource type="PackedScene" path="res://scenes/world/item_pickup.tscn" id="11"]
 [ext_resource type="PackedScene" path="res://scenes/world/breakable_wall.tscn" id="12"]
 [ext_resource type="Resource" path="res://data/dialogue/memoria_02.tres" id="13"]
@@ -29,6 +32,9 @@ size = Vector2(16, 480)
 
 [sub_resource type="RectangleShape2D" id="pocket_top"]
 size = Vector2(112, 16)
+
+[sub_resource type="RectangleShape2D" id="seal_pocket_bottom"]
+size = Vector2(84, 16)
 
 [node name="CriptaAla2" type="Node2D"]
 script = ExtResource("1")
@@ -142,6 +148,29 @@ position = Vector2(400, 120)
 item_id = &"lente"
 collection = "items"
 dialogue = ExtResource("19")
+
+[node name="SealPocketWall" type="StaticBody2D" parent="."]
+collision_layer = 1
+collision_mask = 0
+
+[node name="Bottom" type="CollisionShape2D" parent="SealPocketWall"]
+position = Vector2(742, 90)
+shape = SubResource("seal_pocket_bottom")
+
+[node name="BottomVisual" type="Polygon2D" parent="SealPocketWall"]
+color = Color(0.16, 0.17, 0.22, 1)
+polygon = PackedVector2Array(700, 82, 784, 82, 784, 98, 700, 98)
+
+[node name="SealedDoor" parent="." instance=ExtResource("21")]
+position = Vector2(700, 48)
+seal_id = &"cripta_ala2_selo"
+locked_dialogue = ExtResource("23")
+
+[node name="Memoria04" parent="." instance=ExtResource("11")]
+position = Vector2(745, 48)
+item_id = &"memoria_04"
+collection = "memories"
+dialogue = ExtResource("22")
 
 [node name="ErvaPickup1" parent="." instance=ExtResource("15")]
 position = Vector2(500, 180)

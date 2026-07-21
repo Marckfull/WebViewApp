@@ -27,6 +27,7 @@ func _default_state() -> Dictionary:
 			"eco_drop": {},         ## drop de Ecos persistido entre sessões (§3.2/§3.6)
 			"map": {},              ## fog-of-war do mini-mapa por sala (§3.5)
 			"walls_broken": [],     ## paredes rachadas já estilhaçadas (Bomba, §3.3)
+			"seals_opened": [],     ## portas seladas abertas pela Canção do Selo (§3.1)
 		},
 		"bestiary": [],
 		"consumables": {}, ## poções e afins: id -> quantidade (§3.5)

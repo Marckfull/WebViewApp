@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/dialogue_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"seal_locked"
+speaker = "Aria"
+lines = Array[String](["Uma porta selada. Não há fechadura — só uma runa que pulsa devagar.", "Ela responde a som, não a mãos. Talvez uma canção certa a abra."])

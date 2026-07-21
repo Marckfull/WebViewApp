@@ -10,6 +10,7 @@ const MELODY_PATHS := [
 	"res://data/melodies/cancao_do_mundo.tres",
 	"res://data/melodies/cancao_do_crepusculo.tres",
 	"res://data/melodies/cancao_do_retorno.tres",
+	"res://data/melodies/cancao_do_selo.tres",
 ]
 
 var _melodies: Array[MelodyData] = []
@@ -108,6 +109,11 @@ func _apply_effect(melody: MelodyData) -> void:
 			var novo := 0.5 if t < 0.5 else 0.0
 			SaveManager.state["world"]["day_time"] = novo
 			GameEvents.day_time_changed.emit(novo)
+		MelodyData.Effect.OPEN_SEAL:
+			for s in get_tree().get_nodes_in_group("sealed"):
+				if s.has_method("open_seal"):
+					s.open_seal()
+			SaveManager.save_game()
 		_:
 			pass
 
