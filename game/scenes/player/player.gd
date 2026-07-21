@@ -40,6 +40,7 @@ var _facing: Vector2 = Vector2.DOWN
 var _dodge_timer: float = 0.0
 var _attack_timer: float = 0.0
 var flasks: int = 0
+var _selected_slot: int = 0
 var _weapons: Array[WeaponData] = []
 var _weapon_index: int = 0
 var equipped_weapon: WeaponData
@@ -56,6 +57,7 @@ func _ready() -> void:
 	GameEvents.parry_success.connect(_on_parry_success)
 	flasks = flask_max
 	GameEvents.flasks_changed.emit(flasks, flask_max)
+	GameEvents.consumable_slot_selected.emit(_selected_slot)
 	apply_attributes()
 	# Adiado: o HUD (último filho da cena) precisa estar conectado ao weapon_changed.
 	_load_weapons.call_deferred()
@@ -165,7 +167,9 @@ func _poll_actions() -> void:
 	if Input.is_action_just_pressed("heal"):
 		use_flask()
 	if Input.is_action_just_pressed("consumable"):
-		use_vigor()
+		use_selected_consumable()
+	if Input.is_action_just_pressed("cycle_consumable"):
+		cycle_consumable()
 	if Input.is_action_just_pressed("swap_weapon"):
 		swap_weapon()
 	if Input.is_action_just_pressed("lock_on"):
@@ -280,13 +284,27 @@ func _try_interact() -> void:
 	if best:
 		best.interact(self)
 
-## Poção de Vigor: restaura a stamina na hora (§3.5). Distinta do frasco (vida).
-func use_vigor() -> void:
-	if Consumables.consume(&"pocao_vigor", SaveManager.state["consumables"]):
-		stamina.current = stamina.max_stamina
-		GameEvents.stamina_changed.emit(stamina.current, stamina.max_stamina)
-		GameEvents.consumable_changed.emit(
-			&"pocao_vigor", Consumables.count(&"pocao_vigor", SaveManager.state["consumables"]))
+## Troca o slot de consumível ativo (§3.5).
+func cycle_consumable() -> void:
+	_selected_slot = ConsumableSlots.next_slot(ConsumableSlots.DEFAULT, _selected_slot)
+	GameEvents.consumable_slot_selected.emit(_selected_slot)
+
+## Usa o consumível do slot ativo, aplicando seu efeito (§3.5).
+func use_selected_consumable() -> void:
+	var id: StringName = ConsumableSlots.DEFAULT[_selected_slot]
+	if String(id) == "":
+		return
+	if Consumables.consume(id, SaveManager.state["consumables"]):
+		_apply_consumable(id)
+		GameEvents.consumable_changed.emit(id, Consumables.count(id, SaveManager.state["consumables"]))
+
+func _apply_consumable(id: StringName) -> void:
+	match id:
+		&"pocao_vigor":
+			stamina.current = stamina.max_stamina
+			GameEvents.stamina_changed.emit(stamina.current, stamina.max_stamina)
+		&"pocao_cura":
+			health.heal(40.0)
 
 ## Frasco de Essência: cura limitada, recarregável nos santuários (§3.2).
 func use_flask() -> void:

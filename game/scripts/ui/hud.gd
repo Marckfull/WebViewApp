@@ -12,7 +12,8 @@ var _flasks: Label
 var _boss_bar: ProgressBar
 var _boss_label: Label
 var _weapon: Label
-var _vigor: Label
+var _slot_labels: Array[Label] = []
+var _selected_slot: int = 0
 
 func _ready() -> void:
 	set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -29,6 +30,7 @@ func _ready() -> void:
 	GameEvents.boss_defeated.connect(_on_boss_defeated)
 	GameEvents.weapon_changed.connect(_on_weapon)
 	GameEvents.consumable_changed.connect(_on_consumable)
+	GameEvents.consumable_slot_selected.connect(_on_slot_selected)
 
 func _build_bars() -> void:
 	_hp = _make_bar(Color(0.9, 0.25, 0.3), Vector2(12, 10))
@@ -47,11 +49,13 @@ func _build_bars() -> void:
 	_weapon.add_theme_color_override("font_color", Color(0.85, 0.8, 0.6))
 	_weapon.text = "Arma: —"
 	add_child(_weapon)
-	_vigor = Label.new()
-	_vigor.position = Vector2(12, 96)
-	_vigor.add_theme_color_override("font_color", Color(0.4, 0.8, 0.55))
-	_vigor.text = "Vigor: %d" % int(SaveManager.state["consumables"].get("pocao_vigor", 0))
-	add_child(_vigor)
+	# 4 slots de consumível (§3.5) — o ativo fica destacado.
+	for i in ConsumableSlots.DEFAULT.size():
+		var l := Label.new()
+		l.position = Vector2(12 + i * 72, 96)
+		add_child(l)
+		_slot_labels.append(l)
+	_refresh_slots()
 
 func _make_bar(color: Color, pos: Vector2) -> ProgressBar:
 	var bar := ProgressBar.new()
@@ -115,7 +119,8 @@ func _build_buttons() -> void:
 		["USAR", "interact", Vector2(-210, -70)],
 		["HEAL", "heal", Vector2(-210, -140)],
 		["SWAP", "swap_weapon", Vector2(-210, -210)],
-		["VIGOR", "consumable", Vector2(-280, -140)],
+		["ITEM", "consumable", Vector2(-280, -140)],
+		["TROCA", "cycle_consumable", Vector2(-280, -70)],
 	]
 	for a in actions:
 		var btn := Button.new()
@@ -163,6 +168,22 @@ func _on_flasks(current: int, _maximum: int) -> void:
 func _on_weapon(display_name: String) -> void:
 	_weapon.text = "Arma: %s" % display_name
 
-func _on_consumable(id: StringName, count: int) -> void:
-	if id == &"pocao_vigor":
-		_vigor.text = "Vigor: %d" % count
+func _on_consumable(_id: StringName, _count: int) -> void:
+	_refresh_slots()
+
+func _on_slot_selected(index: int) -> void:
+	_selected_slot = index
+	_refresh_slots()
+
+func _refresh_slots() -> void:
+	var bag: Dictionary = SaveManager.state.get("consumables", {})
+	for i in _slot_labels.size():
+		var id: StringName = ConsumableSlots.DEFAULT[i]
+		var l := _slot_labels[i]
+		if String(id) == "":
+			l.text = "[ - ]"
+		else:
+			l.text = "%s:%d" % [ConsumableSlots.short_name(id), int(bag.get(String(id), 0))]
+		var active := i == _selected_slot
+		l.add_theme_color_override("font_color",
+			Color(0.95, 0.85, 0.4) if active else Color(0.5, 0.55, 0.6))

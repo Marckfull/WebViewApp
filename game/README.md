@@ -82,8 +82,9 @@ próprio export da engine — o app WebView legado na raiz do repositório **nã
   Paredes quebradas persistem no save.
 - **3ª habilidade — Lente da Verdade** (§3.3): **revela o invisível** — uma **3ª Memória Perdida**
   só aparece (no mundo e no mini-mapa) depois que Aria pega a Lente. Gating por revelação.
-- **Consumível — Poção de Vigor** (§3.5): coletável nas salas; usar (tecla G / botão VIGOR)
-  restaura a stamina na hora. Contagem persiste no save; slot no HUD.
+- **Consumíveis — 4 slots no HUD** (§3.5): acesso rápido a 4 slots; **Poção de Vigor** (restaura
+  stamina) e **Poção de Cura** (restaura vida) já implementadas. Trocar de slot (C / botão TROCA)
+  e usar o ativo (G / botão ITEM). Contagens persistem no save; slot ativo destacado.
 - **Forja da Mestra Odara** (§3.3): coletar **minério** e gastar Ecos + minério na forja para
   subir o nível da arma equipada (mais dano, até +5). Nível persiste e aparece no rótulo da arma.
 - **Alquimia** (§3.5): coletar **ervas** e destilá-las em Poções de Vigor na alquimista
@@ -137,6 +138,8 @@ game/
 | Curar (frasco) | H | D-pad ↑ | botão HEAL |
 | Ocarina | F | B | botão OCARINA |
 | Trocar arma | Tab | D-pad → | botão SWAP |
+| Usar item (slot) | G | D-pad ↓ | botão ITEM |
+| Trocar slot de item | C | D-pad ← | botão TROCA |
 | Pausa / Opções | Esc | Start | botão II |
 
 ## Próximos passos (completar a Vertical Slice)

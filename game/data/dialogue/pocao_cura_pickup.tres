@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/dialogue_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"pocao_cura_pickup"
+speaker = "Aria"
+lines = Array[String](["Uma Poção de Cura, densa e vermelha como brasa.", "Fecha feridas na hora — mas é rara. Guardar para a emergência certa."])

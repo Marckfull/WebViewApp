@@ -24,6 +24,7 @@ signal health_changed(current: float, maximum: float)
 signal flasks_changed(current: int, maximum: int)  ## Frascos de Essência (§3.2)
 signal weapon_changed(display_name: String)        ## arma equipada (§3.3)
 signal consumable_changed(id: StringName, count: int)  ## poções etc. (§3.5)
+signal consumable_slot_selected(index: int)            ## slot ativo no HUD (§3.5)
 
 ## Diálogo (§3.5 lore, NPCs)
 signal dialogue_started
