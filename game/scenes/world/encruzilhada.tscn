@@ -1,6 +1,6 @@
 [gd_scene load_steps=14 format=3]
 
-[ext_resource type="Script" path="res://scripts/world/game_world.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/world/encruzilhada.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/world/day_night.gd" id="2"]
 [ext_resource type="Script" path="res://scripts/ui/minimap.gd" id="3"]
 [ext_resource type="Script" path="res://scripts/ui/threat_indicator.gd" id="4"]

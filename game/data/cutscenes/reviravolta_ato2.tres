@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="CutsceneData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/cutscene_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"reviravolta_ato2"
+pages = Array[String](["Os quatro Santuários do Eco cantam juntos pela primeira vez em séculos. A Canção do Mundo desce fundo, e o ouvido surdo de Aria segue o eco até o fim do fio.", "No outro extremo, ela ouve Lys. Viva. Mas a voz da irmã está... limpa. Afinada. Sem o desafino de propósito que sempre foi um riso disfarçado.", "— \"Você fez bonito, cartógrafa.\" A voz do Corvo surge das sombras da Encruzilhada, sem alegria. \"Restaurou os Santuários. Devolveu a Canção ao mundo.\"", "— \"Mas a Canção precisa de uma Guardiã para caber num corpo. Selene está velha demais para segurá-la. Cada Santuário que você acendeu... afinou a sua irmã um pouco mais para o lugar dela.\"", "Aria entende o preço tarde demais para desfazer, cedo demais para desistir. O que a trouxe até aqui é o que está tomando Lys. A escada ao Coração Mudo agora está aberta — e ela desce com pressa e pavor."])
