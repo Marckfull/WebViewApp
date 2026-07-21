@@ -1,0 +1,23 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/world/alchemist.gd" id="1"]
+
+[sub_resource type="CircleShape2D" id="shape"]
+radius = 13.0
+
+[node name="Alchemist" type="Area2D"]
+collision_layer = 32
+collision_mask = 0
+script = ExtResource("1")
+prompt = "Alquimia"
+
+[node name="Visual" type="Polygon2D" parent="."]
+color = Color(0.3, 0.45, 0.4, 1)
+polygon = PackedVector2Array(-10, -4, 10, -4, 8, 10, -8, 10)
+
+[node name="Brew" type="Polygon2D" parent="."]
+color = Color(0.5, 0.85, 0.6, 1)
+polygon = PackedVector2Array(-8, -4, 8, -4, 7, 0, -7, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("shape")

@@ -74,6 +74,8 @@ próprio export da engine — o app WebView legado na raiz do repositório **nã
   restaura a stamina na hora. Contagem persiste no save; slot no HUD.
 - **Forja da Mestra Odara** (§3.3): coletar **minério** e gastar Ecos + minério na forja para
   subir o nível da arma equipada (mais dano, até +5). Nível persiste e aparece no rótulo da arma.
+- **Alquimia** (§3.5): coletar **ervas** e destilá-las em Poções de Vigor na alquimista
+  (2 ervas → 1 poção). Fecha o ciclo coletar-recurso → craft → consumível.
 - **Telemetria opt-in** (§6.3): desligada por padrão; ligável nas Opções (pausa). Registra
   localmente onde Aria morre/descansa/derrota bosses (JSONL em `user://telemetry/`) para
   balancear a dificuldade com dados. Nada sai do dispositivo.
