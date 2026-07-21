@@ -98,9 +98,9 @@ position = Vector2(110, 240)
 
 [node name="DoorBack" parent="." instance=ExtResource("8")]
 position = Vector2(28, 240)
-target_scene = "res://scenes/world/encruzilhada.tscn"
-spawn_point = Vector2(620, 390)
-prompt = "Voltar à Encruzilhada"
+target_scene = "res://scenes/world/torre_atrio.tscn"
+spawn_point = Vector2(650, 240)
+prompt = "Recuar ao átrio"
 
 [node name="IllusionWall" parent="." instance=ExtResource("11")]
 position = Vector2(440, 240)
