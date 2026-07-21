@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/weapon_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"chicote"
+display_name = "Chicote-Corda de Sino"
+weapon_class = 5
+base_damage = 8.0
+poise_damage = 6.0
+stamina_cost = 14.0
+attack_speed = 1.4
+combo_length = 5
+reach = 40.0
+lore = "Uma corda de sino trançada com fio de vidro. Golpeia de longe e em sequência, mas mal empurra a postura — arma de quem controla o espaço, não de quem troca golpes."

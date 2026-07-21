@@ -41,6 +41,14 @@ func test_arco_is_ranged_class() -> void:
 	assert_eq(arco.id, &"arco")
 	assert_eq(arco.weapon_class, WeaponData.WeaponClass.ARCO)
 
+func test_chicote_longest_reach_low_poise() -> void:
+	var chicote: WeaponData = load("res://data/weapons/chicote.tres")
+	assert_not_null(chicote)
+	assert_eq(chicote.weapon_class, WeaponData.WeaponClass.CHICOTE)
+	# Alcança mais que a lança e mal abala a postura (arma de espaçamento).
+	assert_gte(chicote.reach, lanca.reach)
+	assert_lt(chicote.poise_damage, espada.poise_damage)
+
 func test_martelo_is_heavy_hitter() -> void:
 	# Martelo: mais dano e MUITO mais quebra de postura, porém lento e caro.
 	assert_gt(martelo.base_damage, espada.base_damage)

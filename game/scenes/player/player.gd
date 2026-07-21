@@ -37,6 +37,7 @@ const WEAPON_PATHS := [
 	"res://data/weapons/lanca.tres",
 	"res://data/weapons/martelo.tres",
 	"res://data/weapons/arco.tres",
+	"res://data/weapons/chicote.tres",
 ]
 
 const PROJECTILE_SCENE := preload("res://scenes/combat/projectile.tscn")

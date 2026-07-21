@@ -32,7 +32,7 @@ dificuldade), poise/postura, lock-on touch, combos, morte com drop de Ecos, fras
 
 | Item | Estado | Falta |
 |---|---|---|
-| Armas | 🟡 | **5 de 6** (espada, adagas, lança, martelo e **arco** — dispara flechas via projétil). Todas as novas são **loot** guardado no save. Falta só o chicote |
+| Armas | 🟢 | **6 de 6**: espada, adagas, lança, martelo, arco (projétil) e **chicote** (alcance máximo, combo longo, baixa postura). Cada uma um moveset por dano/postura/custo/velocidade/**alcance**; as extras são loot guardado no save |
 | Forja / upgrade | ✅ | Funcional (Ecos+minério, até +5) |
 | Armaduras + amuletos | 🟢 | Sistema completo (`EquipmentData`/`Equipment`): 2 slots com **redução de dano, vida e regen de stamina**, peças como loot (Couraça de Sal, Amuleto do Eco), **tela de equipar no Santuário** (trocar arma/armadura/amuleto entre as possuídas) + persistência. Faltam mais peças e builds |
 | Atributos | 🟢 | Os **5** ligados ao jogo: Vitalidade→vida, Stamina→stamina, **Força→dano, Destreza→custo de stamina, Harmonia→janela de parry** (efeitos puros e testados) |
@@ -151,14 +151,14 @@ unificado (teclado/gamepad/touch), telemetria opt-in, CI (import+smoke+GUT), **1
    (Ninja Adventure/Dungeon Crawl/Kenney) usando os ganchos já prontos. Sem isto o jogo não "existe".
 2. **Vertical Slice de verdade:** Ato 1 (vila + Cripta) com arte/som finais — o gate de 30 min do §7.
 3. **Narrativa:** dar cena aos personagens (Lys/Selene/Odara), a vila do prólogo, mais lore ramificado.
-4. **Conteúdo:** os 2 bosses restantes, ~32 inimigos, 2 armas restantes (arco/chicote), mais peças de equipamento, mais salas por dungeon.
+4. **Conteúdo:** os 2 bosses restantes, ~31 inimigos, mais peças de equipamento, mais salas por dungeon.
 5. **Sistemas restantes:** inventário em grade, loja, projéteis, streaming, rotinas de NPC.
 6. **Acessibilidade/opções completas** + localização EN.
 7. **Otimização low-end + export AAB assinado + soft launch.**
 
 ## O que NÃO falta (já pronto em greybox, validado)
 
-Combate souls-like completo · 2 armas + combos + forja · atributos/frascos/poções/alquimia ·
+Combate souls-like completo · **6 armas** (incl. arco/projétil) + combos + forja · **equipamento (armadura/amuleto)** · **5 atributos com efeito** · atributos/frascos/poções/alquimia ·
 **4 itens de dungeon (gancho/bomba/lente/botas)** + portas por som · 3 inimigos + **6 bosses**
 (incl. duelo de melodias) + NG+ · **Ato 2 completo: hub + 4 dungeons temáticas + revelações** ·
 **3 finais (2 + secreto pelas 12 Memórias)** · ocarina 4 melodias (traversal) · dia/noite ·
