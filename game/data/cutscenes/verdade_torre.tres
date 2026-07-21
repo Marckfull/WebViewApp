@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="CutsceneData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/cutscene_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"verdade_torre"
+pages = Array[String](["O Santuário da Torre dos Ventos volta a soprar. Sob a Lente, o vento desenha no ar uma cena que fora escondida de propósito.", "— Uma verdade: o \"desaparecimento\" da última Guardiã foi um adeus encenado. Ela não fugiu. Ela deixou que a acreditassem perdida.", "Encenar a própria ausência é um jeito de silenciar sem ser detida. Aria começa a temer o quanto Selene planejou."])

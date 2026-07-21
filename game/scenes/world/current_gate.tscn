@@ -1,0 +1,23 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/world/current_gate.gd" id="1"]
+
+[sub_resource type="RectangleShape2D" id="shape"]
+size = Vector2(56, 200)
+
+[node name="CurrentGate" type="Area2D"]
+collision_layer = 32
+collision_mask = 0
+script = ExtResource("1")
+prompt = "Cruzar a corrente"
+
+[node name="Visual" type="Polygon2D" parent="."]
+color = Color(0.4, 0.55, 0.6, 0.55)
+polygon = PackedVector2Array(-28, -100, 28, -100, 28, 100, -28, 100)
+
+[node name="Flow" type="Polygon2D" parent="."]
+color = Color(0.6, 0.72, 0.75, 0.5)
+polygon = PackedVector2Array(-20, -100, -6, -100, -14, 100, -28, 100)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("shape")

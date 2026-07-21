@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/dialogue_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"current_locked"
+speaker = ""
+lines = Array[String](["A corrente de sal empurra Aria de volta, forte como uma mão.", "Sem algo que a prenda ao chão, atravessar é impossível.", "(É preciso as Botas de Corrente.)"])

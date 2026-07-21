@@ -66,6 +66,14 @@ jobs:
         working-directory: game
         run: godot --headless --quit-after 120 res://scenes/world/forja_afundada.tscn
 
+      - name: Smoke test — dungeon (Torre dos Ventos)
+        working-directory: game
+        run: godot --headless --quit-after 120 res://scenes/world/torre_dos_ventos.tscn
+
+      - name: Smoke test — dungeon (Necrópole de Sal)
+        working-directory: game
+        run: godot --headless --quit-after 120 res://scenes/world/necropole_de_sal.tscn
+
       - name: Smoke test — final (Coração Mudo)
         working-directory: game
         run: godot --headless --quit-after 120 res://scenes/world/coracao_mudo.tscn

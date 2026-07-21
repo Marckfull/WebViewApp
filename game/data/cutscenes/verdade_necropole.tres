@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="CutsceneData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/cutscene_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"verdade_necropole"
+pages = Array[String](["O Santuário da Necrópole de Sal reacende entre as tumbas brancas. A maré recua e devolve a verdade mais pesada.", "— A pessoa que Selene perdeu foi a PRIMEIRA Ecoada. Selene ouviu, nota a nota, a voz de quem amava sumir no Silêncio.", "Não suportou. Cantou a Canção ao contrário para nunca mais ouvir ninguém sumir — e o mundo inteiro pagou por esse único luto."])
