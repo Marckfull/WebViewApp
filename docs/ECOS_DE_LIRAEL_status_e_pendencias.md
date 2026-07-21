@@ -69,7 +69,7 @@ pausa (Salvar/Opções/Bestiário), **save slots**, forja, alquimia, viagem, di�
 
 | Item | Estado | Falta |
 |---|---|---|
-| Inventário em grade | ⬜ | Grade paginada por categoria (§3.5) — só há contadores/slots rápidos |
+| Inventário / diário | 🟡 | Tela de **Inventário na pausa**: armas, armadura/amuleto, consumíveis, recursos, itens-chave, memórias e Ecos (nomes via recurso/`ItemNames`). Falta grade visual com ícones/paginação |
 | Descrições ricas de item | 🟡 | Lore em itens de dungeon; falta tela de inventário com descrições |
 | Tela de mapa completa | 🟡 | Só mini-mapa. Falta mapa cheio com pins manuais |
 | Ícones / fontes | ⛔ | ~200 ícones 24×24, fonte bitmap PT-BR — hoje texto/formas |
@@ -152,7 +152,7 @@ unificado (teclado/gamepad/touch), telemetria opt-in, CI (import+smoke+GUT), **1
 2. **Vertical Slice de verdade:** Ato 1 (vila + Cripta) com arte/som finais — o gate de 30 min do §7.
 3. **Narrativa:** dar cena aos personagens (Lys/Selene/Odara), a vila do prólogo, mais lore ramificado.
 4. **Conteúdo:** ~31 inimigos, mais peças de equipamento, mais salas por dungeon, movesets próprios por boss.
-5. **Sistemas restantes:** inventário em grade, loja, projéteis, streaming, rotinas de NPC.
+5. **Sistemas restantes:** grade visual de inventário com ícones, mapa completo, streaming de mundo aberto.
 6. **Acessibilidade/opções completas** + localização EN.
 7. **Otimização low-end + export AAB assinado + soft launch.**
 

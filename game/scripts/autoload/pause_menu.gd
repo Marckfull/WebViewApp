@@ -13,6 +13,8 @@ var _root_panel: Panel
 var _options_panel: Panel
 var _bestiary_panel: Panel
 var _bestiary_label: Label
+var _inventory_panel: Panel
+var _inventory_label: Label
 var _difficulty_label: Label
 var _telemetry_btn: Button
 var _open: bool = false
@@ -41,6 +43,7 @@ func _pause() -> void:
 	_open = true
 	_options_panel.visible = false
 	_bestiary_panel.visible = false
+	_inventory_panel.visible = false
 	_root_panel.visible = true
 	_layer.visible = true
 	get_tree().paused = true
@@ -65,14 +68,18 @@ func _build_ui() -> void:
 	add_child(_layer)
 
 	_root_panel = _make_panel()
+	_root_panel.custom_minimum_size = Vector2(240, 244)
+	_root_panel.size = Vector2(240, 244)
+	_root_panel.position = Vector2(-120, -122)
 	_layer.add_child(_root_panel)
 	var title := _make_label("Pausa", Vector2(12, 8), Color(0.85, 0.9, 1))
 	_root_panel.add_child(title)
 	_add_button(_root_panel, "Continuar", Vector2(12, 34), _resume)
-	_add_button(_root_panel, "Salvar", Vector2(12, 66), func(): SaveSlotsMenu.open_for_save())
-	_add_button(_root_panel, "Opções", Vector2(12, 98), func(): _show_options())
-	_add_button(_root_panel, "Bestiário", Vector2(12, 130), func(): _show_bestiary())
-	_add_button(_root_panel, "Menu principal", Vector2(12, 162), _to_main_menu)
+	_add_button(_root_panel, "Inventário", Vector2(12, 66), func(): _show_inventory())
+	_add_button(_root_panel, "Bestiário", Vector2(12, 98), func(): _show_bestiary())
+	_add_button(_root_panel, "Salvar", Vector2(12, 130), func(): SaveSlotsMenu.open_for_save())
+	_add_button(_root_panel, "Opções", Vector2(12, 162), func(): _show_options())
+	_add_button(_root_panel, "Menu principal", Vector2(12, 194), _to_main_menu)
 
 	_options_panel = _make_panel()
 	_options_panel.visible = false
@@ -96,9 +103,77 @@ func _build_ui() -> void:
 	_bestiary_panel.add_child(_bestiary_label)
 	_add_button(_bestiary_panel, "Voltar", Vector2(12, 160), func(): _show_root())
 
+	_inventory_panel = _make_panel()
+	_inventory_panel.custom_minimum_size = Vector2(320, 300)
+	_inventory_panel.size = Vector2(320, 300)
+	_inventory_panel.position = Vector2(-160, -150)
+	_inventory_panel.visible = false
+	_layer.add_child(_inventory_panel)
+	var i_title := _make_label("Inventário", Vector2(12, 8), Color(0.85, 0.9, 1))
+	_inventory_panel.add_child(i_title)
+	_inventory_label = _make_label("", Vector2(12, 34), Color(0.82, 0.85, 0.9))
+	_inventory_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_inventory_label.custom_minimum_size = Vector2(296, 220)
+	_inventory_panel.add_child(_inventory_label)
+	_add_button(_inventory_panel, "Voltar", Vector2(12, 262), func(): _show_root())
+
+func _show_inventory() -> void:
+	_root_panel.visible = false
+	_options_panel.visible = false
+	_bestiary_panel.visible = false
+	_inventory_label.text = _inventory_text()
+	_inventory_panel.visible = true
+
+## Monta o resumo do inventário a partir do save (§3.5). Nomes vêm dos recursos
+## (armas/equipamento têm display_name) ou de ItemNames (bolsas/itens-chave).
+func _inventory_text() -> String:
+	var s: Dictionary = SaveManager.state
+	var out := "ARMAS: " + _weapon_names(s.get("weapons", [])) + "\n\n"
+	var eq: Dictionary = s.get("equipment", {})
+	out += "Armadura: " + _equip_name(String(eq.get("armor", ""))) + "\n"
+	out += "Amuleto: " + _equip_name(String(eq.get("amulet", ""))) + "\n\n"
+	out += "Consumíveis: " + _bag_text(s.get("consumables", {})) + "\n"
+	out += "Recursos: " + _bag_text(s.get("resources", {})) + "\n\n"
+	out += "Itens-chave: " + _item_names(s.get("items", [])) + "\n"
+	out += "Memórias: %d/12   Ecos: %d" % [
+		s.get("memories", []).size(), int(s.get("aria", {}).get("ecos", 0))]
+	return out
+
+func _weapon_names(ids: Array) -> String:
+	var names := PackedStringArray()
+	for wid in ids:
+		var w := load("res://data/weapons/%s.tres" % String(wid)) as WeaponData
+		names.append(w.display_name if w else String(wid).capitalize())
+	return ", ".join(names) if names.size() > 0 else "—"
+
+func _item_names(ids: Array) -> String:
+	if ids.is_empty():
+		return "—"
+	var names := PackedStringArray()
+	for it in ids:
+		names.append(ItemNames.label(it))
+	return ", ".join(names)
+
+func _equip_name(id: String) -> String:
+	if id == "":
+		return "—"
+	var e := Equipment.by_id(StringName(id))
+	return e.display_name if e else id.capitalize()
+
+func _bag_text(bag: Dictionary) -> String:
+	if bag.is_empty():
+		return "—"
+	var parts := PackedStringArray()
+	for key in bag:
+		var n := int(bag[key])
+		if n > 0:
+			parts.append("%s x%d" % [ItemNames.label(StringName(key)), n])
+	return ", ".join(parts) if parts.size() > 0 else "—"
+
 func _show_options() -> void:
 	_root_panel.visible = false
 	_bestiary_panel.visible = false
+	_inventory_panel.visible = false
 	_update_telemetry_label()
 	_options_panel.visible = true
 
@@ -112,6 +187,7 @@ func _update_telemetry_label() -> void:
 func _show_bestiary() -> void:
 	_root_panel.visible = false
 	_options_panel.visible = false
+	_inventory_panel.visible = false
 	_bestiary_label.text = _bestiary_text()
 	_bestiary_panel.visible = true
 
@@ -138,6 +214,7 @@ func _bestiary_text() -> String:
 func _show_root() -> void:
 	_options_panel.visible = false
 	_bestiary_panel.visible = false
+	_inventory_panel.visible = false
 	_root_panel.visible = true
 
 func _make_panel() -> Panel:
