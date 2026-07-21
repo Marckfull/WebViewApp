@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/dialogue_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"martelo_pickup"
+speaker = ""
+lines = Array[String](["Cravado na bigorna afundada, o Martelo de Odara.", "Pesado, lento — mas cada golpe quebra a postura de quem insiste em existir.", "(Nova arma no arsenal. Troque com o botão de troca de arma.)"])

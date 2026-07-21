@@ -16,4 +16,5 @@ enum WeaponClass { ADAGA_DUPLA, ESPADA_ESCUDO, LANCA, MARTELO, ARCO, CHICOTE }
 @export var stamina_cost: float = 20.0
 @export var attack_speed: float = 1.0          ## multiplicador de velocidade da animação
 @export var combo_length: int = 3              ## 3 ataques por arma (§4)
+@export var reach: float = 18.0                ## distância do golpe (lança longe, martelo perto)
 @export_multiline var lore: String = ""        ## descrição rica em lore (§3.5)

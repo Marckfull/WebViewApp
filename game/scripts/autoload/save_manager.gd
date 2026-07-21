@@ -33,6 +33,7 @@ func _default_state() -> Dictionary:
 		"bestiary": [],
 		"consumables": {}, ## poções e afins: id -> quantidade (§3.5)
 		"resources": {},   ## recursos de craft: minério, madeira... id -> quantidade (§3.5)
+		"weapons": ["espada_guardia", "adaga_dupla"], ## arsenal possuído (§3.3); novas armas viram loot
 		"weapon_levels": {}, ## nível de upgrade por arma na forja (§3.3)
 		"quests": {},      ## side quests: id -> { status, progress } (§3.5)
 		"items": [],     ## itens-chave de dungeon: gancho, bomba, lente... (§3.3)

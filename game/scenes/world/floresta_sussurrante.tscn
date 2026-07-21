@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3]
+[gd_scene load_steps=20 format=3]
 
 [ext_resource type="Script" path="res://scripts/world/game_world.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/world/day_night.gd" id="2"]
@@ -15,6 +15,8 @@
 [ext_resource type="PackedScene" path="res://scenes/world/cutscene_trigger.tscn" id="13"]
 [ext_resource type="Resource" path="res://data/cutscenes/verdade_floresta.tres" id="14"]
 [ext_resource type="Resource" path="res://data/dialogue/gate_locked.tres" id="15"]
+[ext_resource type="PackedScene" path="res://scenes/world/item_pickup.tscn" id="16"]
+[ext_resource type="Resource" path="res://data/dialogue/lanca_pickup.tres" id="17"]
 
 [sub_resource type="RectangleShape2D" id="wall_h"]
 size = Vector2(800, 16)
@@ -126,6 +128,12 @@ shrine_name = "Santuário da Floresta"
 [node name="RevelacaoTrigger" parent="." instance=ExtResource("13")]
 position = Vector2(720, 240)
 cutscene = ExtResource("14")
+
+[node name="LancaPickup" parent="." instance=ExtResource("16")]
+position = Vector2(660, 350)
+item_id = &"lanca"
+collection = "weapons"
+dialogue = ExtResource("17")
 
 [node name="Visual" type="Polygon2D" parent="."]
 color = Color(0.12, 0.2, 0.13, 1)

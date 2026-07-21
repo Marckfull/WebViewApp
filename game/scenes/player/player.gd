@@ -34,6 +34,8 @@ var state: State = State.FREE
 const WEAPON_PATHS := [
 	"res://data/weapons/espada_guardia.tres",
 	"res://data/weapons/adaga_dupla.tres",
+	"res://data/weapons/lanca.tres",
+	"res://data/weapons/martelo.tres",
 ]
 
 var _facing: Vector2 = Vector2.DOWN
@@ -59,6 +61,7 @@ func _ready() -> void:
 	health.died.connect(_on_died)
 	hurtbox.hit_taken.connect(_on_hurt)
 	GameEvents.parry_success.connect(_on_parry_success)
+	GameEvents.item_obtained.connect(_on_item_obtained)  ## armas encontradas entram no arsenal
 	flasks = flask_max
 	GameEvents.flasks_changed.emit(flasks, flask_max)
 	GameEvents.consumable_slot_selected.emit(_selected_slot)
@@ -66,13 +69,37 @@ func _ready() -> void:
 	# Adiado: o HUD (último filho da cena) precisa estar conectado ao weapon_changed.
 	_load_weapons.call_deferred()
 
+## Monta o arsenal só com as armas que Aria já possui (save["weapons"]). Chamado
+## ao nascer e sempre que uma arma nova é encontrada (§3.3). Preserva a equipada.
 func _load_weapons() -> void:
+	var owned: Array = SaveManager.state.get("weapons", [])
+	var prev_id: StringName = equipped_weapon.id if equipped_weapon else &""
+	_weapons.clear()
 	for p in WEAPON_PATHS:
 		var w := load(p) as WeaponData
-		if w:
+		if w and owned.has(String(w.id)):
 			_weapons.append(w)
-	if not _weapons.is_empty():
-		equip(0)
+	if _weapons.is_empty():
+		return
+	var idx := 0
+	for i in _weapons.size():
+		if _weapons[i].id == prev_id:
+			idx = i
+			break
+	equip(idx)
+
+## True se `id` corresponde a uma das armas conhecidas (por nome de arquivo).
+func _is_weapon_id(id: StringName) -> bool:
+	var target := String(id) + ".tres"
+	for p in WEAPON_PATHS:
+		if (p as String).get_file() == target:
+			return true
+	return false
+
+## Ao encontrar uma arma no mundo, recarrega o arsenal (sem trocar a equipada).
+func _on_item_obtained(item_id: StringName) -> void:
+	if _is_weapon_id(item_id):
+		_load_weapons()
 
 ## Equipa a arma de índice `i` — cada arma muda dano/postura/custo/velocidade (§3.3).
 func equip(i: int) -> void:
@@ -251,7 +278,7 @@ func _try_attack() -> void:
 	if lock_on.current_target:
 		aim = (lock_on.current_target.global_position - global_position).normalized()
 		_facing = aim
-	attack_hitbox.position = aim * 18.0
+	attack_hitbox.position = aim * (equipped_weapon.reach if equipped_weapon else 18.0)
 	attack_hitbox.activate()
 
 func _try_dodge() -> void:

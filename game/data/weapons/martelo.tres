@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/weapon_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"martelo"
+display_name = "Martelo de Odara"
+weapon_class = 3
+base_damage = 26.0
+poise_damage = 40.0
+stamina_cost = 34.0
+attack_speed = 0.6
+combo_length = 2
+reach = 15.0
+lore = "Pesado como um luto. Cada golpe quebra a postura do que se agarra a existir. Odara o forjou para o que não quer ser lembrado."

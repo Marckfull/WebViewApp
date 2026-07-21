@@ -32,7 +32,7 @@ dificuldade), poise/postura, lock-on touch, combos, morte com drop de Ecos, fras
 
 | Item | Estado | Falta |
 |---|---|---|
-| Armas | 🟡 | **2 de 6** (espada, adagas). Faltam lança, martelo, arco (projétil), chicote — cada uma um moveset |
+| Armas | 🟡 | **4 de 6** (espada, adagas, **lança** — alcance longo, **martelo** — quebra-postura). As novas são **loot** (lança na Floresta, martelo na Forja), guardadas no save. Faltam arco (projétil) e chicote |
 | Forja / upgrade | ✅ | Funcional (Ecos+minério, até +5) |
 | Armaduras + amuletos | ⬜ | 4 conjuntos + amuletos com passivas e slots de build — nada |
 | Atributos | 🟢 | Os **5** ligados ao jogo: Vitalidade→vida, Stamina→stamina, **Força→dano, Destreza→custo de stamina, Harmonia→janela de parry** (efeitos puros e testados) |
@@ -151,7 +151,7 @@ unificado (teclado/gamepad/touch), telemetria opt-in, CI (import+smoke+GUT), **1
    (Ninja Adventure/Dungeon Crawl/Kenney) usando os ganchos já prontos. Sem isto o jogo não "existe".
 2. **Vertical Slice de verdade:** Ato 1 (vila + Cripta) com arte/som finais — o gate de 30 min do §7.
 3. **Narrativa:** dar cena aos personagens (Lys/Selene/Odara), a vila do prólogo, mais lore ramificado.
-4. **Conteúdo:** os 2 bosses restantes, ~32 inimigos, 4 armas restantes, armaduras, multi-salas por dungeon.
+4. **Conteúdo:** os 2 bosses restantes, ~32 inimigos, 2 armas restantes (arco/chicote), armaduras, mais salas por dungeon.
 5. **Sistemas restantes:** inventário em grade, loja, projéteis, streaming, rotinas de NPC.
 6. **Acessibilidade/opções completas** + localização EN.
 7. **Otimização low-end + export AAB assinado + soft launch.**

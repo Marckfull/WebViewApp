@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3]
+[gd_scene load_steps=23 format=3]
 
 [ext_resource type="Script" path="res://scripts/world/game_world.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/world/day_night.gd" id="2"]
@@ -17,6 +17,8 @@
 [ext_resource type="Resource" path="res://data/dialogue/wall_locked.tres" id="15"]
 [ext_resource type="PackedScene" path="res://scenes/npc/corvo.tscn" id="16"]
 [ext_resource type="Resource" path="res://data/dialogue/odara_forja.tres" id="17"]
+[ext_resource type="PackedScene" path="res://scenes/world/item_pickup.tscn" id="18"]
+[ext_resource type="Resource" path="res://data/dialogue/martelo_pickup.tres" id="19"]
 
 [sub_resource type="RectangleShape2D" id="wall_h"]
 size = Vector2(800, 16)
@@ -140,6 +142,12 @@ shrine_name = "Santuário da Forja"
 [node name="RevelacaoTrigger" parent="." instance=ExtResource("13")]
 position = Vector2(720, 240)
 cutscene = ExtResource("14")
+
+[node name="MarteloPickup" parent="." instance=ExtResource("18")]
+position = Vector2(680, 350)
+item_id = &"martelo"
+collection = "weapons"
+dialogue = ExtResource("19")
 
 [node name="UI" type="CanvasLayer" parent="."]
 

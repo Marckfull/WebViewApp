@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/dialogue_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"lanca_pickup"
+speaker = ""
+lines = Array[String](["Encostada entre as raízes, uma Lança de Vidro-Osso.", "Alcança longe — bom para ferir o que se esconde na névoa antes que ele te alcance.", "(Nova arma no arsenal. Troque com o botão de troca de arma.)"])

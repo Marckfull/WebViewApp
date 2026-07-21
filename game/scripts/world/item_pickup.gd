@@ -3,8 +3,8 @@ extends Interactable
 ## coleção-alvo no save. Ao pegar o Gancho, novas passagens ficam acessíveis.
 
 @export var item_id: StringName = &""
-## Coleção no save: "items" (itens-chave) ou "memories" (Memórias Perdidas).
-@export_enum("items", "memories") var collection: String = "items"
+## Coleção no save: "items" (itens-chave), "memories" (Memórias) ou "weapons" (arsenal).
+@export_enum("items", "memories", "weapons") var collection: String = "items"
 ## Se definido, o item fica INVISÍVEL/intocável até Aria ter este item-chave
 ## (ex.: a Lente da Verdade revela o oculto, §3.3).
 @export var requires_to_reveal: StringName = &""

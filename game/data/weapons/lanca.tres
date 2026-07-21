@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/weapon_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"lanca"
+display_name = "Lança de Vidro-Osso"
+weapon_class = 2
+base_damage = 15.0
+poise_damage = 24.0
+stamina_cost = 22.0
+attack_speed = 0.85
+combo_length = 3
+reach = 30.0
+lore = "Alcance longo, para ferir o que o Silêncio esconde à distância. Golpe lento, mas quem sabe a hora nunca precisa do segundo."
