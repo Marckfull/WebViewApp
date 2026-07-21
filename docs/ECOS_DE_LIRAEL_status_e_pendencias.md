@@ -18,7 +18,7 @@
 | Lore ambiental (itens, diálogos) | 🟡 | Fragmentos existem; falta densidade e revisão |
 | Memórias Perdidas | 🟢 | **12 de 12** implementadas como `.tres` + pontos de coleta (o final secreto já é completável na fatia) |
 | NPCs | 🟡 | Corvo (agora **mercador com loja**), "Sobrevivente" (quest). Faltam **Lys, Selene (Guardiã Caída), Mestra Odara** como personagens |
-| Roteiro dos 3 atos | 🟡 | Story bible escrito (`ECOS_DE_LIRAEL_roteiro.md`); em cena só o Ato 1 (prólogo + Cripta) |
+| Roteiro dos 3 atos | 🟡 | Story bible escrito (`ECOS_DE_LIRAEL_roteiro.md`); jogáveis em greybox o Ato 1 (prólogo + Cripta), o Ato 2 (Encruzilhada + 4 dungeons com suas revelações) e o Ato 3 (Coração Mudo + Selene + finais). Falta a vila de Pedra-Alva e densidade de cena |
 | Cutscenes | 🟡 | Sistema pronto; **4 cutscenes narradas** (aproximação do boss, palavras da Guardiã ao cair, eco de Selene, confronto no Coração Mudo). Faltam as ilustradas (§4) |
 | Finais | 🟢 | **2 finais + 1 secreto** implementados (escolha no Coração Mudo ao derrotar Selene; o secreto exige as 12 Memórias). Falta arte/epílogos ilustrados |
 | Bestiário/diário (lore) | 🟡 | Preenche ids automaticamente; faltam textos ricos e arte |
@@ -36,9 +36,9 @@ dificuldade), poise/postura, lock-on touch, combos, morte com drop de Ecos, fras
 | Forja / upgrade | ✅ | Funcional (Ecos+minério, até +5) |
 | Armaduras + amuletos | ⬜ | 4 conjuntos + amuletos com passivas e slots de build — nada |
 | Atributos | 🟡 | Vitalidade/Stamina afetam stats; **Força/Destreza/Harmonia não fazem nada ainda** |
-| Bosses | 🟡 | **2 de 8** principais (Guardiã do Eco; Selene, boss final com duelo de melodias na fase 2). Faltam os 6 e a mecânica única por dungeon (filosofia Zelda) |
+| Bosses | 🟡 | **6 de 8** principais (Guardiã do Eco; Coro Enraizado, Martelo Mudo, Sino Invertido, Maré Salgada nas 4 dungeons; Selene, final com duelo de melodias). Os 4 de dungeon usam o `DungeonBoss` reutilizável (variam ritmo/vida/cor). Faltam 2 e tornar a mecânica de cada boss mais própria |
 | Inimigos | 🟡 | **3 variantes** (comum/noturno/couraçado) de ~35. Faltam ranged, voadores, especiais |
-| Itens de dungeon | ✅ | Gancho, Bomba, Lente implementados. Falta **Botas de Corrente** (água/ímã) |
+| Itens de dungeon | ✅ | Os **4** implementados: Gancho, Bomba, Lente e **Botas de Corrente** (cruzam correntes de sal, `CurrentGate`) |
 | Ocarina (melodias) | ✅ | 4 melodias funcionais (acalmar/dia-noite/viagem/selo). GDD prevê 8 |
 | Progressão de morte (souls) | ✅ | Drop/recuperação de Ecos, respawn, persistência |
 | Loja / mercador (Corvo) | 🟢 | Corvo abre **loja** (comprar poções/recursos por Ecos, `ShopMenu` + `ShopData`); falta vender/recomprar e estoque por dia |
@@ -52,10 +52,10 @@ dificuldade), poise/postura, lock-on touch, combos, morte com drop de Ecos, fras
 
 | Item | Estado | Falta |
 |---|---|---|
-| Salas greybox | 🟡 | 2 salas da Cripta (paredes/portas/alcovas). Sem tilemap real |
-| Overworld | ⬜ | Mundo aberto em chunks (streaming, §6.2) — não existe |
+| Salas greybox | 🟡 | 9 salas jogáveis (2 da Cripta, Encruzilhada, 4 dungeons do Ato 2, Coração Mudo). Formas geométricas, sem tilemap real |
+| Overworld / hub | 🟡 | Encruzilhada dos Ecos liga as 4 dungeons e a descida ao Coração Mudo. Falta o mundo aberto em chunks (streaming, §6.2) |
 | Vila de Pedra-Alva (Ato 1) | ⬜ | Área de tutorial diegético — não existe |
-| 5 dungeons | 🟡 | Só a Cripta (2 salas). Faltam Floresta Sussurrante, Forja Afundada, Torre dos Ventos, Necrópole de Sal |
+| 5 dungeons | 🟡 | Cripta (2 salas) + as 4 do Ato 2 (Floresta/Forja/Torre/Necrópole), cada uma com sua mecânica-chave e boss. Faltam multi-salas e a densidade de uma dungeon real |
 | Alas de 10–15 min c/ checkpoints | 🟡 | Estrutura de portas/checkpoint pronta; falta conteúdo de nível |
 | Densidade de segredos | 🟡 | Alguns (memórias). GDD pede "cada tela esconde algo" |
 | Paralaxe (3+ camadas) | ⛔ | Depende de arte de cenário |
@@ -125,7 +125,7 @@ unificado (teclado/gamepad/touch), telemetria opt-in, CI (import+smoke+GUT), **1
 | Localização (gettext/CSV) | ⬜ | PT-BR/EN |
 | Export Android (AAB) assinado | 🟡 | Job de CI existe **desabilitado**; faltam keystore/secrets + presets |
 | Performance low-end | ⬜ | Perfilar 60 FPS Moto G, RAM <700 MB, APK <300 MB; object pooling |
-| Botas de Corrente (água/ímã) | ⬜ | Mecânica de movimento especial |
+| Botas de Corrente | ✅ | Cruzam correntes de sal (`CurrentGate`), item-chave da Necrópole |
 | Efeitos de Força/Destreza/Harmonia | ⬜ | Ligar atributos a dano/velocidade/poder de melodia |
 | Combat gym / tuning | 🟡 | Cena greybox existe; falta ferramenta de tuning com dummies configuráveis |
 | Testes de integração de combate | 🟡 | Testes puros OK; faltam i-frames/dodge/hitbox em cena |
@@ -150,8 +150,8 @@ unificado (teclado/gamepad/touch), telemetria opt-in, CI (import+smoke+GUT), **1
 1. **Áudio + Arte** (o gargalo real): definir compositor e artista; swap dos greybox pelos packs CC0
    (Ninja Adventure/Dungeon Crawl/Kenney) usando os ganchos já prontos. Sem isto o jogo não "existe".
 2. **Vertical Slice de verdade:** Ato 1 (vila + Cripta) com arte/som finais — o gate de 30 min do §7.
-3. **Narrativa:** roteiro dos 3 atos, os personagens (Lys/Selene/Odara), cutscenes, 2 finais + secreto.
-4. **Conteúdo:** as 4 outras dungeons, os 7 outros bosses, ~32 inimigos, 4 armas restantes, armaduras.
+3. **Narrativa:** dar cena aos personagens (Lys/Selene/Odara), a vila do prólogo, mais lore ramificado.
+4. **Conteúdo:** os 2 bosses restantes, ~32 inimigos, 4 armas restantes, armaduras, multi-salas por dungeon.
 5. **Sistemas restantes:** inventário em grade, loja, projéteis, streaming, rotinas de NPC.
 6. **Acessibilidade/opções completas** + localização EN.
 7. **Otimização low-end + export AAB assinado + soft launch.**
@@ -159,7 +159,9 @@ unificado (teclado/gamepad/touch), telemetria opt-in, CI (import+smoke+GUT), **1
 ## O que NÃO falta (já pronto em greybox, validado)
 
 Combate souls-like completo · 2 armas + combos + forja · atributos/frascos/poções/alquimia ·
-3 itens de dungeon (gancho/bomba/lente) + portas por som · 3 inimigos + boss 2 fases + NG+ ·
-ocarina 4 melodias (traversal) · dia/noite · mini-mapa · bestiário/diário/4 memórias · quest ·
-save completo (autosave+3 slots+migração) · telemetria · indicador de ameaça · menus/pausa/opções ·
-persistência total entre sessões/salas · CI + 16 suítes de teste.
+**4 itens de dungeon (gancho/bomba/lente/botas)** + portas por som · 3 inimigos + **6 bosses**
+(incl. duelo de melodias) + NG+ · **Ato 2 completo: hub + 4 dungeons temáticas + revelações** ·
+**3 finais (2 + secreto pelas 12 Memórias)** · ocarina 4 melodias (traversal) · dia/noite ·
+mini-mapa · bestiário/diário/**12 memórias** · quest · loja do Corvo · save completo
+(autosave+3 slots+migração) · telemetria · indicador de ameaça · menus/pausa/opções ·
+persistência total entre sessões/salas · CI + 20+ suítes de teste.

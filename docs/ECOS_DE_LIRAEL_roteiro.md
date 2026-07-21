@@ -53,6 +53,13 @@ exige o item/mecânica própria (filosofia Zelda) e leitura de timing (filosofia
 Reviravolta ao fim do Ato 2: Lys está viva, mas o Silêncio a está "afinando" para ser a
 próxima Guardiã — no lugar de Selene. Restaurar os Santuários acelera isso.
 
+> Nota de produção: o Ato 2 já é jogável em greybox. A **Encruzilhada dos Ecos**
+> (`encruzilhada.tscn`) é o hub que liga as 4 dungeons e a descida ao Coração Mudo,
+> travada até os 4 bosses caírem (`ActProgress`). Cada dungeon tem sua mecânica-chave —
+> Floresta/gancho, Forja/bomba, Torre/lente (parede-ilusão), Necrópole/**Botas de Corrente**
+> (`CurrentGate`, achadas na própria dungeon) — um boss (`DungeonBoss` parametrizado) e uma
+> cutscene de **revelação** ao restaurar o Santuário (`verdade_*`).
+
 ### Ato 3 — A Canção Final (~1h30)
 - **O Coração Mudo:** o santuário central, onde Selene canta a Canção ao contrário há séculos.
 - **Selene (boss final, 2 fases):** fase 1, a Guardiã que ataca para não ser ouvida; fase 2,

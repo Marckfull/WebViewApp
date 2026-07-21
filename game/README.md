@@ -105,6 +105,23 @@ próprio export da engine — o app WebView legado na raiz do repositório **nã
 - **Telemetria opt-in** (§6.3): desligada por padrão; ligável nas Opções (pausa). Registra
   localmente onde Aria morre/descansa/derrota bosses (JSONL em `user://telemetry/`) para
   balancear a dificuldade com dados. Nada sai do dispositivo.
+- **Loja do Corvo** (§3.5): o mercador abre uma loja (`ShopMenu`/`ShopData`) — comprar poções
+  e recursos com Ecos, com lore. `Shop` é lógica pura testada.
+
+**Ato 2 — Os Cinco Ecos** (`encruzilhada.tscn` = hub): a **Encruzilhada dos Ecos** liga as
+**4 dungeons temáticas**, cada uma com sua mecânica-chave (filosofia Zelda), um boss
+(`DungeonBoss` parametrizado) e uma **cutscene de revelação** ao restaurar o Santuário:
+- **Floresta Sussurrante** — Gancho-corda cruza um abismo · boss **Coro Enraizado**.
+- **Forja Afundada** — Bomba de Eco abre uma parede · boss **Martelo Mudo**.
+- **Torre dos Ventos** — Lente da Verdade dissipa uma parede-ilusão · boss **Sino Invertido**.
+- **Necrópole de Sal** — **Botas de Corrente** (4º item, achadas na dungeon) cruzam correntes
+  de sal (`CurrentGate`) · boss **Maré Salgada**.
+A descida ao Coração Mudo (`GatedStairs`) só abre com os **4 bosses** derrotados (`ActProgress`).
+
+**Ato 3 — A Canção Final** (`coracao_mudo.tscn`): **Selene, a Guardiã Caída** — boss de 2 fases;
+a fase 2 vira **duelo de melodias** (tocar a Canção do Mundo cede sua resistência). Ao resolver,
+a **escolha do fim**: **Silenciar**, **Completar** ou — com as **12 Memórias** — **Lembrar em Coro**
+(final secreto), cada um com epílogo + Novo Jogo+.
 
 ## Estrutura
 
