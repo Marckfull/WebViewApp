@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3]
+[gd_scene load_steps=23 format=3]
 
 [ext_resource type="Script" path="res://scripts/world/encruzilhada.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/world/day_night.gd" id="2"]
@@ -11,6 +11,15 @@
 [ext_resource type="PackedScene" path="res://scenes/world/shrine.tscn" id="9"]
 [ext_resource type="PackedScene" path="res://scenes/world/gated_stairs.tscn" id="10"]
 [ext_resource type="Resource" path="res://data/dialogue/santuarios_locked.tres" id="11"]
+[ext_resource type="PackedScene" path="res://scenes/world/quest_giver.tscn" id="12"]
+[ext_resource type="Resource" path="res://data/quests/silenciar_arqueiros.tres" id="13"]
+[ext_resource type="Resource" path="res://data/dialogue/silenciar_arqueiros_offer.tres" id="14"]
+[ext_resource type="Resource" path="res://data/dialogue/silenciar_arqueiros_progress.tres" id="15"]
+[ext_resource type="Resource" path="res://data/dialogue/silenciar_arqueiros_complete.tres" id="16"]
+[ext_resource type="Resource" path="res://data/quests/cacar_noturno.tres" id="17"]
+[ext_resource type="Resource" path="res://data/dialogue/cacar_noturno_offer.tres" id="18"]
+[ext_resource type="Resource" path="res://data/dialogue/cacar_noturno_progress.tres" id="19"]
+[ext_resource type="Resource" path="res://data/dialogue/cacar_noturno_complete.tres" id="20"]
 
 [sub_resource type="RectangleShape2D" id="wall_h"]
 size = Vector2(800, 16)
@@ -109,6 +118,20 @@ position = Vector2(720, 240)
 target_scene = "res://scenes/world/coracao_mudo.tscn"
 spawn_point = Vector2(110, 240)
 locked_dialogue = ExtResource("11")
+
+[node name="Peregrina" parent="." instance=ExtResource("12")]
+position = Vector2(300, 170)
+quest = ExtResource("13")
+offer_dialogue = ExtResource("14")
+progress_dialogue = ExtResource("15")
+complete_dialogue = ExtResource("16")
+
+[node name="Coveiro" parent="." instance=ExtResource("12")]
+position = Vector2(500, 170)
+quest = ExtResource("17")
+offer_dialogue = ExtResource("18")
+progress_dialogue = ExtResource("19")
+complete_dialogue = ExtResource("20")
 
 [node name="UI" type="CanvasLayer" parent="."]
 

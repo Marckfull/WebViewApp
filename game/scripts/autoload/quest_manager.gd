@@ -2,7 +2,11 @@ extends Node
 ## QuestManager — acompanha o progresso das side quests (autoload, §3.5).
 ## Carrega o registro de QuestData e atualiza o progresso via eventos (mortes).
 
-const QUEST_PATHS := ["res://data/quests/matar_couracado.tres"]
+const QUEST_PATHS := [
+	"res://data/quests/matar_couracado.tres",
+	"res://data/quests/silenciar_arqueiros.tres",
+	"res://data/quests/cacar_noturno.tres",
+]
 
 var _quests: Dictionary = {}  # id(String) -> QuestData
 

@@ -42,7 +42,7 @@ dificuldade), poise/postura, lock-on touch, combos, morte com drop de Ecos, fras
 | Ocarina (melodias) | ✅ | 4 melodias funcionais (acalmar/dia-noite/viagem/selo). GDD prevê 8 |
 | Progressão de morte (souls) | ✅ | Drop/recuperação de Ecos, respawn, persistência |
 | Loja / mercador (Corvo) | 🟢 | Corvo abre **loja** (comprar poções/recursos por Ecos, `ShopMenu` + `ShopData`); falta vender/recomprar e estoque por dia |
-| Side quests | 🟡 | **1 de 12–15**. Sistema pronto; faltam conteúdo e outros tipos (coletar/escoltar) |
+| Side quests | 🟡 | **3 de 12–15** (Casca Teimosa, Cordas que Ferem de Longe — 2 arqueiros, O Que Só o Escuro Mostra — noturno via Canção do Crepúsculo). Givers na Encruzilhada. Faltam mais e outros tipos (coletar/escoltar) |
 | Recursos coletáveis | 🟡 | Minério e erva existem. Faltam tiers (3 minérios), madeira, cogumelos/peixes/insetos |
 | Ciclo dia/noite | 🟡 | Visual (CanvasModulate) + inimigos noturnos OK. Falta **rotina de NPC / lojas fecham à noite** |
 | New Game+ | ✅ | Remix por multiplicadores |

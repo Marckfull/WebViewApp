@@ -27,3 +27,18 @@ func test_ready_when_progress_meets_count() -> void:
 
 func test_not_ready_when_unstarted() -> void:
 	assert_false(Quest.is_ready_to_complete(q, {}))
+
+func test_all_quest_data_loads() -> void:
+	for path in ["res://data/quests/matar_couracado.tres",
+			"res://data/quests/silenciar_arqueiros.tres",
+			"res://data/quests/cacar_noturno.tres"]:
+		var qd: QuestData = load(path)
+		assert_not_null(qd, "deve carregar %s" % path)
+		assert_ne(String(qd.target), "", "alvo definido em %s" % path)
+		assert_gt(qd.count, 0)
+		assert_gt(qd.reward_ecos, 0)
+
+func test_arqueiros_quest_targets_two() -> void:
+	var qd: QuestData = load("res://data/quests/silenciar_arqueiros.tres")
+	assert_eq(qd.target, &"ecoado_arqueiro")
+	assert_eq(qd.count, 2)

@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/dialogue_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"cacar_noturno_progress"
+speaker = "Coveiro"
+lines = Array[String](["Ainda de pé, aquilo. De dia você não acha — ele dorme invisível.", "Toca a Canção do Crepúsculo, chama a noite, e então ele aparece."])

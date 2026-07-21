@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/dialogue_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"silenciar_arqueiros_complete"
+speaker = "Peregrina"
+lines = Array[String](["Silêncio bom, esse. O que ferir de longe agora é só a saudade.", "Toma teus Ecos, e obrigada. A estrada respira melhor."])
