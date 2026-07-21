@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3]
+[gd_scene load_steps=17 format=3]
 
 [ext_resource type="Script" path="res://scripts/world/game_world.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/world/day_night.gd" id="2"]
@@ -8,9 +8,11 @@
 [ext_resource type="Script" path="res://scripts/ui/hud.gd" id="6"]
 [ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="7"]
 [ext_resource type="PackedScene" path="res://scenes/world/door.tscn" id="8"]
-[ext_resource type="PackedScene" path="res://scenes/world/shrine.tscn" id="9"]
-[ext_resource type="PackedScene" path="res://scenes/world/gated_stairs.tscn" id="10"]
-[ext_resource type="Resource" path="res://data/dialogue/santuarios_locked.tres" id="11"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/dummy_enemy.tscn" id="9"]
+[ext_resource type="PackedScene" path="res://scenes/world/breakable_wall.tscn" id="10"]
+[ext_resource type="Resource" path="res://data/dialogue/wall_locked.tres" id="11"]
+[ext_resource type="PackedScene" path="res://scenes/world/consumable_pickup.tscn" id="12"]
+[ext_resource type="Resource" path="res://data/dialogue/minerio_pickup.tres" id="13"]
 
 [sub_resource type="RectangleShape2D" id="wall_h"]
 size = Vector2(800, 16)
@@ -18,32 +20,35 @@ size = Vector2(800, 16)
 [sub_resource type="RectangleShape2D" id="wall_v"]
 size = Vector2(16, 480)
 
-[node name="Encruzilhada" type="Node2D"]
+[sub_resource type="RectangleShape2D" id="inner_seg"]
+size = Vector2(16, 180)
+
+[node name="ForjaAtrio" type="Node2D"]
 script = ExtResource("1")
 
 [node name="DayNight" type="CanvasModulate" parent="."]
 script = ExtResource("2")
 
 [node name="Floor" type="Polygon2D" parent="."]
-color = Color(0.1, 0.12, 0.13, 1)
+color = Color(0.13, 0.09, 0.07, 1)
 polygon = PackedVector2Array(0, 0, 800, 0, 800, 480, 0, 480)
 
 [node name="WallVisuals" type="Node2D" parent="."]
 
 [node name="Top" type="Polygon2D" parent="WallVisuals"]
-color = Color(0.17, 0.18, 0.2, 1)
+color = Color(0.2, 0.15, 0.11, 1)
 polygon = PackedVector2Array(0, 0, 800, 0, 800, 16, 0, 16)
 
 [node name="Bottom" type="Polygon2D" parent="WallVisuals"]
-color = Color(0.17, 0.18, 0.2, 1)
+color = Color(0.2, 0.15, 0.11, 1)
 polygon = PackedVector2Array(0, 464, 800, 464, 800, 480, 0, 480)
 
 [node name="Left" type="Polygon2D" parent="WallVisuals"]
-color = Color(0.17, 0.18, 0.2, 1)
+color = Color(0.2, 0.15, 0.11, 1)
 polygon = PackedVector2Array(0, 0, 16, 0, 16, 480, 0, 480)
 
 [node name="Right" type="Polygon2D" parent="WallVisuals"]
-color = Color(0.17, 0.18, 0.2, 1)
+color = Color(0.2, 0.15, 0.11, 1)
 polygon = PackedVector2Array(784, 0, 800, 0, 800, 480, 784, 480)
 
 [node name="Walls" type="StaticBody2D" parent="."]
@@ -66,49 +71,59 @@ shape = SubResource("wall_v")
 position = Vector2(792, 240)
 shape = SubResource("wall_v")
 
+[node name="InnerWall" type="StaticBody2D" parent="."]
+collision_layer = 1
+collision_mask = 0
+
+[node name="TopSeg" type="CollisionShape2D" parent="InnerWall"]
+position = Vector2(440, 106)
+shape = SubResource("inner_seg")
+
+[node name="BottomSeg" type="CollisionShape2D" parent="InnerWall"]
+position = Vector2(440, 374)
+shape = SubResource("inner_seg")
+
+[node name="TopVisual" type="Polygon2D" parent="InnerWall"]
+color = Color(0.2, 0.15, 0.11, 1)
+polygon = PackedVector2Array(432, 16, 448, 16, 448, 196, 432, 196)
+
+[node name="BottomVisual" type="Polygon2D" parent="InnerWall"]
+color = Color(0.2, 0.15, 0.11, 1)
+polygon = PackedVector2Array(432, 284, 448, 284, 448, 464, 432, 464)
+
 [node name="Player" parent="." instance=ExtResource("7")]
-position = Vector2(400, 240)
+position = Vector2(110, 240)
 
 [node name="DoorBack" parent="." instance=ExtResource("8")]
 position = Vector2(28, 240)
-target_scene = "res://scenes/world/cripta_ala2.tscn"
-spawn_point = Vector2(600, 130)
-prompt = "Voltar à Cripta"
+target_scene = "res://scenes/world/encruzilhada.tscn"
+spawn_point = Vector2(620, 130)
+prompt = "Voltar à Encruzilhada"
 
-[node name="Shrine" parent="." instance=ExtResource("9")]
-position = Vector2(400, 400)
-shrine_id = &"encruzilhada"
-shrine_name = "Encruzilhada dos Ecos"
-
-[node name="DoorFloresta" parent="." instance=ExtResource("8")]
-position = Vector2(180, 90)
-target_scene = "res://scenes/world/floresta_atrio.tscn"
-spawn_point = Vector2(110, 240)
-prompt = "Floresta Sussurrante"
-
-[node name="DoorForja" parent="." instance=ExtResource("8")]
-position = Vector2(620, 90)
-target_scene = "res://scenes/world/forja_atrio.tscn"
-spawn_point = Vector2(110, 240)
-prompt = "Forja Afundada"
-
-[node name="DoorTorre" parent="." instance=ExtResource("8")]
-position = Vector2(620, 390)
-target_scene = "res://scenes/world/torre_dos_ventos.tscn"
-spawn_point = Vector2(110, 240)
-prompt = "Torre dos Ventos"
-
-[node name="DoorNecropole" parent="." instance=ExtResource("8")]
-position = Vector2(180, 390)
-target_scene = "res://scenes/world/necropole_de_sal.tscn"
-spawn_point = Vector2(110, 240)
-prompt = "Necrópole de Sal"
-
-[node name="DescidaCoracaoMudo" parent="." instance=ExtResource("10")]
-position = Vector2(720, 240)
-target_scene = "res://scenes/world/coracao_mudo.tscn"
-spawn_point = Vector2(110, 240)
+[node name="BreakableWall" parent="." instance=ExtResource("10")]
+position = Vector2(440, 240)
+wall_id = &"forja_atrio_parede"
+required_item = &"bomba"
 locked_dialogue = ExtResource("11")
+
+[node name="MinerioPickup" parent="." instance=ExtResource("12")]
+position = Vector2(250, 240)
+consumable_id = &"minerio"
+amount = 2
+bag = "resources"
+dialogue = ExtResource("13")
+
+[node name="Enemy1" parent="." instance=ExtResource("9")]
+position = Vector2(580, 160)
+
+[node name="Enemy2" parent="." instance=ExtResource("9")]
+position = Vector2(620, 330)
+
+[node name="DoorInner" parent="." instance=ExtResource("8")]
+position = Vector2(720, 240)
+target_scene = "res://scenes/world/forja_afundada.tscn"
+spawn_point = Vector2(110, 240)
+prompt = "Descer à forja"
 
 [node name="UI" type="CanvasLayer" parent="."]
 
