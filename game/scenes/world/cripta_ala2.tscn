@@ -1,8 +1,12 @@
-[gd_scene load_steps=13 format=3]
+[gd_scene load_steps=18 format=3]
 
 [ext_resource type="Script" path="res://scripts/world/game_world.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/world/day_night.gd" id="8"]
 [ext_resource type="Script" path="res://scripts/ui/minimap.gd" id="10"]
+[ext_resource type="PackedScene" path="res://scenes/world/item_pickup.tscn" id="11"]
+[ext_resource type="PackedScene" path="res://scenes/world/breakable_wall.tscn" id="12"]
+[ext_resource type="Resource" path="res://data/dialogue/memoria_02.tres" id="13"]
+[ext_resource type="Resource" path="res://data/dialogue/wall_locked.tres" id="14"]
 [ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/enemies/dummy_enemy.tscn" id="3"]
 [ext_resource type="PackedScene" path="res://scenes/world/shrine.tscn" id="4"]
@@ -16,6 +20,9 @@ size = Vector2(800, 16)
 
 [sub_resource type="RectangleShape2D" id="wall_v"]
 size = Vector2(16, 480)
+
+[sub_resource type="RectangleShape2D" id="pocket_top"]
+size = Vector2(112, 16)
 
 [node name="CriptaAla2" type="Node2D"]
 script = ExtResource("1")
@@ -88,6 +95,30 @@ position = Vector2(650, 200)
 [node name="EnemyNoturno" parent="." instance=ExtResource("3")]
 position = Vector2(400, 360)
 data = ExtResource("9")
+
+[node name="PocketWall" type="StaticBody2D" parent="."]
+collision_layer = 1
+collision_mask = 0
+
+[node name="Top" type="CollisionShape2D" parent="PocketWall"]
+position = Vector2(728, 380)
+shape = SubResource("pocket_top")
+
+[node name="TopVisual" type="Polygon2D" parent="PocketWall"]
+color = Color(0.16, 0.17, 0.22, 1)
+polygon = PackedVector2Array(672, 372, 784, 372, 784, 388, 672, 388)
+
+[node name="BreakableWall" parent="." instance=ExtResource("12")]
+position = Vector2(680, 424)
+wall_id = &"cripta_ala2_parede"
+required_item = &"bomba"
+locked_dialogue = ExtResource("14")
+
+[node name="Memoria02" parent="." instance=ExtResource("11")]
+position = Vector2(732, 424)
+item_id = &"memoria_02"
+collection = "memories"
+dialogue = ExtResource("13")
 
 [node name="UI" type="CanvasLayer" parent="."]
 

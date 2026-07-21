@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3]
+[gd_scene load_steps=23 format=3]
 
 [ext_resource type="Script" path="res://scripts/world/game_world.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/world/day_night.gd" id="11"]
@@ -17,6 +17,7 @@
 [ext_resource type="Resource" path="res://data/dialogue/gancho_pickup.tres" id="14"]
 [ext_resource type="Resource" path="res://data/dialogue/gate_locked.tres" id="15"]
 [ext_resource type="Resource" path="res://data/dialogue/memoria_01.tres" id="16"]
+[ext_resource type="Resource" path="res://data/dialogue/bomba_pickup.tres" id="18"]
 
 [sub_resource type="RectangleShape2D" id="wall_h"]
 size = Vector2(800, 16)
@@ -135,6 +136,12 @@ position = Vector2(90, 410)
 item_id = &"memoria_01"
 collection = "memories"
 dialogue = ExtResource("16")
+
+[node name="BombaPickup" parent="." instance=ExtResource("12")]
+position = Vector2(400, 120)
+item_id = &"bomba"
+collection = "items"
+dialogue = ExtResource("18")
 
 [node name="GrappleGateIn" parent="." instance=ExtResource("13")]
 position = Vector2(275, 410)

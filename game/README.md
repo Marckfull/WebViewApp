@@ -64,6 +64,9 @@ próprio export da engine — o app WebView legado na raiz do repositório **nã
 - **Partículas de impacto** (§5): faísca a cada golpe acertado (Aria, Ecoados, boss), via `CombatFx`.
 - **Desfecho da fatia** (§7): derrotar a Guardiã do Eco dispara a tela de **fim da demonstração**
   (fade + fecho temático) e volta ao menu — o slice tem começo, meio e fim.
+- **2ª habilidade — Bomba de Eco** (§3.3): estilhaça uma **parede rachada** (gating diferente do
+  gancho: remove barreira), abrindo uma câmara selada com a **2ª Memória Perdida** na Ala 2.
+  Paredes quebradas persistem no save.
 
 ## Estrutura
 
