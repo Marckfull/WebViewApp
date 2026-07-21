@@ -36,7 +36,7 @@ dificuldade), poise/postura, lock-on touch, combos, morte com drop de Ecos, fras
 | Forja / upgrade | ✅ | Funcional (Ecos+minério, até +5) |
 | Armaduras + amuletos | 🟢 | Sistema completo (`EquipmentData`/`Equipment`): 2 slots com **redução de dano, vida e regen de stamina**, peças como loot (Couraça de Sal, Amuleto do Eco), **tela de equipar no Santuário** (trocar arma/armadura/amuleto entre as possuídas) + persistência. Faltam mais peças e builds |
 | Atributos | 🟢 | Os **5** ligados ao jogo: Vitalidade→vida, Stamina→stamina, **Força→dano, Destreza→custo de stamina, Harmonia→janela de parry** (efeitos puros e testados) |
-| Bosses | 🟡 | **6 de 8** principais (Guardiã do Eco; Coro Enraizado, Martelo Mudo, Sino Invertido, Maré Salgada nas 4 dungeons; Selene, final com duelo de melodias). Os 4 de dungeon usam o `DungeonBoss` reutilizável (variam ritmo/vida/cor). Faltam 2 e tornar a mecânica de cada boss mais própria |
+| Bosses | 🟢 | **8 encontros**: 6 canônicos (Guardiã do Eco; Coro Enraizado, Martelo Mudo, Sino Invertido, Maré Salgada; Selene, com duelo de melodias) + **2 opcionais** (Ecos Maiores do Alvorecer/Ocaso, enfrentados juntos na Arena dos Ecos). Falta tornar a mecânica de cada um mais própria |
 | Inimigos | 🟡 | **4 variantes** (comum/noturno/couraçado/**arqueiro ranged** que kita e atira) de ~35. Faltam voadores e especiais |
 | Itens de dungeon | ✅ | Os **4** implementados: Gancho, Bomba, Lente e **Botas de Corrente** (cruzam correntes de sal, `CurrentGate`) |
 | Ocarina (melodias) | ✅ | 4 melodias funcionais (acalmar/dia-noite/viagem/selo). GDD prevê 8 |
@@ -151,7 +151,7 @@ unificado (teclado/gamepad/touch), telemetria opt-in, CI (import+smoke+GUT), **1
    (Ninja Adventure/Dungeon Crawl/Kenney) usando os ganchos já prontos. Sem isto o jogo não "existe".
 2. **Vertical Slice de verdade:** Ato 1 (vila + Cripta) com arte/som finais — o gate de 30 min do §7.
 3. **Narrativa:** dar cena aos personagens (Lys/Selene/Odara), a vila do prólogo, mais lore ramificado.
-4. **Conteúdo:** os 2 bosses restantes, ~31 inimigos, mais peças de equipamento, mais salas por dungeon.
+4. **Conteúdo:** ~31 inimigos, mais peças de equipamento, mais salas por dungeon, movesets próprios por boss.
 5. **Sistemas restantes:** inventário em grade, loja, projéteis, streaming, rotinas de NPC.
 6. **Acessibilidade/opções completas** + localização EN.
 7. **Otimização low-end + export AAB assinado + soft launch.**

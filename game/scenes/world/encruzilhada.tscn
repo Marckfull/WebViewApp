@@ -123,6 +123,12 @@ target_scene = "res://scenes/world/coracao_mudo.tscn"
 spawn_point = Vector2(110, 240)
 locked_dialogue = ExtResource("11")
 
+[node name="PortaArena" parent="." instance=ExtResource("8")]
+position = Vector2(400, 100)
+target_scene = "res://scenes/world/arena_ecos.tscn"
+spawn_point = Vector2(90, 240)
+prompt = "Arena dos Ecos (opcional)"
+
 [node name="Peregrina" parent="." instance=ExtResource("12")]
 position = Vector2(300, 170)
 quest = ExtResource("13")

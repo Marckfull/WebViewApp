@@ -94,6 +94,10 @@ jobs:
         working-directory: game
         run: godot --headless --quit-after 120 res://scenes/world/necropole_de_sal.tscn
 
+      - name: Smoke test — arena opcional (Ecos)
+        working-directory: game
+        run: godot --headless --quit-after 120 res://scenes/world/arena_ecos.tscn
+
       - name: Smoke test — final (Coração Mudo)
         working-directory: game
         run: godot --headless --quit-after 120 res://scenes/world/coracao_mudo.tscn
