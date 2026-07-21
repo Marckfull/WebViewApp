@@ -1,8 +1,10 @@
 # Ecos de Lirael — Projeto Godot (`/game`)
 
 Ação-aventura souls-like com pixel art HD para Android. Protagonista: **Aria**, cartógrafa
-surda de um ouvido que escuta a Canção do Mundo. Ver o **GDD completo** e o
-**catálogo de recursos gratuitos** em [`/docs/ECOS_DE_LIRAEL_recursos_gratuitos.md`](../docs/ECOS_DE_LIRAEL_recursos_gratuitos.md).
+surda de um ouvido que escuta a Canção do Mundo. Ver o **GDD**, o **roteiro dos 3 atos**
+([`/docs/ECOS_DE_LIRAEL_roteiro.md`](../docs/ECOS_DE_LIRAEL_roteiro.md)), o **status por setor**
+([`/docs/ECOS_DE_LIRAEL_status_e_pendencias.md`](../docs/ECOS_DE_LIRAEL_status_e_pendencias.md))
+e o **catálogo de recursos gratuitos** ([`/docs/ECOS_DE_LIRAEL_recursos_gratuitos.md`](../docs/ECOS_DE_LIRAEL_recursos_gratuitos.md)).
 
 Este diretório é o projeto **Godot 4.x**. O wrapper Android (APK/AAB) é gerado pelo
 próprio export da engine — o app WebView legado na raiz do repositório **não** é a base do jogo.
@@ -34,6 +36,8 @@ próprio export da engine — o app WebView legado na raiz do repositório **nã
 - **1º Boss — Guardiã do Eco**: máquina de estados, ataques telegrafados, **2 fases**
   (a 50% de vida acelera e muda o padrão) e barra de vida própria (§3.2).
 - **Gancho de animação** no Player: pronto para dirigir um `AnimatedSprite2D` no swap de arte.
+- **Prólogo jogável** (§2): Novo Jogo abre com a narração de abertura (Silêncio, Guardiãs, Aria,
+  Lys) antes da Cripta. **Mestra Odara** presente como personagem na forja (lore).
 - **Menu principal** (Novo Jogo / Continuar / Carregar / Dificuldade / Sair) e **menu de pausa**
   (Continuar / Salvar / Opções / Bestiário / Menu) com dificuldade em tempo real (§3.4, §3.6).
 - **Save slots (3 manuais)** (§3.6): salvar pela pausa e carregar pelo menu, com resumo por slot

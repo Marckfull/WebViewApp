@@ -1,10 +1,11 @@
-[gd_scene load_steps=36 format=3]
+[gd_scene load_steps=37 format=3]
 
 [ext_resource type="Script" path="res://scripts/world/game_world.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/world/day_night.gd" id="11"]
 [ext_resource type="Script" path="res://scripts/ui/minimap.gd" id="17"]
 [ext_resource type="Script" path="res://scripts/ui/threat_indicator.gd" id="30"]
 [ext_resource type="Resource" path="res://data/dialogue/pocao_cura_pickup.tres" id="31"]
+[ext_resource type="Resource" path="res://data/dialogue/odara.tres" id="32"]
 [ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/enemies/dummy_enemy.tscn" id="3"]
 [ext_resource type="PackedScene" path="res://scenes/world/shrine.tscn" id="4"]
@@ -176,6 +177,10 @@ dialogue = ExtResource("31")
 
 [node name="Forge" parent="." instance=ExtResource("22")]
 position = Vector2(220, 300)
+
+[node name="Odara" parent="." instance=ExtResource("5")]
+position = Vector2(258, 300)
+dialogue = ExtResource("32")
 
 [node name="QuestGiver" parent="." instance=ExtResource("25")]
 position = Vector2(150, 180)

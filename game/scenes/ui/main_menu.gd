@@ -43,7 +43,7 @@ func _build() -> void:
 
 func _new_game() -> void:
 	SaveManager.reset_state()
-	get_tree().change_scene_to_file(GAME_SCENE)
+	get_tree().change_scene_to_file("res://scenes/ui/intro.tscn")
 
 func _continue_game() -> void:
 	if not SaveManager.load_game(SaveManager.AUTOSAVE_SLOT):
