@@ -22,7 +22,7 @@ func _default_state() -> Dictionary:
 		"aria": { "hp": 100.0, "max_hp": 100.0, "ecos": 0, "position": [0.0, 0.0] },
 		"attributes": { "vitalidade": 1, "stamina": 1, "forca": 1, "destreza": 1, "harmonia": 1 },
 		"world": {
-			"shrines": [], "areas_discovered": [], "melodies": [], "day_time": 0.0,
+			"shrines": {}, "areas_discovered": [], "melodies": [], "day_time": 0.0,
 			"bosses_defeated": [],  ## bosses não renascem após carregar
 			"eco_drop": {},         ## drop de Ecos persistido entre sessões (§3.2/§3.6)
 			"map": {},              ## fog-of-war do mini-mapa por sala (§3.5)

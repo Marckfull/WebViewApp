@@ -96,6 +96,8 @@ position = Vector2(110, 240)
 
 [node name="Shrine" parent="." instance=ExtResource("4")]
 position = Vector2(90, 400)
+shrine_id = &"cripta_ala1"
+shrine_name = "Cripta — Entrada"
 
 [node name="Corvo" parent="." instance=ExtResource("5")]
 position = Vector2(190, 340)

@@ -9,6 +9,7 @@ const NOTE_NAMES := ["Dó", "Ré", "Mi", "Fá", "Sol"]
 const MELODY_PATHS := [
 	"res://data/melodies/cancao_do_mundo.tres",
 	"res://data/melodies/cancao_do_crepusculo.tres",
+	"res://data/melodies/cancao_do_retorno.tres",
 ]
 
 var _melodies: Array[MelodyData] = []
@@ -86,6 +87,12 @@ func _evaluate() -> void:
 func _play(melody: MelodyData) -> void:
 	GameEvents.melody_played.emit(melody.id)
 	_title_label.text = "♪ %s ♪" % melody.display_name
+	# WARP abre outro menu (fast-travel): fecha a roda antes para não conflitar
+	# a trava de jogabilidade.
+	if melody.effect == MelodyData.Effect.WARP:
+		_close()
+		TravelMenu.open()
+		return
 	_apply_effect(melody)
 	await get_tree().create_timer(0.5).timeout
 	_close()

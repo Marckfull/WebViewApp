@@ -54,6 +54,9 @@ próprio export da engine — o app WebView legado na raiz do repositório **nã
   o golpe final é um **finalizador** (mais dano de postura). Muda o ritmo por arma.
 - **Ciclo dia/noite** (§3.5/§4): a **Canção do Crepúsculo** (2ª melodia da Ocarina) alterna
   dia↔noite; um `CanvasModulate` tinge a cena (azul-frio à noite) — "a cor conta a história".
+- **Fast-travel via Ocarina** (§3.1/§3.5): a **Canção do Retorno** (3ª melodia) abre a viagem
+  entre **santuários descobertos** — descansar num santuário o registra; escolher um teleporta
+  Aria (trocando de sala se preciso). A ocarina vira sistema de traversal, um pilar do GDD.
 - **Feedback de hit** (§5): flash de dano (Aria, Ecoados, boss) + tremor de câmera ao ser atingida.
 - **Acessibilidade — indicador de ameaça** (§3.6): Aria é surda de um ouvido, então ataques de
   inimigos **fora da tela** viram uma **seta na borda** apontando para a ameaça (o que ela "ouviria").
