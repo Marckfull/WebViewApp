@@ -35,6 +35,7 @@ func _ready() -> void:
 		move_speed = data.move_speed
 		attack_hitbox.damage = data.contact_damage
 		health.health = data.max_health
+		visual.color = data.tint  ## variedade visual no greybox
 	_base_color = visual.color
 	health.died.connect(_on_died)
 	health.poise_broken.connect(_on_poise_broken)

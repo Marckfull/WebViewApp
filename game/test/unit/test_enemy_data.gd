@@ -3,10 +3,12 @@ extends "res://addons/gut/test.gd"
 
 var comum: EnemyData
 var noturno: EnemyData
+var couracado: EnemyData
 
 func before_all() -> void:
 	comum = load("res://data/enemies/ecoado_comum.tres")
 	noturno = load("res://data/enemies/ecoado_noturno.tres")
+	couracado = load("res://data/enemies/ecoado_couracado.tres")
 
 func test_load() -> void:
 	assert_not_null(comum)
@@ -21,7 +23,15 @@ func test_noturno_is_nocturnal() -> void:
 func test_noturno_is_faster() -> void:
 	assert_gt(noturno.move_speed, comum.move_speed)
 
+func test_couracado_is_tanky() -> void:
+	assert_not_null(couracado)
+	assert_gt(couracado.max_health, comum.max_health, "mais vida")
+	assert_gt(couracado.max_poise, comum.max_poise, "mais difícil de atordoar")
+
+func test_couracado_is_slow() -> void:
+	assert_lt(couracado.move_speed, comum.move_speed)
+
 func test_positive_stats() -> void:
-	for e in [comum, noturno]:
+	for e in [comum, noturno, couracado]:
 		assert_gt(e.max_health, 0.0)
 		assert_gt(e.ecos_reward, 0)

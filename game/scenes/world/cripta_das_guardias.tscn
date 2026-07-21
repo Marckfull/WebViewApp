@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3]
+[gd_scene load_steps=26 format=3]
 
 [ext_resource type="Script" path="res://scripts/world/game_world.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/world/day_night.gd" id="11"]
@@ -20,6 +20,7 @@
 [ext_resource type="Resource" path="res://data/dialogue/bomba_pickup.tres" id="18"]
 [ext_resource type="PackedScene" path="res://scenes/world/consumable_pickup.tscn" id="19"]
 [ext_resource type="Resource" path="res://data/dialogue/pocao_pickup.tres" id="20"]
+[ext_resource type="Resource" path="res://data/enemies/ecoado_couracado.tres" id="21"]
 
 [sub_resource type="RectangleShape2D" id="wall_h"]
 size = Vector2(800, 16)
@@ -98,6 +99,10 @@ position = Vector2(470, 200)
 
 [node name="Enemy2" parent="." instance=ExtResource("3")]
 position = Vector2(560, 320)
+
+[node name="EnemyCouracado" parent="." instance=ExtResource("3")]
+position = Vector2(300, 200)
+data = ExtResource("21")
 
 [node name="GuardiaBoss" parent="." instance=ExtResource("9")]
 position = Vector2(690, 200)
