@@ -133,6 +133,20 @@ func swap_weapon() -> void:
 	if _weapons.size() > 1:
 		equip((_weapon_index + 1) % _weapons.size())
 
+## Armas possuídas (para a tela de equipar).
+func list_weapons() -> Array:
+	return _weapons.duplicate()
+
+func current_weapon_id() -> StringName:
+	return equipped_weapon.id if equipped_weapon else &""
+
+## Equipa por id, se possuída (tela de equipar).
+func equip_by_id(id: StringName) -> void:
+	for i in _weapons.size():
+		if _weapons[i].id == id:
+			equip(i)
+			return
+
 ## Aplica os atributos salvos aos stats derivados (§3.3). Chamado ao nascer e
 ## sempre que Aria sobe um atributo no santuário.
 func apply_attributes() -> void:

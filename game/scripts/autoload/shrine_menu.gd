@@ -2,11 +2,18 @@ extends Node
 ## ShrineMenu — menu de gasto de Ecos em atributos, nos santuários (§3.3).
 ##
 ## Autoload com UI construída por código (padrão do DialogueManager/OcarinaManager).
-## Só sobe Vitalidade e Stamina na Fase 1 (afetam stats derivados); Força/Destreza/
-## Harmonia entram quando armas e melodias tiverem efeito de combate.
+## Sobe os 5 atributos: Vitalidade→vida, Stamina→vigor, Força→dano, Destreza→custo
+## de stamina, Harmonia→janela de parry (todos com efeito de combate, §3.3). Também
+## abre a tela de equipar (arma/armadura/amuleto).
 
-const LEVELABLE := ["vitalidade", "stamina"]
-const LABELS := { "vitalidade": "Vitalidade (+HP)", "stamina": "Stamina (+vigor)" }
+const LEVELABLE := ["vitalidade", "stamina", "forca", "destreza", "harmonia"]
+const LABELS := {
+	"vitalidade": "Vitalidade (+HP)",
+	"stamina": "Stamina (+vigor)",
+	"forca": "Força (+dano)",
+	"destreza": "Destreza (-custo)",
+	"harmonia": "Harmonia (+parry)",
+}
 
 var _layer: CanvasLayer
 var _ecos_label: Label
@@ -63,9 +70,9 @@ func _build_ui() -> void:
 
 	var panel := Panel.new()
 	panel.set_anchors_preset(Control.PRESET_CENTER)
-	panel.custom_minimum_size = Vector2(300, 180)
-	panel.size = Vector2(300, 180)
-	panel.position = Vector2(-150, -90)
+	panel.custom_minimum_size = Vector2(300, 336)
+	panel.size = Vector2(300, 336)
+	panel.position = Vector2(-150, -168)
 	_layer.add_child(panel)
 
 	var title := Label.new()
@@ -93,9 +100,26 @@ func _build_ui() -> void:
 		_buttons[key] = b
 		y += 36
 
+	var equip_btn := Button.new()
+	equip_btn.text = "Equipamento"
+	equip_btn.position = Vector2(12, y + 2)
+	equip_btn.custom_minimum_size = Vector2(276, 28)
+	equip_btn.pressed.connect(_open_equip)
+	panel.add_child(equip_btn)
+
 	var close_btn := Button.new()
 	close_btn.text = "Descansar e sair"
-	close_btn.position = Vector2(12, y + 4)
+	close_btn.position = Vector2(12, y + 34)
 	close_btn.custom_minimum_size = Vector2(276, 28)
 	close_btn.pressed.connect(close)
 	panel.add_child(close_btn)
+
+## Abre a tela de equipar por cima do santuário (fecha ao voltar).
+func _open_equip() -> void:
+	_layer.visible = false
+	EquipMenu.open(_reopen)
+
+## Callback ao fechar a tela de equipar: volta ao santuário.
+func _reopen() -> void:
+	_layer.visible = true
+	_refresh()

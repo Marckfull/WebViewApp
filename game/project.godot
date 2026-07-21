@@ -32,6 +32,7 @@ TravelMenu="*res://scripts/autoload/travel_menu.gd"
 SaveSlotsMenu="*res://scripts/autoload/save_slots_menu.gd"
 CutsceneManager="*res://scripts/autoload/cutscene_manager.gd"
 ShopMenu="*res://scripts/autoload/shop_menu.gd"
+EquipMenu="*res://scripts/autoload/equip_menu.gd"
 
 [display]
 
