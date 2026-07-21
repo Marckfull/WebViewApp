@@ -6,6 +6,7 @@ const QUEST_PATHS := [
 	"res://data/quests/matar_couracado.tres",
 	"res://data/quests/silenciar_arqueiros.tres",
 	"res://data/quests/cacar_noturno.tres",
+	"res://data/quests/entregar_minerio.tres",
 ]
 
 var _quests: Dictionary = {}  # id(String) -> QuestData
@@ -21,13 +22,29 @@ func start(quest: QuestData) -> void:
 	SaveManager.state["quests"][String(quest.id)] = {"status": Quest.ACTIVE, "progress": 0}
 	SaveManager.save_game()
 
-func turn_in(quest: QuestData) -> bool:
+## Quanto Aria tem do recurso-alvo de uma quest COLLECT (bolsa de recursos).
+func collect_count(quest: QuestData) -> int:
+	return Consumables.count(quest.target, SaveManager.state["resources"])
+
+## Uma quest está pronta para entregar? (KILL por progresso; COLLECT por bolsa.)
+func is_ready(quest: QuestData) -> bool:
 	var quests: Dictionary = SaveManager.state["quests"]
-	if not Quest.is_ready_to_complete(quest, quests):
+	if quest.objective == QuestData.Objective.COLLECT:
+		return Quest.is_collect_ready(quest, quests, collect_count(quest))
+	return Quest.is_ready_to_complete(quest, quests)
+
+func turn_in(quest: QuestData) -> bool:
+	if not is_ready(quest):
 		return false
+	# COLLECT consome os recursos entregues (delivery).
+	if quest.objective == QuestData.Objective.COLLECT:
+		var bag: Dictionary = SaveManager.state["resources"]
+		for i in quest.count:
+			Consumables.consume(quest.target, bag)
+		GameEvents.consumable_changed.emit(quest.target, Consumables.count(quest.target, bag))
 	SaveManager.state["aria"]["ecos"] += quest.reward_ecos
 	GameEvents.ecos_changed.emit(SaveManager.state["aria"]["ecos"])
-	quests[String(quest.id)]["status"] = Quest.COMPLETE
+	SaveManager.state["quests"][String(quest.id)]["status"] = Quest.COMPLETE
 	SaveManager.save_game()
 	return true
 

@@ -15,7 +15,7 @@ func interact(_player: Node) -> void:
 			QuestManager.start(quest)
 			_say(offer_dialogue)
 		Quest.ACTIVE:
-			if Quest.is_ready_to_complete(quest, quests):
+			if QuestManager.is_ready(quest):
 				QuestManager.turn_in(quest)
 				_say(complete_dialogue)
 			else:

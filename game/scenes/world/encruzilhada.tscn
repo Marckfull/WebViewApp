@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3]
+[gd_scene load_steps=27 format=3]
 
 [ext_resource type="Script" path="res://scripts/world/encruzilhada.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/world/day_night.gd" id="2"]
@@ -20,6 +20,10 @@
 [ext_resource type="Resource" path="res://data/dialogue/cacar_noturno_offer.tres" id="18"]
 [ext_resource type="Resource" path="res://data/dialogue/cacar_noturno_progress.tres" id="19"]
 [ext_resource type="Resource" path="res://data/dialogue/cacar_noturno_complete.tres" id="20"]
+[ext_resource type="Resource" path="res://data/quests/entregar_minerio.tres" id="21"]
+[ext_resource type="Resource" path="res://data/dialogue/entregar_minerio_offer.tres" id="22"]
+[ext_resource type="Resource" path="res://data/dialogue/entregar_minerio_progress.tres" id="23"]
+[ext_resource type="Resource" path="res://data/dialogue/entregar_minerio_complete.tres" id="24"]
 
 [sub_resource type="RectangleShape2D" id="wall_h"]
 size = Vector2(800, 16)
@@ -132,6 +136,13 @@ quest = ExtResource("17")
 offer_dialogue = ExtResource("18")
 progress_dialogue = ExtResource("19")
 complete_dialogue = ExtResource("20")
+
+[node name="Fundidora" parent="." instance=ExtResource("12")]
+position = Vector2(250, 320)
+quest = ExtResource("21")
+offer_dialogue = ExtResource("22")
+progress_dialogue = ExtResource("23")
+complete_dialogue = ExtResource("24")
 
 [node name="UI" type="CanvasLayer" parent="."]
 

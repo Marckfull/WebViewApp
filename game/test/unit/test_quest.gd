@@ -42,3 +42,27 @@ func test_arqueiros_quest_targets_two() -> void:
 	var qd: QuestData = load("res://data/quests/silenciar_arqueiros.tres")
 	assert_eq(qd.target, &"ecoado_arqueiro")
 	assert_eq(qd.count, 2)
+
+func test_collect_quest_data() -> void:
+	var qd: QuestData = load("res://data/quests/entregar_minerio.tres")
+	assert_not_null(qd)
+	assert_eq(qd.objective, QuestData.Objective.COLLECT)
+	assert_eq(qd.target, &"minerio")
+	assert_eq(qd.count, 3)
+
+func test_collect_ready_depends_on_amount_held() -> void:
+	var c := QuestData.new()
+	c.id = &"entregar_minerio"
+	c.objective = QuestData.Objective.COLLECT
+	c.count = 3
+	var quests := {"entregar_minerio": {"status": Quest.ACTIVE, "progress": 0}}
+	assert_false(Quest.is_collect_ready(c, quests, 2), "2 < 3: ainda não")
+	assert_true(Quest.is_collect_ready(c, quests, 3), "3 >= 3: pronto")
+	assert_true(Quest.is_collect_ready(c, quests, 5))
+
+func test_collect_not_ready_when_unstarted() -> void:
+	var c := QuestData.new()
+	c.id = &"x"
+	c.objective = QuestData.Objective.COLLECT
+	c.count = 1
+	assert_false(Quest.is_collect_ready(c, {}, 9))

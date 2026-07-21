@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/dialogue_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"entregar_minerio_offer"
+speaker = "Fundidora"
+lines = Array[String](["Preciso refundir um sino que ainda lembra a Canção, mas me faltam três nacos de minério que lembra o som.", "Traga três e eu pago bem — mas pensa antes: esse mesmo minério afia a tua lâmina na forja.", "(Missão aceita: O Aço Que Falta — entregue 3 minério)"])

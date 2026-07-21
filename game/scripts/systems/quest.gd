@@ -17,3 +17,8 @@ static func progress(quests: Dictionary, id: StringName) -> int:
 
 static func is_ready_to_complete(quest: QuestData, quests: Dictionary) -> bool:
 	return status(quests, quest.id) == ACTIVE and progress(quests, quest.id) >= quest.count
+
+## Para COLLECT o "progresso" é o que Aria tem agora na bolsa (`have`), não um
+## contador acumulado — pura, para o giver/manager checarem sem tocar no save.
+static func is_collect_ready(quest: QuestData, quests: Dictionary, have: int) -> bool:
+	return status(quests, quest.id) == ACTIVE and have >= quest.count
