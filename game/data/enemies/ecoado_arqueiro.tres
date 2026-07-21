@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/enemy_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"ecoado_arqueiro"
+display_name = "Ecoado Arqueiro"
+max_health = 40.0
+max_poise = 24.0
+contact_damage = 11.0
+move_speed = 52.0
+ecos_reward = 22
+nocturnal = false
+tint = Color(0.4, 0.6, 0.45, 1)
+bestiary_note = "Mantém distância e fere de longe. Feche o espaço ou role no aviso do tiro — ele é frágil de perto."

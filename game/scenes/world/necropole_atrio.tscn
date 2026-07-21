@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3]
+[gd_scene load_steps=15 format=3]
 
 [ext_resource type="Script" path="res://scripts/world/game_world.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/world/day_night.gd" id="2"]
@@ -11,6 +11,7 @@
 [ext_resource type="PackedScene" path="res://scenes/enemies/dummy_enemy.tscn" id="9"]
 [ext_resource type="PackedScene" path="res://scenes/world/consumable_pickup.tscn" id="10"]
 [ext_resource type="Resource" path="res://data/dialogue/pocao_pickup.tres" id="11"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/ranged_enemy.tscn" id="12"]
 
 [sub_resource type="RectangleShape2D" id="wall_h"]
 size = Vector2(800, 16)
@@ -101,6 +102,9 @@ position = Vector2(500, 330)
 
 [node name="Enemy3" parent="." instance=ExtResource("9")]
 position = Vector2(620, 240)
+
+[node name="Arqueiro" parent="." instance=ExtResource("12")]
+position = Vector2(680, 380)
 
 [node name="DoorInner" parent="." instance=ExtResource("8")]
 position = Vector2(720, 240)

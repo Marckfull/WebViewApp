@@ -37,7 +37,7 @@ dificuldade), poise/postura, lock-on touch, combos, morte com drop de Ecos, fras
 | Armaduras + amuletos | 🟢 | Sistema completo (`EquipmentData`/`Equipment`): 2 slots com **redução de dano, vida e regen de stamina**, peças como loot (Couraça de Sal, Amuleto do Eco), **tela de equipar no Santuário** (trocar arma/armadura/amuleto entre as possuídas) + persistência. Faltam mais peças e builds |
 | Atributos | 🟢 | Os **5** ligados ao jogo: Vitalidade→vida, Stamina→stamina, **Força→dano, Destreza→custo de stamina, Harmonia→janela de parry** (efeitos puros e testados) |
 | Bosses | 🟡 | **6 de 8** principais (Guardiã do Eco; Coro Enraizado, Martelo Mudo, Sino Invertido, Maré Salgada nas 4 dungeons; Selene, final com duelo de melodias). Os 4 de dungeon usam o `DungeonBoss` reutilizável (variam ritmo/vida/cor). Faltam 2 e tornar a mecânica de cada boss mais própria |
-| Inimigos | 🟡 | **3 variantes** (comum/noturno/couraçado) de ~35. Faltam ranged, voadores, especiais |
+| Inimigos | 🟡 | **4 variantes** (comum/noturno/couraçado/**arqueiro ranged** que kita e atira) de ~35. Faltam voadores e especiais |
 | Itens de dungeon | ✅ | Os **4** implementados: Gancho, Bomba, Lente e **Botas de Corrente** (cruzam correntes de sal, `CurrentGate`) |
 | Ocarina (melodias) | ✅ | 4 melodias funcionais (acalmar/dia-noite/viagem/selo). GDD prevê 8 |
 | Progressão de morte (souls) | ✅ | Drop/recuperação de Ecos, respawn, persistência |
@@ -117,7 +117,7 @@ unificado (teclado/gamepad/touch), telemetria opt-in, CI (import+smoke+GUT), **1
 |---|---|---|
 | Animação de ataque | 🟡 | Timing por timer; falta **AnimationPlayer** ligando hitbox a frames de sprite |
 | Streaming de mundo (chunks) | ⬜ | Cenas inteiras hoje; GDD §6.2 pede chunks por proximidade |
-| Sistema de projétil | 🟡 | `Projectile` (estende Hitbox): move, dano por Hitbox/Hurtbox, camadas por disparador. Usado pelo **arco**. Falta ligar a inimigos ranged |
+| Sistema de projétil | 🟢 | `Projectile` (estende Hitbox): move, dano por Hitbox/Hurtbox, camadas por disparador. Usado pelo **arco de Aria** e pelo **Ecoado Arqueiro**. Falta variar padrões (leque, mira preditiva) |
 | Sistema de loja | ⬜ | Comprar/vender |
 | Inventário (backend) | 🟡 | Equipar arma/armadura/amuleto pronto (tela no Santuário, `EquipMenu`). Falta grade/categorias geral |
 | Sistema de cutscene | ⬜ | Player de cutscene + skip |

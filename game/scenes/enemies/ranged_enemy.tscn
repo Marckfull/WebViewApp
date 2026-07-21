@@ -1,0 +1,36 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scenes/enemies/ranged_enemy.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/combat/health_component.gd" id="2"]
+[ext_resource type="Script" path="res://scripts/combat/hurtbox.gd" id="3"]
+[ext_resource type="Resource" path="res://data/enemies/ecoado_arqueiro.tres" id="4"]
+
+[sub_resource type="RectangleShape2D" id="body_shape"]
+size = Vector2(14, 14)
+
+[node name="RangedEnemy" type="CharacterBody2D"]
+collision_layer = 1
+collision_mask = 1
+script = ExtResource("1")
+data = ExtResource("4")
+
+[node name="Visual" type="Polygon2D" parent="."]
+color = Color(0.4, 0.6, 0.45, 1)
+polygon = PackedVector2Array(-7, -7, 7, -7, 0, 8)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("body_shape")
+
+[node name="HealthComponent" type="Node" parent="."]
+script = ExtResource("2")
+max_health = 40.0
+max_poise = 24.0
+
+[node name="Hurtbox" type="Area2D" parent="."]
+collision_layer = 4
+collision_mask = 0
+script = ExtResource("3")
+health_component_path = NodePath("../HealthComponent")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+shape = SubResource("body_shape")

@@ -4,15 +4,23 @@ extends "res://addons/gut/test.gd"
 var comum: EnemyData
 var noturno: EnemyData
 var couracado: EnemyData
+var arqueiro: EnemyData
 
 func before_all() -> void:
 	comum = load("res://data/enemies/ecoado_comum.tres")
 	noturno = load("res://data/enemies/ecoado_noturno.tres")
 	couracado = load("res://data/enemies/ecoado_couracado.tres")
+	arqueiro = load("res://data/enemies/ecoado_arqueiro.tres")
 
 func test_load() -> void:
 	assert_not_null(comum)
 	assert_not_null(noturno)
+	assert_not_null(arqueiro, "ecoado_arqueiro.tres deve carregar")
+
+func test_arqueiro_is_fragile_ranged() -> void:
+	assert_eq(arqueiro.id, &"ecoado_arqueiro")
+	# Frágil de perto: menos vida que o couraçado.
+	assert_lt(arqueiro.max_health, couracado.max_health)
 
 func test_comum_is_diurnal() -> void:
 	assert_false(comum.nocturnal, "Ecoado comum aparece de dia")
