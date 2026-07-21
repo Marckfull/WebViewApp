@@ -43,7 +43,7 @@ dificuldade), poise/postura, lock-on touch, combos, morte com drop de Ecos, fras
 | Progressão de morte (souls) | ✅ | Drop/recuperação de Ecos, respawn, persistência |
 | Loja / mercador (Corvo) | 🟢 | Corvo abre **loja** (comprar poções/recursos por Ecos, `ShopMenu` + `ShopData`); falta vender/recomprar e estoque por dia |
 | Side quests | 🟡 | **4 de 12–15** e **2 tipos de objetivo** (KILL + **COLLECT** que consome recursos ao entregar): Casca Teimosa, Cordas que Ferem de Longe, O Que Só o Escuro Mostra, O Aço Que Falta (entregar 3 minério). Givers na Encruzilhada. Falta escoltar e mais conteúdo |
-| Recursos coletáveis | 🟡 | Minério e erva existem. Faltam tiers (3 minérios), madeira, cogumelos/peixes/insetos |
+| Recursos coletáveis | 🟡 | **3 tiers de minério** (bruto/ressonante/do eco) que gateiam os níveis da forja (+1..+2 bruto, +3..+4 ressonante, +5 do eco), como loot em dungeons mais fundas. Erva existe. Faltam madeira, cogumelos/peixes/insetos e tiers de erva |
 | Ciclo dia/noite | 🟡 | Visual (CanvasModulate) + inimigos noturnos OK. Falta **rotina de NPC / lojas fecham à noite** |
 | New Game+ | ✅ | Remix por multiplicadores |
 | Dificuldade | 🟡 | 3 modos existem; **balanceamento é placeholder** (sem playtest/telemetria real) |

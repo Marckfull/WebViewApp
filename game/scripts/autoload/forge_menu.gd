@@ -33,11 +33,12 @@ func _upgrade() -> void:
 	var levels: Dictionary = SaveManager.state["weapon_levels"]
 	var level := int(levels.get(wid, 0))
 	var ecos: int = SaveManager.state["aria"]["ecos"]
-	var minerio := Consumables.count(&"minerio", SaveManager.state["resources"])
-	if not WeaponUpgrade.can_upgrade(level, ecos, minerio):
+	var tier := WeaponUpgrade.required_tier(level)
+	var ore := Consumables.count(tier, SaveManager.state["resources"])
+	if not WeaponUpgrade.can_upgrade(level, ecos, ore):
 		return
 	SaveManager.state["aria"]["ecos"] = ecos - WeaponUpgrade.ecos_cost(level)
-	SaveManager.state["resources"]["minerio"] = minerio - WeaponUpgrade.minerio_cost(level)
+	SaveManager.state["resources"][String(tier)] = ore - WeaponUpgrade.minerio_cost(level)
 	levels[wid] = level + 1
 	GameEvents.ecos_changed.emit(SaveManager.state["aria"]["ecos"])
 	if p.has_method("refresh_weapon_label"):
@@ -55,15 +56,17 @@ func _refresh() -> void:
 	var wid := String(p.equipped_weapon.id)
 	var level := int(SaveManager.state["weapon_levels"].get(wid, 0))
 	var ecos: int = SaveManager.state["aria"]["ecos"]
-	var minerio := Consumables.count(&"minerio", SaveManager.state["resources"])
 	_title.text = "%s  +%d" % [p.equipped_weapon.display_name, level]
 	if level >= WeaponUpgrade.MAX_LEVEL:
 		_cost.text = "Nível máximo."
 		_upgrade_btn.disabled = true
 	else:
-		_cost.text = "Custo: %d Ecos + %d minério  (você: %d / %d)" % [
-			WeaponUpgrade.ecos_cost(level), WeaponUpgrade.minerio_cost(level), ecos, minerio]
-		_upgrade_btn.disabled = not WeaponUpgrade.can_upgrade(level, ecos, minerio)
+		var tier := WeaponUpgrade.required_tier(level)
+		var ore := Consumables.count(tier, SaveManager.state["resources"])
+		_cost.text = "Custo: %d Ecos + %d %s  (você: %d / %d)" % [
+			WeaponUpgrade.ecos_cost(level), WeaponUpgrade.minerio_cost(level),
+			WeaponUpgrade.tier_label(tier), ecos, ore]
+		_upgrade_btn.disabled = not WeaponUpgrade.can_upgrade(level, ecos, ore)
 
 func _build_ui() -> void:
 	_layer = CanvasLayer.new()

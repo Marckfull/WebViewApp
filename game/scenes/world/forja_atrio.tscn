@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3]
+[gd_scene load_steps=18 format=3]
 
 [ext_resource type="Script" path="res://scripts/world/game_world.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/world/day_night.gd" id="2"]
@@ -13,6 +13,7 @@
 [ext_resource type="Resource" path="res://data/dialogue/wall_locked.tres" id="11"]
 [ext_resource type="PackedScene" path="res://scenes/world/consumable_pickup.tscn" id="12"]
 [ext_resource type="Resource" path="res://data/dialogue/minerio_pickup.tres" id="13"]
+[ext_resource type="Resource" path="res://data/dialogue/minerio_ressonante_pickup.tres" id="14"]
 
 [sub_resource type="RectangleShape2D" id="wall_h"]
 size = Vector2(800, 16)
@@ -112,6 +113,13 @@ consumable_id = &"minerio"
 amount = 2
 bag = "resources"
 dialogue = ExtResource("13")
+
+[node name="MinerioRessonantePickup" parent="." instance=ExtResource("12")]
+position = Vector2(250, 340)
+consumable_id = &"minerio_ressonante"
+amount = 4
+bag = "resources"
+dialogue = ExtResource("14")
 
 [node name="Enemy1" parent="." instance=ExtResource("9")]
 position = Vector2(580, 160)
