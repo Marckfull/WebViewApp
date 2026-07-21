@@ -28,6 +28,7 @@ func _default_state() -> Dictionary:
 			"map": {},              ## fog-of-war do mini-mapa por sala (§3.5)
 			"walls_broken": [],     ## paredes rachadas já estilhaçadas (Bomba, §3.3)
 			"seals_opened": [],     ## portas seladas abertas pela Canção do Selo (§3.1)
+			"cutscenes_seen": [],   ## cutscenes já vistas (não repetem) (§2)
 		},
 		"bestiary": [],
 		"consumables": {}, ## poções e afins: id -> quantidade (§3.5)

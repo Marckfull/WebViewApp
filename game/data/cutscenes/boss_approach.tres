@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="CutsceneData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/cutscene_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"boss_approach"
+pages = Array[String](["No fundo da Cripta, algo que já foi uma Guardiã se ergue com o som dos seus passos.", "Presa entre proteger e atacar, ela só se lembra do segundo.", "Leia o padrão dela. Aria sempre soube ler mapas — inclusive o de um golpe."])

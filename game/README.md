@@ -38,6 +38,9 @@ próprio export da engine — o app WebView legado na raiz do repositório **nã
 - **Gancho de animação** no Player: pronto para dirigir um `AnimatedSprite2D` no swap de arte.
 - **Prólogo jogável** (§2): Novo Jogo abre com a narração de abertura (Silêncio, Guardiãs, Aria,
   Lys) antes da Cripta. **Mestra Odara** presente como personagem na forja (lore).
+- **Sistema de cutscene** (§2): `CutsceneManager` + `CutsceneTrigger` (Area2D) tocam cenas
+  narradas nos pontos altos (data-driven `CutsceneData`); "once" persiste como vista. Ex.: a
+  aproximação da Guardiã do Eco. Pronto para receber as revelações do roteiro.
 - **Menu principal** (Novo Jogo / Continuar / Carregar / Dificuldade / Sair) e **menu de pausa**
   (Continuar / Salvar / Opções / Bestiário / Menu) com dificuldade em tempo real (§3.4, §3.6).
 - **Save slots (3 manuais)** (§3.6): salvar pela pausa e carregar pelo menu, com resumo por slot

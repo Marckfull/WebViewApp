@@ -29,6 +29,7 @@ signal consumable_slot_selected(index: int)            ## slot ativo no HUD (§3
 ## Diálogo (§3.5 lore, NPCs)
 signal dialogue_started
 signal dialogue_finished(dialogue_id: StringName)
+signal cutscene_finished(cutscene_id: StringName)  ## cutscene narrada (§2)
 
 ## Mundo
 signal rested_at_shrine(shrine_id: StringName)   ## santuário/bonfire (§3.2)
