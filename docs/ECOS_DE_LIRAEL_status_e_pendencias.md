@@ -6,8 +6,8 @@
 > **Legenda:** ✅ feito · 🟡 parcial/greybox · ⬜ não iniciado · ⛔ bloqueado por arte/áudio/binários.
 >
 > **Estado geral:** todos os *sistemas* do GDD existem em greybox (formas geométricas, sem
-> arte/som). CI: 5 smoke tests + 16 suítes GUT, verde. O gargalo agora é **conteúdo** (arte,
-> áudio, level design, narrativa) — não mais engenharia de sistemas.
+> arte/som), e os 3 atos são jogáveis de ponta a ponta. CI: **17 smoke tests + 27 suítes GUT**,
+> verde. O gargalo agora é **arte, áudio e densidade de conteúdo** — não mais engenharia de sistemas.
 
 ---
 
@@ -111,7 +111,7 @@ Adventure (CC0)** para greybox→vertical slice e arte autoral só para Aria/bos
 
 **Feito (✅):** arquitetura data-driven (Resources/.tres), 20+ autoloads/sistemas, componentes de
 combate reutilizáveis, save JSON versionado + **migração robusta** + 3 slots + autosave, input
-unificado (teclado/gamepad/touch), telemetria opt-in, CI (import+smoke+GUT), **16 suítes de teste**.
+unificado (teclado/gamepad/touch), telemetria opt-in, CI (import+smoke+GUT), **27 suítes de teste**.
 
 | Item | Estado | Falta |
 |---|---|---|
@@ -158,10 +158,11 @@ unificado (teclado/gamepad/touch), telemetria opt-in, CI (import+smoke+GUT), **1
 
 ## O que NÃO falta (já pronto em greybox, validado)
 
-Combate souls-like completo · **6 armas** (incl. arco/projétil) + combos + forja · **equipamento (armadura/amuleto)** · **5 atributos com efeito** · atributos/frascos/poções/alquimia ·
-**4 itens de dungeon (gancho/bomba/lente/botas)** + portas por som · 3 inimigos + **6 bosses**
-(incl. duelo de melodias) + NG+ · **Ato 2 completo: hub + 4 dungeons temáticas + revelações** ·
-**3 finais (2 + secreto pelas 12 Memórias)** · ocarina 4 melodias (traversal) · dia/noite ·
-mini-mapa · bestiário/diário/**12 memórias** · quest · loja do Corvo · save completo
-(autosave+3 slots+migração) · telemetria · indicador de ameaça · menus/pausa/opções ·
-persistência total entre sessões/salas · CI + 20+ suítes de teste.
+Combate souls-like completo · **6 armas** (incl. arco/projétil) + combos + forja com **3 tiers de minério** ·
+**equipamento (armadura/amuleto) + tela de equipar** · **5 atributos com efeito** · frascos/poções/alquimia ·
+**4 itens de dungeon (gancho/bomba/lente/botas)** + portas por som · **4 inimigos** (incl. arqueiro ranged) +
+**8 bosses** (incl. duelo de melodias + arena opcional) + NG+ · **3 atos jogáveis** (vila → Cripta →
+Encruzilhada + 4 dungeons de 2 salas → Coração Mudo) · **3 finais** (2 + secreto pelas 12 Memórias) ·
+ocarina 4 melodias (traversal) · **dia/noite com rotina de NPC** · mini-mapa · bestiário · **inventário na pausa** ·
+**4 side quests** (KILL+COLLECT) · loja do Corvo · save completo (autosave+3 slots+migração) · telemetria ·
+indicador de ameaça · menus/pausa/opções · persistência total · CI: **17 smoke + 27 suítes de teste**.
