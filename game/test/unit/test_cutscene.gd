@@ -13,3 +13,13 @@ func test_seen_gating_via_inventory() -> void:
 	assert_false(Inventory.has(&"boss_approach", seen))
 	Inventory.grant(&"boss_approach", seen)
 	assert_true(Inventory.has(&"boss_approach", seen))
+
+func test_revelation_cutscenes_load() -> void:
+	var fall: CutsceneData = load("res://data/cutscenes/guardia_fall.tres")
+	assert_not_null(fall)
+	assert_eq(fall.id, &"guardia_fall")
+	assert_gt(fall.pages.size(), 0)
+	var echo: CutsceneData = load("res://data/cutscenes/selene_echo.tres")
+	assert_not_null(echo)
+	assert_eq(echo.id, &"selene_echo")
+	assert_gt(echo.pages.size(), 0)

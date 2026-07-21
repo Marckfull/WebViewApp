@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="CutsceneData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/cutscene_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"guardia_fall"
+pages = Array[String](["A Guardiã do Eco cai de joelhos. A armadura racha como gelo velho, e por um instante o rosto sob ela é humano — cansado, aliviado.", "Um sussurro escapa, fino demais para qualquer ouvido comum. O ouvido surdo de Aria o recolhe inteiro: — \"Ela não sumiu. Ela se calou.\"", "— \"Segue o silêncio até o fundo, cartógrafa. No Coração Mudo ainda há alguém cantando ao contrário.\"", "A casca desfaz-se em pó de som. Aria anota, sem saber por quê, a direção de onde o eco veio."])

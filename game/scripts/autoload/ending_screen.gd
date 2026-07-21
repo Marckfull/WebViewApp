@@ -5,6 +5,7 @@ extends Node
 
 const MAIN_MENU := "res://scenes/ui/main_menu.tscn"
 const GAME_START := "res://scenes/world/cripta_das_guardias.tscn"
+const FALL_CUTSCENE := "res://data/cutscenes/guardia_fall.tres"
 
 var _layer: CanvasLayer
 var _fade: ColorRect
@@ -22,6 +23,14 @@ func _on_boss_defeated(boss_id: StringName) -> void:
 	if boss_id != &"guardia_do_eco":
 		return
 	await get_tree().create_timer(1.2).timeout
+	# As palavras da Guardiã ao cair (§2) antecedem o fecho da demonstração.
+	var fall: CutsceneData = load(FALL_CUTSCENE)
+	if fall != null:
+		CutsceneManager.play(fall)
+		await GameEvents.cutscene_finished
+		# Deixa o CutsceneManager reabrir a jogabilidade antes de a tela re-travar.
+		await get_tree().process_frame
+		await get_tree().process_frame
 	_show()
 
 func _show() -> void:

@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3]
+[gd_scene load_steps=34 format=3]
 
 [ext_resource type="Script" path="res://scripts/world/game_world.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/world/day_night.gd" id="8"]
@@ -23,6 +23,12 @@
 [ext_resource type="Script" path="res://scripts/ui/virtual_joystick.gd" id="6"]
 [ext_resource type="Script" path="res://scripts/ui/hud.gd" id="7"]
 [ext_resource type="Resource" path="res://data/enemies/ecoado_noturno.tres" id="9"]
+[ext_resource type="PackedScene" path="res://scenes/world/cutscene_trigger.tscn" id="24"]
+[ext_resource type="Resource" path="res://data/cutscenes/selene_echo.tres" id="25"]
+[ext_resource type="Resource" path="res://data/dialogue/memoria_09.tres" id="26"]
+[ext_resource type="Resource" path="res://data/dialogue/memoria_10.tres" id="27"]
+[ext_resource type="Resource" path="res://data/dialogue/memoria_11.tres" id="28"]
+[ext_resource type="Resource" path="res://data/dialogue/memoria_12.tres" id="29"]
 
 [sub_resource type="RectangleShape2D" id="wall_h"]
 size = Vector2(800, 16)
@@ -185,6 +191,34 @@ consumable_id = &"erva"
 amount = 2
 bag = "resources"
 dialogue = ExtResource("18")
+
+[node name="SeleneEchoTrigger" parent="." instance=ExtResource("24")]
+position = Vector2(280, 240)
+cutscene = ExtResource("25")
+
+[node name="Memoria09" parent="." instance=ExtResource("11")]
+position = Vector2(250, 400)
+item_id = &"memoria_09"
+collection = "memories"
+dialogue = ExtResource("26")
+
+[node name="Memoria10" parent="." instance=ExtResource("11")]
+position = Vector2(500, 400)
+item_id = &"memoria_10"
+collection = "memories"
+dialogue = ExtResource("27")
+
+[node name="Memoria11" parent="." instance=ExtResource("11")]
+position = Vector2(620, 130)
+item_id = &"memoria_11"
+collection = "memories"
+dialogue = ExtResource("28")
+
+[node name="Memoria12" parent="." instance=ExtResource("11")]
+position = Vector2(360, 240)
+item_id = &"memoria_12"
+collection = "memories"
+dialogue = ExtResource("29")
 
 [node name="UI" type="CanvasLayer" parent="."]
 

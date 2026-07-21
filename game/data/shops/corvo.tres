@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ShopData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/shop_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+shop_id = &"corvo"
+title = "Corvo, o Mercador"
+greeting = "— Trago o que sobrou do mundo antes do Silêncio. Pago-se em Ecos; o resto eu guardo de graça. Escolhe, cartógrafa."
+item_ids = Array[StringName]([&"pocao_cura", &"pocao_vigor", &"minerio", &"erva"])
+labels = Array[String](["Poção de Cura", "Poção de Vigor", "Minério que lembra o som", "Erva do brejo"])
+prices = Array[int]([40, 30, 25, 15])
+bags = Array[String](["consumables", "consumables", "resources", "resources"])

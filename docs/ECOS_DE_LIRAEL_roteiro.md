@@ -76,14 +76,25 @@ imagem-som curta (a Lente/Selo/Bomba/Gancho revelam algumas).
 2. Mãos de Odara jovem afinando uma ocarina de vidro. *(implementada — bomba)*
 3. Aria menina, um ouvido só, rindo de um som que ninguém mais ouvia. *(implementada — lente)*
 4. Cinco vozes cantando, e uma sexta que hesita antes de calar. *(implementada — selo)*
-5. Selene ensinando uma criança a assobiar a Canção.
-6. A criança adoecendo — a primeira nota que o Silêncio comeu.
-7. Selene diante do Coração Mudo, escolhendo esquecer.
-8. Odara martelando um selo, chorando sem som.
-9. Corvo, mais jovem, jurando "entregar mensagens até o fim do mundo".
-10. As Guardiãs se despedindo uma a uma, virando eco.
-11. Lys ouvindo, do outro lado do Silêncio, a irmã tocar.
-12. A pessoa perdida dizendo o nome de Selene — a última coisa que o mundo esqueceu.
+5. Selene ensinando uma criança a assobiar a Canção. *(implementada)*
+6. A criança adoecendo — a primeira nota que o Silêncio comeu. *(implementada)*
+7. Selene diante do Coração Mudo, escolhendo esquecer. *(implementada)*
+8. Odara martelando um selo, chorando sem som. *(implementada)*
+9. Corvo, mais jovem, jurando "entregar mensagens até o fim do mundo". *(implementada)*
+10. As Guardiãs se despedindo uma a uma, virando eco. *(implementada)*
+11. Lys ouvindo, do outro lado do Silêncio, a irmã tocar. *(implementada)*
+12. A pessoa perdida dizendo o nome de Selene — a última coisa que o mundo esqueceu. *(implementada)*
+
+> Nota de produção: as 12 estão como `.tres` e coletáveis já na fatia vertical
+> (Cripta + Ala das Correntes), para testar o final secreto. Na versão final elas
+> se espalham pelas dungeons do Ato 2/3, algumas atrás de mecânica (Lente/Selo/etc.).
+
+### Cutscenes narradas (revelações)
+- **Aproximação do boss** (`boss_approach`): ao chegar perto da Guardiã do Eco.
+- **Palavras da Guardiã ao cair** (`guardia_fall`): *"Ela não sumiu. Ela se calou."* —
+  toca ao derrotar o boss, antes do fecho da demonstração.
+- **Eco de Selene** (`selene_echo`): sussurro captado pelo ouvido surdo de Aria nas
+  correntes da Cripta (Ala 2) — primeira vez que o Silêncio tem um nome do outro lado.
 
 ## Direção de diálogo
 - Curto, concreto, com humor seco de Aria contrastando o peso. Nada de paredes de texto.

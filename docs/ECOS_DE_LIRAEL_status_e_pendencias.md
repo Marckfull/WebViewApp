@@ -16,10 +16,10 @@
 | Item | Estado | Falta |
 |---|---|---|
 | Lore ambiental (itens, diálogos) | 🟡 | Fragmentos existem; falta densidade e revisão |
-| Memórias Perdidas | 🟡 | 4 de **12** implementadas (gancho/bomba/lente/selo); faltam 8 |
-| NPCs | 🟡 | Só Corvo e "Sobrevivente" (quest). Faltam **Lys, Selene (Guardiã Caída), Mestra Odara** como personagens |
-| Roteiro dos 3 atos | ⬜ | Ato 1 (vila/tutorial), Ato 2 (4 santuários), Ato 3 (Coração Mudo) não escritos em cena |
-| Cutscenes | ⬜ | ~30 telas ilustradas (§4) — nenhuma |
+| Memórias Perdidas | 🟢 | **12 de 12** implementadas como `.tres` + pontos de coleta (o final secreto já é completável na fatia) |
+| NPCs | 🟡 | Corvo (agora **mercador com loja**), "Sobrevivente" (quest). Faltam **Lys, Selene (Guardiã Caída), Mestra Odara** como personagens |
+| Roteiro dos 3 atos | 🟡 | Story bible escrito (`ECOS_DE_LIRAEL_roteiro.md`); em cena só o Ato 1 (prólogo + Cripta) |
+| Cutscenes | 🟡 | Sistema pronto; **3 cutscenes narradas** (aproximação do boss, palavras da Guardiã ao cair, eco de Selene). Faltam as ilustradas (§4) |
 | Finais | 🟡 | Só "fim da demonstração". Faltam **2 finais + 1 secreto** (12 memórias) |
 | Bestiário/diário (lore) | 🟡 | Preenche ids automaticamente; faltam textos ricos e arte |
 | Localização | 🟡 | Só PT-BR hardcoded. Falta **EN** e sistema gettext/CSV (§Alpha→Beta) |
@@ -41,7 +41,7 @@ dificuldade), poise/postura, lock-on touch, combos, morte com drop de Ecos, fras
 | Itens de dungeon | ✅ | Gancho, Bomba, Lente implementados. Falta **Botas de Corrente** (água/ímã) |
 | Ocarina (melodias) | ✅ | 4 melodias funcionais (acalmar/dia-noite/viagem/selo). GDD prevê 8 |
 | Progressão de morte (souls) | ✅ | Drop/recuperação de Ecos, respawn, persistência |
-| Loja / mercador (Corvo) | ⬜ | Corvo só conversa; falta comprar/vender |
+| Loja / mercador (Corvo) | 🟢 | Corvo abre **loja** (comprar poções/recursos por Ecos, `ShopMenu` + `ShopData`); falta vender/recomprar e estoque por dia |
 | Side quests | 🟡 | **1 de 12–15**. Sistema pronto; faltam conteúdo e outros tipos (coletar/escoltar) |
 | Recursos coletáveis | 🟡 | Minério e erva existem. Faltam tiers (3 minérios), madeira, cogumelos/peixes/insetos |
 | Ciclo dia/noite | 🟡 | Visual (CanvasModulate) + inimigos noturnos OK. Falta **rotina de NPC / lojas fecham à noite** |

@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="CutsceneData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/cutscene_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"selene_echo"
+pages = Array[String](["Nas correntes da Cripta, o ar fica pesado. O ouvido bom de Aria só ouve o gotejar. O surdo escuta outra coisa.", "Uma voz de mulher, gasta de tanto repetir a mesma canção ao contrário: — \"...não chores. Eu tiro a dor. Eu tiro tudo o que dói.\"", "— \"Fica quieto, mundo. Fica quieto e ninguém mais some.\" A voz não sabe que está sendo ouvida.", "Aria segura a ocarina com mais força. Pela primeira vez, o Silêncio tem um nome do outro lado — e ele está triste."])

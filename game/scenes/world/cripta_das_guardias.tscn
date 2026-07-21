@@ -1,4 +1,4 @@
-[gd_scene load_steps=39 format=3]
+[gd_scene load_steps=45 format=3]
 
 [ext_resource type="Script" path="res://scripts/world/game_world.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/world/day_night.gd" id="11"]
@@ -34,6 +34,12 @@
 [ext_resource type="Resource" path="res://data/dialogue/quest_offer.tres" id="27"]
 [ext_resource type="Resource" path="res://data/dialogue/quest_progress.tres" id="28"]
 [ext_resource type="Resource" path="res://data/dialogue/quest_complete.tres" id="29"]
+[ext_resource type="Resource" path="res://data/dialogue/memoria_05.tres" id="35"]
+[ext_resource type="Resource" path="res://data/dialogue/memoria_06.tres" id="36"]
+[ext_resource type="Resource" path="res://data/dialogue/memoria_07.tres" id="37"]
+[ext_resource type="Resource" path="res://data/dialogue/memoria_08.tres" id="38"]
+[ext_resource type="PackedScene" path="res://scenes/npc/shopkeeper.tscn" id="39"]
+[ext_resource type="Resource" path="res://data/shops/corvo.tres" id="40"]
 
 [sub_resource type="RectangleShape2D" id="wall_h"]
 size = Vector2(800, 16)
@@ -103,8 +109,9 @@ position = Vector2(90, 400)
 shrine_id = &"cripta_ala1"
 shrine_name = "Cripta — Entrada"
 
-[node name="Corvo" parent="." instance=ExtResource("5")]
+[node name="Corvo" parent="." instance=ExtResource("39")]
 position = Vector2(190, 340)
+shop = ExtResource("40")
 
 [node name="OcarinaPickup" parent="." instance=ExtResource("6")]
 position = Vector2(150, 120)
@@ -227,6 +234,30 @@ position = Vector2(200, 410)
 required_item = &"gancho"
 landing = Vector2(300, 410)
 locked_dialogue = ExtResource("15")
+
+[node name="Memoria05" parent="." instance=ExtResource("12")]
+position = Vector2(400, 240)
+item_id = &"memoria_05"
+collection = "memories"
+dialogue = ExtResource("35")
+
+[node name="Memoria06" parent="." instance=ExtResource("12")]
+position = Vector2(620, 130)
+item_id = &"memoria_06"
+collection = "memories"
+dialogue = ExtResource("36")
+
+[node name="Memoria07" parent="." instance=ExtResource("12")]
+position = Vector2(350, 420)
+item_id = &"memoria_07"
+collection = "memories"
+dialogue = ExtResource("37")
+
+[node name="Memoria08" parent="." instance=ExtResource("12")]
+position = Vector2(680, 300)
+item_id = &"memoria_08"
+collection = "memories"
+dialogue = ExtResource("38")
 
 [node name="UI" type="CanvasLayer" parent="."]
 
