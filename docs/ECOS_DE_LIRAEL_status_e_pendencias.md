@@ -44,7 +44,7 @@ dificuldade), poise/postura, lock-on touch, combos, morte com drop de Ecos, fras
 | Loja / mercador (Corvo) | 🟢 | Corvo abre **loja** (comprar poções/recursos por Ecos, `ShopMenu` + `ShopData`); falta vender/recomprar e estoque por dia |
 | Side quests | 🟡 | **4 de 12–15** e **2 tipos de objetivo** (KILL + **COLLECT** que consome recursos ao entregar): Casca Teimosa, Cordas que Ferem de Longe, O Que Só o Escuro Mostra, O Aço Que Falta (entregar 3 minério). Givers na Encruzilhada. Falta escoltar e mais conteúdo |
 | Recursos coletáveis | 🟡 | **3 tiers de minério** (bruto/ressonante/do eco) que gateiam os níveis da forja (+1..+2 bruto, +3..+4 ressonante, +5 do eco), como loot em dungeons mais fundas. Erva existe. Faltam madeira, cogumelos/peixes/insetos e tiers de erva |
-| Ciclo dia/noite | 🟡 | Visual (CanvasModulate) + inimigos noturnos OK. Falta **rotina de NPC / lojas fecham à noite** |
+| Ciclo dia/noite | 🟢 | Visual (CanvasModulate) + inimigos noturnos + **rotina de NPC**: a loja do Corvo fecha à noite e NPCs têm fala noturna (Odara). Falta agenda de movimento/posições |
 | New Game+ | ✅ | Remix por multiplicadores |
 | Dificuldade | 🟡 | 3 modos existem; **balanceamento é placeholder** (sem playtest/telemetria real) |
 
@@ -121,7 +121,7 @@ unificado (teclado/gamepad/touch), telemetria opt-in, CI (import+smoke+GUT), **1
 | Sistema de loja | ⬜ | Comprar/vender |
 | Inventário (backend) | 🟡 | Equipar arma/armadura/amuleto pronto (tela no Santuário, `EquipMenu`). Falta grade/categorias geral |
 | Sistema de cutscene | ⬜ | Player de cutscene + skip |
-| Rotina de NPC / agenda | ⬜ | NPCs com horários, lojas fecham à noite |
+| Rotina de NPC / agenda | 🟡 | Loja fecha à noite + fala noturna por NPC (`WorldTime`, testado). Falta agenda de movimento/posições por hora |
 | Localização (gettext/CSV) | ⬜ | PT-BR/EN |
 | Export Android (AAB) assinado | 🟡 | Job de CI existe **desabilitado**; faltam keystore/secrets + presets |
 | Performance low-end | ⬜ | Perfilar 60 FPS Moto G, RAM <700 MB, APK <300 MB; object pooling |

@@ -1,4 +1,4 @@
-[gd_scene load_steps=45 format=3]
+[gd_scene load_steps=47 format=3]
 
 [ext_resource type="Script" path="res://scripts/world/game_world.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/world/day_night.gd" id="11"]
@@ -40,6 +40,8 @@
 [ext_resource type="Resource" path="res://data/dialogue/memoria_08.tres" id="38"]
 [ext_resource type="PackedScene" path="res://scenes/npc/shopkeeper.tscn" id="39"]
 [ext_resource type="Resource" path="res://data/shops/corvo.tres" id="40"]
+[ext_resource type="Resource" path="res://data/dialogue/corvo_closed.tres" id="41"]
+[ext_resource type="Resource" path="res://data/dialogue/odara_night.tres" id="42"]
 
 [sub_resource type="RectangleShape2D" id="wall_h"]
 size = Vector2(800, 16)
@@ -112,6 +114,7 @@ shrine_name = "Cripta — Entrada"
 [node name="Corvo" parent="." instance=ExtResource("39")]
 position = Vector2(190, 340)
 shop = ExtResource("40")
+closed_dialogue = ExtResource("41")
 
 [node name="OcarinaPickup" parent="." instance=ExtResource("6")]
 position = Vector2(150, 120)
@@ -194,6 +197,7 @@ position = Vector2(220, 300)
 [node name="Odara" parent="." instance=ExtResource("5")]
 position = Vector2(258, 300)
 dialogue = ExtResource("32")
+night_dialogue = ExtResource("42")
 
 [node name="QuestGiver" parent="." instance=ExtResource("25")]
 position = Vector2(150, 180)
