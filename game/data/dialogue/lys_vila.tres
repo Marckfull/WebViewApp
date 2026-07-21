@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/dialogue_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"lys_vila"
+speaker = "Lys"
+lines = Array[String](["Aria! Escuta essa: (canta propositalmente desafinada) ♪ a néééévoa comeu meu sapaaato ♪", "Não ri? Ah, você riu por dentro. Eu vi.", "A mãe disse pra gente entrar antes do sino. Mas eu queria te mostrar o rio — ele tá quietinho hoje, quietinho demais."])

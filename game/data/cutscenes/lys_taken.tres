@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="CutsceneData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/cutscene_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"lys_taken"
+pages = Array[String](["A névoa engole a rua de uma vez. As cores escorrem para o cinza. Os sons somem — o riso de Lys some no meio de uma nota.", "— Aria...? Aria, eu não escuto a minha própria voz —", "Quando a névoa recua, a rua está vazia. Lys não está. O nome dela ainda está na boca de Aria, e isso é a única coisa que o Silêncio não levou.", "E então, do fundo da terra, pelo ouvido surdo: uma canção. Chamando. Aria pega seus mapas e desce atrás dela."])

@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/dialogue_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"aldeao"
+speaker = "Aldeão"
+lines = Array[String](["Fecha as janelas, cartógrafa. A névoa subiu do vale de novo.", "Ontem ela levou o nome do meu cão. Acordei e não lembrava mais como o chamava.", "Dizem que quem tem um ouvido ruim ouve a névoa chegar. Se for verdade... corre na frente dela, menina."])

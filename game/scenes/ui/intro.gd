@@ -3,15 +3,15 @@ extends Control
 ## antes da Cripta. Diegético e curto (nada de paredes de texto). Avança com
 ## toque / Interagir / Atacar.
 
-const GAME := "res://scenes/world/cripta_das_guardias.tscn"
+const GAME := "res://scenes/world/vila_pedra_alva.tscn"
 
 const PAGES := [
 	"Séculos atrás, cinco Guardiãs do Eco ouviam a Canção do Mundo —\na melodia que mantinha a realidade inteira.",
 	"Quando a última Guardiã se calou, o Silêncio começou:\numa névoa que apaga sons, cores e nomes.",
 	"Em Pedra-Alva, uma jovem cartógrafa guarda mapas de um mundo\nque encolhe um pouco a cada noite.",
 	"Aria é surda de um ouvido desde criança.\nSempre chamaram isso de defeito.",
-	"Esta noite o Silêncio chega à vila — e leva Lys, a irmã dela.",
-	"Mas no meio do nada, o ouvido surdo de Aria escuta algo.\nUma canção. Chamando.",
+	"Esta noite, a névoa sobe mais cedo. Aria volta para casa,\npara a irmã, Lys.",
+	"Pedra-Alva, ao anoitecer. O que vem agora, Aria vai viver —\nnão só ouvir.",
 ]
 
 var _text: Label
