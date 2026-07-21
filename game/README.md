@@ -69,6 +69,9 @@ próprio export da engine — o app WebView legado na raiz do repositório **nã
   Paredes quebradas persistem no save.
 - **Consumível — Poção de Vigor** (§3.5): coletável nas salas; usar (tecla G / botão VIGOR)
   restaura a stamina na hora. Contagem persiste no save; slot no HUD.
+- **Telemetria opt-in** (§6.3): desligada por padrão; ligável nas Opções (pausa). Registra
+  localmente onde Aria morre/descansa/derrota bosses (JSONL em `user://telemetry/`) para
+  balancear a dificuldade com dados. Nada sai do dispositivo.
 
 ## Estrutura
 

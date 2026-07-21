@@ -33,6 +33,7 @@ func _default_state() -> Dictionary:
 		"items": [],     ## itens-chave de dungeon: gancho, bomba, lente... (§3.3)
 		"memories": [],  ## 12 Memórias Perdidas -> final secreto (§2, §3.3)
 		"playtime": 0.0,
+		"settings": { "telemetry": false },  ## telemetria opt-in de playtest (§6.3)
 	}
 
 ## Reinicia para um jogo novo (usado pelo menu "Novo Jogo").

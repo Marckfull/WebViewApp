@@ -14,6 +14,7 @@ var _options_panel: Panel
 var _bestiary_panel: Panel
 var _bestiary_label: Label
 var _difficulty_label: Label
+var _telemetry_btn: Button
 var _open: bool = false
 
 func _ready() -> void:
@@ -75,12 +76,13 @@ func _build_ui() -> void:
 	_options_panel = _make_panel()
 	_options_panel.visible = false
 	_layer.add_child(_options_panel)
-	_difficulty_label = _make_label("Dificuldade: Canção", Vector2(12, 8), Color(0.85, 0.9, 1))
+	_difficulty_label = _make_label("Dificuldade: Canção", Vector2(12, 6), Color(0.85, 0.9, 1))
 	_options_panel.add_child(_difficulty_label)
-	_add_button(_options_panel, "Balada (casual)", Vector2(12, 40), func(): set_difficulty(0))
-	_add_button(_options_panel, "Canção (padrão)", Vector2(12, 76), func(): set_difficulty(1))
-	_add_button(_options_panel, "Requiem (souls)", Vector2(12, 112), func(): set_difficulty(2))
-	_add_button(_options_panel, "Voltar", Vector2(12, 150), func(): _show_root())
+	_add_button(_options_panel, "Balada (casual)", Vector2(12, 32), func(): set_difficulty(0))
+	_add_button(_options_panel, "Canção (padrão)", Vector2(12, 64), func(): set_difficulty(1))
+	_add_button(_options_panel, "Requiem (souls)", Vector2(12, 96), func(): set_difficulty(2))
+	_telemetry_btn = _add_button(_options_panel, "Telemetria: OFF", Vector2(12, 128), _toggle_telemetry)
+	_add_button(_options_panel, "Voltar", Vector2(12, 164), func(): _show_root())
 
 	_bestiary_panel = _make_panel()
 	_bestiary_panel.visible = false
@@ -96,7 +98,15 @@ func _build_ui() -> void:
 func _show_options() -> void:
 	_root_panel.visible = false
 	_bestiary_panel.visible = false
+	_update_telemetry_label()
 	_options_panel.visible = true
+
+func _toggle_telemetry() -> void:
+	TelemetryLogger.set_enabled(not TelemetryLogger.is_enabled())
+	_update_telemetry_label()
+
+func _update_telemetry_label() -> void:
+	_telemetry_btn.text = "Telemetria: %s" % ("ON" if TelemetryLogger.is_enabled() else "OFF")
 
 func _show_bestiary() -> void:
 	_root_panel.visible = false
@@ -141,10 +151,11 @@ func _make_label(text: String, pos: Vector2, color: Color) -> Label:
 	l.add_theme_color_override("font_color", color)
 	return l
 
-func _add_button(parent: Control, text: String, pos: Vector2, cb: Callable) -> void:
+func _add_button(parent: Control, text: String, pos: Vector2, cb: Callable) -> Button:
 	var b := Button.new()
 	b.text = text
 	b.position = pos
 	b.custom_minimum_size = Vector2(216, 30)
 	b.pressed.connect(cb)
 	parent.add_child(b)
+	return b
