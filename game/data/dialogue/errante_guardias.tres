@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/dialogue_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"errante_guardias"
+speaker = "Errante"
+lines = Array[String](["Cinco eram, e cantavam a Canção do Mundo em coro. Cada uma guardava um Eco.", "Quando uma se cala, o coro perde a nota. Quando todas se calam... bem, você viu o que sobrou.", "Dizem que a última não morreu. Só parou de cantar. E o mundo parou junto."])

@@ -10,10 +10,13 @@ var _layer: CanvasLayer
 var _panel: Panel
 var _speaker_label: Label
 var _text_label: Label
+var _choices_box: VBoxContainer
 
+var _data: DialogueData
 var _lines: Array[String] = []
 var _index: int = 0
 var _active: bool = false
+var _choosing: bool = false
 var _current_id: StringName = &""
 
 func _ready() -> void:
@@ -25,19 +28,24 @@ func is_active() -> bool:
 func start(data: DialogueData) -> void:
 	if data == null or data.lines.is_empty():
 		return
+	var was_active := _active
+	_data = data
 	_lines = data.lines
 	_index = 0
 	_current_id = data.id
 	_active = true
+	_choosing = false
+	_clear_choices()
 	_speaker_label.text = data.speaker
 	GameConfig.gameplay_locked = true
-	GameEvents.dialogue_started.emit()
+	if not was_active:  ## transição entre ramos não reemite "started"
+		GameEvents.dialogue_started.emit()
 	_show_line()
 	_layer.visible = true
 
 func _input(event: InputEvent) -> void:
-	if not _active:
-		return
+	if not _active or _choosing:
+		return  ## durante a escolha, só os botões avançam
 	var advance := event.is_action_pressed("interact")
 	if event is InputEventScreenTouch and event.pressed:
 		advance = true
@@ -47,16 +55,48 @@ func _input(event: InputEvent) -> void:
 
 func _advance() -> void:
 	_index += 1
-	if _index >= _lines.size():
-		_finish()
-	else:
+	if _index < _lines.size():
 		_show_line()
+	elif _data and _data.has_choices():
+		_show_choices()
+	else:
+		_finish()
+
+func _show_choices() -> void:
+	_choosing = true
+	_clear_choices()
+	for i in _data.choice_texts.size():
+		var b := Button.new()
+		b.text = _data.choice_texts[i]
+		b.custom_minimum_size = Vector2(0, 30)
+		var idx := i
+		b.pressed.connect(func() -> void: _pick_choice(idx))
+		_choices_box.add_child(b)
+	_choices_box.visible = true
+
+func _pick_choice(i: int) -> void:
+	var nxt := _data.next_for(i)
+	_choosing = false
+	_clear_choices()
+	if nxt:
+		start(nxt)   ## segue o ramo (mantém _active, não reemite started)
+	else:
+		_finish()
+
+func _clear_choices() -> void:
+	if _choices_box == null:
+		return
+	for c in _choices_box.get_children():
+		c.queue_free()
+	_choices_box.visible = false
 
 func _show_line() -> void:
 	_text_label.text = _lines[_index]
 
 func _finish() -> void:
 	_active = false
+	_choosing = false
+	_clear_choices()
 	_layer.visible = false
 	GameEvents.dialogue_finished.emit(_current_id)
 	# Desbloqueia só no próximo frame: o mesmo toque/tecla que fechou o diálogo
@@ -92,3 +132,14 @@ func _build_ui() -> void:
 	_text_label.offset_right = -12
 	_text_label.offset_top = 30
 	_panel.add_child(_text_label)
+
+	# Opções de ramificação: empilhadas acima do balão (§3.5).
+	_choices_box = VBoxContainer.new()
+	_choices_box.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
+	_choices_box.offset_left = 16
+	_choices_box.offset_right = -16
+	_choices_box.offset_top = -240
+	_choices_box.offset_bottom = -120
+	_choices_box.add_theme_constant_override("separation", 6)
+	_choices_box.visible = false
+	_layer.add_child(_choices_box)
