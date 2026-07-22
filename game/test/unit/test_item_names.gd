@@ -15,3 +15,13 @@ func test_unknown_id_falls_back_capitalized() -> void:
 func test_key_items_all_named() -> void:
 	for id in [&"gancho", &"bomba", &"lente", &"botas"]:
 		assert_ne(ItemNames.label(id), String(id), "%s deve ter nome amigável" % id)
+
+func test_forage_and_craft_items_named() -> void:
+	assert_eq(ItemNames.label(&"madeira"), "Madeira")
+	assert_eq(ItemNames.label(&"cogumelo"), "Cogumelo")
+	assert_eq(ItemNames.label(&"peixe"), "Peixe")
+	assert_eq(ItemNames.label(&"inseto"), "Inseto")
+	assert_eq(ItemNames.label(&"erva_prateada"), "Erva prateada")
+	assert_eq(ItemNames.label(&"erva_do_eco"), "Erva do eco")
+	assert_eq(ItemNames.label(&"elixir_do_eco"), "Elixir do Eco")
+	assert_eq(ItemNames.label(&"refeicao"), "Refeição Farta")

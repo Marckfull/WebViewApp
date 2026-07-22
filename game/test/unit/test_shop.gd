@@ -37,6 +37,14 @@ func test_sell_value_is_positive_and_known() -> void:
 	# Desconhecido cai num valor mínimo positivo.
 	assert_gt(Shop.sell_value(&"algo_qualquer"), 0)
 
+func test_forage_resources_are_sellable() -> void:
+	# Os novos recursos de forrageio têm valor de revenda tabelado e positivo.
+	for id in [&"madeira", &"cogumelo", &"peixe", &"inseto", &"erva_prateada", &"erva_do_eco"]:
+		assert_gt(Shop.sell_value(id), 0, "%s deve ter valor de revenda" % id)
+	# Tiers de erva valem mais conforme a potência.
+	assert_gt(Shop.sell_value(&"erva_prateada"), Shop.sell_value(&"erva"))
+	assert_gt(Shop.sell_value(&"erva_do_eco"), Shop.sell_value(&"erva_prateada"))
+
 func test_sell_value_below_buy_price() -> void:
 	# Vender uma poção de cura rende menos que comprá-la (loja do Corvo: 40).
 	var s: ShopData = load("res://data/shops/corvo.tres")

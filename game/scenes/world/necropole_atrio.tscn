@@ -106,6 +106,18 @@ consumable_id = &"pocao_cura"
 amount = 1
 dialogue = ExtResource("11")
 
+[node name="PeixePickup" parent="." instance=ExtResource("10")]
+position = Vector2(150, 160)
+consumable_id = &"peixe"
+amount = 2
+bag = "resources"
+
+[node name="MadeiraPickup" parent="." instance=ExtResource("10")]
+position = Vector2(360, 340)
+consumable_id = &"madeira"
+amount = 1
+bag = "resources"
+
 [node name="Enemy1" parent="." instance=ExtResource("9")]
 position = Vector2(400, 180)
 

@@ -118,6 +118,24 @@ amount = 2
 bag = "resources"
 dialogue = ExtResource("13")
 
+[node name="MadeiraPickup" parent="." instance=ExtResource("12")]
+position = Vector2(120, 320)
+consumable_id = &"madeira"
+amount = 2
+bag = "resources"
+
+[node name="CogumeloPickup" parent="." instance=ExtResource("12")]
+position = Vector2(180, 120)
+consumable_id = &"cogumelo"
+amount = 1
+bag = "resources"
+
+[node name="ErvaPrateadaPickup" parent="." instance=ExtResource("12")]
+position = Vector2(500, 90)
+consumable_id = &"erva_prateada"
+amount = 2
+bag = "resources"
+
 [node name="ArcoPickup" parent="." instance=ExtResource("14")]
 position = Vector2(620, 240)
 item_id = &"arco"

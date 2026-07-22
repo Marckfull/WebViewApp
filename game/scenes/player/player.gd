@@ -412,6 +412,14 @@ func _apply_consumable(id: StringName) -> void:
 			GameEvents.stamina_changed.emit(stamina.current, stamina.max_stamina)
 		&"pocao_cura":
 			health.heal(40.0)
+		&"elixir_do_eco":
+			# Destilado da erva do eco: reforça o dano por um tempo (§3.5).
+			song_empower(1.5, 12.0)
+		&"refeicao":
+			# Refeição farta: restaura corpo e fôlego de uma vez (§3.5).
+			health.heal(60.0)
+			stamina.current = stamina.max_stamina
+			GameEvents.stamina_changed.emit(stamina.current, stamina.max_stamina)
 
 ## Frasco de Essência: cura limitada, recarregável nos santuários (§3.2).
 func use_flask() -> void:

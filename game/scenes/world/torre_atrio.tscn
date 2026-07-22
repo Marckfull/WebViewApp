@@ -116,6 +116,18 @@ consumable_id = &"pocao_cura"
 amount = 1
 dialogue = ExtResource("13")
 
+[node name="InsetoPickup" parent="." instance=ExtResource("12")]
+position = Vector2(150, 320)
+consumable_id = &"inseto"
+amount = 2
+bag = "resources"
+
+[node name="ErvaEcoPickup" parent="." instance=ExtResource("12")]
+position = Vector2(360, 100)
+consumable_id = &"erva_do_eco"
+amount = 1
+bag = "resources"
+
 [node name="Enemy1" parent="." instance=ExtResource("9")]
 position = Vector2(580, 160)
 
