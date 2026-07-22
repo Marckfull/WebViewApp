@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/dialogue_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"lore_torre"
+speaker = ""
+lines = Array[String](["Um diário de vigia, aberto na última página, a letra tremendo no fim.", "\"Vi a Guardiã partir. Depois vi a Guardiã fingir que partira. As duas na mesma noite.\"", "\"Não sei qual delas era o adeus.\""])

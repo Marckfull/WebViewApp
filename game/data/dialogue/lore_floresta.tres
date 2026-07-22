@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/dialogue_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"lore_floresta"
+speaker = ""
+lines = Array[String](["Uma inscrição na casca de uma árvore, mais antiga que a floresta parece ser.", "\"Guardiã não escolhe a quem ama. Guardiã só escolhe se conta a ninguém.\"", "Alguém raspou a última linha com raiva — ou com medo."])

@@ -15,15 +15,15 @@
 
 | Item | Estado | Falta |
 |---|---|---|
-| Lore ambiental (itens, diálogos) | 🟡 | Fragmentos existem; falta densidade e revisão |
+| Lore ambiental (itens, diálogos) | 🟡 | Fragmentos + **inscrições examináveis** (`lore_stone`) nos 4 átrios, prenunciando a verdade de cada dungeon. Falta mais densidade e revisão final |
 | Memórias Perdidas | 🟢 | **12 de 12** implementadas como `.tres` + pontos de coleta (o final secreto já é completável na fatia) |
+| Diálogo ramificado | 🟢 | Escolhas em árvore (`choice_texts`/`choice_next`), botões no balão; NPC Errante com lore ramificado. Falta variáveis/condições nas escolhas |
 | NPCs | 🟢 | Em cena: Corvo (mercador com loja), **Lys** (irmã, na vila e no Ato 3), **Mestra Odara** (Cripta e Forja), **Selene** (fala nas cutscenes e no duelo), aldeões, "Sobrevivente" (quest). Falta profundidade (rotinas, ramificação) |
 | Roteiro dos 3 atos | 🟢 | Jogáveis em greybox os 3 atos: Ato 1 (**vila de Pedra-Alva** jogável + prólogo + Cripta), Ato 2 (Encruzilhada + 4 dungeons de **2 salas** com revelações) e Ato 3 (Coração Mudo + Lys + Selene + finais). Falta densidade de cena e arte/som |
 | Cutscenes | 🟡 | Sistema pronto; **10+ cutscenes narradas** (vila/rapto de Lys, aproximação e queda da Guardiã, eco/confronto/duelo de Selene, reencontro de Lys, 4 revelações de dungeon). Faltam as ilustradas (§4) |
 | Finais | 🟢 | **2 finais + 1 secreto** implementados (escolha no Coração Mudo ao derrotar Selene; o secreto exige as 12 Memórias). Falta arte/epílogos ilustrados |
 | Bestiário/diário (lore) | 🟡 | Preenche ids automaticamente; faltam textos ricos e arte |
 | Localização | 🟡 | Só PT-BR hardcoded. Falta **EN** e sistema gettext/CSV (§Alpha→Beta) |
-| Diálogo ramificado | ⬜ | Sistema atual é linear (1 falante). GDD/Corvo pedem ramificação (ou trocar por godot_dialogue_manager) |
 
 ## 2. Gameplay / Sistemas
 
