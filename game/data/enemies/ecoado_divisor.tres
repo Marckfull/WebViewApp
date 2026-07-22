@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/enemy_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"ecoado_divisor"
+display_name = "Ecoado Divisor"
+max_health = 70.0
+max_poise = 40.0
+contact_damage = 10.0
+move_speed = 38.0
+ecos_reward = 20
+nocturnal = false
+tint = Color(0.85, 0.5, 0.55, 1)
+bestiary_note = "Ao cair, se parte em dois fragmentos menores. Mate os fragmentos rápido, antes que cerquem — ou use um golpe que quebre postura para não deixar o coro crescer."

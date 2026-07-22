@@ -29,6 +29,17 @@ func test_alado_loads_and_is_fast_fragile() -> void:
 	assert_lt(alado.max_health, couracado.max_health, "voador é frágil")
 	assert_gt(alado.move_speed, couracado.move_speed, "voador é rápido")
 
+func test_divisor_and_shard() -> void:
+	var divisor: EnemyData = load("res://data/enemies/ecoado_divisor.tres")
+	var fragmento: EnemyData = load("res://data/enemies/ecoado_fragmento.tres")
+	assert_not_null(divisor)
+	assert_not_null(fragmento)
+	assert_eq(divisor.id, &"ecoado_divisor")
+	assert_eq(fragmento.id, &"ecoado_fragmento")
+	# O fragmento é mais fraco e mais rápido que o Divisor.
+	assert_lt(fragmento.max_health, divisor.max_health)
+	assert_gt(fragmento.move_speed, divisor.move_speed)
+
 func test_comum_is_diurnal() -> void:
 	assert_false(comum.nocturnal, "Ecoado comum aparece de dia")
 

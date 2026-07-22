@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/enemy_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"ecoado_fragmento"
+display_name = "Fragmento de Eco"
+max_health = 20.0
+max_poise = 16.0
+contact_damage = 7.0
+move_speed = 62.0
+ecos_reward = 8
+nocturnal = false
+tint = Color(0.9, 0.6, 0.62, 1)
+bestiary_note = "Um caco do Divisor: fraco e rápido, mas não se parte de novo."
