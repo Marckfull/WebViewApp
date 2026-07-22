@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/dialogue_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"escoltar_ferido_progress"
+speaker = "Peregrina"
+lines = Array[String](["Ele ainda não chegou ao marco verde. Fica perto dele e abre caminho.", "Se aparecer inimigo, resolve antes — ele não luta."])

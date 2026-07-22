@@ -66,3 +66,18 @@ func test_collect_not_ready_when_unstarted() -> void:
 	c.objective = QuestData.Objective.COLLECT
 	c.count = 1
 	assert_false(Quest.is_collect_ready(c, {}, 9))
+
+func test_escort_quest_data() -> void:
+	var qd: QuestData = load("res://data/quests/escoltar_ferido.tres")
+	assert_not_null(qd)
+	assert_eq(qd.objective, QuestData.Objective.ESCORT)
+	assert_eq(qd.target, &"ferido")
+	assert_gt(qd.reward_ecos, 0)
+
+func test_escort_ready_when_reached() -> void:
+	# ESCORT reusa o caminho KILL: progresso >= count = pronto.
+	var qd: QuestData = load("res://data/quests/escoltar_ferido.tres")
+	var active := {"escoltar_ferido": {"status": Quest.ACTIVE, "progress": 0}}
+	assert_false(Quest.is_ready_to_complete(qd, active))
+	active["escoltar_ferido"]["progress"] = qd.count
+	assert_true(Quest.is_ready_to_complete(qd, active))

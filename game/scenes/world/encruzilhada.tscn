@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3]
+[gd_scene load_steps=36 format=3]
 
 [ext_resource type="Script" path="res://scripts/world/encruzilhada.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/world/day_night.gd" id="2"]
@@ -26,6 +26,13 @@
 [ext_resource type="Resource" path="res://data/dialogue/entregar_minerio_complete.tres" id="24"]
 [ext_resource type="PackedScene" path="res://scenes/npc/corvo.tscn" id="25"]
 [ext_resource type="Resource" path="res://data/dialogue/errante_lore.tres" id="26"]
+[ext_resource type="PackedScene" path="res://scenes/world/escort_npc.tscn" id="27"]
+[ext_resource type="PackedScene" path="res://scenes/world/escort_goal.tscn" id="28"]
+[ext_resource type="Resource" path="res://data/quests/escoltar_ferido.tres" id="29"]
+[ext_resource type="Resource" path="res://data/dialogue/escoltar_ferido_offer.tres" id="30"]
+[ext_resource type="Resource" path="res://data/dialogue/escoltar_ferido_progress.tres" id="31"]
+[ext_resource type="Resource" path="res://data/dialogue/escoltar_ferido_complete.tres" id="32"]
+[ext_resource type="Resource" path="res://data/dialogue/ferido_arrival.tres" id="33"]
 
 [sub_resource type="RectangleShape2D" id="wall_h"]
 size = Vector2(800, 16)
@@ -155,6 +162,22 @@ complete_dialogue = ExtResource("24")
 [node name="Errante" parent="." instance=ExtResource("25")]
 position = Vector2(550, 320)
 dialogue = ExtResource("26")
+
+[node name="PeregrinaEscolta" parent="." instance=ExtResource("12")]
+position = Vector2(150, 130)
+quest = ExtResource("29")
+offer_dialogue = ExtResource("30")
+progress_dialogue = ExtResource("31")
+complete_dialogue = ExtResource("32")
+
+[node name="Ferido" parent="." instance=ExtResource("27")]
+position = Vector2(188, 130)
+quest = ExtResource("29")
+escort_id = &"ferido"
+arrival_dialogue = ExtResource("33")
+
+[node name="MarcoVerde" parent="." instance=ExtResource("28")]
+position = Vector2(680, 360)
 
 [node name="UI" type="CanvasLayer" parent="."]
 

@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/dialogue_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"escoltar_ferido_offer"
+speaker = "Peregrina"
+lines = Array[String](["Aquele ali mal se aguenta em pé — o Silêncio já comeu metade do nome dele. Não vai longe sozinho.", "Leva ele até o marco verde do outro lado. Anda perto: se você some, ele congela de medo.", "(Missão aceita: O Peregrino Ferido — guie-o até o destino)"])
