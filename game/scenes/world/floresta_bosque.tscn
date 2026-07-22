@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3]
+[gd_scene load_steps=15 format=3]
 
 [ext_resource type="Script" path="res://scripts/world/game_world.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/world/day_night.gd" id="2"]
@@ -9,14 +9,8 @@
 [ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="7"]
 [ext_resource type="PackedScene" path="res://scenes/world/door.tscn" id="8"]
 [ext_resource type="PackedScene" path="res://scenes/enemies/dummy_enemy.tscn" id="9"]
-[ext_resource type="PackedScene" path="res://scenes/world/grapple_gate.tscn" id="10"]
-[ext_resource type="Resource" path="res://data/dialogue/gate_locked.tres" id="11"]
-[ext_resource type="PackedScene" path="res://scenes/world/consumable_pickup.tscn" id="12"]
-[ext_resource type="Resource" path="res://data/dialogue/erva_pickup.tres" id="13"]
-[ext_resource type="PackedScene" path="res://scenes/world/item_pickup.tscn" id="14"]
-[ext_resource type="Resource" path="res://data/dialogue/arco_pickup.tres" id="15"]
-[ext_resource type="PackedScene" path="res://scenes/world/lore_stone.tscn" id="16"]
-[ext_resource type="Resource" path="res://data/dialogue/lore_floresta.tres" id="17"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/splitter_enemy.tscn" id="10"]
+[ext_resource type="PackedScene" path="res://scenes/world/consumable_pickup.tscn" id="11"]
 
 [sub_resource type="RectangleShape2D" id="wall_h"]
 size = Vector2(800, 16)
@@ -24,32 +18,35 @@ size = Vector2(800, 16)
 [sub_resource type="RectangleShape2D" id="wall_v"]
 size = Vector2(16, 480)
 
-[node name="FlorestaAtrio" type="Node2D"]
+[sub_resource type="RectangleShape2D" id="thicket_seg"]
+size = Vector2(16, 200)
+
+[node name="FlorestaBosque" type="Node2D"]
 script = ExtResource("1")
 
 [node name="DayNight" type="CanvasModulate" parent="."]
 script = ExtResource("2")
 
 [node name="Floor" type="Polygon2D" parent="."]
-color = Color(0.07, 0.12, 0.08, 1)
+color = Color(0.09, 0.14, 0.1, 1)
 polygon = PackedVector2Array(0, 0, 800, 0, 800, 480, 0, 480)
 
 [node name="WallVisuals" type="Node2D" parent="."]
 
 [node name="Top" type="Polygon2D" parent="WallVisuals"]
-color = Color(0.12, 0.17, 0.12, 1)
+color = Color(0.13, 0.18, 0.13, 1)
 polygon = PackedVector2Array(0, 0, 800, 0, 800, 16, 0, 16)
 
 [node name="Bottom" type="Polygon2D" parent="WallVisuals"]
-color = Color(0.12, 0.17, 0.12, 1)
+color = Color(0.13, 0.18, 0.13, 1)
 polygon = PackedVector2Array(0, 464, 800, 464, 800, 480, 0, 480)
 
 [node name="Left" type="Polygon2D" parent="WallVisuals"]
-color = Color(0.12, 0.17, 0.12, 1)
+color = Color(0.13, 0.18, 0.13, 1)
 polygon = PackedVector2Array(0, 0, 16, 0, 16, 480, 0, 480)
 
 [node name="Right" type="Polygon2D" parent="WallVisuals"]
-color = Color(0.12, 0.17, 0.12, 1)
+color = Color(0.13, 0.18, 0.13, 1)
 polygon = PackedVector2Array(784, 0, 800, 0, 800, 480, 784, 480)
 
 [node name="Walls" type="StaticBody2D" parent="."]
@@ -72,85 +69,53 @@ shape = SubResource("wall_v")
 position = Vector2(792, 240)
 shape = SubResource("wall_v")
 
-[node name="Chasm" type="StaticBody2D" parent="."]
+[node name="Thicket" type="StaticBody2D" parent="."]
 collision_layer = 1
 collision_mask = 0
 
-[node name="Wall" type="CollisionShape2D" parent="Chasm"]
-position = Vector2(444, 240)
-shape = SubResource("wall_v")
+[node name="Seg" type="CollisionShape2D" parent="Thicket"]
+position = Vector2(400, 116)
+shape = SubResource("thicket_seg")
 
-[node name="ChasmVisual" type="Polygon2D" parent="Chasm"]
-color = Color(0.03, 0.05, 0.04, 1)
-polygon = PackedVector2Array(430, 16, 458, 16, 458, 464, 430, 464)
+[node name="SegVisual" type="Polygon2D" parent="Thicket"]
+color = Color(0.11, 0.16, 0.11, 1)
+polygon = PackedVector2Array(392, 16, 408, 16, 408, 216, 392, 216)
 
 [node name="Player" parent="." instance=ExtResource("7")]
 position = Vector2(110, 240)
 
 [node name="DoorBack" parent="." instance=ExtResource("8")]
 position = Vector2(28, 240)
-target_scene = "res://scenes/world/encruzilhada.tscn"
-spawn_point = Vector2(180, 130)
-prompt = "Voltar à Encruzilhada"
+target_scene = "res://scenes/world/floresta_atrio.tscn"
+spawn_point = Vector2(650, 240)
+prompt = "Recuar ao átrio"
 
-[node name="GrappleCross" parent="." instance=ExtResource("10")]
-position = Vector2(410, 220)
-required_item = &"gancho"
-landing = Vector2(490, 220)
-locked_dialogue = ExtResource("11")
-
-[node name="GrappleReturn" parent="." instance=ExtResource("10")]
-position = Vector2(490, 360)
-required_item = &"gancho"
-landing = Vector2(410, 360)
-locked_dialogue = ExtResource("11")
+[node name="DoorInner" parent="." instance=ExtResource("8")]
+position = Vector2(772, 240)
+target_scene = "res://scenes/world/floresta_sussurrante.tscn"
+spawn_point = Vector2(110, 240)
+prompt = "Seguir mata adentro"
 
 [node name="Enemy1" parent="." instance=ExtResource("9")]
-position = Vector2(580, 160)
+position = Vector2(320, 330)
 
 [node name="Enemy2" parent="." instance=ExtResource("9")]
-position = Vector2(620, 330)
+position = Vector2(560, 150)
 
-[node name="ErvaPickup" parent="." instance=ExtResource("12")]
-position = Vector2(560, 240)
-consumable_id = &"erva"
-amount = 2
-bag = "resources"
-dialogue = ExtResource("13")
+[node name="Divisor" parent="." instance=ExtResource("10")]
+position = Vector2(600, 320)
 
-[node name="MadeiraPickup" parent="." instance=ExtResource("12")]
-position = Vector2(120, 320)
-consumable_id = &"madeira"
-amount = 2
-bag = "resources"
-
-[node name="CogumeloPickup" parent="." instance=ExtResource("12")]
-position = Vector2(180, 120)
+[node name="CogumeloPickup" parent="." instance=ExtResource("11")]
+position = Vector2(240, 90)
 consumable_id = &"cogumelo"
 amount = 1
 bag = "resources"
 
-[node name="ErvaPrateadaPickup" parent="." instance=ExtResource("12")]
-position = Vector2(500, 90)
-consumable_id = &"erva_prateada"
+[node name="MadeiraPickup" parent="." instance=ExtResource("11")]
+position = Vector2(700, 90)
+consumable_id = &"madeira"
 amount = 2
 bag = "resources"
-
-[node name="ArcoPickup" parent="." instance=ExtResource("14")]
-position = Vector2(620, 240)
-item_id = &"arco"
-collection = "weapons"
-dialogue = ExtResource("15")
-
-[node name="DoorInner" parent="." instance=ExtResource("8")]
-position = Vector2(720, 240)
-target_scene = "res://scenes/world/floresta_bosque.tscn"
-spawn_point = Vector2(110, 240)
-prompt = "Adentrar a mata fechada"
-
-[node name="LoreStone" parent="." instance=ExtResource("16")]
-position = Vector2(200, 350)
-dialogue = ExtResource("17")
 
 [node name="UI" type="CanvasLayer" parent="."]
 

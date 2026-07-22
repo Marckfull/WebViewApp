@@ -66,6 +66,10 @@ jobs:
         working-directory: game
         run: godot --headless --quit-after 120 res://scenes/world/floresta_atrio.tscn
 
+      - name: Smoke test — bosque (Floresta)
+        working-directory: game
+        run: godot --headless --quit-after 120 res://scenes/world/floresta_bosque.tscn
+
       - name: Smoke test — dungeon (Floresta Sussurrante)
         working-directory: game
         run: godot --headless --quit-after 120 res://scenes/world/floresta_sussurrante.tscn

@@ -89,9 +89,9 @@ position = Vector2(110, 240)
 
 [node name="DoorBack" parent="." instance=ExtResource("8")]
 position = Vector2(28, 240)
-target_scene = "res://scenes/world/floresta_atrio.tscn"
-spawn_point = Vector2(650, 240)
-prompt = "Recuar ao átrio"
+target_scene = "res://scenes/world/floresta_bosque.tscn"
+spawn_point = Vector2(730, 240)
+prompt = "Recuar à mata"
 
 [node name="GrappleCross" parent="." instance=ExtResource("11")]
 position = Vector2(410, 220)
