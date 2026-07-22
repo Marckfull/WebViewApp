@@ -30,6 +30,23 @@ func test_shop_data_loads_and_is_consistent() -> void:
 	for b in s.bags:
 		assert_true(b == "consumables" or b == "resources")
 
+func test_sell_value_is_positive_and_known() -> void:
+	# Itens conhecidos têm valor de revenda tabelado.
+	assert_eq(Shop.sell_value(&"pocao_cura"), 15)
+	assert_eq(Shop.sell_value(&"minerio_do_eco"), 35)
+	# Desconhecido cai num valor mínimo positivo.
+	assert_gt(Shop.sell_value(&"algo_qualquer"), 0)
+
+func test_sell_value_below_buy_price() -> void:
+	# Vender uma poção de cura rende menos que comprá-la (loja do Corvo: 40).
+	var s: ShopData = load("res://data/shops/corvo.tres")
+	var buy := 0
+	for i in s.offer_count():
+		if s.item_ids[i] == &"pocao_cura":
+			buy = s.prices[i]
+	assert_gt(buy, 0)
+	assert_lt(Shop.sell_value(&"pocao_cura"), buy)
+
 func test_offer_count_uses_shortest_array() -> void:
 	var s := ShopData.new()
 	s.item_ids = [&"a", &"b"] as Array[StringName]
