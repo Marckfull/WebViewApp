@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3]
+[gd_scene load_steps=24 format=3]
 
 [ext_resource type="Script" path="res://scripts/world/game_world.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/world/day_night.gd" id="2"]
@@ -19,6 +19,7 @@
 [ext_resource type="Resource" path="res://data/equipment/amuleto_do_eco.tres" id="17"]
 [ext_resource type="Resource" path="res://data/dialogue/amuleto_pickup.tres" id="18"]
 [ext_resource type="PackedScene" path="res://scenes/enemies/ranged_enemy.tscn" id="19"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/flyer_enemy.tscn" id="20"]
 
 [sub_resource type="RectangleShape2D" id="wall_h"]
 size = Vector2(800, 16)
@@ -121,6 +122,9 @@ position = Vector2(650, 330)
 
 [node name="Arqueiro" parent="." instance=ExtResource("19")]
 position = Vector2(700, 180)
+
+[node name="Alado" parent="." instance=ExtResource("20")]
+position = Vector2(560, 120)
 
 [node name="SinoInvertido" parent="." instance=ExtResource("10")]
 position = Vector2(620, 240)

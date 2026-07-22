@@ -37,7 +37,7 @@ dificuldade), poise/postura, lock-on touch, combos, morte com drop de Ecos, fras
 | Armaduras + amuletos | 🟢 | Sistema completo (`EquipmentData`/`Equipment`): 2 slots com **redução de dano, vida e regen de stamina**, peças como loot (Couraça de Sal, Amuleto do Eco), **tela de equipar no Santuário** (trocar arma/armadura/amuleto entre as possuídas) + persistência. Faltam mais peças e builds |
 | Atributos | 🟢 | Os **5** ligados ao jogo: Vitalidade→vida, Stamina→stamina, **Força→dano, Destreza→custo de stamina, Harmonia→janela de parry** (efeitos puros e testados) |
 | Bosses | 🟢 | **8 encontros**: 6 canônicos (Guardiã do Eco; Coro Enraizado, Martelo Mudo, Sino Invertido, Maré Salgada; Selene, com duelo de melodias) + **2 opcionais** (Ecos Maiores do Alvorecer/Ocaso, enfrentados juntos na Arena dos Ecos). Falta tornar a mecânica de cada um mais própria |
-| Inimigos | 🟡 | **4 variantes** (comum/noturno/couraçado/**arqueiro ranged** que kita e atira) de ~35. Faltam voadores e especiais |
+| Inimigos | 🟡 | **5 variantes** (comum/noturno/couraçado/arqueiro ranged/**alado voador** que orbita, mergulha e ignora paredes) de ~35. Faltam especiais (invocadores, divisores) |
 | Itens de dungeon | ✅ | Os **4** implementados: Gancho, Bomba, Lente e **Botas de Corrente** (cruzam correntes de sal, `CurrentGate`) |
 | Ocarina (melodias) | ✅ | **8 de 8**: acalmar, dia-noite, viagem, selo + **cura, fôlego, coragem (dano temp.), refúgio** (efeitos de suporte no Player). GDD completo |
 | Progressão de morte (souls) | ✅ | Drop/recuperação de Ecos, respawn, persistência |

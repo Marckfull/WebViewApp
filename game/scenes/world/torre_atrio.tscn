@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3]
+[gd_scene load_steps=20 format=3]
 
 [ext_resource type="Script" path="res://scripts/world/game_world.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/world/day_night.gd" id="2"]
@@ -15,6 +15,7 @@
 [ext_resource type="Resource" path="res://data/dialogue/pocao_pickup.tres" id="13"]
 [ext_resource type="PackedScene" path="res://scenes/world/lore_stone.tscn" id="14"]
 [ext_resource type="Resource" path="res://data/dialogue/lore_torre.tres" id="15"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/flyer_enemy.tscn" id="16"]
 
 [sub_resource type="RectangleShape2D" id="wall_h"]
 size = Vector2(800, 16)
@@ -130,6 +131,9 @@ prompt = "Subir a torre"
 [node name="LoreStone" parent="." instance=ExtResource("14")]
 position = Vector2(200, 350)
 dialogue = ExtResource("15")
+
+[node name="Alado" parent="." instance=ExtResource("16")]
+position = Vector2(600, 130)
 
 [node name="UI" type="CanvasLayer" parent="."]
 

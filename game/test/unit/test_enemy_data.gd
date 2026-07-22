@@ -22,6 +22,13 @@ func test_arqueiro_is_fragile_ranged() -> void:
 	# Frágil de perto: menos vida que o couraçado.
 	assert_lt(arqueiro.max_health, couracado.max_health)
 
+func test_alado_loads_and_is_fast_fragile() -> void:
+	var alado: EnemyData = load("res://data/enemies/ecoado_alado.tres")
+	assert_not_null(alado)
+	assert_eq(alado.id, &"ecoado_alado")
+	assert_lt(alado.max_health, couracado.max_health, "voador é frágil")
+	assert_gt(alado.move_speed, couracado.move_speed, "voador é rápido")
+
 func test_comum_is_diurnal() -> void:
 	assert_false(comum.nocturnal, "Ecoado comum aparece de dia")
 

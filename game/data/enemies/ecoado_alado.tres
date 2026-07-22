@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/enemy_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"ecoado_alado"
+display_name = "Ecoado Alado"
+max_health = 34.0
+max_poise = 20.0
+contact_damage = 13.0
+move_speed = 70.0
+ecos_reward = 24
+nocturnal = false
+tint = Color(0.7, 0.55, 0.85, 1)
+bestiary_note = "Paira fora do alcance e mergulha. Ignora paredes e abismos. Frágil, mas cansa quem só sabe atacar por terra — role no mergulho e contra-ataque."
