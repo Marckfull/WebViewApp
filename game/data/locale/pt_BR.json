@@ -1,0 +1,17 @@
+{
+	"MENU_SUBTITLE": "Ouça a Canção do Mundo.",
+	"MENU_NEW_GAME": "Novo Jogo",
+	"MENU_CONTINUE": "Continuar",
+	"MENU_LOAD": "Carregar",
+	"MENU_QUIT": "Sair",
+	"DIFFICULTY": "Dificuldade",
+	"PAUSE": "Pausa",
+	"PAUSE_RESUME": "Continuar",
+	"PAUSE_INVENTORY": "Inventário",
+	"PAUSE_BESTIARY": "Bestiário",
+	"PAUSE_SAVE": "Salvar",
+	"PAUSE_OPTIONS": "Opções",
+	"PAUSE_MAIN_MENU": "Menu principal",
+	"OPT_LANGUAGE": "Idioma",
+	"BACK": "Voltar"
+}

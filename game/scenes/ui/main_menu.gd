@@ -29,17 +29,17 @@ func _build() -> void:
 	add_child(title)
 
 	var subtitle := Label.new()
-	subtitle.text = "Ouça a Canção do Mundo."
+	subtitle.text = Locale.t("MENU_SUBTITLE")
 	subtitle.position = Vector2(62, 100)
 	subtitle.add_theme_color_override("font_color", Color(0.6, 0.65, 0.75))
 	add_child(subtitle)
 
-	_add_button("Novo Jogo", Vector2(62, 150), _new_game)
-	_continue_btn = _add_button("Continuar", Vector2(62, 186), _continue_game)
+	_add_button(Locale.t("MENU_NEW_GAME"), Vector2(62, 150), _new_game)
+	_continue_btn = _add_button(Locale.t("MENU_CONTINUE"), Vector2(62, 186), _continue_game)
 	_continue_btn.disabled = not SaveManager.has_save(SaveManager.AUTOSAVE_SLOT)
-	_add_button("Carregar", Vector2(62, 222), func(): SaveSlotsMenu.open_for_load())
-	_diff_btn = _add_button("Dificuldade: %s" % DIFFICULTY_NAMES[GameConfig.difficulty], Vector2(62, 258), _cycle_difficulty)
-	_add_button("Sair", Vector2(62, 294), func(): get_tree().quit())
+	_add_button(Locale.t("MENU_LOAD"), Vector2(62, 222), func(): SaveSlotsMenu.open_for_load())
+	_diff_btn = _add_button("%s: %s" % [Locale.t("DIFFICULTY"), DIFFICULTY_NAMES[GameConfig.difficulty]], Vector2(62, 258), _cycle_difficulty)
+	_add_button(Locale.t("MENU_QUIT"), Vector2(62, 294), func(): get_tree().quit())
 
 func _new_game() -> void:
 	SaveManager.reset_state()
@@ -60,7 +60,7 @@ func _continue_game() -> void:
 func _cycle_difficulty() -> void:
 	var next := (int(GameConfig.difficulty) + 1) % DIFFICULTY_NAMES.size()
 	GameConfig.difficulty = next
-	_diff_btn.text = "Dificuldade: %s" % DIFFICULTY_NAMES[next]
+	_diff_btn.text = "%s: %s" % [Locale.t("DIFFICULTY"), DIFFICULTY_NAMES[next]]
 
 func _add_button(text: String, pos: Vector2, cb: Callable) -> Button:
 	var b := Button.new()

@@ -17,6 +17,7 @@ var _inventory_panel: Panel
 var _inventory_label: Label
 var _difficulty_label: Label
 var _telemetry_btn: Button
+var _language_btn: Button
 var _open: bool = false
 
 func _ready() -> void:
@@ -72,16 +73,19 @@ func _build_ui() -> void:
 	_root_panel.size = Vector2(240, 244)
 	_root_panel.position = Vector2(-120, -122)
 	_layer.add_child(_root_panel)
-	var title := _make_label("Pausa", Vector2(12, 8), Color(0.85, 0.9, 1))
+	var title := _make_label(Locale.t("PAUSE"), Vector2(12, 8), Color(0.85, 0.9, 1))
 	_root_panel.add_child(title)
-	_add_button(_root_panel, "Continuar", Vector2(12, 34), _resume)
-	_add_button(_root_panel, "Inventário", Vector2(12, 66), func(): _show_inventory())
-	_add_button(_root_panel, "Bestiário", Vector2(12, 98), func(): _show_bestiary())
-	_add_button(_root_panel, "Salvar", Vector2(12, 130), func(): SaveSlotsMenu.open_for_save())
-	_add_button(_root_panel, "Opções", Vector2(12, 162), func(): _show_options())
-	_add_button(_root_panel, "Menu principal", Vector2(12, 194), _to_main_menu)
+	_add_button(_root_panel, Locale.t("PAUSE_RESUME"), Vector2(12, 34), _resume)
+	_add_button(_root_panel, Locale.t("PAUSE_INVENTORY"), Vector2(12, 66), func(): _show_inventory())
+	_add_button(_root_panel, Locale.t("PAUSE_BESTIARY"), Vector2(12, 98), func(): _show_bestiary())
+	_add_button(_root_panel, Locale.t("PAUSE_SAVE"), Vector2(12, 130), func(): SaveSlotsMenu.open_for_save())
+	_add_button(_root_panel, Locale.t("PAUSE_OPTIONS"), Vector2(12, 162), func(): _show_options())
+	_add_button(_root_panel, Locale.t("PAUSE_MAIN_MENU"), Vector2(12, 194), _to_main_menu)
 
 	_options_panel = _make_panel()
+	_options_panel.custom_minimum_size = Vector2(240, 244)
+	_options_panel.size = Vector2(240, 244)
+	_options_panel.position = Vector2(-120, -122)
 	_options_panel.visible = false
 	_layer.add_child(_options_panel)
 	_difficulty_label = _make_label("Dificuldade: Canção", Vector2(12, 6), Color(0.85, 0.9, 1))
@@ -90,7 +94,8 @@ func _build_ui() -> void:
 	_add_button(_options_panel, "Canção (padrão)", Vector2(12, 64), func(): set_difficulty(1))
 	_add_button(_options_panel, "Requiem (souls)", Vector2(12, 96), func(): set_difficulty(2))
 	_telemetry_btn = _add_button(_options_panel, "Telemetria: OFF", Vector2(12, 128), _toggle_telemetry)
-	_add_button(_options_panel, "Voltar", Vector2(12, 164), func(): _show_root())
+	_language_btn = _add_button(_options_panel, "Idioma: PT", Vector2(12, 160), _toggle_language)
+	_add_button(_options_panel, Locale.t("BACK"), Vector2(12, 196), func(): _show_root())
 
 	_bestiary_panel = _make_panel()
 	_bestiary_panel.visible = false
@@ -101,7 +106,7 @@ func _build_ui() -> void:
 	_bestiary_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_bestiary_label.custom_minimum_size = Vector2(216, 110)
 	_bestiary_panel.add_child(_bestiary_label)
-	_add_button(_bestiary_panel, "Voltar", Vector2(12, 160), func(): _show_root())
+	_add_button(_bestiary_panel, Locale.t("BACK"), Vector2(12, 160), func(): _show_root())
 
 	_inventory_panel = _make_panel()
 	_inventory_panel.custom_minimum_size = Vector2(320, 300)
@@ -115,7 +120,7 @@ func _build_ui() -> void:
 	_inventory_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_inventory_label.custom_minimum_size = Vector2(296, 220)
 	_inventory_panel.add_child(_inventory_label)
-	_add_button(_inventory_panel, "Voltar", Vector2(12, 262), func(): _show_root())
+	_add_button(_inventory_panel, Locale.t("BACK"), Vector2(12, 262), func(): _show_root())
 
 func _show_inventory() -> void:
 	_root_panel.visible = false
@@ -175,6 +180,7 @@ func _show_options() -> void:
 	_bestiary_panel.visible = false
 	_inventory_panel.visible = false
 	_update_telemetry_label()
+	_update_language_label()
 	_options_panel.visible = true
 
 func _toggle_telemetry() -> void:
@@ -183,6 +189,13 @@ func _toggle_telemetry() -> void:
 
 func _update_telemetry_label() -> void:
 	_telemetry_btn.text = "Telemetria: %s" % ("ON" if TelemetryLogger.is_enabled() else "OFF")
+
+func _toggle_language() -> void:
+	Locale.toggle()
+	_update_language_label()
+
+func _update_language_label() -> void:
+	_language_btn.text = "%s: %s" % [Locale.t("OPT_LANGUAGE"), Locale.short_name()]
 
 func _show_bestiary() -> void:
 	_root_panel.visible = false

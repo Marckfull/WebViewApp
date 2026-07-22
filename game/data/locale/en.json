@@ -1,0 +1,17 @@
+{
+	"MENU_SUBTITLE": "Hear the Song of the World.",
+	"MENU_NEW_GAME": "New Game",
+	"MENU_CONTINUE": "Continue",
+	"MENU_LOAD": "Load",
+	"MENU_QUIT": "Quit",
+	"DIFFICULTY": "Difficulty",
+	"PAUSE": "Paused",
+	"PAUSE_RESUME": "Resume",
+	"PAUSE_INVENTORY": "Inventory",
+	"PAUSE_BESTIARY": "Bestiary",
+	"PAUSE_SAVE": "Save",
+	"PAUSE_OPTIONS": "Options",
+	"PAUSE_MAIN_MENU": "Main Menu",
+	"OPT_LANGUAGE": "Language",
+	"BACK": "Back"
+}

@@ -23,7 +23,7 @@
 | Cutscenes | 🟡 | Sistema pronto; **10+ cutscenes narradas** (vila/rapto de Lys, aproximação e queda da Guardiã, eco/confronto/duelo de Selene, reencontro de Lys, 4 revelações de dungeon). Faltam as ilustradas (§4) |
 | Finais | 🟢 | **2 finais + 1 secreto** implementados (escolha no Coração Mudo ao derrotar Selene; o secreto exige as 12 Memórias). Falta arte/epílogos ilustrados |
 | Bestiário/diário (lore) | 🟡 | Preenche ids automaticamente; faltam textos ricos e arte |
-| Localização | 🟡 | Só PT-BR hardcoded. Falta **EN** e sistema gettext/CSV (§Alpha→Beta) |
+| Localização | 🟡 | **Sistema PT-BR/EN** (`Locale` + tabelas JSON, `LocaleTable` puro/testado, toggle nas Opções, idioma no save). Menu principal + pausa já traduzidos. Falta extrair todas as strings (diálogos/lore) e, se quiser, migrar para gettext |
 
 ## 2. Gameplay / Sistemas
 
