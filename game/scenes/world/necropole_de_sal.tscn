@@ -127,6 +127,10 @@ recover_time = 0.75
 ecos_reward = 320
 phase2_speed_mult = 1.4
 phase2_color = Color(0.4, 0.7, 0.7, 1)
+projectiles_per_attack = 3
+projectile_spread_deg = 40.0
+projectile_damage = 9.0
+projectile_poise = 5.0
 
 [node name="Shrine" parent="." instance=ExtResource("9")]
 position = Vector2(730, 400)
