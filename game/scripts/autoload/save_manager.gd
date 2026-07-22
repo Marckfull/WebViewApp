@@ -38,6 +38,10 @@ func _default_state() -> Dictionary:
 		"equipment_owned": [], ## armaduras/amuletos encontrados (§3.3)
 		"weapon_levels": {}, ## nível de upgrade por arma na forja (§3.3)
 		"quests": {},      ## side quests: id -> { status, progress } (§3.5)
+		"main_quest": {    ## campanha do Ato 2: etapa por missão + concluídas (§3.5)
+			"steps": {"mp_floresta": 0, "mp_forja": 0, "mp_torre": 0, "mp_necropole": 0},
+			"completed": [],
+		},
 		"items": [],     ## itens-chave de dungeon: gancho, bomba, lente... (§3.3)
 		"memories": [],  ## 12 Memórias Perdidas -> final secreto (§2, §3.3)
 		"playtime": 0.0,

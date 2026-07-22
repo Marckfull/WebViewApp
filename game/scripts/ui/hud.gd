@@ -12,6 +12,7 @@ var _flasks: Label
 var _boss_bar: ProgressBar
 var _boss_label: Label
 var _weapon: Label
+var _objective: Label
 var _slot_labels: Array[Label] = []
 var _selected_slot: int = 0
 
@@ -31,6 +32,8 @@ func _ready() -> void:
 	GameEvents.weapon_changed.connect(_on_weapon)
 	GameEvents.consumable_changed.connect(_on_consumable)
 	GameEvents.consumable_slot_selected.connect(_on_slot_selected)
+	GameEvents.main_quest_updated.connect(_on_main_quest)
+	_on_main_quest(MainQuestManager.current_objective())  ## objetivo inicial
 
 func _build_bars() -> void:
 	_hp = _make_bar(Color(0.9, 0.25, 0.3), Vector2(12, 10))
@@ -56,6 +59,14 @@ func _build_bars() -> void:
 		add_child(l)
 		_slot_labels.append(l)
 	_refresh_slots()
+	# Objetivo da campanha (missão principal, §3.5) — topo central.
+	_objective = Label.new()
+	_objective.position = Vector2(180, 8)
+	_objective.custom_minimum_size = Vector2(300, 0)
+	_objective.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_objective.add_theme_font_size_override("font_size", 11)
+	_objective.add_theme_color_override("font_color", Color(0.9, 0.86, 0.55))
+	add_child(_objective)
 
 func _make_bar(color: Color, pos: Vector2) -> ProgressBar:
 	var bar := ProgressBar.new()
@@ -161,6 +172,10 @@ func _on_stamina(current: float, maximum: float) -> void:
 
 func _on_ecos(total: int) -> void:
 	_ecos.text = "Ecos: %d" % total
+
+func _on_main_quest(objective: String) -> void:
+	if _objective:
+		_objective.text = objective
 
 func _on_flasks(current: int, _maximum: int) -> void:
 	_flasks.text = "Frascos: %d" % current

@@ -42,3 +42,4 @@ signal bestiary_entry_unlocked(enemy_id: StringName)
 ## Meta
 signal game_saved(slot: int)
 signal game_loaded(slot: int)
+signal main_quest_updated(objective: String)  ## objetivo da campanha para o HUD (§3.5)
