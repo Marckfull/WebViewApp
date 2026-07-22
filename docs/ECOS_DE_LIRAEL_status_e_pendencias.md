@@ -36,7 +36,7 @@ dificuldade), poise/postura, lock-on touch, combos, morte com drop de Ecos, fras
 | Forja / upgrade | ✅ | Funcional (Ecos+minério, até +5) |
 | Armaduras + amuletos | 🟢 | Sistema completo (`EquipmentData`/`Equipment`): 2 slots com **redução de dano, vida e regen de stamina**, peças como loot (Couraça de Sal, Amuleto do Eco), **tela de equipar no Santuário** (trocar arma/armadura/amuleto entre as possuídas) + persistência. Faltam mais peças e builds |
 | Atributos | 🟢 | Os **5** ligados ao jogo: Vitalidade→vida, Stamina→stamina, **Força→dano, Destreza→custo de stamina, Harmonia→janela de parry** (efeitos puros e testados) |
-| Bosses | 🟢 | **8 encontros**: 6 canônicos (Guardiã do Eco; Coro Enraizado, Martelo Mudo, Sino Invertido, Maré Salgada; Selene, com duelo de melodias) + **2 opcionais** (Ecos Maiores do Alvorecer/Ocaso, enfrentados juntos na Arena dos Ecos). Falta tornar a mecânica de cada um mais própria |
+| Bosses | 🟢 | **8 encontros**: 6 canônicos (Guardiã do Eco; Coro Enraizado, Martelo Mudo, Sino Invertido, Maré Salgada; Selene, com duelo de melodias) + **2 opcionais** (Ecos Maiores do Alvorecer/Ocaso, enfrentados juntos na Arena dos Ecos). Cada chefe de dungeon tem **moveset-assinatura** data-driven: Coro Enraizado **invoca capangas** na fase 2, Martelo Mudo **avança no golpe**, Sino Invertido e Maré Salgada **disparam projéteis** (1 e leque de 3) |
 | Inimigos | 🟡 | **6 variantes** (comum/noturno/couraçado/arqueiro ranged/alado voador/**divisor** que se parte em fragmentos ao morrer) de ~35. Faltam mais especiais (invocadores, etc.) |
 | Itens de dungeon | ✅ | Os **4** implementados: Gancho, Bomba, Lente e **Botas de Corrente** (cruzam correntes de sal, `CurrentGate`) |
 | Ocarina (melodias) | ✅ | **8 de 8**: acalmar, dia-noite, viagem, selo + **cura, fôlego, coragem (dano temp.), refúgio** (efeitos de suporte no Player). GDD completo |
@@ -44,7 +44,7 @@ dificuldade), poise/postura, lock-on touch, combos, morte com drop de Ecos, fras
 | Loja / mercador (Corvo) | 🟢 | Loja com **3 modos**: Comprar (ofertas), **Vender** (esvazia consumíveis/recursos por Ecos, `Shop.sell_value`) e **Recomprar** (rebate o vendido na visita). Falta estoque por dia |
 | Missões principais | 🟢 | **Campanha do Ato 2 rastreada** (`MainQuestManager`): 4 missões (uma por dungeon) com etapas que avançam por eventos reais (obter item / abater chefe / abater inimigo), em paralelo (hub não linear), com **objetivo no HUD** ("N/4 Santuários"). Detalhes completos em `ECOS_DE_LIRAEL_missoes.md` |
 | Side quests | 🟡 | **5 de 12–15** e **3 tipos de objetivo** (KILL, COLLECT, **ESCORT** — guiar um NPC até o destino, conclui ao chegar): Casca Teimosa, Cordas que Ferem de Longe, O Que Só o Escuro Mostra, O Aço Que Falta, **O Peregrino Ferido** (escolta na Encruzilhada). Falta mais conteúdo (design das 10 secundárias em `ECOS_DE_LIRAEL_missoes.md`) |
-| Recursos coletáveis | 🟡 | **3 tiers de minério** (bruto/ressonante/do eco) que gateiam os níveis da forja (+1..+2 bruto, +3..+4 ressonante, +5 do eco), como loot em dungeons mais fundas. Erva existe. Faltam madeira, cogumelos/peixes/insetos e tiers de erva |
+| Recursos coletáveis | 🟢 | **3 tiers de minério** (bruto/ressonante/do eco) para a forja; **3 tiers de erva** (erva/prateada/do eco) e **forrageio** (madeira, cogumelo, peixe, inseto) espalhados pelos átrios. A **bancada da alquimista** é data-driven (`Alchemy.RECIPES`): ervas viram poções, e receitas avançadas combinam erva+forrageio em **Elixir do Eco** (buff de dano) e **Refeição Farta** (cura + fôlego) |
 | Ciclo dia/noite | 🟢 | Visual (CanvasModulate) + inimigos noturnos + **rotina de NPC**: a loja do Corvo fecha à noite e NPCs têm fala noturna (Odara). Falta agenda de movimento/posições |
 | New Game+ | ✅ | Remix por multiplicadores |
 | Dificuldade | 🟡 | 3 modos existem; **balanceamento é placeholder** (sem playtest/telemetria real) |
@@ -152,7 +152,7 @@ unificado (teclado/gamepad/touch), telemetria opt-in, CI (import+smoke+GUT), **2
    (Ninja Adventure/Dungeon Crawl/Kenney) usando os ganchos já prontos. Sem isto o jogo não "existe".
 2. **Vertical Slice de verdade:** Ato 1 (vila + Cripta) com arte/som finais — o gate de 30 min do §7.
 3. **Narrativa:** dar cena aos personagens (Lys/Selene/Odara), a vila do prólogo, mais lore ramificado.
-4. **Conteúdo:** ~31 inimigos, mais peças de equipamento, mais salas por dungeon, movesets próprios por boss.
+4. **Conteúdo:** ~31 inimigos, mais peças de equipamento, mais salas por dungeon (bosses já têm movesets próprios).
 5. **Sistemas restantes:** grade visual de inventário com ícones, mapa completo, streaming de mundo aberto.
 6. **Acessibilidade/opções completas** + localização EN.
 7. **Otimização low-end + export AAB assinado + soft launch.**
