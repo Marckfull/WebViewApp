@@ -11,6 +11,10 @@ const MELODY_PATHS := [
 	"res://data/melodies/cancao_do_crepusculo.tres",
 	"res://data/melodies/cancao_do_retorno.tres",
 	"res://data/melodies/cancao_do_selo.tres",
+	"res://data/melodies/cancao_da_cura.tres",
+	"res://data/melodies/cancao_do_folego.tres",
+	"res://data/melodies/cancao_da_coragem.tres",
+	"res://data/melodies/cancao_do_refugio.tres",
 ]
 
 var _melodies: Array[MelodyData] = []
@@ -114,8 +118,25 @@ func _apply_effect(melody: MelodyData) -> void:
 				if s.has_method("open_seal"):
 					s.open_seal()
 			SaveManager.save_game()
+		MelodyData.Effect.HEAL:
+			_song_on_player("song_heal", [45.0])
+		MelodyData.Effect.RESTORE_STAMINA:
+			_song_on_player("song_restore_stamina", [])
+		MelodyData.Effect.EMPOWER:
+			_song_on_player("song_empower", [1.5, 8.0])
+		MelodyData.Effect.REFUGE:
+			_song_on_player("song_heal", [25.0])
+			for e in get_tree().get_nodes_in_group("enemies"):
+				if e.has_method("stagger"):
+					e.stagger()
 		_:
 			pass
+
+## Chama um método de "canção" no Player, se existir (efeitos de suporte, §3.1).
+func _song_on_player(method: StringName, args: Array) -> void:
+	var p := get_tree().get_first_node_in_group("player")
+	if p and p.has_method(method):
+		p.callv(method, args)
 
 func _update_labels() -> void:
 	if _entered.is_empty():

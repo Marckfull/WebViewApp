@@ -53,6 +53,8 @@ var _harmonia_parry_mult: float = 1.0
 ## Bônus de equipamento (armadura/amuleto, §3.3).
 var _equip_hp_bonus: float = 0.0
 var _base_stamina_regen: float = 45.0
+## Multiplicador de dano temporário da Canção da Coragem (§3.1).
+var _song_dmg_mult: float = 1.0
 var _attack_timer: float = 0.0
 var flasks: int = 0
 var _selected_slot: int = 0
@@ -179,6 +181,23 @@ func apply_equipment() -> void:
 	health.damage_reduction = agg["damage_reduction"]
 	stamina.regen_per_second = _base_stamina_regen + float(agg["stamina_regen_bonus"])
 	apply_attributes()  ## recomputa a vida máxima já com o bônus de equipamento
+
+# --- Efeitos de canção da Ocarina (§3.1) -------------------------------------
+
+## Canção da Cura / do Refúgio: restaura vida.
+func song_heal(amount: float) -> void:
+	health.heal(amount)
+
+## Canção do Fôlego: recompleta a stamina.
+func song_restore_stamina() -> void:
+	stamina.current = stamina.max_stamina
+	GameEvents.stamina_changed.emit(stamina.current, stamina.max_stamina)
+
+## Canção da Coragem: bônus de dano temporário.
+func song_empower(mult: float, duration: float) -> void:
+	_song_dmg_mult = mult
+	await get_tree().create_timer(duration).timeout
+	_song_dmg_mult = 1.0
 
 func _physics_process(delta: float) -> void:
 	_poll_actions()
@@ -308,7 +327,7 @@ func _try_attack() -> void:
 	if equipped_weapon:
 		# Combo escala o dano; a forja (nível) multiplica por cima (§3.3).
 		var dmg_mult := (1.0 + 0.15 * (_combo_index - 1)) * WeaponUpgrade.damage_multiplier(weapon_level())
-		attack_hitbox.damage = equipped_weapon.base_damage * dmg_mult * _forca_dmg_mult
+		attack_hitbox.damage = equipped_weapon.base_damage * dmg_mult * _forca_dmg_mult * _song_dmg_mult
 		attack_hitbox.poise_damage = equipped_weapon.poise_damage * (1.6 if is_finisher else 1.0)
 		_attack_timer = 0.35 / maxf(equipped_weapon.attack_speed, 0.1)
 	else:

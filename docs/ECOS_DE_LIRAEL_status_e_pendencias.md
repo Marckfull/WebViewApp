@@ -39,7 +39,7 @@ dificuldade), poise/postura, lock-on touch, combos, morte com drop de Ecos, fras
 | Bosses | 🟢 | **8 encontros**: 6 canônicos (Guardiã do Eco; Coro Enraizado, Martelo Mudo, Sino Invertido, Maré Salgada; Selene, com duelo de melodias) + **2 opcionais** (Ecos Maiores do Alvorecer/Ocaso, enfrentados juntos na Arena dos Ecos). Falta tornar a mecânica de cada um mais própria |
 | Inimigos | 🟡 | **4 variantes** (comum/noturno/couraçado/**arqueiro ranged** que kita e atira) de ~35. Faltam voadores e especiais |
 | Itens de dungeon | ✅ | Os **4** implementados: Gancho, Bomba, Lente e **Botas de Corrente** (cruzam correntes de sal, `CurrentGate`) |
-| Ocarina (melodias) | ✅ | 4 melodias funcionais (acalmar/dia-noite/viagem/selo). GDD prevê 8 |
+| Ocarina (melodias) | ✅ | **8 de 8**: acalmar, dia-noite, viagem, selo + **cura, fôlego, coragem (dano temp.), refúgio** (efeitos de suporte no Player). GDD completo |
 | Progressão de morte (souls) | ✅ | Drop/recuperação de Ecos, respawn, persistência |
 | Loja / mercador (Corvo) | 🟢 | Corvo abre **loja** (comprar poções/recursos por Ecos, `ShopMenu` + `ShopData`); falta vender/recomprar e estoque por dia |
 | Side quests | 🟡 | **4 de 12–15** e **2 tipos de objetivo** (KILL + **COLLECT** que consome recursos ao entregar): Casca Teimosa, Cordas que Ferem de Longe, O Que Só o Escuro Mostra, O Aço Que Falta (entregar 3 minério). Givers na Encruzilhada. Falta escoltar e mais conteúdo |
