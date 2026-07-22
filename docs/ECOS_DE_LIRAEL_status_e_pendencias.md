@@ -55,7 +55,7 @@ dificuldade), poise/postura, lock-on touch, combos, morte com drop de Ecos, fras
 |---|---|---|
 | Salas greybox | 🟡 | **13 salas jogáveis** (vila, 2 da Cripta, Encruzilhada, 4 dungeons × 2 salas, Coração Mudo). Formas geométricas, sem tilemap real |
 | Overworld / hub | 🟡 | Encruzilhada dos Ecos liga as 4 dungeons e a descida ao Coração Mudo. Falta o mundo aberto em chunks (streaming, §6.2) |
-| Vila de Pedra-Alva (Ato 1) | 🟡 | **Jogável** (`vila_pedra_alva.tscn`): prólogo com Lys, aldeões e o rapto pelo Silêncio. Falta arte/tutorial completo de combate |
+| Vila de Pedra-Alva (Ato 1) | 🟡 | **Jogável** (`vila_pedra_alva.tscn`): prólogo com Lys, aldeões e o rapto pelo Silêncio, com **dicas diegéticas de combate** no caminho até a Cripta. Falta arte |
 | 5 dungeons | 🟡 | Cripta (2 salas) + as 4 do Ato 2, **cada uma com átrio + sala do boss** (2 salas), mecânica-chave e boss. Faltam mais salas e a densidade de uma dungeon real |
 | Alas de 10–15 min c/ checkpoints | 🟡 | Estrutura de portas/checkpoint pronta; falta conteúdo de nível |
 | Densidade de segredos | 🟡 | Alguns (memórias). GDD pede "cada tela esconde algo" |
@@ -76,7 +76,7 @@ pausa (Salvar/Opções/Bestiário), **save slots**, forja, alquimia, viagem, di�
 | Ícones / fontes | ⛔ | ~200 ícones 24×24, fonte bitmap PT-BR — hoje texto/formas |
 | Opções de acessibilidade | 🟡 | Dificuldade + indicador de ameaça OK. Faltam **tamanho de fonte, daltonismo, vibração, remapeamento completo** |
 | Layout touch customizável | ⬜ | Botões fixos; falta posição/escala + modo canhoto (§3.1) |
-| Tutorial diegético / prompts | ⬜ | Sem prompts contextuais |
+| Tutorial diegético / prompts | 🟢 | **Dicas diegéticas** (`tutorial_hint.tscn`): auras silenciosas que revelam um texto curto quando Aria se aproxima e somem quando ela se afasta — sem menu, sem pausa. Espalhadas pela vila ensinando andar, correr, atacar, esquivar e interagir no caminho até a Cripta |
 
 ## 5. Áudio  ⛔ (nada implementado — 0%)
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3]
+[gd_scene load_steps=17 format=3]
 
 [ext_resource type="Script" path="res://scripts/world/vila.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/world/day_night.gd" id="2"]
@@ -13,6 +13,7 @@
 [ext_resource type="Resource" path="res://data/cutscenes/lys_taken.tres" id="11"]
 [ext_resource type="Resource" path="res://data/dialogue/lys_vila.tres" id="12"]
 [ext_resource type="Resource" path="res://data/dialogue/aldeao.tres" id="13"]
+[ext_resource type="PackedScene" path="res://scenes/world/tutorial_hint.tscn" id="14"]
 
 [sub_resource type="RectangleShape2D" id="wall_h"]
 size = Vector2(800, 16)
@@ -104,6 +105,26 @@ position = Vector2(720, 240)
 target_scene = "res://scenes/world/cripta_das_guardias.tscn"
 spawn_point = Vector2(110, 240)
 prompt = "Descer atrás da canção"
+
+[node name="HintAndar" parent="." instance=ExtResource("14")]
+position = Vector2(150, 300)
+text = "Use o direcional para andar"
+
+[node name="HintCorrer" parent="." instance=ExtResource("14")]
+position = Vector2(320, 300)
+text = "Segure o direcional para correr"
+
+[node name="HintAtacar" parent="." instance=ExtResource("14")]
+position = Vector2(460, 300)
+text = "Toque em ATACAR para golpear"
+
+[node name="HintEsquivar" parent="." instance=ExtResource("14")]
+position = Vector2(580, 300)
+text = "ESQUIVAR: rola e fica invencível por um instante"
+
+[node name="HintInteragir" parent="." instance=ExtResource("14")]
+position = Vector2(660, 240)
+text = "Chegue perto e toque INTERAGIR para descer"
 
 [node name="UI" type="CanvasLayer" parent="."]
 
