@@ -70,7 +70,7 @@ pausa (Salvar/Opções/Bestiário), **save slots**, forja, alquimia, viagem, di�
 
 | Item | Estado | Falta |
 |---|---|---|
-| Inventário / diário | 🟡 | Tela de **Inventário na pausa**: armas, armadura/amuleto, consumíveis, recursos, itens-chave, memórias e Ecos (nomes via recurso/`ItemNames`). Falta grade visual com ícones/paginação |
+| Inventário / diário | 🟢 | Tela de **Inventário na pausa**: armas, armadura/amuleto, itens-chave, memórias e Ecos em texto, mais uma **grade visual da bolsa** (`ItemIcons`) — uma célula por consumível/recurso com ícone greybox colorido, nome curto e quantidade. Falta só a arte final dos ícones |
 | Descrições ricas de item | 🟡 | Lore em itens de dungeon; falta tela de inventário com descrições |
 | Tela de mapa completa | 🟡 | Só mini-mapa. Falta mapa cheio com pins manuais |
 | Ícones / fontes | ⛔ | ~200 ícones 24×24, fonte bitmap PT-BR — hoje texto/formas |

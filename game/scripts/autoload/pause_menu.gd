@@ -15,6 +15,7 @@ var _bestiary_panel: Panel
 var _bestiary_label: Label
 var _inventory_panel: Panel
 var _inventory_label: Label
+var _inventory_grid: GridContainer
 var _difficulty_label: Label
 var _telemetry_btn: Button
 var _language_btn: Button
@@ -118,8 +119,16 @@ func _build_ui() -> void:
 	_inventory_panel.add_child(i_title)
 	_inventory_label = _make_label("", Vector2(12, 34), Color(0.82, 0.85, 0.9))
 	_inventory_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_inventory_label.custom_minimum_size = Vector2(296, 220)
+	_inventory_label.custom_minimum_size = Vector2(296, 120)
 	_inventory_panel.add_child(_inventory_label)
+	var bags_title := _make_label("Bolsa", Vector2(12, 150), Color(0.7, 0.78, 0.85))
+	_inventory_panel.add_child(bags_title)
+	_inventory_grid = GridContainer.new()
+	_inventory_grid.columns = 5
+	_inventory_grid.position = Vector2(12, 170)
+	_inventory_grid.add_theme_constant_override("h_separation", 6)
+	_inventory_grid.add_theme_constant_override("v_separation", 6)
+	_inventory_panel.add_child(_inventory_grid)
 	_add_button(_inventory_panel, Locale.t("BACK"), Vector2(12, 262), func(): _show_root())
 
 func _show_inventory() -> void:
@@ -127,7 +136,45 @@ func _show_inventory() -> void:
 	_options_panel.visible = false
 	_bestiary_panel.visible = false
 	_inventory_label.text = _inventory_text()
+	_populate_inventory_grid()
 	_inventory_panel.visible = true
+
+## Preenche a grade greybox com uma célula por item de bolsa (consumíveis + recursos).
+func _populate_inventory_grid() -> void:
+	for child in _inventory_grid.get_children():
+		child.queue_free()
+	var s: Dictionary = SaveManager.state
+	var cells := ItemIcons.cells_from(s.get("consumables", {}))
+	cells.append_array(ItemIcons.cells_from(s.get("resources", {})))
+	if cells.is_empty():
+		_inventory_grid.add_child(_make_label("—", Vector2.ZERO, Color(0.6, 0.62, 0.66)))
+		return
+	for cell in cells:
+		_inventory_grid.add_child(_make_item_cell(cell["id"], int(cell["count"])))
+
+## Célula: um quadrado colorido (ícone greybox) sobre o nome curto e a quantidade.
+func _make_item_cell(id: StringName, count: int) -> Control:
+	var box := VBoxContainer.new()
+	box.custom_minimum_size = Vector2(52, 44)
+	box.add_theme_constant_override("separation", 1)
+	var swatch := ColorRect.new()
+	swatch.color = ItemIcons.color_for(id)
+	swatch.custom_minimum_size = Vector2(24, 24)
+	swatch.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	box.add_child(swatch)
+	var name_lbl := Label.new()
+	name_lbl.text = ItemIcons.short_label(id)
+	name_lbl.add_theme_font_size_override("font_size", 9)
+	name_lbl.add_theme_color_override("font_color", Color(0.82, 0.85, 0.9))
+	name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	box.add_child(name_lbl)
+	var count_lbl := Label.new()
+	count_lbl.text = "x%d" % count
+	count_lbl.add_theme_font_size_override("font_size", 9)
+	count_lbl.add_theme_color_override("font_color", Color(0.7, 0.75, 0.8))
+	count_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	box.add_child(count_lbl)
+	return box
 
 ## Monta o resumo do inventário a partir do save (§3.5). Nomes vêm dos recursos
 ## (armas/equipamento têm display_name) ou de ItemNames (bolsas/itens-chave).
@@ -137,8 +184,6 @@ func _inventory_text() -> String:
 	var eq: Dictionary = s.get("equipment", {})
 	out += "Armadura: " + _equip_name(String(eq.get("armor", ""))) + "\n"
 	out += "Amuleto: " + _equip_name(String(eq.get("amulet", ""))) + "\n\n"
-	out += "Consumíveis: " + _bag_text(s.get("consumables", {})) + "\n"
-	out += "Recursos: " + _bag_text(s.get("resources", {})) + "\n\n"
 	out += "Itens-chave: " + _item_names(s.get("items", [])) + "\n"
 	out += "Memórias: %d/12   Ecos: %d" % [
 		s.get("memories", []).size(), int(s.get("aria", {}).get("ecos", 0))]
@@ -165,15 +210,6 @@ func _equip_name(id: String) -> String:
 	var e := Equipment.by_id(StringName(id))
 	return e.display_name if e else id.capitalize()
 
-func _bag_text(bag: Dictionary) -> String:
-	if bag.is_empty():
-		return "—"
-	var parts := PackedStringArray()
-	for key in bag:
-		var n := int(bag[key])
-		if n > 0:
-			parts.append("%s x%d" % [ItemNames.label(StringName(key)), n])
-	return ", ".join(parts) if parts.size() > 0 else "—"
 
 func _show_options() -> void:
 	_root_panel.visible = false
