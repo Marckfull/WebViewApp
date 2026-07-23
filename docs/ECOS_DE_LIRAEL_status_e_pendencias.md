@@ -58,7 +58,7 @@ dificuldade), poise/postura, lock-on touch, combos, morte com drop de Ecos, fras
 | Vila de Pedra-Alva (Ato 1) | 🟡 | **Jogável** (`vila_pedra_alva.tscn`): prólogo com Lys, aldeões e o rapto pelo Silêncio, com **dicas diegéticas de combate** no caminho até a Cripta. Falta arte |
 | 5 dungeons | 🟢 | Cripta (2 salas) + as **4 do Ato 2 agora com 3 salas cada** (átrio → sala intermediária → boss): Floresta (**Bosque**/Divisor), Forja (**Fornalhas**/Couraçado), Torre (**Ventos Altos**/Alado) e Necrópole (**Tumbas de Sal**/Arqueiro). Cada sala do meio tem obstáculo, combate próprio e forrageio. Falta só aprofundar (ramais/segredos) |
 | Alas de 10–15 min c/ checkpoints | 🟡 | Estrutura de portas/checkpoint pronta; falta conteúdo de nível |
-| Densidade de segredos | 🟡 | Alguns (memórias). GDD pede "cada tela esconde algo" |
+| Densidade de segredos | 🟡 | Memórias + **nicho secreto em cada uma das 4 salas intermediárias**: pocket selado por parede quebrável (bomba) escondendo um recurso raro (erva do eco, minério do eco, erva prateada, peixe) — recompensa por explorar e voltar com a Bomba. Falta espalhar segredos por mais telas |
 | Paralaxe (3+ camadas) | ⛔ | Depende de arte de cenário |
 | Tilemaps (Tiled + TileMapLayer) | ⛔ | Depende de tilesets |
 
