@@ -168,6 +168,44 @@ jobs:
           path: game/build/web
 
   # -----------------------------------------------------------------------------
+  # Deploy no GitHub Pages — publica o build Web num link clicável.
+  # PRÉ-REQUISITO (uma vez): Settings > Pages > Build and deployment >
+  # Source = "GitHub Actions". Depois disso, cada push jogável reimplanta em
+  # https://<user>.github.io/<repo>/  (aqui: https://marckfull.github.io/WebViewApp/).
+  # Só roda em push (não em pull_request).
+  # -----------------------------------------------------------------------------
+  deploy-pages:
+    name: Deploy GitHub Pages
+    needs: web-export
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+      contents: read
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Baixar build Web
+        uses: actions/download-artifact@v4
+        with:
+          name: ecos-de-lirael-web
+          path: web
+
+      - name: Configurar Pages
+        uses: actions/configure-pages@v5
+
+      - name: Empacotar para Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: web
+
+      - name: Publicar
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+  # -----------------------------------------------------------------------------
   # Export Android (AAB) — desabilitado até existirem os secrets do keystore.
   # Requer: templates de export do Godot + variáveis GODOT_ANDROID_KEYSTORE_*, etc.
   # Habilitar trocando `if: false` e configurando export_presets.cfg.
