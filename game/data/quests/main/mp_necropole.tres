@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="MainQuestData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/main_quest_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"mp_necropole"
+title = "A Nota Que Ninguém Terminou"
+next_quest = &""
+step_descs = Array[String](["Recupere as Botas de Corrente na Necrópole de Sal.", "Derrote a Maré Salgada e restaure o último Santuário."])
+step_kinds = Array[String](["obtain", "kill_boss"])
+step_targets = Array[StringName]([&"botas", &"mare_salgada"])

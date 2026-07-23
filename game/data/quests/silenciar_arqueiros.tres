@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="QuestData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/quest_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"silenciar_arqueiros"
+title = "Cordas que Ferem de Longe"
+objective = 0
+target = &"ecoado_arqueiro"
+count = 2
+reward_ecos = 160

@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/dialogue_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"entregar_minerio_complete"
+speaker = "Fundidora"
+lines = Array[String](["Três certinhos. Ouça: quando eu bater, o sino vai lembrar um pouco mais do mundo.", "Teus Ecos. E obrigada por abrir mão do que também te serviria."])

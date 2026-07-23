@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="WeaponData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/weapon_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"arco"
+display_name = "Arco de Cordas-Mudas"
+weapon_class = 4
+base_damage = 13.0
+poise_damage = 8.0
+stamina_cost = 16.0
+attack_speed = 1.1
+combo_length = 1
+reach = 18.0
+lore = "As cordas não fazem som ao vibrar — por isso o Silêncio não as ouve chegar. Fere de longe o que você não quer deixar se aproximar."

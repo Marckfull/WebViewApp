@@ -1,0 +1,23 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/world/forge.gd" id="1"]
+
+[sub_resource type="CircleShape2D" id="shape"]
+radius = 14.0
+
+[node name="Forge" type="Area2D"]
+collision_layer = 32
+collision_mask = 0
+script = ExtResource("1")
+prompt = "Forjar"
+
+[node name="Visual" type="Polygon2D" parent="."]
+color = Color(0.5, 0.45, 0.4, 1)
+polygon = PackedVector2Array(-12, 6, 12, 6, 12, 12, -12, 12, -12, 6, -6, 6, -6, -4, 10, -4, 10, 2, -6, 2)
+
+[node name="Ember" type="Polygon2D" parent="."]
+color = Color(0.95, 0.55, 0.2, 1)
+polygon = PackedVector2Array(-3, -8, 3, -8, 2, -4, -2, -4)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("shape")

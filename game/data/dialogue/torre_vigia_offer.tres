@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/dialogue_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"torre_vigia_offer"
+speaker = "Vigia"
+lines = Array[String](["Fui a Vigia desta torre. Falta a última anotação do meu diário — e meus olhos já não veem.", "Revele o que a ilusão esconde e espante os três que rondam meus aposentos. Veja com a Lente o que os olhos não viram.", "(Missão aceita: A Torre da Vigia — derrote os 3 Alados que guardam as cenas ocultas)"])

@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="MainQuestData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/main_quest_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"mp_forja"
+title = "O Aço Que Chora"
+next_quest = &"mp_torre"
+step_descs = Array[String](["Recupere o Martelo de Odara na Forja Afundada.", "Derrote o Martelo Mudo e restaure o Santuário da Forja."])
+step_kinds = Array[String](["obtain", "kill_boss"])
+step_targets = Array[StringName]([&"martelo", &"martelo_mudo"])

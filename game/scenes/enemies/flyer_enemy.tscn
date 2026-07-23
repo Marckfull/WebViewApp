@@ -1,0 +1,50 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://scenes/enemies/flyer_enemy.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/combat/health_component.gd" id="2"]
+[ext_resource type="Script" path="res://scripts/combat/hurtbox.gd" id="3"]
+[ext_resource type="Script" path="res://scripts/combat/hitbox.gd" id="4"]
+[ext_resource type="Resource" path="res://data/enemies/ecoado_alado.tres" id="5"]
+
+[sub_resource type="RectangleShape2D" id="body_shape"]
+size = Vector2(14, 12)
+
+[sub_resource type="RectangleShape2D" id="dive_shape"]
+size = Vector2(20, 18)
+
+[node name="FlyerEnemy" type="CharacterBody2D"]
+collision_layer = 1
+collision_mask = 0
+script = ExtResource("1")
+data = ExtResource("5")
+
+[node name="Visual" type="Polygon2D" parent="."]
+color = Color(0.7, 0.55, 0.85, 1)
+polygon = PackedVector2Array(0, -6, 12, -2, 4, 2, 0, 8, -4, 2, -12, -2)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("body_shape")
+
+[node name="HealthComponent" type="Node" parent="."]
+script = ExtResource("2")
+max_health = 34.0
+max_poise = 20.0
+
+[node name="Hurtbox" type="Area2D" parent="."]
+collision_layer = 4
+collision_mask = 0
+script = ExtResource("3")
+health_component_path = NodePath("../HealthComponent")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+shape = SubResource("body_shape")
+
+[node name="DiveHitbox" type="Area2D" parent="."]
+collision_layer = 16
+collision_mask = 2
+script = ExtResource("4")
+damage = 13.0
+poise_damage = 8.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DiveHitbox"]
+shape = SubResource("dive_shape")

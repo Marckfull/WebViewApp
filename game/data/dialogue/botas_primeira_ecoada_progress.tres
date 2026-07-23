@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/dialogue_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"botas_primeira_ecoada_progress"
+speaker = "Lápide"
+lines = Array[String](["(O canto continua, mais fundo.) A maré ainda cobre o caminho, e o Luto ainda toma forma.", "Use as Botas contra a corrente e enfrente o que a dor virou."])

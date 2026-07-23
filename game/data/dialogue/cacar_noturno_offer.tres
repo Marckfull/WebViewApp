@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/dialogue_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"cacar_noturno_offer"
+speaker = "Coveiro"
+lines = Array[String](["Tem coisa que só o escuro mostra. Um Ecoado Noturno ronda a ala das correntes — some de dia, morde de noite.", "Se você sabe virar a noite com essa ocarina, vira, acha ele, e acaba com aquilo.", "(Missão aceita: O Que Só o Escuro Mostra — derrote o Ecoado Noturno)"])

@@ -1,0 +1,173 @@
+[gd_scene load_steps=20 format=3]
+
+[ext_resource type="Script" path="res://scripts/world/game_world.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/world/day_night.gd" id="2"]
+[ext_resource type="Script" path="res://scripts/ui/minimap.gd" id="3"]
+[ext_resource type="Script" path="res://scripts/ui/threat_indicator.gd" id="4"]
+[ext_resource type="Script" path="res://scripts/ui/virtual_joystick.gd" id="5"]
+[ext_resource type="Script" path="res://scripts/ui/hud.gd" id="6"]
+[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="7"]
+[ext_resource type="PackedScene" path="res://scenes/world/door.tscn" id="8"]
+[ext_resource type="PackedScene" path="res://scenes/world/shrine.tscn" id="9"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/dungeon_boss.tscn" id="10"]
+[ext_resource type="PackedScene" path="res://scenes/world/grapple_gate.tscn" id="11"]
+[ext_resource type="PackedScene" path="res://scenes/enemies/dummy_enemy.tscn" id="12"]
+[ext_resource type="PackedScene" path="res://scenes/world/cutscene_trigger.tscn" id="13"]
+[ext_resource type="Resource" path="res://data/cutscenes/verdade_floresta.tres" id="14"]
+[ext_resource type="Resource" path="res://data/dialogue/gate_locked.tres" id="15"]
+[ext_resource type="PackedScene" path="res://scenes/world/item_pickup.tscn" id="16"]
+[ext_resource type="Resource" path="res://data/dialogue/lanca_pickup.tres" id="17"]
+
+[sub_resource type="RectangleShape2D" id="wall_h"]
+size = Vector2(800, 16)
+
+[sub_resource type="RectangleShape2D" id="wall_v"]
+size = Vector2(16, 480)
+
+[node name="FlorestaSussurrante" type="Node2D"]
+script = ExtResource("1")
+
+[node name="DayNight" type="CanvasModulate" parent="."]
+script = ExtResource("2")
+
+[node name="Floor" type="Polygon2D" parent="."]
+color = Color(0.08, 0.13, 0.09, 1)
+polygon = PackedVector2Array(0, 0, 800, 0, 800, 480, 0, 480)
+
+[node name="WallVisuals" type="Node2D" parent="."]
+
+[node name="Top" type="Polygon2D" parent="WallVisuals"]
+color = Color(0.13, 0.18, 0.13, 1)
+polygon = PackedVector2Array(0, 0, 800, 0, 800, 16, 0, 16)
+
+[node name="Bottom" type="Polygon2D" parent="WallVisuals"]
+color = Color(0.13, 0.18, 0.13, 1)
+polygon = PackedVector2Array(0, 464, 800, 464, 800, 480, 0, 480)
+
+[node name="Left" type="Polygon2D" parent="WallVisuals"]
+color = Color(0.13, 0.18, 0.13, 1)
+polygon = PackedVector2Array(0, 0, 16, 0, 16, 480, 0, 480)
+
+[node name="Right" type="Polygon2D" parent="WallVisuals"]
+color = Color(0.13, 0.18, 0.13, 1)
+polygon = PackedVector2Array(784, 0, 800, 0, 800, 480, 784, 480)
+
+[node name="Walls" type="StaticBody2D" parent="."]
+collision_layer = 1
+collision_mask = 0
+
+[node name="Top" type="CollisionShape2D" parent="Walls"]
+position = Vector2(400, 8)
+shape = SubResource("wall_h")
+
+[node name="Bottom" type="CollisionShape2D" parent="Walls"]
+position = Vector2(400, 472)
+shape = SubResource("wall_h")
+
+[node name="Left" type="CollisionShape2D" parent="Walls"]
+position = Vector2(8, 240)
+shape = SubResource("wall_v")
+
+[node name="Right" type="CollisionShape2D" parent="Walls"]
+position = Vector2(792, 240)
+shape = SubResource("wall_v")
+
+[node name="Chasm" type="StaticBody2D" parent="."]
+collision_layer = 1
+collision_mask = 0
+
+[node name="Wall" type="CollisionShape2D" parent="Chasm"]
+position = Vector2(444, 240)
+shape = SubResource("wall_v")
+
+[node name="ChasmVisual" type="Polygon2D" parent="Chasm"]
+color = Color(0.03, 0.05, 0.04, 1)
+polygon = PackedVector2Array(430, 16, 458, 16, 458, 464, 430, 464)
+
+[node name="Player" parent="." instance=ExtResource("7")]
+position = Vector2(110, 240)
+
+[node name="DoorBack" parent="." instance=ExtResource("8")]
+position = Vector2(28, 240)
+target_scene = "res://scenes/world/floresta_bosque.tscn"
+spawn_point = Vector2(730, 240)
+prompt = "Recuar à mata"
+
+[node name="GrappleCross" parent="." instance=ExtResource("11")]
+position = Vector2(410, 220)
+required_item = &"gancho"
+landing = Vector2(490, 220)
+locked_dialogue = ExtResource("15")
+
+[node name="GrappleReturn" parent="." instance=ExtResource("11")]
+position = Vector2(490, 360)
+required_item = &"gancho"
+landing = Vector2(410, 360)
+locked_dialogue = ExtResource("15")
+
+[node name="Enemy1" parent="." instance=ExtResource("12")]
+position = Vector2(560, 150)
+
+[node name="Enemy2" parent="." instance=ExtResource("12")]
+position = Vector2(640, 330)
+
+[node name="CoroEnraizado" parent="." instance=ExtResource("10")]
+position = Vector2(600, 240)
+boss_name = "Coro Enraizado"
+boss_id = &"coro_enraizado"
+chase_speed = 50.0
+telegraph_time = 0.7
+ecos_reward = 250
+phase2_color = Color(0.4, 0.85, 0.5, 1)
+summon_scene = ExtResource("12")
+summon_count = 2
+
+[node name="Shrine" parent="." instance=ExtResource("9")]
+position = Vector2(720, 400)
+shrine_id = &"floresta_santuario"
+shrine_name = "Santuário da Floresta"
+
+[node name="RevelacaoTrigger" parent="." instance=ExtResource("13")]
+position = Vector2(720, 240)
+cutscene = ExtResource("14")
+
+[node name="LancaPickup" parent="." instance=ExtResource("16")]
+position = Vector2(660, 350)
+item_id = &"lanca"
+collection = "weapons"
+dialogue = ExtResource("17")
+
+[node name="Visual" type="Polygon2D" parent="."]
+color = Color(0.12, 0.2, 0.13, 1)
+position = Vector2(600, 240)
+polygon = PackedVector2Array(-40, -40, 40, -40, 40, 40, -40, 40)
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="VirtualJoystick" type="Control" parent="UI"]
+anchor_bottom = 1.0
+anchor_right = 0.5
+grow_vertical = 2
+script = ExtResource("5")
+
+[node name="HUD" type="Control" parent="UI"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("6")
+
+[node name="MiniMap" type="Control" parent="UI"]
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -130.0
+offset_top = 44.0
+offset_right = -10.0
+offset_bottom = 116.0
+mouse_filter = 2
+script = ExtResource("3")
+
+[node name="ThreatIndicator" type="Control" parent="UI"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("4")

@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/dialogue_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"shrine_rest"
+speaker = ""
+lines = Array[String](["Você descansa no Santuário. O silêncio aqui é o bom tipo — o de antes de uma canção.", "Vida e frascos restaurados. Os Ecoados voltam a rondar."])

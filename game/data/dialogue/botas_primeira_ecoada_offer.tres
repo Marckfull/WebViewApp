@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/dialogue_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"botas_primeira_ecoada_offer"
+speaker = "Lápide"
+lines = Array[String](["(A lápide canta baixo quando você se aproxima. Um selo de som treme sobre a pedra.)", "Aqui jazem os pertences da primeira Ecoada — a que Selene perdeu. Abra o selo, atravesse a maré, alcance o relicário.", "(Missão aceita: As Botas da Primeira Ecoada — vença o Luto Encarnado que guarda o relicário)"])

@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="CutsceneData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/cutscene_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"verdade_forja"
+pages = Array[String](["O Santuário da Forja Afundada reacende. O metal esfriado guarda o calor de uma mão que trabalhou chorando.", "— Uma verdade: foi a Mestra Odara quem afinou a ocarina que Selene usou para cantar a Canção ao contrário.", "Odara sabia o que a nota faria. Afinou mesmo assim, por piedade. A culpa dela é feita do mesmo aço que te ajudou a chegar aqui."])

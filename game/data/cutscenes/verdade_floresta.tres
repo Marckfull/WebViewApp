@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="CutsceneData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/cutscene_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"verdade_floresta"
+pages = Array[String](["O Santuário da Floresta volta a cantar. As folhas devolvem um eco antigo, guardado nas raízes.", "— Uma verdade: a última Guardiã amava alguém de fora das Guardiãs. Amar assim era proibido. Ela amou mesmo assim.", "Aria entende, sem alívio: o Silêncio não nasceu do ódio. Nasceu de um amor que não teve para onde ir."])

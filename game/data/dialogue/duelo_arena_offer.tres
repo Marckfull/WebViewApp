@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/dialogue_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"duelo_arena_offer"
+speaker = "Arauto da Arena"
+lines = Array[String](["Ergui esta arena para provar quem ainda escuta o mundo. Enfrente os Ecos Maiores do Alvorecer e do Ocaso.", "Alvorecer é rápido; Ocaso é pesado. Vença o segundo e prove seu ouvido — pago em Ecos e num título que fica.", "(Missão aceita: O Duelo da Arena — derrote o Eco Maior do Ocaso na Arena dos Ecos)"])

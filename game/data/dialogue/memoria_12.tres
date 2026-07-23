@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/dialogue_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"memoria_12"
+speaker = ""
+lines = Array[String](["A última Memória Perdida pesa como um nome que ninguém pronuncia há séculos.", "...a pessoa que Selene perdeu, dizendo o nome dela — a última coisa que o mundo esqueceu.", "Aria guarda o nome. Agora a Canção pode ser cantada inteira. (12 de 12)"])

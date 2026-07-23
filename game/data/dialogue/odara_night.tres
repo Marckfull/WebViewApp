@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/dialogue_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"odara_night"
+speaker = "Mestra Odara"
+lines = Array[String](["De noite a forja esfria e eu penso demais. É quando a culpa fala mais alto.", "Volta de dia que eu bato o aço com a cabeça no lugar. À noite eu só afio memória."])

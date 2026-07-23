@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/dialogue_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"odara"
+speaker = "Mestra Odara"
+lines = Array[String](["Então o ouvido surdo escuta mesmo, hein? Igual à minha antiga mestra.", "Traga minério que eu dou fio à sua lâmina — aço que lembra o som corta o que o Silêncio esqueceu.", "E, menina... quando achar a Guardiã, ouça antes de golpear. Eu não ouvi. Ainda me pesa."])

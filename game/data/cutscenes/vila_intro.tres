@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="CutsceneData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/cutscene_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"vila_intro"
+pages = Array[String](["Pedra-Alva, ao anoitecer. As lamparinas tremem. No fim da rua, a irmãzinha de Aria, Lys, espera para mostrar mais uma bobagem.", "(Ande com o direcional. Aperte Interagir para falar. Atacar e rolar você aprende quando precisar — e vai precisar.)", "Uma névoa fina escorre do vale, silenciosa. Aria não a ouve com o ouvido bom. Com o surdo, escuta um zumbido que não devia existir."])

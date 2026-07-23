@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="MelodyData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/melody_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"cancao_da_cura"
+display_name = "Canção da Cura"
+notes = Array[int]([1, 3, 1, 3, 1])
+effect = 5

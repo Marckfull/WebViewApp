@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/dialogue_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"botas_primeira_ecoada_complete"
+speaker = "Lápide"
+lines = Array[String](["(O selo se abre em silêncio.) O relicário é seu — e com ele, o Passo de Maré: atravessar correntes te dá um impulso.", "O que a primeira Ecoada foi ainda ecoa. Talvez Selene precise ouvir.", "(Recompensa: Passo de Maré + Memória Perdida crucial)"])

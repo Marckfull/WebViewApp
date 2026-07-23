@@ -1,0 +1,232 @@
+name: Godot CI
+
+# Smoke test headless do projeto Godot em /game (§6.3 do GDD).
+# Importa o projeto e inicializa a cena principal por alguns frames — isso
+# pega erros de parse de GDScript e de carregamento de cena a cada push, de graça.
+# O export Android assinado (AAB) entra como job separado quando houver keystore/secrets.
+
+on:
+  push:
+    branches: ["**"]
+    paths:
+      - "game/**"
+      - ".github/workflows/godot-ci.yml"
+  pull_request:
+    paths:
+      - "game/**"
+      - ".github/workflows/godot-ci.yml"
+  workflow_dispatch:
+
+# Cancela runs anteriores da mesma branch quando um novo push chega — evita
+# acumular execuções travadas.
+concurrency:
+  group: godot-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  smoke-test:
+    name: Import + boot headless
+    runs-on: ubuntu-latest
+    timeout-minutes: 15   # nenhum hang de CI dura horas
+    container:
+      image: barichello/godot-ci:4.3
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Importar projeto (gera .godot, valida scripts)
+        working-directory: game
+        run: godot --headless --import
+
+      - name: Smoke test — menu principal
+        working-directory: game
+        run: godot --headless --quit-after 60 res://scenes/ui/main_menu.tscn
+
+      - name: Smoke test — prólogo
+        working-directory: game
+        run: godot --headless --quit-after 60 res://scenes/ui/intro.tscn
+
+      - name: Smoke test — vila (Pedra-Alva)
+        working-directory: game
+        run: godot --headless --quit-after 120 res://scenes/world/vila_pedra_alva.tscn
+
+      - name: Smoke test — dungeon (Cripta)
+        working-directory: game
+        run: godot --headless --quit-after 180 res://scenes/world/cripta_das_guardias.tscn
+
+      - name: Smoke test — dungeon (Cripta Ala 2)
+        working-directory: game
+        run: godot --headless --quit-after 120 res://scenes/world/cripta_ala2.tscn
+
+      - name: Smoke test — hub (Encruzilhada)
+        working-directory: game
+        run: godot --headless --quit-after 120 res://scenes/world/encruzilhada.tscn
+
+      - name: Smoke test — átrio (Floresta)
+        working-directory: game
+        run: godot --headless --quit-after 120 res://scenes/world/floresta_atrio.tscn
+
+      - name: Smoke test — bosque (Floresta)
+        working-directory: game
+        run: godot --headless --quit-after 120 res://scenes/world/floresta_bosque.tscn
+
+      - name: Smoke test — dungeon (Floresta Sussurrante)
+        working-directory: game
+        run: godot --headless --quit-after 120 res://scenes/world/floresta_sussurrante.tscn
+
+      - name: Smoke test — átrio (Forja)
+        working-directory: game
+        run: godot --headless --quit-after 120 res://scenes/world/forja_atrio.tscn
+
+      - name: Smoke test — fornalhas (Forja)
+        working-directory: game
+        run: godot --headless --quit-after 120 res://scenes/world/forja_fornalhas.tscn
+
+      - name: Smoke test — dungeon (Forja Afundada)
+        working-directory: game
+        run: godot --headless --quit-after 120 res://scenes/world/forja_afundada.tscn
+
+      - name: Smoke test — átrio (Torre)
+        working-directory: game
+        run: godot --headless --quit-after 120 res://scenes/world/torre_atrio.tscn
+
+      - name: Smoke test — ventos altos (Torre)
+        working-directory: game
+        run: godot --headless --quit-after 120 res://scenes/world/torre_ventos_altos.tscn
+
+      - name: Smoke test — dungeon (Torre dos Ventos)
+        working-directory: game
+        run: godot --headless --quit-after 120 res://scenes/world/torre_dos_ventos.tscn
+
+      - name: Smoke test — átrio (Necrópole)
+        working-directory: game
+        run: godot --headless --quit-after 120 res://scenes/world/necropole_atrio.tscn
+
+      - name: Smoke test — tumbas (Necrópole)
+        working-directory: game
+        run: godot --headless --quit-after 120 res://scenes/world/necropole_tumbas.tscn
+
+      - name: Smoke test — dungeon (Necrópole de Sal)
+        working-directory: game
+        run: godot --headless --quit-after 120 res://scenes/world/necropole_de_sal.tscn
+
+      - name: Smoke test — arena opcional (Ecos)
+        working-directory: game
+        run: godot --headless --quit-after 120 res://scenes/world/arena_ecos.tscn
+
+      - name: Smoke test — final (Coração Mudo)
+        working-directory: game
+        run: godot --headless --quit-after 120 res://scenes/world/coracao_mudo.tscn
+
+      - name: Testes unitários (GUT)
+        working-directory: game
+        timeout-minutes: 5
+        run: godot --headless -s res://addons/gut/gut_cmdln.gd -gdir=res://test/unit -ginclude_subdirs -glog=1 -gexit
+
+  # -----------------------------------------------------------------------------
+  # Export Web (HTML5) — build jogável no navegador, publicado como artefato.
+  # Baixe em Actions > run > Artifacts > "ecos-de-lirael-web", descompacte e
+  # sirva por HTTP (ex.: `python3 -m http.server` na pasta) — abrir o index.html
+  # via file:// não funciona (o navegador bloqueia o .wasm).
+  # -----------------------------------------------------------------------------
+  web-export:
+    name: Export Web (HTML5)
+    needs: smoke-test
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    container:
+      image: barichello/godot-ci:4.3
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Preparar templates de export
+        run: |
+          mkdir -p ~/.local/share/godot/export_templates/
+          # A imagem barichello traz os templates em /root; garante que estejam no
+          # HOME do job (que pode ser /github/home) sem falhar se já estiverem lá.
+          if [ ! -e ~/.local/share/godot/export_templates/4.3.stable ]; then
+            cp -r /root/.local/share/godot/export_templates/4.3.stable ~/.local/share/godot/export_templates/4.3.stable
+          fi
+          ls ~/.local/share/godot/export_templates/
+
+      - name: Importar projeto
+        working-directory: game
+        run: godot --headless --import
+
+      - name: Export Web (release)
+        working-directory: game
+        run: |
+          mkdir -p build/web
+          godot --headless --export-release "Web" build/web/index.html
+          ls -la build/web
+
+      - name: Upload build jogável
+        uses: actions/upload-artifact@v4
+        with:
+          name: ecos-de-lirael-web
+          path: game/build/web
+
+  # -----------------------------------------------------------------------------
+  # Deploy no GitHub Pages — publica o build Web num link clicável.
+  # PRÉ-REQUISITO (uma vez): Settings > Pages > Build and deployment >
+  # Source = "GitHub Actions". Depois disso, cada push jogável reimplanta em
+  # https://<user>.github.io/<repo>/  (aqui: https://marckfull.github.io/WebViewApp/).
+  # Só roda em push (não em pull_request).
+  # -----------------------------------------------------------------------------
+  deploy-pages:
+    name: Deploy GitHub Pages
+    needs: web-export
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+      contents: read
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Baixar build Web
+        uses: actions/download-artifact@v4
+        with:
+          name: ecos-de-lirael-web
+          path: web
+
+      - name: Configurar Pages
+        uses: actions/configure-pages@v5
+
+      - name: Empacotar para Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: web
+
+      - name: Publicar
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+  # -----------------------------------------------------------------------------
+  # Export Android (AAB) — desabilitado até existirem os secrets do keystore.
+  # Requer: templates de export do Godot + variáveis GODOT_ANDROID_KEYSTORE_*, etc.
+  # Habilitar trocando `if: false` e configurando export_presets.cfg.
+  # -----------------------------------------------------------------------------
+  android-export:
+    name: Export Android AAB
+    if: false
+    needs: smoke-test
+    runs-on: ubuntu-latest
+    container:
+      image: barichello/godot-ci:4.3
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Export AAB
+        working-directory: game
+        run: |
+          mkdir -p build/android
+          godot --headless --export-release "Android" build/android/ecos-de-lirael.aab
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ecos-de-lirael-aab
+          path: game/build/android/*.aab

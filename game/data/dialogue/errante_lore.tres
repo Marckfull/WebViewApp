@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/dialogue_data.gd" id="1"]
+[ext_resource type="Resource" path="res://data/dialogue/errante_guardias.tres" id="2"]
+[ext_resource type="Resource" path="res://data/dialogue/errante_silencio.tres" id="3"]
+
+[resource]
+script = ExtResource("1")
+id = &"errante_lore"
+speaker = "Errante"
+lines = Array[String](["Você tem cara de quem pergunta em vez de golpear. Raro. Pergunte, então."])
+choice_texts = Array[String](["As cinco Guardiãs", "O Silêncio", "Deixa pra lá"])
+choice_next = Array[DialogueData]([ExtResource("2"), ExtResource("3"), null])

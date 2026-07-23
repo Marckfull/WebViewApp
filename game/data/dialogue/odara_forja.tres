@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/dialogue_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"odara_forja"
+speaker = "Mestra Odara"
+lines = Array[String](["Você chegou até a Forja Afundada. Então já deve ter ouvido o que o metal aqui repete.", "Sim. Fui eu que afinei a ocarina de vidro. Selene me pediu uma nota que apagasse a dor, e eu... eu tinha pena dela. Afinei chorando.", "Não te conto isso pra ser perdoada. Conto pra você saber o preço de cada nota antes de tocá-la lá embaixo.", "Leva este aço afinado. Se um dia precisar calar alguém que você ama, que ao menos seja a sua mão — não a minha culpa."])

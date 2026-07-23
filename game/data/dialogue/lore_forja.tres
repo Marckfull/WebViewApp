@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/dialogue_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"lore_forja"
+speaker = ""
+lines = Array[String](["Marcas de martelo repetem a mesma frase na bigorna, batida até virar sulco.", "\"O aço lembra o som. Quem forja, lembra de quem pediu.\"", "Aria reconhece o padrão do golpe. É o mesmo da Espada da Guardiã."])

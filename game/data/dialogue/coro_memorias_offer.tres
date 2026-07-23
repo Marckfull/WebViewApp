@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/dialogue_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"coro_memorias_offer"
+speaker = "Eco de Lys"
+lines = Array[String](["(A voz que hesita chega pelo ouvido surdo.) Doze Memórias Perdidas se espalharam pelo mundo. Cada uma quer ser lembrada.", "Reúna as doze e o próprio mundo pede pra ser ouvido — e um coro se forma no limiar do Coração Mudo.", "(Missão aceita: O Coro das Doze Memórias — reúna as 12 Memórias Perdidas)"])

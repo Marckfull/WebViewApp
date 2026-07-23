@@ -1,0 +1,63 @@
+; Engine configuration file.
+; Ecos de Lirael — projeto Godot 4.x (Fase 0: fundação de combate greybox)
+; Ver docs/ECOS_DE_LIRAEL_recursos_gratuitos.md e o GDD para contexto.
+
+config_version=5
+
+[application]
+
+config/name="Ecos de Lirael"
+config/description="Ação-aventura souls-like com pixel art HD para Android. Protagonista: Aria."
+run/main_scene="res://scenes/ui/main_menu.tscn"
+config/features=PackedStringArray("4.3", "GL Compatibility")
+config/icon="res://icon.svg"
+
+[autoload]
+
+GameConfig="*res://scripts/autoload/game_config.gd"
+GameEvents="*res://scripts/autoload/game_events.gd"
+SaveManager="*res://scripts/autoload/save_manager.gd"
+Locale="*res://scripts/autoload/locale.gd"
+DialogueManager="*res://scripts/autoload/dialogue_manager.gd"
+OcarinaManager="*res://scripts/autoload/ocarina_manager.gd"
+ShrineMenu="*res://scripts/autoload/shrine_menu.gd"
+PauseMenu="*res://scripts/autoload/pause_menu.gd"
+GameProgress="*res://scripts/autoload/game_progress.gd"
+EndingScreen="*res://scripts/autoload/ending_screen.gd"
+CombatFx="*res://scripts/autoload/combat_fx.gd"
+TelemetryLogger="*res://scripts/autoload/telemetry_logger.gd"
+ForgeMenu="*res://scripts/autoload/forge_menu.gd"
+AlchemyMenu="*res://scripts/autoload/alchemy_menu.gd"
+QuestManager="*res://scripts/autoload/quest_manager.gd"
+MainQuestManager="*res://scripts/autoload/main_quest_manager.gd"
+RoomStreamer="*res://scripts/autoload/room_streamer.gd"
+TravelMenu="*res://scripts/autoload/travel_menu.gd"
+SaveSlotsMenu="*res://scripts/autoload/save_slots_menu.gd"
+CutsceneManager="*res://scripts/autoload/cutscene_manager.gd"
+ShopMenu="*res://scripts/autoload/shop_menu.gd"
+EquipMenu="*res://scripts/autoload/equip_menu.gd"
+
+[display]
+
+; Resolução interna 640x360 (§4 Direção de Arte), escalada por inteiro.
+window/size/viewport_width=640
+window/size/viewport_height=360
+window/size/window_width_override=1280
+window/size/window_height_override=720
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+; Android: orientação travada em landscape (§1 Plataforma).
+window/handheld/orientation=1
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+; Pixel art: sem filtro, sem mipmaps.
+textures/canvas_textures/default_texture_filter=0
+2d/snap/snap_2d_transforms_to_pixel=true
+2d/snap/snap_2d_vertices_to_pixel=true
+
+[physics]
+
+common/physics_ticks_per_second=60

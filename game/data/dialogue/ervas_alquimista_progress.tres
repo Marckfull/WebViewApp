@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/dialogue_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"ervas_alquimista_progress"
+speaker = "Alquimista"
+lines = Array[String](["Ainda faltam ervas. Elas fecham ao sol — é preciso ser noite pra colhê-las.", "Cuidado com os noturnos enquanto abaixa pra apanhar."])

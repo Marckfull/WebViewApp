@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/dialogue_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"cao_sem_nome_offer"
+speaker = "Aldeão"
+lines = Array[String](["O Silêncio levou o nome do meu cão. Acordei e não sei mais como chamá-lo — e ele fugiu pra névoa da beira do rio.", "Dois Ecoados o cercam lá. Espante-os e traga meu companheiro de volta. Por favor.", "(Missão aceita: O Cão Sem Nome — derrote os 2 Ecoados que cercam o cão)"])

@@ -1,0 +1,48 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scenes/enemies/dungeon_boss.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/combat/health_component.gd" id="2"]
+[ext_resource type="Script" path="res://scripts/combat/hurtbox.gd" id="3"]
+[ext_resource type="Script" path="res://scripts/combat/hitbox.gd" id="4"]
+
+[sub_resource type="RectangleShape2D" id="body_shape"]
+size = Vector2(26, 26)
+
+[sub_resource type="RectangleShape2D" id="sweep_shape"]
+size = Vector2(40, 28)
+
+[node name="DungeonBoss" type="CharacterBody2D" groups=["boss", "enemies"]]
+collision_layer = 1
+collision_mask = 1
+script = ExtResource("1")
+
+[node name="Visual" type="Polygon2D" parent="."]
+color = Color(0.6, 0.35, 0.75, 1)
+polygon = PackedVector2Array(-13, -13, 13, -13, 13, 13, -13, 13)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("body_shape")
+
+[node name="HealthComponent" type="Node" parent="."]
+script = ExtResource("2")
+max_health = 220.0
+max_poise = 80.0
+
+[node name="Hurtbox" type="Area2D" parent="."]
+collision_layer = 4
+collision_mask = 0
+script = ExtResource("3")
+health_component_path = NodePath("../HealthComponent")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+shape = SubResource("body_shape")
+
+[node name="SweepHitbox" type="Area2D" parent="."]
+collision_layer = 16
+collision_mask = 2
+script = ExtResource("4")
+damage = 20.0
+poise_damage = 18.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SweepHitbox"]
+shape = SubResource("sweep_shape")

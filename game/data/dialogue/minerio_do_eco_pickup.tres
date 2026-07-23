@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/dialogue_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"minerio_do_eco_pickup"
+speaker = ""
+lines = Array[String](["Minério do eco — o mais fundo e o mais raro. Ainda canta a nota original do mundo.", "Só ele leva uma arma ao +5, o limite da forja de Odara.", "(Recurso guardado.)"])

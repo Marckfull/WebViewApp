@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/world/escort_npc.gd" id="1"]
+
+[sub_resource type="CircleShape2D" id="shape"]
+radius = 7.0
+
+[node name="EscortNpc" type="CharacterBody2D"]
+collision_layer = 64
+collision_mask = 1
+script = ExtResource("1")
+
+[node name="Visual" type="Polygon2D" parent="."]
+color = Color(0.85, 0.75, 0.55, 1)
+polygon = PackedVector2Array(-6, -8, 6, -8, 4, 9, -4, 9)
+
+[node name="Bandage" type="Polygon2D" parent="."]
+color = Color(0.9, 0.9, 0.85, 1)
+polygon = PackedVector2Array(-6, -4, 6, -4, 6, -1, -6, -1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("shape")

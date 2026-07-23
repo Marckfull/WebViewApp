@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/dialogue_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"silenciar_arqueiros_offer"
+speaker = "Peregrina"
+lines = Array[String](["Dois Ecoados Arqueiros ferem quem passa antes que dê pra chegar perto. Um na Torre, outro entre as tumbas.", "Você que corre e rola — feche o espaço e cale os dois. Pago em Ecos.", "(Missão aceita: Cordas que Ferem de Longe — derrote 2 Arqueiros)"])

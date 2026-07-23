@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/dialogue_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"coro_memorias_progress"
+speaker = "Eco de Lys"
+lines = Array[String](["Ainda faltam Memórias. Várias estão atrás do Gancho, da Bomba, da Lente, do Selo.", "Explore fundo. Cada uma que você junta, eu lembro um pouco mais de quem fui."])

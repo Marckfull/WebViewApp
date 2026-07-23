@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/dialogue_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"coro_memorias_complete"
+speaker = "Eco de Lys"
+lines = Array[String](["As doze, juntas. Ouço o mundo inteiro pedindo pra ser lembrado — e eu, com ele.", "O coro está formado: o final Lembrar em Coro te espera na escolha de Selene. A Canção Completa é sua.", "(Recompensa: final secreto desbloqueado + Canção Completa + a maior soma de Ecos)"])

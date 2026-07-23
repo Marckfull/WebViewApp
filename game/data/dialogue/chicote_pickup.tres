@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/dialogue_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"chicote_pickup"
+speaker = ""
+lines = Array[String](["Enrolado numa lápide, um Chicote-Corda de Sino.", "Alcança mais longe que qualquer lâmina e golpeia em sequência — mas quase não abala a postura.", "(Nova arma no arsenal: troque no Santuário ou pelo botão de troca de arma.)"])

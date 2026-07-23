@@ -1,0 +1,33 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/world/sealed_door.gd" id="1"]
+
+[sub_resource type="RectangleShape2D" id="trigger"]
+size = Vector2(26, 74)
+
+[sub_resource type="RectangleShape2D" id="blocker"]
+size = Vector2(16, 74)
+
+[node name="SealedDoor" type="Area2D"]
+collision_layer = 32
+collision_mask = 0
+script = ExtResource("1")
+prompt = "Examinar"
+
+[node name="Visual" type="Polygon2D" parent="."]
+color = Color(0.35, 0.4, 0.55, 1)
+polygon = PackedVector2Array(-8, -37, 8, -37, 8, 37, -8, 37)
+
+[node name="Rune" type="Polygon2D" parent="."]
+color = Color(0.5, 0.8, 1, 1)
+polygon = PackedVector2Array(-4, -6, 4, -6, 4, -2, 0, 6, -4, -2)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("trigger")
+
+[node name="Blocker" type="StaticBody2D" parent="."]
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Blocker"]
+shape = SubResource("blocker")

@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="MainQuestData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/main_quest_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"mp_torre"
+title = "O Adeus Que Ninguém Viu"
+next_quest = &"mp_necropole"
+step_descs = Array[String](["Silencie um Ecoado Arqueiro na Torre dos Ventos.", "Derrote o Sino Invertido e restaure o Santuário da Torre."])
+step_kinds = Array[String](["kill", "kill_boss"])
+step_targets = Array[StringName]([&"ecoado_arqueiro", &"sino_invertido"])

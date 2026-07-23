@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/dialogue_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"botas_pickup"
+speaker = ""
+lines = Array[String](["Botas de Corrente.", "Solas forjadas com cravos de sal negro — feitas para ancorar os pés onde a maré do mundo quer arrastar.", "Agora as correntes de sal deixam de ser um muro. (Aperte Interagir sobre uma corrente.)"])

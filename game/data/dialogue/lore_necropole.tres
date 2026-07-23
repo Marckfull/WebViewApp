@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/dialogue_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"lore_necropole"
+speaker = ""
+lines = Array[String](["Uma lápide de sal sem nome — o nome foi comido pelo Silêncio, mas o epitáfio ficou.", "\"A primeira a se calar. Não morreu: sumiu no meio de uma nota que ninguém terminou.\"", "\"Quem a amava ainda espera o fim daquela nota.\""])

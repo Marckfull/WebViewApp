@@ -1,0 +1,11 @@
+# Godot 4 — arquivos gerados
+.godot/
+.import/
+export.cfg
+# export_presets.cfg é versionado (preset Web/Android sem segredos) — o keystore
+# entra por secrets/env no CI, nunca no arquivo.
+
+# Builds
+*.apk
+*.aab
+build/
