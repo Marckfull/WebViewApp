@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3]
+[gd_scene load_steps=22 format=3]
 
 [ext_resource type="Script" path="res://scripts/world/vila.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/world/day_night.gd" id="2"]
@@ -14,6 +14,11 @@
 [ext_resource type="Resource" path="res://data/dialogue/lys_vila.tres" id="12"]
 [ext_resource type="Resource" path="res://data/dialogue/aldeao.tres" id="13"]
 [ext_resource type="PackedScene" path="res://scenes/world/tutorial_hint.tscn" id="14"]
+[ext_resource type="PackedScene" path="res://scenes/world/quest_giver.tscn" id="15"]
+[ext_resource type="Resource" path="res://data/quests/cao_sem_nome.tres" id="16"]
+[ext_resource type="Resource" path="res://data/dialogue/cao_sem_nome_offer.tres" id="17"]
+[ext_resource type="Resource" path="res://data/dialogue/cao_sem_nome_progress.tres" id="18"]
+[ext_resource type="Resource" path="res://data/dialogue/cao_sem_nome_complete.tres" id="19"]
 
 [sub_resource type="RectangleShape2D" id="wall_h"]
 size = Vector2(800, 16)
@@ -125,6 +130,13 @@ text = "ESQUIVAR: rola e fica invencível por um instante"
 [node name="HintInteragir" parent="." instance=ExtResource("14")]
 position = Vector2(660, 240)
 text = "Chegue perto e toque INTERAGIR para descer"
+
+[node name="AldeaoCao" parent="." instance=ExtResource("15")]
+position = Vector2(420, 400)
+quest = ExtResource("16")
+offer_dialogue = ExtResource("17")
+progress_dialogue = ExtResource("18")
+complete_dialogue = ExtResource("19")
 
 [node name="UI" type="CanvasLayer" parent="."]
 

@@ -8,6 +8,8 @@ const QUEST_PATHS := [
 	"res://data/quests/cacar_noturno.tres",
 	"res://data/quests/entregar_minerio.tres",
 	"res://data/quests/escoltar_ferido.tres",
+	"res://data/quests/cao_sem_nome.tres",
+	"res://data/quests/ervas_alquimista.tres",
 ]
 
 var _quests: Dictionary = {}  # id(String) -> QuestData

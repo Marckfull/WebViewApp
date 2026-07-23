@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/dialogue_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"ervas_alquimista_offer"
+speaker = "Alquimista"
+lines = Array[String](["Preciso de cinco ervas que só brotam à noite, onde os Ecoados noturnos rondam.", "Vire o crepúsculo, colha sob ataque e me traga o feixe. Faço por você uma poção melhor.", "(Missão aceita: As Ervas da Alquimista — entregue 5 ervas)"])
