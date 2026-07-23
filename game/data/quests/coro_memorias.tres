@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="QuestData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/quest_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"coro_memorias"
+title = "O Coro das Doze Memórias"
+objective = 3
+target = &"memoria"
+count = 12
+reward_ecos = 500

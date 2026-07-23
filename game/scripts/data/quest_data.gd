@@ -4,7 +4,7 @@ extends Resource
 ## inimigo), COLLECT (entregar N de um recurso) e ESCORT (guiar um NPC até o
 ## destino). O `target` identifica o alvo conforme o tipo.
 
-enum Objective { KILL, COLLECT, ESCORT }
+enum Objective { KILL, COLLECT, ESCORT, MEMORIES }  ## MEMORIES: reunir N Memórias Perdidas (§3.5)
 
 @export var id: StringName
 @export var title: String = "Missão"

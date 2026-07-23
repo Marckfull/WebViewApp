@@ -13,6 +13,8 @@ const QUEST_PATHS := [
 	"res://data/quests/corvo_favor.tres",
 	"res://data/quests/torre_vigia.tres",
 	"res://data/quests/botas_primeira_ecoada.tres",
+	"res://data/quests/duelo_arena.tres",
+	"res://data/quests/coro_memorias.tres",
 ]
 
 var _quests: Dictionary = {}  # id(String) -> QuestData
@@ -38,6 +40,9 @@ func is_ready(quest: QuestData) -> bool:
 	var quests: Dictionary = SaveManager.state["quests"]
 	if quest.objective == QuestData.Objective.COLLECT:
 		return Quest.is_collect_ready(quest, quests, collect_count(quest))
+	if quest.objective == QuestData.Objective.MEMORIES:
+		var memories: Array = SaveManager.state.get("memories", [])
+		return Quest.is_memories_ready(quest, quests, memories.size())
 	return Quest.is_ready_to_complete(quest, quests)
 
 func turn_in(quest: QuestData) -> bool:

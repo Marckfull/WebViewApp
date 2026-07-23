@@ -22,3 +22,7 @@ static func is_ready_to_complete(quest: QuestData, quests: Dictionary) -> bool:
 ## contador acumulado — pura, para o giver/manager checarem sem tocar no save.
 static func is_collect_ready(quest: QuestData, quests: Dictionary, have: int) -> bool:
 	return status(quests, quest.id) == ACTIVE and have >= quest.count
+
+## Para MEMORIES o "progresso" é quantas Memórias Perdidas Aria já reuniu.
+static func is_memories_ready(quest: QuestData, quests: Dictionary, memories: int) -> bool:
+	return status(quests, quest.id) == ACTIVE and memories >= quest.count

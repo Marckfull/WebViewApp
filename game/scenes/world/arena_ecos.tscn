@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3]
+[gd_scene load_steps=18 format=3]
 
 [ext_resource type="Script" path="res://scripts/world/game_world.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/world/day_night.gd" id="2"]
@@ -10,6 +10,11 @@
 [ext_resource type="PackedScene" path="res://scenes/world/door.tscn" id="8"]
 [ext_resource type="PackedScene" path="res://scenes/world/shrine.tscn" id="9"]
 [ext_resource type="PackedScene" path="res://scenes/enemies/dungeon_boss.tscn" id="10"]
+[ext_resource type="PackedScene" path="res://scenes/world/quest_giver.tscn" id="11"]
+[ext_resource type="Resource" path="res://data/quests/duelo_arena.tres" id="12"]
+[ext_resource type="Resource" path="res://data/dialogue/duelo_arena_offer.tres" id="13"]
+[ext_resource type="Resource" path="res://data/dialogue/duelo_arena_progress.tres" id="14"]
+[ext_resource type="Resource" path="res://data/dialogue/duelo_arena_complete.tres" id="15"]
 
 [sub_resource type="RectangleShape2D" id="wall_h"]
 size = Vector2(800, 16)
@@ -78,6 +83,13 @@ position = Vector2(28, 240)
 target_scene = "res://scenes/world/encruzilhada.tscn"
 spawn_point = Vector2(400, 140)
 prompt = "Sair da arena"
+
+[node name="Arauto" parent="." instance=ExtResource("11")]
+position = Vector2(120, 130)
+quest = ExtResource("12")
+offer_dialogue = ExtResource("13")
+progress_dialogue = ExtResource("14")
+complete_dialogue = ExtResource("15")
 
 [node name="Shrine" parent="." instance=ExtResource("9")]
 position = Vector2(90, 400)
