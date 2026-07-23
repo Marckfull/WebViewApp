@@ -124,6 +124,50 @@ jobs:
         run: godot --headless -s res://addons/gut/gut_cmdln.gd -gdir=res://test/unit -ginclude_subdirs -glog=1 -gexit
 
   # -----------------------------------------------------------------------------
+  # Export Web (HTML5) — build jogável no navegador, publicado como artefato.
+  # Baixe em Actions > run > Artifacts > "ecos-de-lirael-web", descompacte e
+  # sirva por HTTP (ex.: `python3 -m http.server` na pasta) — abrir o index.html
+  # via file:// não funciona (o navegador bloqueia o .wasm).
+  # -----------------------------------------------------------------------------
+  web-export:
+    name: Export Web (HTML5)
+    needs: smoke-test
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    container:
+      image: barichello/godot-ci:4.3
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Preparar templates de export
+        run: |
+          mkdir -p ~/.local/share/godot/export_templates/
+          # A imagem barichello traz os templates em /root; garante que estejam no
+          # HOME do job (que pode ser /github/home) sem falhar se já estiverem lá.
+          if [ ! -e ~/.local/share/godot/export_templates/4.3.stable ]; then
+            cp -r /root/.local/share/godot/export_templates/4.3.stable ~/.local/share/godot/export_templates/4.3.stable
+          fi
+          ls ~/.local/share/godot/export_templates/
+
+      - name: Importar projeto
+        working-directory: game
+        run: godot --headless --import
+
+      - name: Export Web (release)
+        working-directory: game
+        run: |
+          mkdir -p build/web
+          godot --headless --export-release "Web" build/web/index.html
+          ls -la build/web
+
+      - name: Upload build jogável
+        uses: actions/upload-artifact@v4
+        with:
+          name: ecos-de-lirael-web
+          path: game/build/web
+
+  # -----------------------------------------------------------------------------
   # Export Android (AAB) — desabilitado até existirem os secrets do keystore.
   # Requer: templates de export do Godot + variáveis GODOT_ANDROID_KEYSTORE_*, etc.
   # Habilitar trocando `if: false` e configurando export_presets.cfg.
