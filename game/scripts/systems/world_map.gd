@@ -27,6 +27,7 @@ const ROOMS := {
 	"res://scenes/world/torre_ventos_altos.tscn": {"name": "Ventos Altos", "region": "Torre dos Ventos"},
 	"res://scenes/world/torre_dos_ventos.tscn": {"name": "Cúpula", "region": "Torre dos Ventos"},
 	"res://scenes/world/necropole_atrio.tscn": {"name": "Átrio", "region": "Necrópole de Sal"},
+	"res://scenes/world/necropole_tumbas.tscn": {"name": "Tumbas de Sal", "region": "Necrópole de Sal"},
 	"res://scenes/world/necropole_de_sal.tscn": {"name": "Salinas", "region": "Necrópole de Sal"},
 	"res://scenes/world/arena_ecos.tscn": {"name": "Arena dos Ecos", "region": "Coração Mudo"},
 	"res://scenes/world/coracao_mudo.tscn": {"name": "Coração Mudo", "region": "Coração Mudo"},

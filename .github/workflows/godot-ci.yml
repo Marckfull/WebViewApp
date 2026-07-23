@@ -102,6 +102,10 @@ jobs:
         working-directory: game
         run: godot --headless --quit-after 120 res://scenes/world/necropole_atrio.tscn
 
+      - name: Smoke test — tumbas (Necrópole)
+        working-directory: game
+        run: godot --headless --quit-after 120 res://scenes/world/necropole_tumbas.tscn
+
       - name: Smoke test — dungeon (Necrópole de Sal)
         working-directory: game
         run: godot --headless --quit-after 120 res://scenes/world/necropole_de_sal.tscn
