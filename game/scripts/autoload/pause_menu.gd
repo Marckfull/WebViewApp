@@ -23,6 +23,9 @@ var _telemetry_btn: Button
 var _language_btn: Button
 var _shake_btn: Button
 var _text_btn: Button
+var _touch_panel: Panel
+var _hand_btn: Button
+var _touch_scale_btn: Button
 var _open: bool = false
 
 func _ready() -> void:
@@ -51,6 +54,7 @@ func _pause() -> void:
 	_bestiary_panel.visible = false
 	_inventory_panel.visible = false
 	_map_panel.visible = false
+	_touch_panel.visible = false
 	_root_panel.visible = true
 	_layer.visible = true
 	get_tree().paused = true
@@ -90,9 +94,9 @@ func _build_ui() -> void:
 	_add_button(_root_panel, Locale.t("PAUSE_MAIN_MENU"), Vector2(12, 226), _to_main_menu)
 
 	_options_panel = _make_panel()
-	_options_panel.custom_minimum_size = Vector2(240, 308)
-	_options_panel.size = Vector2(240, 308)
-	_options_panel.position = Vector2(-120, -154)
+	_options_panel.custom_minimum_size = Vector2(240, 340)
+	_options_panel.size = Vector2(240, 340)
+	_options_panel.position = Vector2(-120, -170)
 	_options_panel.visible = false
 	_layer.add_child(_options_panel)
 	_difficulty_label = _make_label("Dificuldade: Canção", Vector2(12, 6), Color(0.85, 0.9, 1))
@@ -104,7 +108,20 @@ func _build_ui() -> void:
 	_language_btn = _add_button(_options_panel, "Idioma: PT", Vector2(12, 160), _toggle_language)
 	_shake_btn = _add_button(_options_panel, "Reduzir tremor: OFF", Vector2(12, 192), _toggle_reduce_shake)
 	_text_btn = _add_button(_options_panel, "Texto grande: OFF", Vector2(12, 224), _toggle_large_text)
-	_add_button(_options_panel, Locale.t("BACK"), Vector2(12, 260), func(): _show_root())
+	_add_button(_options_panel, "Controles de toque", Vector2(12, 256), func(): _show_touch())
+	_add_button(_options_panel, Locale.t("BACK"), Vector2(12, 292), func(): _show_root())
+
+	_touch_panel = _make_panel()
+	_touch_panel.custom_minimum_size = Vector2(240, 168)
+	_touch_panel.size = Vector2(240, 168)
+	_touch_panel.position = Vector2(-120, -84)
+	_touch_panel.visible = false
+	_layer.add_child(_touch_panel)
+	var t_title := _make_label("Controles de toque", Vector2(12, 6), Color(0.85, 0.9, 1))
+	_touch_panel.add_child(t_title)
+	_hand_btn = _add_button(_touch_panel, "Canhoto: OFF", Vector2(12, 32), _toggle_left_handed)
+	_touch_scale_btn = _add_button(_touch_panel, "Botões: 100%", Vector2(12, 64), _cycle_touch_scale)
+	_add_button(_touch_panel, Locale.t("BACK"), Vector2(12, 120), func(): _show_options())
 
 	_bestiary_panel = _make_panel()
 	_bestiary_panel.visible = false
@@ -144,6 +161,7 @@ func _build_ui() -> void:
 	_map_panel.size = Vector2(320, 300)
 	_map_panel.position = Vector2(-160, -150)
 	_map_panel.visible = false
+	_touch_panel.visible = false
 	_layer.add_child(_map_panel)
 	var m_title := _make_label("Mapa", Vector2(12, 8), Color(0.85, 0.9, 1))
 	_map_panel.add_child(m_title)
@@ -184,6 +202,7 @@ func _show_inventory() -> void:
 	_options_panel.visible = false
 	_bestiary_panel.visible = false
 	_map_panel.visible = false
+	_touch_panel.visible = false
 	_inventory_label.text = _inventory_text()
 	_populate_inventory_grid()
 	_inventory_panel.visible = true
@@ -265,6 +284,7 @@ func _show_options() -> void:
 	_bestiary_panel.visible = false
 	_inventory_panel.visible = false
 	_map_panel.visible = false
+	_touch_panel.visible = false
 	_update_telemetry_label()
 	_update_language_label()
 	_update_accessibility_labels()
@@ -288,6 +308,40 @@ func _update_accessibility_labels() -> void:
 	_shake_btn.text = "Reduzir tremor: %s" % ("ON" if Accessibility.is_reduce_shake(settings) else "OFF")
 	_text_btn.text = "Texto grande: %s" % ("ON" if Accessibility.is_large_text(settings) else "OFF")
 
+func _show_touch() -> void:
+	_root_panel.visible = false
+	_options_panel.visible = false
+	_update_touch_labels()
+	_touch_panel.visible = true
+
+func _toggle_left_handed() -> void:
+	var settings: Dictionary = SaveManager.state["settings"]
+	settings["touch_left_handed"] = not TouchLayout.is_left_handed(settings)
+	_apply_touch_layout()
+	SaveManager.save_game()
+	_update_touch_labels()
+
+func _cycle_touch_scale() -> void:
+	var settings: Dictionary = SaveManager.state["settings"]
+	settings["touch_scale"] = TouchLayout.next_scale(TouchLayout.button_scale(settings))
+	_apply_touch_layout()
+	SaveManager.save_game()
+	_update_touch_labels()
+
+## Reaplica o layout de toque nos HUDs e sticks vivos na cena (grupos).
+func _apply_touch_layout() -> void:
+	for node in get_tree().get_nodes_in_group("hud"):
+		if node.has_method("apply_touch_layout"):
+			node.apply_touch_layout()
+	for node in get_tree().get_nodes_in_group("joystick"):
+		if node.has_method("apply_touch_layout"):
+			node.apply_touch_layout()
+
+func _update_touch_labels() -> void:
+	var settings: Dictionary = SaveManager.state.get("settings", {})
+	_hand_btn.text = "Canhoto: %s" % ("ON" if TouchLayout.is_left_handed(settings) else "OFF")
+	_touch_scale_btn.text = "Botões: %d%%" % roundi(TouchLayout.button_scale(settings) * 100.0)
+
 func _toggle_telemetry() -> void:
 	TelemetryLogger.set_enabled(not TelemetryLogger.is_enabled())
 	_update_telemetry_label()
@@ -307,6 +361,7 @@ func _show_bestiary() -> void:
 	_options_panel.visible = false
 	_inventory_panel.visible = false
 	_map_panel.visible = false
+	_touch_panel.visible = false
 	_bestiary_label.text = _bestiary_text()
 	_bestiary_panel.visible = true
 
@@ -335,6 +390,7 @@ func _show_root() -> void:
 	_bestiary_panel.visible = false
 	_inventory_panel.visible = false
 	_map_panel.visible = false
+	_touch_panel.visible = false
 	_root_panel.visible = true
 
 func _make_panel() -> Panel:

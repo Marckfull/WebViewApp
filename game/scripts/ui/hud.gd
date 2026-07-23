@@ -15,8 +15,10 @@ var _weapon: Label
 var _objective: Label
 var _slot_labels: Array[Label] = []
 var _selected_slot: int = 0
+var _touch_buttons: Array = []   ## [{btn, base}] p/ reaplicar o layout de toque
 
 func _ready() -> void:
+	add_to_group("hud")
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_build_bars()
@@ -136,22 +138,32 @@ func _build_buttons() -> void:
 	for a in actions:
 		var btn := Button.new()
 		btn.text = a[0]
-		btn.custom_minimum_size = Vector2(60, 60)
-		btn.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
-		btn.position = a[2]
 		var action: StringName = a[1]
 		btn.button_down.connect(func(): Input.action_press(action))
 		btn.button_up.connect(func(): Input.action_release(action))
 		add_child(btn)
+		_touch_buttons.append({"btn": btn, "base": a[2]})
 
 	# Ocarina abre a roda de melodias — chama o autoload direto (não via ação).
 	var ocarina_btn := Button.new()
 	ocarina_btn.text = "OCARINA"
-	ocarina_btn.custom_minimum_size = Vector2(70, 60)
-	ocarina_btn.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
-	ocarina_btn.position = Vector2(-70, -210)
 	ocarina_btn.pressed.connect(func(): OcarinaManager.toggle())
 	add_child(ocarina_btn)
+	_touch_buttons.append({"btn": ocarina_btn, "base": Vector2(-70, -210)})
+
+	apply_touch_layout()
+
+## (Re)aplica tamanho, canto de âncora e posição dos botões conforme o layout de
+## toque escolhido (§3.6). Chamado ao construir e quando a preferência muda.
+func apply_touch_layout() -> void:
+	var settings: Dictionary = SaveManager.state.get("settings", {})
+	var size := TouchLayout.button_size(settings)
+	var preset := TouchLayout.button_preset(settings)
+	for entry in _touch_buttons:
+		var btn: Button = entry["btn"]
+		btn.custom_minimum_size = size
+		btn.set_anchors_preset(preset)
+		btn.position = TouchLayout.offset_for(entry["base"], settings)
 
 	# Pausa (canto superior direito).
 	var pause_btn := Button.new()

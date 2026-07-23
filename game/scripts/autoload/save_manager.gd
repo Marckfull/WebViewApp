@@ -48,7 +48,7 @@ func _default_state() -> Dictionary:
 		"ending_chosen": "",  ## fim escolhido no Coração Mudo (§2): silenciar/completar/secreto
 		"ng_cycle": 0,        ## ciclo de New Game+ (0 = primeira run, §3.6)
 		"current_scene": "",  ## cena atual, para retomar ao carregar (§3.6)
-		"settings": { "telemetry": false, "locale": "pt_BR", "reduce_shake": false, "large_text": false },  ## telemetria opt-in + idioma + acessibilidade (§6.3/§3.6)
+		"settings": { "telemetry": false, "locale": "pt_BR", "reduce_shake": false, "large_text": false, "touch_scale": 1.0, "touch_left_handed": false },  ## telemetria + idioma + acessibilidade + toque (§6.3/§3.6)
 	}
 
 ## Reinicia para um jogo novo (usado pelo menu "Novo Jogo").

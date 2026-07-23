@@ -16,6 +16,18 @@ var _touch_index: int = -1
 var _origin: Vector2
 var _direction: Vector2 = Vector2.ZERO
 
+func _ready() -> void:
+	add_to_group("joystick")
+	apply_touch_layout()
+
+## Canhoto: o stick ocupa a metade DIREITA da tela; destro, a metade esquerda.
+func apply_touch_layout() -> void:
+	var left_handed := TouchLayout.is_left_handed(SaveManager.state.get("settings", {}))
+	anchor_left = 0.5 if left_handed else 0.0
+	anchor_right = 1.0 if left_handed else 0.5
+	offset_left = 0.0
+	offset_right = 0.0
+
 func get_direction() -> Vector2:
 	return _direction
 
