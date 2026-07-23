@@ -5,6 +5,9 @@ extends "res://addons/gut/test.gd"
 const REGISTERED := [
 	"res://data/quests/cao_sem_nome.tres",
 	"res://data/quests/ervas_alquimista.tres",
+	"res://data/quests/corvo_favor.tres",
+	"res://data/quests/torre_vigia.tres",
+	"res://data/quests/botas_primeira_ecoada.tres",
 ]
 
 func test_quests_load_with_valid_fields() -> void:

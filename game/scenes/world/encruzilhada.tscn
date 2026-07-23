@@ -1,4 +1,4 @@
-[gd_scene load_steps=36 format=3]
+[gd_scene load_steps=40 format=3]
 
 [ext_resource type="Script" path="res://scripts/world/encruzilhada.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/world/day_night.gd" id="2"]
@@ -33,6 +33,10 @@
 [ext_resource type="Resource" path="res://data/dialogue/escoltar_ferido_progress.tres" id="31"]
 [ext_resource type="Resource" path="res://data/dialogue/escoltar_ferido_complete.tres" id="32"]
 [ext_resource type="Resource" path="res://data/dialogue/ferido_arrival.tres" id="33"]
+[ext_resource type="Resource" path="res://data/quests/corvo_favor.tres" id="34"]
+[ext_resource type="Resource" path="res://data/dialogue/corvo_favor_offer.tres" id="35"]
+[ext_resource type="Resource" path="res://data/dialogue/corvo_favor_progress.tres" id="36"]
+[ext_resource type="Resource" path="res://data/dialogue/corvo_favor_complete.tres" id="37"]
 
 [sub_resource type="RectangleShape2D" id="wall_h"]
 size = Vector2(800, 16)
@@ -178,6 +182,13 @@ arrival_dialogue = ExtResource("33")
 
 [node name="MarcoVerde" parent="." instance=ExtResource("28")]
 position = Vector2(680, 360)
+
+[node name="CorvoFavor" parent="." instance=ExtResource("12")]
+position = Vector2(120, 360)
+quest = ExtResource("34")
+offer_dialogue = ExtResource("35")
+progress_dialogue = ExtResource("36")
+complete_dialogue = ExtResource("37")
 
 [node name="UI" type="CanvasLayer" parent="."]
 

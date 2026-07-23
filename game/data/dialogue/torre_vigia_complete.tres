@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/dialogue_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"torre_vigia_complete"
+speaker = "Vigia"
+lines = Array[String](["Três cenas, uma verdade. Eu fui enganada... e agora posso descansar.", "Leve o Olho da Vigia: a Lente passará a marcar segredos perto de você. Veja por mim.", "(Recompensa: Ecos + Memória Perdida)"])

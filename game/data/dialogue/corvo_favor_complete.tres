@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/dialogue_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"corvo_favor_complete"
+speaker = "Corvo"
+lines = Array[String](["Intacta. Você tem mão firme e olho seco — raro.", "Minha banca abre de vez: vender, recomprar, e dez por cento de desconto que não some. Negócio é negócio.", "(Recompensa: Ecos + desconto permanente na loja do Corvo)"])

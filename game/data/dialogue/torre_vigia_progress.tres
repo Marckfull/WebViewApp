@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/dialogue_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"torre_vigia_progress"
+speaker = "Vigia"
+lines = Array[String](["As cenas ainda tremem no ar. Enquanto os Alados rondam, a verdade não assenta.", "Feche o espaço com eles no alto — você tem o fôlego que me falta."])

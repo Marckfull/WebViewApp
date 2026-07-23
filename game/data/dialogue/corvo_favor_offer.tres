@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/dialogue_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"corvo_favor_offer"
+speaker = "Corvo"
+lines = Array[String](["Devo-lhe um favor, e você vai querer cobrar. Perdi uma encomenda numa cripta que a maré tomou.", "Coisas que vão querer ser compradas. Traga-a inteira e eu abro o resto da minha banca pra você.", "(Missão aceita: O Corvo Deve um Favor — derrote a Sanguessuga de Sal que guarda a encomenda)"])

@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3]
+[gd_scene load_steps=20 format=3]
 
 [ext_resource type="Script" path="res://scripts/world/game_world.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/world/day_night.gd" id="2"]
@@ -11,6 +11,11 @@
 [ext_resource type="PackedScene" path="res://scenes/enemies/dummy_enemy.tscn" id="9"]
 [ext_resource type="PackedScene" path="res://scenes/world/consumable_pickup.tscn" id="10"]
 [ext_resource type="PackedScene" path="res://scenes/enemies/ranged_enemy.tscn" id="11"]
+[ext_resource type="PackedScene" path="res://scenes/world/quest_giver.tscn" id="12"]
+[ext_resource type="Resource" path="res://data/quests/botas_primeira_ecoada.tres" id="13"]
+[ext_resource type="Resource" path="res://data/dialogue/botas_primeira_ecoada_offer.tres" id="14"]
+[ext_resource type="Resource" path="res://data/dialogue/botas_primeira_ecoada_progress.tres" id="15"]
+[ext_resource type="Resource" path="res://data/dialogue/botas_primeira_ecoada_complete.tres" id="16"]
 
 [sub_resource type="RectangleShape2D" id="wall_h"]
 size = Vector2(800, 16)
@@ -125,6 +130,14 @@ position = Vector2(680, 380)
 consumable_id = &"madeira"
 amount = 1
 bag = "resources"
+
+[node name="Lapide" parent="." instance=ExtResource("12")]
+position = Vector2(400, 110)
+prompt = "Ouvir a lápide"
+quest = ExtResource("13")
+offer_dialogue = ExtResource("14")
+progress_dialogue = ExtResource("15")
+complete_dialogue = ExtResource("16")
 
 [node name="UI" type="CanvasLayer" parent="."]
 
