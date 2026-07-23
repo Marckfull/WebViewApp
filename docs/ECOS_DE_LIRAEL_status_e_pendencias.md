@@ -72,7 +72,7 @@ pausa (Salvar/Opções/Bestiário), **save slots**, forja, alquimia, viagem, di�
 |---|---|---|
 | Inventário / diário | 🟢 | Tela de **Inventário na pausa**: armas, armadura/amuleto, itens-chave, memórias e Ecos em texto, mais uma **grade visual da bolsa** (`ItemIcons`) — uma célula por consumível/recurso com ícone greybox colorido, nome curto e quantidade. Falta só a arte final dos ícones |
 | Descrições ricas de item | 🟡 | Lore em itens de dungeon; falta tela de inventário com descrições |
-| Tela de mapa completa | 🟡 | Só mini-mapa. Falta mapa cheio com pins manuais |
+| Tela de mapa completa | 🟢 | **Tela de Mapa na pausa** (`WorldMap`): lista as regiões e as salas já descobertas (cruzando o fog-of-war persistido do mini-mapa), marca a sala atual e mostra "N/M salas exploradas". Regiões intocadas aparecem como "???". Falta só desenho/pins manuais |
 | Ícones / fontes | ⛔ | ~200 ícones 24×24, fonte bitmap PT-BR — hoje texto/formas |
 | Opções de acessibilidade | 🟡 | Dificuldade + indicador de ameaça, **reduzir tremor de câmera** e **texto grande** (escala a fonte dos menus/diálogo via tema raiz), persistidos em settings (`Accessibility`). Faltam **daltonismo, vibração, remapeamento completo** |
 | Layout touch customizável | ⬜ | Botões fixos; falta posição/escala + modo canhoto (§3.1) |
@@ -153,7 +153,7 @@ unificado (teclado/gamepad/touch), telemetria opt-in, CI (import+smoke+GUT), **2
 2. **Vertical Slice de verdade:** Ato 1 (vila + Cripta) com arte/som finais — o gate de 30 min do §7.
 3. **Narrativa:** dar cena aos personagens (Lys/Selene/Odara), a vila do prólogo, mais lore ramificado.
 4. **Conteúdo:** ~31 inimigos, mais peças de equipamento, mais salas por dungeon (bosses já têm movesets próprios).
-5. **Sistemas restantes:** grade visual de inventário com ícones, mapa completo, streaming de mundo aberto.
+5. **Sistemas restantes:** streaming de mundo aberto, layout de toque customizável, resto da acessibilidade (daltonismo/vibração/remapeamento).
 6. **Acessibilidade/opções completas** + localização EN.
 7. **Otimização low-end + export AAB assinado + soft launch.**
 

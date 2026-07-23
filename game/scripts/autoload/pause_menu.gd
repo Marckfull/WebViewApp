@@ -16,6 +16,8 @@ var _bestiary_label: Label
 var _inventory_panel: Panel
 var _inventory_label: Label
 var _inventory_grid: GridContainer
+var _map_panel: Panel
+var _map_label: Label
 var _difficulty_label: Label
 var _telemetry_btn: Button
 var _language_btn: Button
@@ -48,6 +50,7 @@ func _pause() -> void:
 	_options_panel.visible = false
 	_bestiary_panel.visible = false
 	_inventory_panel.visible = false
+	_map_panel.visible = false
 	_root_panel.visible = true
 	_layer.visible = true
 	get_tree().paused = true
@@ -72,18 +75,19 @@ func _build_ui() -> void:
 	add_child(_layer)
 
 	_root_panel = _make_panel()
-	_root_panel.custom_minimum_size = Vector2(240, 244)
-	_root_panel.size = Vector2(240, 244)
-	_root_panel.position = Vector2(-120, -122)
+	_root_panel.custom_minimum_size = Vector2(240, 278)
+	_root_panel.size = Vector2(240, 278)
+	_root_panel.position = Vector2(-120, -139)
 	_layer.add_child(_root_panel)
 	var title := _make_label(Locale.t("PAUSE"), Vector2(12, 8), Color(0.85, 0.9, 1))
 	_root_panel.add_child(title)
 	_add_button(_root_panel, Locale.t("PAUSE_RESUME"), Vector2(12, 34), _resume)
 	_add_button(_root_panel, Locale.t("PAUSE_INVENTORY"), Vector2(12, 66), func(): _show_inventory())
-	_add_button(_root_panel, Locale.t("PAUSE_BESTIARY"), Vector2(12, 98), func(): _show_bestiary())
-	_add_button(_root_panel, Locale.t("PAUSE_SAVE"), Vector2(12, 130), func(): SaveSlotsMenu.open_for_save())
-	_add_button(_root_panel, Locale.t("PAUSE_OPTIONS"), Vector2(12, 162), func(): _show_options())
-	_add_button(_root_panel, Locale.t("PAUSE_MAIN_MENU"), Vector2(12, 194), _to_main_menu)
+	_add_button(_root_panel, "Mapa", Vector2(12, 98), func(): _show_map())
+	_add_button(_root_panel, Locale.t("PAUSE_BESTIARY"), Vector2(12, 130), func(): _show_bestiary())
+	_add_button(_root_panel, Locale.t("PAUSE_SAVE"), Vector2(12, 162), func(): SaveSlotsMenu.open_for_save())
+	_add_button(_root_panel, Locale.t("PAUSE_OPTIONS"), Vector2(12, 194), func(): _show_options())
+	_add_button(_root_panel, Locale.t("PAUSE_MAIN_MENU"), Vector2(12, 226), _to_main_menu)
 
 	_options_panel = _make_panel()
 	_options_panel.custom_minimum_size = Vector2(240, 308)
@@ -135,10 +139,51 @@ func _build_ui() -> void:
 	_inventory_panel.add_child(_inventory_grid)
 	_add_button(_inventory_panel, Locale.t("BACK"), Vector2(12, 262), func(): _show_root())
 
+	_map_panel = _make_panel()
+	_map_panel.custom_minimum_size = Vector2(320, 300)
+	_map_panel.size = Vector2(320, 300)
+	_map_panel.position = Vector2(-160, -150)
+	_map_panel.visible = false
+	_layer.add_child(_map_panel)
+	var m_title := _make_label("Mapa", Vector2(12, 8), Color(0.85, 0.9, 1))
+	_map_panel.add_child(m_title)
+	_map_label = _make_label("", Vector2(12, 34), Color(0.82, 0.85, 0.9))
+	_map_label.custom_minimum_size = Vector2(296, 220)
+	_map_panel.add_child(_map_label)
+	_add_button(_map_panel, Locale.t("BACK"), Vector2(12, 262), func(): _show_root())
+
+func _show_map() -> void:
+	_root_panel.visible = false
+	_options_panel.visible = false
+	_bestiary_panel.visible = false
+	_inventory_panel.visible = false
+	_map_label.text = _map_text()
+	_map_panel.visible = true
+
+## Lista as regiões e, em cada uma, as salas que Aria já descobriu (fog-of-war).
+## A sala atual leva um marcador. Regiões ainda intocadas aparecem como "???".
+func _map_text() -> String:
+	var world_state: Dictionary = SaveManager.state.get("world", {})
+	var current: String = SaveManager.state.get("current_scene", "")
+	var out := "Explorado: %d/%d salas\n\n" % [
+		WorldMap.discovered_count(world_state), WorldMap.total_rooms()]
+	for region in WorldMap.REGIONS:
+		var rooms := WorldMap.discovered_in(region, world_state)
+		if rooms.is_empty():
+			out += "%s: ???\n" % region
+			continue
+		var names := PackedStringArray()
+		for path in rooms:
+			var mark := "▸ " if path == current else ""
+			names.append(mark + WorldMap.name_of(path))
+		out += "%s: %s\n" % [region, ", ".join(names)]
+	return out
+
 func _show_inventory() -> void:
 	_root_panel.visible = false
 	_options_panel.visible = false
 	_bestiary_panel.visible = false
+	_map_panel.visible = false
 	_inventory_label.text = _inventory_text()
 	_populate_inventory_grid()
 	_inventory_panel.visible = true
@@ -219,6 +264,7 @@ func _show_options() -> void:
 	_root_panel.visible = false
 	_bestiary_panel.visible = false
 	_inventory_panel.visible = false
+	_map_panel.visible = false
 	_update_telemetry_label()
 	_update_language_label()
 	_update_accessibility_labels()
@@ -260,6 +306,7 @@ func _show_bestiary() -> void:
 	_root_panel.visible = false
 	_options_panel.visible = false
 	_inventory_panel.visible = false
+	_map_panel.visible = false
 	_bestiary_label.text = _bestiary_text()
 	_bestiary_panel.visible = true
 
@@ -287,6 +334,7 @@ func _show_root() -> void:
 	_options_panel.visible = false
 	_bestiary_panel.visible = false
 	_inventory_panel.visible = false
+	_map_panel.visible = false
 	_root_panel.visible = true
 
 func _make_panel() -> Panel:
