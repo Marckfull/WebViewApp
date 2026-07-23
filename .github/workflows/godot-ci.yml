@@ -78,6 +78,10 @@ jobs:
         working-directory: game
         run: godot --headless --quit-after 120 res://scenes/world/forja_atrio.tscn
 
+      - name: Smoke test — fornalhas (Forja)
+        working-directory: game
+        run: godot --headless --quit-after 120 res://scenes/world/forja_fornalhas.tscn
+
       - name: Smoke test — dungeon (Forja Afundada)
         working-directory: game
         run: godot --headless --quit-after 120 res://scenes/world/forja_afundada.tscn
