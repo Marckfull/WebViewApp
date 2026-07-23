@@ -56,7 +56,7 @@ dificuldade), poise/postura, lock-on touch, combos, morte com drop de Ecos, fras
 | Salas greybox | 🟡 | **13 salas jogáveis** (vila, 2 da Cripta, Encruzilhada, 4 dungeons × 2 salas, Coração Mudo). Formas geométricas, sem tilemap real |
 | Overworld / hub | 🟡 | Encruzilhada dos Ecos liga as 4 dungeons e a descida ao Coração Mudo. Falta o mundo aberto em chunks (streaming, §6.2) |
 | Vila de Pedra-Alva (Ato 1) | 🟡 | **Jogável** (`vila_pedra_alva.tscn`): prólogo com Lys, aldeões e o rapto pelo Silêncio, com **dicas diegéticas de combate** no caminho até a Cripta. Falta arte |
-| 5 dungeons | 🟡 | Cripta (2 salas) + as 4 do Ato 2. **Floresta** (átrio → **Bosque** com Divisor/forrageio → boss) e **Forja** (átrio → **Fornalhas** com Couraçado/minério → boss) já têm 3 salas; Torre e Necrópole seguem com átrio + sala do boss. Falta estender a densidade às duas últimas |
+| 5 dungeons | 🟡 | Cripta (2 salas) + as 4 do Ato 2. **Floresta** (Bosque/Divisor), **Forja** (Fornalhas/Couraçado) e **Torre** (átrio → **Ventos Altos** com Alado/forrageio → Cúpula) já têm 3 salas; só a Necrópole segue com átrio + sala do boss. Falta estender a densidade à última |
 | Alas de 10–15 min c/ checkpoints | 🟡 | Estrutura de portas/checkpoint pronta; falta conteúdo de nível |
 | Densidade de segredos | 🟡 | Alguns (memórias). GDD pede "cada tela esconde algo" |
 | Paralaxe (3+ camadas) | ⛔ | Depende de arte de cenário |

@@ -90,6 +90,10 @@ jobs:
         working-directory: game
         run: godot --headless --quit-after 120 res://scenes/world/torre_atrio.tscn
 
+      - name: Smoke test — ventos altos (Torre)
+        working-directory: game
+        run: godot --headless --quit-after 120 res://scenes/world/torre_ventos_altos.tscn
+
       - name: Smoke test — dungeon (Torre dos Ventos)
         working-directory: game
         run: godot --headless --quit-after 120 res://scenes/world/torre_dos_ventos.tscn
