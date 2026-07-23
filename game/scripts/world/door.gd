@@ -9,6 +9,5 @@ extends Interactable
 func interact(_player: Node) -> void:
 	if target_scene == "":
 		return
-	GameConfig.next_spawn = spawn_point
-	GameConfig.has_next_spawn = true
-	get_tree().change_scene_to_file(target_scene)
+	# Usa o chunk vizinho já pré-carregado (transição instantânea), §6.2.
+	RoomStreamer.go_to(target_scene, spawn_point)

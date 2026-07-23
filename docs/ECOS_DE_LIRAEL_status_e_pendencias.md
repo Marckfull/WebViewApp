@@ -117,7 +117,7 @@ unificado (teclado/gamepad/touch), telemetria opt-in, CI (import+smoke+GUT), **2
 | Item | Estado | Falta |
 |---|---|---|
 | Animação de ataque | 🟡 | Timing por timer; falta **AnimationPlayer** ligando hitbox a frames de sprite |
-| Streaming de mundo (chunks) | ⬜ | Cenas inteiras hoje; GDD §6.2 pede chunks por proximidade |
+| Streaming de mundo (chunks) | 🟡 | **Streaming leve de salas** (`RoomStreamer` + `Streaming`): ao entrar numa sala, os vizinhos (alvos das portas) são **pré-carregados em thread** como chunks e servidos prontos na transição (`change_scene_to_packed`), com cache LRU (teto 4). Portas e escadas usam o streamer. Falta mundo aberto contínuo (sem paredes de sala) |
 | Sistema de projétil | 🟢 | `Projectile` (estende Hitbox): move, dano por Hitbox/Hurtbox, camadas por disparador. Usado pelo **arco de Aria** e pelo **Ecoado Arqueiro**. Falta variar padrões (leque, mira preditiva) |
 | Sistema de loja | ⬜ | Comprar/vender |
 | Inventário (backend) | 🟡 | Equipar arma/armadura/amuleto pronto (tela no Santuário, `EquipMenu`). Falta grade/categorias geral |

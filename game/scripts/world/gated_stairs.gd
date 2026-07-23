@@ -12,8 +12,6 @@ func interact(_player: Node) -> void:
 	if ActProgress.all_cleared(defeated):
 		if target_scene == "":
 			return
-		GameConfig.next_spawn = spawn_point
-		GameConfig.has_next_spawn = true
-		get_tree().change_scene_to_file(target_scene)
+		RoomStreamer.go_to(target_scene, spawn_point)
 	elif locked_dialogue:
 		DialogueManager.start(locked_dialogue)

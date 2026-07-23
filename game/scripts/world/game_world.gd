@@ -28,7 +28,16 @@ func _ready() -> void:
 		_apply_camera_limits()
 	_record_enemy_spawns()
 	_restore_drop_from_save()
+	_stream_neighbors()
 	GameEvents.player_died.connect(_on_player_died)
+
+## Pré-carrega as salas vizinhas (alvos das portas) como chunks (§6.2).
+func _stream_neighbors() -> void:
+	var neighbors: Array = []
+	for node in get_children():
+		if "target_scene" in node and String(node.target_scene) != "":
+			neighbors.append(String(node.target_scene))
+	RoomStreamer.enter(scene_file_path, neighbors)
 
 ## Recria o drop de Ecos salvo — só na sala onde a morte ocorreu (a cena é
 ## registrada no drop para não reaparecer na ala errada).
