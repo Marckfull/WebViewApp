@@ -48,7 +48,7 @@ func _default_state() -> Dictionary:
 		"ending_chosen": "",  ## fim escolhido no Coração Mudo (§2): silenciar/completar/secreto
 		"ng_cycle": 0,        ## ciclo de New Game+ (0 = primeira run, §3.6)
 		"current_scene": "",  ## cena atual, para retomar ao carregar (§3.6)
-		"settings": { "telemetry": false, "locale": "pt_BR" },  ## telemetria opt-in + idioma (§6.3/§Alpha→Beta)
+		"settings": { "telemetry": false, "locale": "pt_BR", "reduce_shake": false, "large_text": false },  ## telemetria opt-in + idioma + acessibilidade (§6.3/§3.6)
 	}
 
 ## Reinicia para um jogo novo (usado pelo menu "Novo Jogo").
@@ -124,6 +124,8 @@ func load_game(slot: int = AUTOSAVE_SLOT) -> bool:
 		push_error("SaveManager: save corrompido em %s" % path)
 		return false
 	state = _migrate(parsed)
+	# Acessibilidade (§3.6): aplica a escala de fonte assim que o save carrega.
+	Accessibility.apply_to_tree(get_tree(), state.get("settings", {}))
 	GameEvents.game_loaded.emit(slot)
 	return true
 

@@ -19,6 +19,8 @@ var _inventory_grid: GridContainer
 var _difficulty_label: Label
 var _telemetry_btn: Button
 var _language_btn: Button
+var _shake_btn: Button
+var _text_btn: Button
 var _open: bool = false
 
 func _ready() -> void:
@@ -84,9 +86,9 @@ func _build_ui() -> void:
 	_add_button(_root_panel, Locale.t("PAUSE_MAIN_MENU"), Vector2(12, 194), _to_main_menu)
 
 	_options_panel = _make_panel()
-	_options_panel.custom_minimum_size = Vector2(240, 244)
-	_options_panel.size = Vector2(240, 244)
-	_options_panel.position = Vector2(-120, -122)
+	_options_panel.custom_minimum_size = Vector2(240, 308)
+	_options_panel.size = Vector2(240, 308)
+	_options_panel.position = Vector2(-120, -154)
 	_options_panel.visible = false
 	_layer.add_child(_options_panel)
 	_difficulty_label = _make_label("Dificuldade: Canção", Vector2(12, 6), Color(0.85, 0.9, 1))
@@ -96,7 +98,9 @@ func _build_ui() -> void:
 	_add_button(_options_panel, "Requiem (souls)", Vector2(12, 96), func(): set_difficulty(2))
 	_telemetry_btn = _add_button(_options_panel, "Telemetria: OFF", Vector2(12, 128), _toggle_telemetry)
 	_language_btn = _add_button(_options_panel, "Idioma: PT", Vector2(12, 160), _toggle_language)
-	_add_button(_options_panel, Locale.t("BACK"), Vector2(12, 196), func(): _show_root())
+	_shake_btn = _add_button(_options_panel, "Reduzir tremor: OFF", Vector2(12, 192), _toggle_reduce_shake)
+	_text_btn = _add_button(_options_panel, "Texto grande: OFF", Vector2(12, 224), _toggle_large_text)
+	_add_button(_options_panel, Locale.t("BACK"), Vector2(12, 260), func(): _show_root())
 
 	_bestiary_panel = _make_panel()
 	_bestiary_panel.visible = false
@@ -217,7 +221,26 @@ func _show_options() -> void:
 	_inventory_panel.visible = false
 	_update_telemetry_label()
 	_update_language_label()
+	_update_accessibility_labels()
 	_options_panel.visible = true
+
+func _toggle_reduce_shake() -> void:
+	var settings: Dictionary = SaveManager.state["settings"]
+	settings["reduce_shake"] = not Accessibility.is_reduce_shake(settings)
+	SaveManager.save_game()
+	_update_accessibility_labels()
+
+func _toggle_large_text() -> void:
+	var settings: Dictionary = SaveManager.state["settings"]
+	settings["large_text"] = not Accessibility.is_large_text(settings)
+	Accessibility.apply_to_tree(get_tree(), settings)
+	SaveManager.save_game()
+	_update_accessibility_labels()
+
+func _update_accessibility_labels() -> void:
+	var settings: Dictionary = SaveManager.state.get("settings", {})
+	_shake_btn.text = "Reduzir tremor: %s" % ("ON" if Accessibility.is_reduce_shake(settings) else "OFF")
+	_text_btn.text = "Texto grande: %s" % ("ON" if Accessibility.is_large_text(settings) else "OFF")
 
 func _toggle_telemetry() -> void:
 	TelemetryLogger.set_enabled(not TelemetryLogger.is_enabled())

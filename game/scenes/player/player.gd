@@ -228,7 +228,9 @@ func _on_hurt(_hitbox: Hitbox) -> void:
 func _apply_shake(delta: float) -> void:
 	if _shake_time > 0.0:
 		_shake_time -= delta
-		camera.offset = Vector2(randf_range(-2.5, 2.5), randf_range(-2.5, 2.5))
+		# Acessibilidade (§3.6): "Reduzir tremor" zera o deslocamento da câmera.
+		var mult := Accessibility.shake_mult(SaveManager.state.get("settings", {}))
+		camera.offset = Vector2(randf_range(-2.5, 2.5), randf_range(-2.5, 2.5)) * mult
 	elif camera.offset != Vector2.ZERO:
 		camera.offset = Vector2.ZERO
 

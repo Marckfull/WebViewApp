@@ -74,7 +74,7 @@ pausa (Salvar/Opções/Bestiário), **save slots**, forja, alquimia, viagem, di�
 | Descrições ricas de item | 🟡 | Lore em itens de dungeon; falta tela de inventário com descrições |
 | Tela de mapa completa | 🟡 | Só mini-mapa. Falta mapa cheio com pins manuais |
 | Ícones / fontes | ⛔ | ~200 ícones 24×24, fonte bitmap PT-BR — hoje texto/formas |
-| Opções de acessibilidade | 🟡 | Dificuldade + indicador de ameaça OK. Faltam **tamanho de fonte, daltonismo, vibração, remapeamento completo** |
+| Opções de acessibilidade | 🟡 | Dificuldade + indicador de ameaça, **reduzir tremor de câmera** e **texto grande** (escala a fonte dos menus/diálogo via tema raiz), persistidos em settings (`Accessibility`). Faltam **daltonismo, vibração, remapeamento completo** |
 | Layout touch customizável | ⬜ | Botões fixos; falta posição/escala + modo canhoto (§3.1) |
 | Tutorial diegético / prompts | 🟢 | **Dicas diegéticas** (`tutorial_hint.tscn`): auras silenciosas que revelam um texto curto quando Aria se aproxima e somem quando ela se afasta — sem menu, sem pausa. Espalhadas pela vila ensinando andar, correr, atacar, esquivar e interagir no caminho até a Cripta |
 
