@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistema Gráfica - Gestão de Pedidos</title>
+<style>
+  :root{
+    --azul:#1e63d0; --azul2:#1749a0; --verde:#1e9e5a; --vermelho:#d63333;
+    --amarelo:#e0a000; --bg:#f2f4f8; --card:#fff; --texto:#1c2430; --cinza:#6b7480;
+    --borda:#dfe3ea;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--texto)}
+  header{background:var(--azul);color:#fff;padding:12px 16px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:20;box-shadow:0 2px 6px rgba(0,0,0,.15)}
+  header h1{font-size:18px;margin:0;flex:1}
+  header .sub{font-size:12px;opacity:.85}
+  nav{display:flex;gap:4px;background:var(--azul2);padding:0 8px;overflow-x:auto;position:sticky;top:52px;z-index:19}
+  nav button{background:none;border:none;color:#cfe0ff;padding:12px 14px;font-size:14px;cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent}
+  nav button.ativo{color:#fff;border-bottom-color:#fff;font-weight:600}
+  main{padding:16px;max-width:1100px;margin:0 auto}
+  .card{background:var(--card);border:1px solid var(--borda);border-radius:10px;padding:16px;margin-bottom:16px}
+  h2{font-size:16px;margin:0 0 12px}
+  h3{font-size:14px;margin:0 0 8px;color:var(--cinza)}
+  label{display:block;font-size:12px;color:var(--cinza);margin:8px 0 3px}
+  input,select,textarea{width:100%;padding:9px 10px;border:1px solid var(--borda);border-radius:7px;font-size:14px;background:#fff;font-family:inherit}
+  textarea{resize:vertical;min-height:50px}
+  .row{display:flex;gap:10px;flex-wrap:wrap}
+  .row>*{flex:1;min-width:120px}
+  button.btn{background:var(--azul);color:#fff;border:none;padding:10px 16px;border-radius:7px;font-size:14px;cursor:pointer;font-weight:600}
+  button.btn:hover{background:var(--azul2)}
+  button.btn.verde{background:var(--verde)}
+  button.btn.vermelho{background:var(--vermelho)}
+  button.btn.cinza{background:#8a94a2}
+  button.btn.pequeno{padding:6px 10px;font-size:12px}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th,td{text-align:left;padding:8px;border-bottom:1px solid var(--borda)}
+  th{color:var(--cinza);font-size:11px;text-transform:uppercase}
+  .tag{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700}
+  .tag.pago{background:#e2f5ea;color:var(--verde)}
+  .tag.parcial{background:#fdf3d9;color:var(--amarelo)}
+  .tag.aberto{background:#fbe3e3;color:var(--vermelho)}
+  .tag.producao{background:#e2ecfb;color:var(--azul)}
+  .tag.entregue{background:#eef0f3;color:var(--cinza)}
+  .item-linha{background:#f7f9fc;border:1px solid var(--borda);border-radius:8px;padding:10px;margin-bottom:8px}
+  .flex-sb{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+  .totalbox{font-size:22px;font-weight:800;color:var(--azul)}
+  .mini{font-size:11px;color:var(--cinza)}
+  .busca{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+  .busca input,.busca select{flex:1;min-width:140px}
+  .vazio{text-align:center;color:var(--cinza);padding:30px}
+  .chip{display:inline-block;background:#eef1f6;border-radius:6px;padding:3px 8px;margin:2px;font-size:12px}
+  .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:flex-start;justify-content:center;padding:20px;z-index:50;overflow:auto}
+  .modal-bg.on{display:flex}
+  .modal{background:#fff;border-radius:12px;max-width:760px;width:100%;padding:20px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .detalhe-item{border-left:3px solid var(--azul);padding:6px 10px;margin-bottom:6px;background:#f7f9fc;font-size:13px}
+  .pgto-item{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed var(--borda);font-size:13px}
+  @media(max-width:600px){.grid2{grid-template-columns:1fr}}
+  /* IMPRESSAO */
+  #areaImpressao{display:none}
+  @media print{
+    body *{visibility:hidden}
+    #areaImpressao,#areaImpressao *{visibility:visible}
+    #areaImpressao{display:block;position:absolute;left:0;top:0;width:100%}
+  }
+  .recibo{max-width:720px;margin:0 auto;font-size:13px;color:#000}
+  .recibo h2{text-align:center;font-size:20px;margin:0}
+  .recibo table{font-size:12px}
+  .recibo .cab{display:flex;justify-content:space-between;border-bottom:2px solid #000;padding-bottom:8px;margin-bottom:10px}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1 id="tituloEmpresa">🖨️ Minha Gráfica</h1>
+    <div class="sub">Sistema de gestão de pedidos e materiais</div>
+  </div>
+</header>
+<nav id="nav">
+  <button data-tab="pedidos" class="ativo">📋 Pedidos</button>
+  <button data-tab="novo">➕ Novo Pedido</button>
+  <button data-tab="produtos">🏷️ Materiais</button>
+  <button data-tab="clientes">👥 Clientes</button>
+  <button data-tab="config">⚙️ Config / Backup</button>
+</nav>
+<main>
+
+  <!-- ABA PEDIDOS -->
+  <section id="tab-pedidos">
+    <div class="card">
+      <h2>Pedidos</h2>
+      <div class="busca">
+        <input id="buscaTexto" placeholder="🔍 Buscar por nº do pedido, cliente ou produto...">
+        <select id="buscaStatus">
+          <option value="">Todos os status</option>
+          <option value="aberto">Em aberto (falta pagar)</option>
+          <option value="parcial">Pago parcial</option>
+          <option value="pago">Pago</option>
+        </select>
+        <select id="buscaProducao">
+          <option value="">Toda produção</option>
+          <option value="orcamento">Orçamento</option>
+          <option value="producao">Em produção</option>
+          <option value="pronto">Pronto</option>
+          <option value="entregue">Entregue</option>
+        </select>
+      </div>
+      <div id="resumoPedidos" class="row" style="margin-bottom:12px"></div>
+      <div id="listaPedidos"></div>
+    </div>
+  </section>
+
+  <!-- ABA NOVO PEDIDO -->
+  <section id="tab-novo" style="display:none">
+    <div class="card">
+      <h2 id="tituloNovoPedido">Novo Pedido</h2>
+      <div class="grid2">
+        <div>
+          <label>Cliente</label>
+          <select id="pedCliente"></select>
+          <div class="mini" style="margin-top:4px">Não achou? <a href="#" onclick="irPara('clientes');return false">Cadastre na aba Clientes</a></div>
+        </div>
+        <div>
+          <label>Data</label>
+          <input type="date" id="pedData">
+        </div>
+      </div>
+
+      <h3 style="margin-top:16px">Itens do pedido</h3>
+      <div class="item-linha">
+        <div class="row">
+          <div style="flex:2">
+            <label>Material / Produto</label>
+            <select id="itProduto" onchange="aoTrocarProduto()"></select>
+          </div>
+          <div>
+            <label>Preço unit. (R$)</label>
+            <input type="number" id="itPreco" step="0.01" oninput="calcItem()">
+          </div>
+        </div>
+        <div class="row" id="linhaMedidas">
+          <div>
+            <label>Largura (m)</label>
+            <input type="number" id="itLarg" step="0.01" placeholder="ex: 1.20" oninput="calcItem()">
+          </div>
+          <div>
+            <label>Altura (m)</label>
+            <input type="number" id="itAlt" step="0.01" placeholder="ex: 0.80" oninput="calcItem()">
+          </div>
+          <div>
+            <label>Quantidade</label>
+            <input type="number" id="itQtd" step="1" value="1" oninput="calcItem()">
+          </div>
+        </div>
+        <div class="row">
+          <div style="flex:2">
+            <label>Observação do item (cor, acabamento, arte...)</label>
+            <input id="itObs" placeholder="ex: com ilhós, arte pronta do cliente">
+          </div>
+          <div>
+            <label>Total do item</label>
+            <input id="itTotal" readonly style="font-weight:700;background:#f2f4f8">
+          </div>
+        </div>
+        <div style="margin-top:8px">
+          <button class="btn verde pequeno" onclick="addItem()">＋ Adicionar item</button>
+          <span class="mini" id="dicaMedida"></span>
+        </div>
+      </div>
+
+      <div id="itensAdicionados"></div>
+
+      <div class="flex-sb" style="margin-top:12px">
+        <div>
+          <label>Observações gerais do pedido</label>
+          <textarea id="pedObs" placeholder="Prazo, forma de entrega, detalhes gerais..."></textarea>
+        </div>
+      </div>
+
+      <div class="flex-sb" style="margin-top:14px;border-top:1px solid var(--borda);padding-top:14px">
+        <div class="totalbox">Total: <span id="pedTotal">R$ 0,00</span></div>
+        <div>
+          <button class="btn cinza" onclick="limparNovoPedido()">Limpar</button>
+          <button class="btn verde" onclick="salvarPedido()">💾 Salvar pedido</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABA MATERIAIS -->
+  <section id="tab-produtos" style="display:none">
+    <div class="card">
+      <h2>Cadastrar material / produto</h2>
+      <div class="row">
+        <div style="flex:2"><label>Nome</label><input id="prodNome" placeholder="ex: Banner Lona 440g"></div>
+        <div><label>Categoria</label><input id="prodCat" placeholder="ex: Grande formato"></div>
+      </div>
+      <div class="row">
+        <div>
+          <label>Tipo de cobrança</label>
+          <select id="prodUnidade">
+            <option value="m2">Por metro quadrado (m²)</option>
+            <option value="unid">Por unidade</option>
+            <option value="milheiro">Por milheiro (1000 un.)</option>
+          </select>
+        </div>
+        <div><label>Preço base (R$)</label><input type="number" id="prodPreco" step="0.01"></div>
+        <div style="flex:2"><label>Descrição</label><input id="prodDesc" placeholder="detalhes, fornecedor..."></div>
+      </div>
+      <div style="margin-top:10px">
+        <input type="hidden" id="prodEditId">
+        <button class="btn verde" onclick="salvarProduto()">💾 Salvar material</button>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Materiais cadastrados</h2>
+      <input id="buscaProduto" placeholder="🔍 Buscar material..." style="margin-bottom:10px" oninput="renderProdutos()">
+      <div id="listaProdutos"></div>
+    </div>
+  </section>
+
+  <!-- ABA CLIENTES -->
+  <section id="tab-clientes" style="display:none">
+    <div class="card">
+      <h2>Cadastrar cliente</h2>
+      <div class="row">
+        <div><label>Nº do cliente</label><input id="cliNum" placeholder="ex: 001"></div>
+        <div style="flex:2"><label>Nome</label><input id="cliNome" placeholder="Nome ou empresa"></div>
+        <div><label>Telefone / WhatsApp</label><input id="cliTel"></div>
+      </div>
+      <div class="row">
+        <div><label>CPF / CNPJ</label><input id="cliDoc"></div>
+        <div style="flex:2"><label>Endereço</label><input id="cliEnd"></div>
+        <div><label>E-mail</label><input id="cliEmail"></div>
+      </div>
+      <div style="margin-top:10px">
+        <input type="hidden" id="cliEditId">
+        <button class="btn verde" onclick="salvarCliente()">💾 Salvar cliente</button>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Clientes</h2>
+      <input id="buscaCliente" placeholder="🔍 Buscar cliente..." style="margin-bottom:10px" oninput="renderClientes()">
+      <div id="listaClientes"></div>
+    </div>
+  </section>
+
+  <!-- ABA CONFIG -->
+  <section id="tab-config" style="display:none">
+    <div class="card">
+      <h2>Dados da gráfica (aparecem no recibo)</h2>
+      <div class="row">
+        <div style="flex:2"><label>Nome da gráfica</label><input id="cfgNome" placeholder="Minha Gráfica"></div>
+        <div><label>Telefone</label><input id="cfgTel"></div>
+      </div>
+      <div class="row">
+        <div style="flex:2"><label>Endereço</label><input id="cfgEnd"></div>
+        <div><label>CNPJ/CPF</label><input id="cfgDoc"></div>
+      </div>
+      <div style="margin-top:10px"><button class="btn verde" onclick="salvarConfig()">💾 Salvar</button></div>
+    </div>
+    <div class="card">
+      <h2>Backup dos dados</h2>
+      <p class="mini">Seus dados ficam salvos <b>neste aparelho/navegador</b>. Faça backup para não perder e para passar de um dispositivo pra outro.</p>
+      <button class="btn" onclick="exportarBackup()">⬇️ Exportar backup (.json)</button>
+      <label style="margin-top:12px">Importar backup</label>
+      <input type="file" id="fileBackup" accept=".json" onchange="importarBackup(event)">
+      <div style="margin-top:16px;border-top:1px solid var(--borda);padding-top:12px">
+        <button class="btn vermelho" onclick="apagarTudo()">🗑️ Apagar todos os dados</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- MODAL DETALHE DO PEDIDO -->
+<div class="modal-bg" id="modalPedido">
+  <div class="modal" id="modalConteudo"></div>
+</div>
+
+<!-- AREA DE IMPRESSAO -->
+<div id="areaImpressao"></div>
+
+<script>
+/* ================= ARMAZENAMENTO ================= */
+const DB = {
+  get(k, def){ try{ return JSON.parse(localStorage.getItem('gf_'+k)) ?? def }catch(e){ return def } },
+  set(k, v){ localStorage.setItem('gf_'+k, JSON.stringify(v)) }
+};
+let produtos = DB.get('produtos', null);
+let clientes = DB.get('clientes', []);
+let pedidos  = DB.get('pedidos', []);
+let config   = DB.get('config', {nome:'Minha Gráfica', tel:'', end:'', doc:''});
+let itensTmp = [];   // itens do pedido em construção
+let editandoPedidoId = null;
+
+// Materiais iniciais comuns de gráfica (você pode editar/excluir)
+if(produtos === null){
+  produtos = [
+    {id:uid(), nome:'Banner Lona 440g', categoria:'Grande formato', unidade:'m2', preco:60, desc:'Impressão em lona brilho'},
+    {id:uid(), nome:'Adesivo Vinil Brilho', categoria:'Adesivos', unidade:'m2', preco:70, desc:''},
+    {id:uid(), nome:'Adesivo Perfurado', categoria:'Adesivos', unidade:'m2', preco:90, desc:'One way vision'},
+    {id:uid(), nome:'Lona Front 280g', categoria:'Grande formato', unidade:'m2', preco:55, desc:''},
+    {id:uid(), nome:'Cartão de Visita 4x4', categoria:'Offset', unidade:'milheiro', preco:120, desc:'Couché 300g'},
+    {id:uid(), nome:'Panfleto A5 4x4', categoria:'Offset', unidade:'milheiro', preco:180, desc:'Couché 115g'},
+    {id:uid(), nome:'Cartaz A3', categoria:'Digital', unidade:'unid', preco:8, desc:''},
+    {id:uid(), nome:'Placa PS 2mm', categoria:'Placas', unidade:'m2', preco:120, desc:''},
+    {id:uid(), nome:'Lona Mesh', categoria:'Grande formato', unidade:'m2', preco:65, desc:'Perfurada p/ vento'}
+  ];
+  DB.set('produtos', produtos);
+}
+
+/* ================= UTIL ================= */
+function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,7) }
+function br(v){ return 'R$ '+(Number(v)||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}) }
+function hoje(){ return new Date().toISOString().slice(0,10) }
+function dataBr(iso){ if(!iso) return ''; const [a,m,d]=iso.split('-'); return `${d}/${m}/${a}` }
+function proxNumeroPedido(){
+  const nums = pedidos.map(p=>parseInt(p.numero)||0);
+  return String((nums.length?Math.max(...nums):0)+1).padStart(4,'0');
+}
+function acharProduto(id){ return produtos.find(p=>p.id===id) }
+function acharCliente(id){ return clientes.find(c=>c.id===id) }
+
+/* status financeiro de um pedido */
+function statusFin(ped){
+  const pago = (ped.pagamentos||[]).reduce((s,p)=>s+Number(p.valor),0);
+  if(pago<=0) return {chave:'aberto', label:'Em aberto', pago, resta:ped.total};
+  if(pago < ped.total-0.001) return {chave:'parcial', label:'Parcial', pago, resta:ped.total-pago};
+  return {chave:'pago', label:'Pago', pago, resta:0};
+}
+
+/* ================= NAVEGAÇÃO ================= */
+document.querySelectorAll('#nav button').forEach(b=>{
+  b.onclick = ()=> irPara(b.dataset.tab);
+});
+function irPara(tab){
+  document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('ativo', b.dataset.tab===tab));
+  ['pedidos','novo','produtos','clientes','config'].forEach(t=>{
+    document.getElementById('tab-'+t).style.display = (t===tab)?'block':'none';
+  });
+  if(tab==='pedidos') renderPedidos();
+  if(tab==='novo') prepararNovoPedido();
+  if(tab==='produtos') renderProdutos();
+  if(tab==='clientes') renderClientes();
+  if(tab==='config') carregarConfig();
+}
+
+/* ================= NOVO PEDIDO ================= */
+function prepararNovoPedido(){
+  preencherSelectClientes();
+  preencherSelectProdutos();
+  document.getElementById('pedData').value = document.getElementById('pedData').value || hoje();
+  aoTrocarProduto();
+  renderItensTmp();
+}
+function preencherSelectClientes(){
+  const s=document.getElementById('pedCliente');
+  s.innerHTML = clientes.length? '' : '<option value="">— cadastre um cliente —</option>';
+  clientes.forEach(c=> s.innerHTML += `<option value="${c.id}">${c.numero?('#'+c.numero+' '):''}${c.nome}</option>`);
+}
+function preencherSelectProdutos(){
+  const s=document.getElementById('itProduto');
+  s.innerHTML='';
+  produtos.forEach(p=> s.innerHTML += `<option value="${p.id}">${p.nome} (${unidLabel(p.unidade)})</option>`);
+}
+function unidLabel(u){ return u==='m2'?'m²': u==='milheiro'?'milheiro':'unidade' }
+function aoTrocarProduto(){
+  const p = acharProduto(document.getElementById('itProduto').value);
+  if(!p) return;
+  document.getElementById('itPreco').value = p.preco;
+  const medidas = document.getElementById('linhaMedidas');
+  const largAlt = document.querySelectorAll('#linhaMedidas > div');
+  // mostra largura/altura só quando é por m²
+  const porM2 = p.unidade==='m2';
+  largAlt[0].style.display = porM2?'block':'none';
+  largAlt[1].style.display = porM2?'block':'none';
+  document.getElementById('dicaMedida').textContent = porM2
+    ? '  (preço × largura × altura × qtd)'
+    : p.unidade==='milheiro' ? '  (preço por milheiro × qtd de milheiros)' : '  (preço × qtd)';
+  calcItem();
+}
+function calcItem(){
+  const p = acharProduto(document.getElementById('itProduto').value);
+  if(!p){ return }
+  const preco = Number(document.getElementById('itPreco').value)||0;
+  const larg = Number(document.getElementById('itLarg').value)||0;
+  const alt = Number(document.getElementById('itAlt').value)||0;
+  const qtd = Number(document.getElementById('itQtd').value)||0;
+  let total=0;
+  if(p.unidade==='m2'){ total = preco * (larg*alt||1) * qtd; }
+  else { total = preco * qtd; }
+  document.getElementById('itTotal').value = br(total);
+  return total;
+}
+function addItem(){
+  const p = acharProduto(document.getElementById('itProduto').value);
+  if(!p){ alert('Selecione um material.'); return }
+  const preco = Number(document.getElementById('itPreco').value)||0;
+  const larg = Number(document.getElementById('itLarg').value)||0;
+  const alt = Number(document.getElementById('itAlt').value)||0;
+  const qtd = Number(document.getElementById('itQtd').value)||0;
+  if(qtd<=0){ alert('Informe a quantidade.'); return }
+  if(p.unidade==='m2' && (larg<=0||alt<=0)){ alert('Informe largura e altura.'); return }
+  const total = calcItem();
+  itensTmp.push({
+    produtoId:p.id, nome:p.nome, unidade:p.unidade,
+    preco, larg, alt, qtd, obs:document.getElementById('itObs').value.trim(), total
+  });
+  // limpa campos do item
+  document.getElementById('itLarg').value='';
+  document.getElementById('itAlt').value='';
+  document.getElementById('itQtd').value=1;
+  document.getElementById('itObs').value='';
+  aoTrocarProduto();
+  renderItensTmp();
+}
+function removerItemTmp(i){ itensTmp.splice(i,1); renderItensTmp(); }
+function renderItensTmp(){
+  const div=document.getElementById('itensAdicionados');
+  if(!itensTmp.length){ div.innerHTML='<div class="mini" style="padding:8px">Nenhum item adicionado ainda.</div>'; document.getElementById('pedTotal').textContent=br(0); return }
+  let html='', total=0;
+  itensTmp.forEach((it,i)=>{
+    total+=it.total;
+    const medida = it.unidade==='m2' ? `${it.larg}×${it.alt}m` : '';
+    html += `<div class="item-linha flex-sb">
+      <div><b>${it.nome}</b> ${medida?('· '+medida):''} · ${it.qtd}${it.unidade==='m2'?' pç':'x'} · ${br(it.preco)}
+      ${it.obs?('<br><span class="mini">'+it.obs+'</span>'):''}</div>
+      <div style="text-align:right"><b>${br(it.total)}</b><br>
+      <button class="btn vermelho pequeno" onclick="removerItemTmp(${i})">remover</button></div>
+    </div>`;
+  });
+  div.innerHTML=html;
+  document.getElementById('pedTotal').textContent=br(total);
+}
+function limparNovoPedido(){
+  itensTmp=[]; editandoPedidoId=null;
+  document.getElementById('pedObs').value='';
+  document.getElementById('tituloNovoPedido').textContent='Novo Pedido';
+  renderItensTmp();
+}
+function salvarPedido(){
+  if(!document.getElementById('pedCliente').value){ alert('Selecione um cliente.'); return }
+  if(!itensTmp.length){ alert('Adicione ao menos um item.'); return }
+  const total = itensTmp.reduce((s,i)=>s+i.total,0);
+  if(editandoPedidoId){
+    const ped = pedidos.find(p=>p.id===editandoPedidoId);
+    ped.clienteId=document.getElementById('pedCliente').value;
+    ped.data=document.getElementById('pedData').value;
+    ped.itens=JSON.parse(JSON.stringify(itensTmp));
+    ped.obs=document.getElementById('pedObs').value;
+    ped.total=total;
+  } else {
+    pedidos.push({
+      id:uid(), numero:proxNumeroPedido(),
+      clienteId:document.getElementById('pedCliente').value,
+      data:document.getElementById('pedData').value,
+      itens:JSON.parse(JSON.stringify(itensTmp)),
+      obs:document.getElementById('pedObs').value,
+      total, producao:'orcamento',
+      pagamentos:[], detalhes:[]
+    });
+  }
+  DB.set('pedidos', pedidos);
+  limparNovoPedido();
+  alert('Pedido salvo!');
+  irPara('pedidos');
+}
+
+/* ================= LISTA DE PEDIDOS ================= */
+document.getElementById('buscaTexto').oninput=renderPedidos;
+document.getElementById('buscaStatus').onchange=renderPedidos;
+document.getElementById('buscaProducao').onchange=renderPedidos;
+
+function renderPedidos(){
+  const q=(document.getElementById('buscaTexto').value||'').toLowerCase();
+  const fs=document.getElementById('buscaStatus').value;
+  const fp=document.getElementById('buscaProducao').value;
+  let lista=[...pedidos].sort((a,b)=> (b.numero||'').localeCompare(a.numero||''));
+
+  lista=lista.filter(ped=>{
+    const cli=acharCliente(ped.clienteId)||{};
+    const nomesProd=(ped.itens||[]).map(i=>i.nome).join(' ').toLowerCase();
+    const alvo=`${ped.numero} ${cli.nome||''} ${cli.numero||''} ${nomesProd}`.toLowerCase();
+    if(q && !alvo.includes(q)) return false;
+    if(fs && statusFin(ped).chave!==fs) return false;
+    if(fp && (ped.producao||'orcamento')!==fp) return false;
+    return true;
+  });
+
+  // resumo
+  const totGeral=lista.reduce((s,p)=>s+p.total,0);
+  const recebido=lista.reduce((s,p)=>s+statusFin(p).pago,0);
+  document.getElementById('resumoPedidos').innerHTML=`
+    <div class="card" style="margin:0;text-align:center"><div class="mini">Pedidos</div><div class="totalbox">${lista.length}</div></div>
+    <div class="card" style="margin:0;text-align:center"><div class="mini">Total</div><div class="totalbox">${br(totGeral)}</div></div>
+    <div class="card" style="margin:0;text-align:center"><div class="mini">Recebido</div><div class="totalbox" style="color:var(--verde)">${br(recebido)}</div></div>
+    <div class="card" style="margin:0;text-align:center"><div class="mini">A receber</div><div class="totalbox" style="color:var(--vermelho)">${br(totGeral-recebido)}</div></div>`;
+
+  const div=document.getElementById('listaPedidos');
+  if(!lista.length){ div.innerHTML='<div class="vazio">Nenhum pedido encontrado.</div>'; return }
+  let html='<table><thead><tr><th>Nº</th><th>Data</th><th>Cliente</th><th>Itens</th><th>Total</th><th>Pgto</th><th>Produção</th><th></th></tr></thead><tbody>';
+  lista.forEach(ped=>{
+    const cli=acharCliente(ped.clienteId)||{nome:'—'};
+    const sf=statusFin(ped);
+    const prodLabel={orcamento:'Orçamento',producao:'Em produção',pronto:'Pronto',entregue:'Entregue'}[ped.producao||'orcamento'];
+    html+=`<tr>
+      <td><b>#${ped.numero}</b></td>
+      <td>${dataBr(ped.data)}</td>
+      <td>${cli.nome}${cli.numero?(' <span class="mini">#'+cli.numero+'</span>'):''}</td>
+      <td class="mini">${(ped.itens||[]).map(i=>i.nome).join(', ').slice(0,40)}</td>
+      <td><b>${br(ped.total)}</b></td>
+      <td><span class="tag ${sf.chave}">${sf.label}</span></td>
+      <td><span class="tag ${ped.producao==='entregue'?'entregue':'producao'}">${prodLabel}</span></td>
+      <td><button class="btn pequeno" onclick="abrirPedido('${ped.id}')">abrir</button></td>
+    </tr>`;
+  });
+  html+='</tbody></table>';
+  div.innerHTML=html;
+}
+
+/* ================= DETALHE DO PEDIDO (MODAL) ================= */
+function abrirPedido(id){
+  const ped=pedidos.find(p=>p.id===id);
+  const cli=acharCliente(ped.clienteId)||{nome:'—'};
+  const sf=statusFin(ped);
+  let itensHtml='';
+  (ped.itens||[]).forEach(it=>{
+    const medida = it.unidade==='m2' ? `${it.larg}×${it.alt}m · ${it.qtd} pç` : `${it.qtd} un`;
+    itensHtml+=`<tr><td>${it.nome}<br><span class="mini">${medida}${it.obs?(' · '+it.obs):''}</span></td>
+      <td style="text-align:right">${br(it.total)}</td></tr>`;
+  });
+  let pgtoHtml=(ped.pagamentos||[]).map((p,i)=>`<div class="pgto-item">
+    <span>${dataBr(p.data)} · ${p.forma}</span>
+    <span><b>${br(p.valor)}</b> <button class="btn vermelho pequeno" onclick="removerPgto('${ped.id}',${i})">x</button></span>
+  </div>`).join('') || '<div class="mini">Nenhum pagamento lançado.</div>';
+  let detHtml=(ped.detalhes||[]).slice().reverse().map(d=>`<div class="detalhe-item"><b>${dataBr(d.data)}</b> — ${d.texto}</div>`).join('') || '<div class="mini">Sem histórico ainda.</div>';
+
+  document.getElementById('modalConteudo').innerHTML=`
+    <div class="flex-sb">
+      <h2>Pedido #${ped.numero} <span class="tag ${sf.chave}">${sf.label}</span></h2>
+      <button class="btn cinza pequeno" onclick="fecharModal()">✕ fechar</button>
+    </div>
+    <div class="mini">Cliente: <b>${cli.nome}</b> ${cli.tel?('· '+cli.tel):''} · Data: ${dataBr(ped.data)}</div>
+
+    <h3 style="margin-top:14px">Itens</h3>
+    <table>${itensHtml}<tr><td style="text-align:right"><b>TOTAL</b></td><td style="text-align:right"><b>${br(ped.total)}</b></td></tr></table>
+    ${ped.obs?('<div class="mini" style="margin-top:6px">Obs: '+ped.obs+'</div>'):''}
+
+    <div class="grid2" style="margin-top:16px">
+      <div>
+        <h3>💰 Pagamentos — Recebido ${br(sf.pago)} / Falta ${br(sf.resta)}</h3>
+        ${pgtoHtml}
+        <div class="row" style="margin-top:8px">
+          <input type="number" id="npValor" placeholder="Valor" step="0.01">
+          <select id="npForma"><option>Dinheiro</option><option>Pix</option><option>Cartão débito</option><option>Cartão crédito</option><option>Transferência</option><option>Boleto</option></select>
+        </div>
+        <button class="btn verde pequeno" style="margin-top:6px" onclick="addPgto('${ped.id}')">＋ Lançar pagamento</button>
+        <button class="btn pequeno" style="margin-top:6px" onclick="quitarPedido('${ped.id}')">Quitar (falta ${br(sf.resta)})</button>
+      </div>
+      <div>
+        <h3>🏭 Produção</h3>
+        <select id="npProducao" onchange="mudarProducao('${ped.id}',this.value)">
+          ${['orcamento','producao','pronto','entregue'].map(s=>`<option value="${s}" ${ (ped.producao||'orcamento')===s?'selected':''}>${({orcamento:'Orçamento',producao:'Em produção',pronto:'Pronto',entregue:'Entregue'})[s]}</option>`).join('')}
+        </select>
+        <h3 style="margin-top:14px">📝 Andamento / detalhes</h3>
+        <div style="max-height:150px;overflow:auto">${detHtml}</div>
+        <div class="row" style="margin-top:6px">
+          <input id="ndTexto" placeholder="ex: Arte aprovada, entrou na fila de impressão">
+        </div>
+        <button class="btn pequeno" style="margin-top:6px" onclick="addDetalhe('${ped.id}')">＋ Adicionar detalhe</button>
+      </div>
+    </div>
+
+    <div class="flex-sb" style="margin-top:18px;border-top:1px solid var(--borda);padding-top:14px">
+      <button class="btn vermelho pequeno" onclick="excluirPedido('${ped.id}')">🗑️ Excluir</button>
+      <div>
+        <button class="btn cinza" onclick="editarPedido('${ped.id}')">✏️ Editar itens</button>
+        <button class="btn" onclick="imprimirRecibo('${ped.id}')">🖨️ Imprimir recibo</button>
+      </div>
+    </div>`;
+  document.getElementById('modalPedido').classList.add('on');
+}
+function fecharModal(){ document.getElementById('modalPedido').classList.remove('on') }
+document.getElementById('modalPedido').addEventListener('click',e=>{ if(e.target.id==='modalPedido') fecharModal() });
+
+function addPgto(id){
+  const ped=pedidos.find(p=>p.id===id);
+  const v=Number(document.getElementById('npValor').value);
+  if(!v||v<=0){ alert('Informe o valor.'); return }
+  ped.pagamentos.push({data:hoje(), valor:v, forma:document.getElementById('npForma').value});
+  DB.set('pedidos',pedidos); abrirPedido(id); renderPedidos();
+}
+function quitarPedido(id){
+  const ped=pedidos.find(p=>p.id===id);
+  const sf=statusFin(ped);
+  if(sf.resta<=0){ alert('Pedido já está quitado.'); return }
+  ped.pagamentos.push({data:hoje(), valor:sf.resta, forma:document.getElementById('npForma').value});
+  DB.set('pedidos',pedidos); abrirPedido(id); renderPedidos();
+}
+function removerPgto(id,i){
+  const ped=pedidos.find(p=>p.id===id);
+  ped.pagamentos.splice(i,1);
+  DB.set('pedidos',pedidos); abrirPedido(id); renderPedidos();
+}
+function mudarProducao(id,v){
+  const ped=pedidos.find(p=>p.id===id);
+  ped.producao=v;
+  ped.detalhes.push({data:hoje(), texto:'Status alterado para: '+({orcamento:'Orçamento',producao:'Em produção',pronto:'Pronto',entregue:'Entregue'})[v]});
+  DB.set('pedidos',pedidos); renderPedidos();
+}
+function addDetalhe(id){
+  const ped=pedidos.find(p=>p.id===id);
+  const t=document.getElementById('ndTexto').value.trim();
+  if(!t) return;
+  ped.detalhes.push({data:hoje(), texto:t});
+  DB.set('pedidos',pedidos); abrirPedido(id);
+}
+function excluirPedido(id){
+  if(!confirm('Excluir este pedido? Não dá pra desfazer.')) return;
+  pedidos=pedidos.filter(p=>p.id!==id);
+  DB.set('pedidos',pedidos); fecharModal(); renderPedidos();
+}
+function editarPedido(id){
+  const ped=pedidos.find(p=>p.id===id);
+  editandoPedidoId=id;
+  itensTmp=JSON.parse(JSON.stringify(ped.itens));
+  fecharModal(); irPara('novo');
+  document.getElementById('pedCliente').value=ped.clienteId;
+  document.getElementById('pedData').value=ped.data;
+  document.getElementById('pedObs').value=ped.obs||'';
+  document.getElementById('tituloNovoPedido').textContent='Editando Pedido #'+ped.numero;
+  renderItensTmp();
+}
+
+/* ================= IMPRESSÃO DE RECIBO ================= */
+function imprimirRecibo(id){
+  const ped=pedidos.find(p=>p.id===id);
+  const cli=acharCliente(ped.clienteId)||{nome:'—'};
+  const sf=statusFin(ped);
+  let itens=(ped.itens||[]).map(it=>{
+    const medida=it.unidade==='m2'?`${it.larg}×${it.alt}m`:'—';
+    return `<tr><td>${it.nome} ${it.obs?('<br><small>'+it.obs+'</small>'):''}</td><td>${medida}</td><td>${it.qtd}</td><td style="text-align:right">${br(it.preco)}</td><td style="text-align:right">${br(it.total)}</td></tr>`;
+  }).join('');
+  let pgtos=(ped.pagamentos||[]).map(p=>`<tr><td>${dataBr(p.data)}</td><td>${p.forma}</td><td style="text-align:right">${br(p.valor)}</td></tr>`).join('') || '<tr><td colspan="3">Nenhum pagamento registrado</td></tr>';
+  document.getElementById('areaImpressao').innerHTML=`
+  <div class="recibo">
+    <div class="cab">
+      <div>
+        <h2 style="text-align:left">${config.nome||'Minha Gráfica'}</h2>
+        <div>${config.end||''}</div>
+        <div>${config.tel||''} ${config.doc?(' · '+config.doc):''}</div>
+      </div>
+      <div style="text-align:right">
+        <b>RECIBO Nº ${ped.numero}</b><br>
+        Data: ${dataBr(ped.data)}<br>
+        <small>*Documento não fiscal*</small>
+      </div>
+    </div>
+    <p><b>Cliente:</b> ${cli.nome} ${cli.numero?('(#'+cli.numero+')'):''} ${cli.tel?(' · '+cli.tel):''}<br>
+    ${cli.doc?('<b>Doc:</b> '+cli.doc+' · '):''}${cli.end?('<b>End:</b> '+cli.end):''}</p>
+    <table border="1" cellpadding="6" style="width:100%;border-collapse:collapse">
+      <thead><tr><th>Item</th><th>Medida</th><th>Qtd</th><th>Unit.</th><th>Total</th></tr></thead>
+      <tbody>${itens}</tbody>
+      <tfoot><tr><td colspan="4" style="text-align:right"><b>TOTAL</b></td><td style="text-align:right"><b>${br(ped.total)}</b></td></tr></tfoot>
+    </table>
+    ${ped.obs?('<p><b>Obs:</b> '+ped.obs+'</p>'):''}
+    <h4>Pagamentos</h4>
+    <table border="1" cellpadding="6" style="width:100%;border-collapse:collapse">
+      <thead><tr><th>Data</th><th>Forma</th><th>Valor</th></tr></thead>
+      <tbody>${pgtos}</tbody>
+    </table>
+    <p style="text-align:right;margin-top:8px">
+      Total: <b>${br(ped.total)}</b> &nbsp; | &nbsp;
+      Pago: <b style="color:green">${br(sf.pago)}</b> &nbsp; | &nbsp;
+      Falta: <b style="color:red">${br(sf.resta)}</b>
+    </p>
+    <p style="text-align:center;margin-top:30px">_______________________________<br>Assinatura</p>
+  </div>`;
+  window.print();
+}
+
+/* ================= PRODUTOS ================= */
+function salvarProduto(){
+  const nome=document.getElementById('prodNome').value.trim();
+  if(!nome){ alert('Informe o nome.'); return }
+  const dados={
+    nome, categoria:document.getElementById('prodCat').value.trim(),
+    unidade:document.getElementById('prodUnidade').value,
+    preco:Number(document.getElementById('prodPreco').value)||0,
+    desc:document.getElementById('prodDesc').value.trim()
+  };
+  const editId=document.getElementById('prodEditId').value;
+  if(editId){ Object.assign(produtos.find(p=>p.id===editId), dados); }
+  else { produtos.push({id:uid(), ...dados}); }
+  DB.set('produtos',produtos);
+  ['prodNome','prodCat','prodPreco','prodDesc','prodEditId'].forEach(i=>document.getElementById(i).value='');
+  renderProdutos();
+}
+function editarProduto(id){
+  const p=acharProduto(id);
+  document.getElementById('prodNome').value=p.nome;
+  document.getElementById('prodCat').value=p.categoria;
+  document.getElementById('prodUnidade').value=p.unidade;
+  document.getElementById('prodPreco').value=p.preco;
+  document.getElementById('prodDesc').value=p.desc;
+  document.getElementById('prodEditId').value=id;
+  window.scrollTo(0,0);
+}
+function excluirProduto(id){
+  if(!confirm('Excluir este material?')) return;
+  produtos=produtos.filter(p=>p.id!==id); DB.set('produtos',produtos); renderProdutos();
+}
+function renderProdutos(){
+  const q=(document.getElementById('buscaProduto').value||'').toLowerCase();
+  const div=document.getElementById('listaProdutos');
+  const lista=produtos.filter(p=>(p.nome+' '+p.categoria).toLowerCase().includes(q));
+  if(!lista.length){ div.innerHTML='<div class="vazio">Nenhum material.</div>'; return }
+  let html='<table><thead><tr><th>Material</th><th>Categoria</th><th>Cobrança</th><th>Preço</th><th></th></tr></thead><tbody>';
+  lista.forEach(p=>{
+    html+=`<tr><td><b>${p.nome}</b>${p.desc?('<br><span class="mini">'+p.desc+'</span>'):''}</td>
+      <td>${p.categoria||'—'}</td><td>${unidLabel(p.unidade)}</td><td>${br(p.preco)}</td>
+      <td><button class="btn pequeno cinza" onclick="editarProduto('${p.id}')">editar</button>
+      <button class="btn pequeno vermelho" onclick="excluirProduto('${p.id}')">x</button></td></tr>`;
+  });
+  div.innerHTML=html+'</tbody></table>';
+}
+
+/* ================= CLIENTES ================= */
+function salvarCliente(){
+  const nome=document.getElementById('cliNome').value.trim();
+  if(!nome){ alert('Informe o nome.'); return }
+  const dados={
+    numero:document.getElementById('cliNum').value.trim(),
+    nome, tel:document.getElementById('cliTel').value.trim(),
+    doc:document.getElementById('cliDoc').value.trim(),
+    end:document.getElementById('cliEnd').value.trim(),
+    email:document.getElementById('cliEmail').value.trim()
+  };
+  const editId=document.getElementById('cliEditId').value;
+  if(editId){ Object.assign(acharCliente(editId), dados); }
+  else { clientes.push({id:uid(), ...dados}); }
+  DB.set('clientes',clientes);
+  ['cliNum','cliNome','cliTel','cliDoc','cliEnd','cliEmail','cliEditId'].forEach(i=>document.getElementById(i).value='');
+  renderClientes();
+}
+function editarCliente(id){
+  const c=acharCliente(id);
+  document.getElementById('cliNum').value=c.numero||'';
+  document.getElementById('cliNome').value=c.nome;
+  document.getElementById('cliTel').value=c.tel||'';
+  document.getElementById('cliDoc').value=c.doc||'';
+  document.getElementById('cliEnd').value=c.end||'';
+  document.getElementById('cliEmail').value=c.email||'';
+  document.getElementById('cliEditId').value=id;
+  window.scrollTo(0,0);
+}
+function excluirCliente(id){
+  if(!confirm('Excluir este cliente?')) return;
+  clientes=clientes.filter(c=>c.id!==id); DB.set('clientes',clientes); renderClientes();
+}
+function renderClientes(){
+  const q=(document.getElementById('buscaCliente').value||'').toLowerCase();
+  const div=document.getElementById('listaClientes');
+  const lista=clientes.filter(c=>(c.nome+' '+(c.numero||'')+' '+(c.tel||'')).toLowerCase().includes(q));
+  if(!lista.length){ div.innerHTML='<div class="vazio">Nenhum cliente cadastrado.</div>'; return }
+  let html='<table><thead><tr><th>Nº</th><th>Nome</th><th>Telefone</th><th>Pedidos</th><th></th></tr></thead><tbody>';
+  lista.forEach(c=>{
+    const qtdPed=pedidos.filter(p=>p.clienteId===c.id).length;
+    html+=`<tr><td>${c.numero||'—'}</td><td><b>${c.nome}</b>${c.doc?('<br><span class="mini">'+c.doc+'</span>'):''}</td>
+      <td>${c.tel||'—'}</td><td>${qtdPed}</td>
+      <td><button class="btn pequeno cinza" onclick="editarCliente('${c.id}')">editar</button>
+      <button class="btn pequeno vermelho" onclick="excluirCliente('${c.id}')">x</button></td></tr>`;
+  });
+  div.innerHTML=html+'</tbody></table>';
+}
+
+/* ================= CONFIG / BACKUP ================= */
+function carregarConfig(){
+  document.getElementById('cfgNome').value=config.nome||'';
+  document.getElementById('cfgTel').value=config.tel||'';
+  document.getElementById('cfgEnd').value=config.end||'';
+  document.getElementById('cfgDoc').value=config.doc||'';
+}
+function salvarConfig(){
+  config={nome:document.getElementById('cfgNome').value, tel:document.getElementById('cfgTel').value,
+    end:document.getElementById('cfgEnd').value, doc:document.getElementById('cfgDoc').value};
+  DB.set('config',config);
+  document.getElementById('tituloEmpresa').textContent='🖨️ '+(config.nome||'Minha Gráfica');
+  alert('Dados salvos!');
+}
+function exportarBackup(){
+  const dados={produtos,clientes,pedidos,config,exportado:new Date().toISOString()};
+  const blob=new Blob([JSON.stringify(dados,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='backup-grafica-'+hoje()+'.json';
+  a.click();
+}
+function importarBackup(e){
+  const f=e.target.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=()=>{
+    try{
+      const d=JSON.parse(r.result);
+      if(!confirm('Isso vai SUBSTITUIR os dados atuais pelos do backup. Continuar?')) return;
+      produtos=d.produtos||produtos; clientes=d.clientes||[]; pedidos=d.pedidos||[]; config=d.config||config;
+      DB.set('produtos',produtos); DB.set('clientes',clientes); DB.set('pedidos',pedidos); DB.set('config',config);
+      alert('Backup importado com sucesso!'); location.reload();
+    }catch(err){ alert('Arquivo inválido.') }
+  };
+  r.readAsText(f);
+}
+function apagarTudo(){
+  if(!confirm('APAGAR TODOS os dados (pedidos, clientes, materiais)? Não dá pra desfazer!')) return;
+  if(!confirm('Tem certeza mesmo? Faça um backup antes!')) return;
+  localStorage.clear(); location.reload();
+}
+
+/* ================= INÍCIO ================= */
+document.getElementById('tituloEmpresa').textContent='🖨️ '+(config.nome||'Minha Gráfica');
+irPara('pedidos');
+</script>
+</body>
+</html>
