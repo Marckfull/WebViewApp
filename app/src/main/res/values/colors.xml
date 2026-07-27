@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="chuva_night">#0B1026</color>
+    <color name="chuva_cyan">#45D3F5</color>
+    <color name="chuva_sun">#FFD166</color>
+    <color name="white">#FFFFFFFF</color>
+</resources>
