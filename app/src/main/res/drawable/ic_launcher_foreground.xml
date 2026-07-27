@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Peca T em neon com o seu espelho sombrio logo abaixo: a marca do jogo. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Peca real (neon ciano) -->
+    <path
+        android:fillColor="#00F0FF"
+        android:pathData="M47,25h14v13h-14z" />
+    <path
+        android:fillColor="#00F0FF"
+        android:pathData="M32,39h44v13h-44z" />
+
+    <!-- Brilho interno -->
+    <path
+        android:fillColor="#B7FBFF"
+        android:pathData="M49,27h10v4h-10z" />
+    <path
+        android:fillColor="#B7FBFF"
+        android:pathData="M34,41h40v4h-40z" />
+
+    <!-- Espelho sombrio (invertido) -->
+    <path
+        android:fillColor="#0A0616"
+        android:strokeColor="#FF2BD6"
+        android:strokeWidth="1.4"
+        android:pathData="M32,56h44v13h-44z" />
+    <path
+        android:fillColor="#0A0616"
+        android:strokeColor="#FF2BD6"
+        android:strokeWidth="1.4"
+        android:pathData="M47,70h14v13h-14z" />
+</vector>
