@@ -27,26 +27,37 @@ import androidx.compose.ui.platform.LocalDensity
 import com.neonsombra.game.game.COLS
 import com.neonsombra.game.game.GameSnapshot
 import com.neonsombra.game.game.ROWS
+import com.neonsombra.game.game.SHADOW_CODE
 import com.neonsombra.game.game.TetrominoType
 import com.neonsombra.game.ui.theme.NeonCyan
+import com.neonsombra.game.ui.theme.NeonLime
 import com.neonsombra.game.ui.theme.NeonMagenta
 import com.neonsombra.game.ui.theme.NeonPurple
 import com.neonsombra.game.ui.theme.ShadowBlock
 import com.neonsombra.game.ui.theme.ShadowEdge
+import com.neonsombra.game.ui.theme.SolidShadowBlock
+import com.neonsombra.game.ui.theme.SolidShadowEdge
 import com.neonsombra.game.ui.theme.colorForCode
 import com.neonsombra.game.ui.theme.neonColor
 import kotlin.math.abs
 import kotlin.math.min
 import kotlin.math.sin
 
+/** Quantas celulas o dedo precisa descer, depressa, para a peca despencar. */
+private const val HARD_DROP_CELLS = 2.5f
+
+/** Acima disso o movimento e arrasto lento, nao um deslize de queda. */
+private const val HARD_DROP_MAX_MS = 320L
+
 /**
  * O tabuleiro. Desenha, de tras para frente: fundo, grade, o espelho sombrio,
  * as pecas presas, a peca fantasma e a peca que esta caindo.
  *
- * Os gestos sao os tres do projeto:
+ * Os gestos:
  *  - arrastar na horizontal move a peca coluna a coluna;
  *  - segurar acelera a queda;
- *  - tocar rapidinho gira a peca.
+ *  - tocar rapidinho gira a peca;
+ *  - deslizar rapido para baixo despenca a peca de uma vez.
  */
 @Composable
 fun TetrisBoard(
@@ -55,6 +66,7 @@ fun TetrisBoard(
     onPressStart: () -> Unit,
     onPressEnd: () -> Unit,
     onHorizontalStep: (Int) -> Unit,
+    onHardDrop: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val transition = rememberInfiniteTransition(label = "tabuleiro")
@@ -78,25 +90,43 @@ fun TetrisBoard(
                     awaitEachGesture {
                         val down = awaitFirstDown(requireUnconsumed = false)
                         onPressStart()
-                        var accumulated = 0f
+                        var pendingX = 0f
+                        var travelledX = 0f
+                        var travelledY = 0f
+                        var hardDropped = false
                         try {
                             while (true) {
                                 val event = awaitPointerEvent()
                                 val change = event.changes.firstOrNull { it.id == down.id }
                                 if (change == null || !change.pressed) break
-                                val dx = change.positionChange().x
-                                if (dx != 0f) {
-                                    accumulated += dx
-                                    while (accumulated >= cellPx) {
-                                        onHorizontalStep(1)
-                                        accumulated -= cellPx
-                                    }
-                                    while (accumulated <= -cellPx) {
-                                        onHorizontalStep(-1)
-                                        accumulated += cellPx
-                                    }
-                                    change.consume()
+
+                                val delta = change.positionChange()
+                                if (delta == Offset.Zero) continue
+                                travelledX += delta.x
+                                travelledY += delta.y
+
+                                // Deslize rapido para baixo: a peca despenca.
+                                if (!hardDropped &&
+                                    travelledY >= cellPx * HARD_DROP_CELLS &&
+                                    travelledY > abs(travelledX) * 1.5f &&
+                                    change.uptimeMillis - down.uptimeMillis <= HARD_DROP_MAX_MS
+                                ) {
+                                    hardDropped = true
+                                    onHardDrop()
                                 }
+
+                                if (!hardDropped) {
+                                    pendingX += delta.x
+                                    while (pendingX >= cellPx) {
+                                        onHorizontalStep(1)
+                                        pendingX -= cellPx
+                                    }
+                                    while (pendingX <= -cellPx) {
+                                        onHorizontalStep(-1)
+                                        pendingX += cellPx
+                                    }
+                                }
+                                change.consume()
                             }
                         } finally {
                             onPressEnd()
@@ -111,11 +141,12 @@ fun TetrisBoard(
 
             drawArena(originX, originY, boardWidth, boardHeight, cellPx)
             drawShadowSide(snapshot, originX, originY, cellPx, pulse)
-            drawLockedCells(snapshot, originX, originY, cellPx)
+            drawLockedCells(snapshot, originX, originY, cellPx, pulse)
+            drawStrikeFlash(snapshot, originX, originY, cellPx)
             drawClearingRows(snapshot, originX, originY, boardWidth, cellPx, pulse)
             if (showGhost) drawGhost(snapshot, originX, originY, cellPx)
             drawActivePiece(snapshot, originX, originY, cellPx, pulse)
-            drawFrame(originX, originY, boardWidth, boardHeight)
+            drawFrame(snapshot, originX, originY, boardWidth, boardHeight, pulse)
         }
     }
 }
@@ -171,6 +202,9 @@ private fun DrawScope.drawShadowSide(
     cell: Float,
     pulse: Float,
 ) {
+    // Durante a Purga a forca cai a zero: nao ha o que desenhar.
+    if (snapshot.shadowStrength <= 0.01f) return
+
     val breathing = 0.75f + 0.25f * abs(sin(pulse * 2f * Math.PI.toFloat()))
     for (row in 0 until ROWS) {
         for (column in 0 until COLS) {
@@ -211,19 +245,95 @@ private fun DrawScope.drawLockedCells(
     originX: Float,
     originY: Float,
     cell: Float,
+    pulse: Float,
 ) {
+    val burn = 0.6f + 0.4f * abs(sin(pulse * 3f * Math.PI.toFloat()))
     for (row in 0 until ROWS) {
         for (column in 0 until COLS) {
             val code = snapshot.codeAt(row, column)
             if (code == 0) continue
-            drawBlock(
-                x = originX + column * cell,
-                y = originY + row * cell,
-                cell = cell,
-                color = colorForCode(code),
-            )
+            val x = originX + column * cell
+            val y = originY + row * cell
+            if (code == SHADOW_CODE) {
+                drawSolidShadowBlock(x, y, cell, burn)
+            } else {
+                drawBlock(x = x, y = y, cell = cell, color = colorForCode(code))
+            }
         }
     }
+}
+
+/**
+ * O bloco que a sombra solidificou: corpo preto, borda roxa que arde e um
+ * "X" riscado por dentro, para o jogador nunca confundir com uma peca sua.
+ */
+private fun DrawScope.drawSolidShadowBlock(x: Float, y: Float, cell: Float, burn: Float) {
+    val inset = cell * 0.06f
+    val topLeft = Offset(x + inset, y + inset)
+    val boxSize = Size(cell - inset * 2, cell - inset * 2)
+    val radius = CornerRadius(cell * 0.22f)
+
+    drawRoundRect(
+        color = SolidShadowEdge.copy(alpha = 0.22f * burn),
+        topLeft = Offset(x - cell * 0.05f, y - cell * 0.05f),
+        size = Size(cell * 1.1f, cell * 1.1f),
+        cornerRadius = CornerRadius(cell * 0.3f),
+    )
+    drawRoundRect(
+        color = SolidShadowBlock,
+        topLeft = topLeft,
+        size = boxSize,
+        cornerRadius = radius,
+    )
+    drawRoundRect(
+        color = SolidShadowEdge.copy(alpha = 0.55f + 0.45f * burn),
+        topLeft = topLeft,
+        size = boxSize,
+        cornerRadius = radius,
+        style = Stroke(width = cell * 0.08f),
+    )
+    val mark = cell * 0.26f
+    val center = Offset(x + cell / 2f, y + cell / 2f)
+    drawLine(
+        color = SolidShadowEdge.copy(alpha = 0.45f * burn),
+        start = Offset(center.x - mark, center.y - mark),
+        end = Offset(center.x + mark, center.y + mark),
+        strokeWidth = cell * 0.06f,
+    )
+    drawLine(
+        color = SolidShadowEdge.copy(alpha = 0.45f * burn),
+        start = Offset(center.x + mark, center.y - mark),
+        end = Offset(center.x - mark, center.y + mark),
+        strokeWidth = cell * 0.06f,
+    )
+}
+
+/** Clarao no ponto exato onde a sombra acabou de atacar. */
+private fun DrawScope.drawStrikeFlash(
+    snapshot: GameSnapshot,
+    originX: Float,
+    originY: Float,
+    cell: Float,
+) {
+    if (snapshot.strikeFlash <= 0f) return
+    if (snapshot.strikeRow < 0 || snapshot.strikeColumn < 0) return
+
+    val intensity = snapshot.strikeFlash
+    val center = Offset(
+        originX + snapshot.strikeColumn * cell + cell / 2f,
+        originY + snapshot.strikeRow * cell + cell / 2f,
+    )
+    drawCircle(
+        color = SolidShadowEdge.copy(alpha = 0.55f * intensity),
+        radius = cell * (0.6f + (1f - intensity) * 2.2f),
+        center = center,
+        style = Stroke(width = cell * 0.12f * intensity),
+    )
+    drawCircle(
+        color = Color.White.copy(alpha = 0.35f * intensity),
+        radius = cell * 0.5f * intensity,
+        center = center,
+    )
 }
 
 private fun DrawScope.drawClearingRows(
@@ -292,22 +402,29 @@ private fun DrawScope.drawActivePiece(
     }
 }
 
+/** Durante a Purga a moldura troca de cor e pulsa: a sombra esta presa. */
 private fun DrawScope.drawFrame(
+    snapshot: GameSnapshot,
     originX: Float,
     originY: Float,
     width: Float,
     height: Float,
+    pulse: Float,
 ) {
+    val purging = snapshot.purgeActive
+    val accent = if (purging) NeonLime else NeonCyan
+    val beat = if (purging) 0.6f + 0.4f * abs(sin(pulse * 4f * Math.PI.toFloat())) else 1f
     val radius = CornerRadius(width * 0.035f)
+
     drawRoundRect(
-        color = NeonCyan.copy(alpha = 0.16f),
+        color = accent.copy(alpha = 0.16f * beat),
         topLeft = Offset(originX - 4f, originY - 4f),
         size = Size(width + 8f, height + 8f),
         cornerRadius = radius,
-        style = Stroke(width = 9f),
+        style = Stroke(width = if (purging) 14f * beat else 9f),
     )
     drawRoundRect(
-        color = NeonCyan.copy(alpha = 0.85f),
+        color = accent.copy(alpha = 0.85f),
         topLeft = Offset(originX, originY),
         size = Size(width, height),
         cornerRadius = radius,

@@ -10,11 +10,35 @@ const val ROWS = 20
 /** Quantas pecas futuras o jogador ve no painel lateral. */
 const val NEXT_COUNT = 3
 
+/**
+ * Codigo do bloco que a sombra solidificou. Nao pertence a nenhuma peca: e o
+ * lado sombrio virando obstaculo de verdade.
+ */
+const val SHADOW_CODE = 99
+
 private const val LOCK_DELAY = 0.45f
 private const val MAX_LOCK_RESETS = 10
 private const val CLEAR_ANIMATION = 0.30f
 private const val SOFT_DROP_INTERVAL = 0.040f
 private const val LINES_PER_LEVEL = 10
+
+/** A partir deste nivel a sombra comeca a atacar. */
+private const val SHADOW_ATTACK_LEVEL = 5
+
+/** Teto de blocos sombrios vivos ao mesmo tempo, para o tabuleiro nao travar. */
+private const val MAX_SOLID_SHADOWS = 8
+
+/** Colunas onde as pecas nascem: a sombra nunca solidifica aqui em cima. */
+private val SPAWN_SAFE_COLUMNS = 3..6
+
+/** Quanto tempo a Purga segura a sombra depois de um tetris. */
+private const val PURGE_DURATION = 15f
+
+/** Nos ultimos segundos da Purga a sombra volta aparecendo aos poucos. */
+private const val PURGE_FADE = 2f
+
+/** Duracao do clarao que marca o ponto onde a sombra atacou. */
+private const val STRIKE_FLASH = 0.55f
 
 enum class GameStatus { READY, PLAYING, CLEARING, PAUSED, GAME_OVER }
 
@@ -24,6 +48,11 @@ sealed interface GameEvent {
     data object Rotated : GameEvent
     data object Locked : GameEvent
     data class LinesCleared(val count: Int) : GameEvent
+    data class HardDropped(val distance: Int) : GameEvent
+    data class Combo(val count: Int) : GameEvent
+    data class ShadowStrike(val row: Int, val column: Int) : GameEvent
+    data object PurgeStarted : GameEvent
+    data object PurgeEnded : GameEvent
     data object LevelUp : GameEvent
     data object GameOver : GameEvent
 }
@@ -31,8 +60,9 @@ sealed interface GameEvent {
 /**
  * Retrato imutavel do jogo, entregue ao Compose a cada quadro.
  *
- * [cells] tem ROWS * COLS posicoes; 0 e vazio, qualquer outro valor e o
- * [TetrominoType.code] da peca que ali ficou presa.
+ * [cells] tem ROWS * COLS posicoes; 0 e vazio, [SHADOW_CODE] e um bloco que a
+ * sombra solidificou e qualquer outro valor e o [TetrominoType.code] da peca
+ * que ali ficou presa.
  */
 data class GameSnapshot(
     val cells: List<Int>,
@@ -46,8 +76,17 @@ data class GameSnapshot(
     val status: GameStatus,
     val shadowStrength: Float,
     val softDropping: Boolean,
+    val combo: Int,
+    val purgeSecondsLeft: Float,
+    val shadowAttacksActive: Boolean,
+    val strikeRow: Int,
+    val strikeColumn: Int,
+    val strikeFlash: Float,
 ) {
     fun codeAt(row: Int, col: Int): Int = cells[row * COLS + col]
+
+    /** True enquanto a Purga estiver segurando o lado sombrio. */
+    val purgeActive: Boolean get() = purgeSecondsLeft > 0f
 
     /**
      * O diferencial do jogo: a pilha do fundo projeta um espelho invertido na
@@ -84,6 +123,12 @@ class TetrisEngine(private val random: Random = Random.Default) {
     private var clearTimer = 0f
     private var clearingRows: Set<Int> = emptySet()
 
+    private var strikeTimer = 0f
+    private var strikeFlash = 0f
+    private var strikeRow = -1
+    private var strikeColumn = -1
+    private var solidShadows = 0
+
     var active: ActivePiece? = null
         private set
     var score = 0
@@ -93,6 +138,14 @@ class TetrisEngine(private val random: Random = Random.Default) {
     var level = 1
         private set
     var status = GameStatus.READY
+        private set
+
+    /** Quantas pecas seguidas limparam linha. */
+    var combo = 0
+        private set
+
+    /** Segundos restantes da Purga; zero quando a sombra esta solta. */
+    var purgeSecondsLeft = 0f
         private set
 
     /** Ligado enquanto o jogador segura o dedo na tela. */
@@ -118,6 +171,13 @@ class TetrisEngine(private val random: Random = Random.Default) {
         score = 0
         lines = 0
         level = 1
+        combo = 0
+        purgeSecondsLeft = 0f
+        solidShadows = 0
+        strikeTimer = strikeInterval()
+        strikeFlash = 0f
+        strikeRow = -1
+        strikeColumn = -1
         gridDirty = true
         repeat(NEXT_COUNT + 1) { queue.addLast(nextFromBag()) }
         active = null
@@ -145,13 +205,19 @@ class TetrisEngine(private val random: Random = Random.Default) {
 
     /** Avanca o jogo [delta] segundos. */
     fun update(delta: Float) {
+        if (strikeFlash > 0f) strikeFlash = max(0f, strikeFlash - delta)
+
         when (status) {
             GameStatus.CLEARING -> {
+                updatePurge(delta)
                 clearTimer -= delta
                 if (clearTimer <= 0f) finishClearing()
             }
 
             GameStatus.PLAYING -> {
+                updatePurge(delta)
+                updateShadowAttack(delta)
+
                 val interval = if (softDropping) SOFT_DROP_INTERVAL else gravityInterval()
                 gravityAccumulator += delta
                 var guard = 0
@@ -207,6 +273,24 @@ class TetrisEngine(private val random: Random = Random.Default) {
         return false
     }
 
+    /**
+     * Deslize rapido para baixo: a peca despenca ate o fundo, rende dois pontos
+     * por linha percorrida e trava na hora, sem esperar o lock delay.
+     */
+    fun hardDrop(): Boolean {
+        val piece = active ?: return false
+        if (status != GameStatus.PLAYING) return false
+        val target = ghostY()
+        val distance = target - piece.y
+        if (distance > 0) {
+            active = piece.copy(y = target)
+            score += distance * 2
+        }
+        pendingEvents += GameEvent.HardDropped(distance)
+        lockPiece()
+        return true
+    }
+
     /** Onde a peca atual pousaria: usado para desenhar a peca fantasma. */
     fun ghostY(): Int {
         val piece = active ?: return 0
@@ -234,6 +318,12 @@ class TetrisEngine(private val random: Random = Random.Default) {
             status = status,
             shadowStrength = shadowStrength(),
             softDropping = softDropping,
+            combo = combo,
+            purgeSecondsLeft = purgeSecondsLeft,
+            shadowAttacksActive = shadowAttacksActive() && purgeSecondsLeft <= 0f,
+            strikeRow = strikeRow,
+            strikeColumn = strikeColumn,
+            strikeFlash = strikeFlash,
         )
     }
 
@@ -245,12 +335,76 @@ class TetrisEngine(private val random: Random = Random.Default) {
         return copy
     }
 
-    /** Opacidade do espelho sombrio: sobe com o nivel, ate ficar bem escuro. */
-    fun shadowStrength(): Float = min(0.92f, 0.50f + (level - 1) * 0.045f)
+    /**
+     * Opacidade do espelho sombrio: sobe com o nivel e cai a zero durante a
+     * Purga, voltando aos poucos nos ultimos segundos.
+     */
+    fun shadowStrength(): Float {
+        val base = min(0.92f, 0.50f + (level - 1) * 0.045f)
+        if (purgeSecondsLeft <= 0f) return base
+        val returning = ((PURGE_FADE - purgeSecondsLeft) / PURGE_FADE).coerceIn(0f, 1f)
+        return base * returning
+    }
 
     fun gravityInterval(): Float = max(0.07f, 0.90f - (level - 1) * 0.075f)
 
+    /** De quanto em quanto tempo a sombra tenta solidificar um bloco. */
+    fun strikeInterval(): Float = max(4f, 14f - level * 0.8f)
+
+    fun shadowAttacksActive(): Boolean = level >= SHADOW_ATTACK_LEVEL
+
     // --------------------------------------------------------------- interno
+
+    private fun updatePurge(delta: Float) {
+        if (purgeSecondsLeft <= 0f) return
+        purgeSecondsLeft = max(0f, purgeSecondsLeft - delta)
+        if (purgeSecondsLeft == 0f) {
+            pendingEvents += GameEvent.PurgeEnded
+            strikeTimer = strikeInterval()
+        }
+    }
+
+    /**
+     * O lado sombrio revidando: de tempos em tempos uma celula da sombra vira
+     * bloco de verdade. So acontece do nivel [SHADOW_ATTACK_LEVEL] em diante e
+     * fica suspenso enquanto a Purga estiver ativa.
+     */
+    private fun updateShadowAttack(delta: Float) {
+        if (!shadowAttacksActive() || purgeSecondsLeft > 0f) return
+        strikeTimer -= delta
+        if (strikeTimer > 0f) return
+        strikeTimer = strikeInterval()
+        solidifyShadowCell()
+    }
+
+    private fun solidifyShadowCell() {
+        if (solidShadows >= MAX_SOLID_SHADOWS) return
+        val piece = active
+        val candidates = mutableListOf<Int>()
+
+        for (row in 0 until ROWS) {
+            for (column in 0 until COLS) {
+                val index = row * COLS + column
+                if (grid[index] != 0) continue
+                // So vira bloco o que ja e sombra: o reflexo da pilha do fundo.
+                if (grid[(ROWS - 1 - row) * COLS + column] == 0) continue
+                // Nunca sufoca a area onde as pecas nascem.
+                if (row <= 1 && column in SPAWN_SAFE_COLUMNS) continue
+                if (piece != null && piece.occupies(column, row)) continue
+                candidates += index
+            }
+        }
+
+        if (candidates.isEmpty()) return
+        val index = candidates[random.nextInt(candidates.size)]
+        grid[index] = SHADOW_CODE
+        solidShadows++
+        gridDirty = true
+        strikeRow = index / COLS
+        strikeColumn = index % COLS
+        strikeFlash = STRIKE_FLASH
+        pendingEvents += GameEvent.ShadowStrike(strikeRow, strikeColumn)
+    }
 
     private fun stepDown() {
         val piece = active ?: return
@@ -297,12 +451,15 @@ class TetrisEngine(private val random: Random = Random.Default) {
         }.toSet()
 
         if (full.isEmpty()) {
+            combo = 0
             spawn()
         } else {
+            combo++
             clearingRows = full
             clearTimer = CLEAR_ANIMATION
             status = GameStatus.CLEARING
             pendingEvents += GameEvent.LinesCleared(full.size)
+            if (combo >= 2) pendingEvents += GameEvent.Combo(combo)
         }
     }
 
@@ -318,13 +475,23 @@ class TetrisEngine(private val random: Random = Random.Default) {
             }
             System.arraycopy(rebuilt, 0, grid, 0, grid.size)
             gridDirty = true
+            solidShadows = grid.count { it == SHADOW_CODE }
 
             score += LINE_SCORES[rows.size] * level
+            // Bonus por encadear limpezas seguidas.
+            if (combo >= 2) score += COMBO_BONUS * (combo - 1) * level
+
             lines += rows.size
             val newLevel = 1 + lines / LINES_PER_LEVEL
             if (newLevel > level) {
                 level = newLevel
                 pendingEvents += GameEvent.LevelUp
+            }
+
+            // Quatro linhas de uma vez: a Purga apaga a sombra por um tempo.
+            if (rows.size >= 4) {
+                purgeSecondsLeft = PURGE_DURATION
+                pendingEvents += GameEvent.PurgeStarted
             }
         }
         clearingRows = emptySet()
@@ -364,7 +531,7 @@ class TetrisEngine(private val random: Random = Random.Default) {
         return false
     }
 
-    /** Sorteio em sacos de sete: garante variedade sem sequencias cruéis. */
+    /** Sorteio em sacos de sete: garante variedade sem sequencias crueis. */
     private fun nextFromBag(): TetrominoType {
         if (bag.isEmpty()) {
             TetrominoType.entries.shuffled(random).forEach { bag.addLast(it) }
@@ -389,6 +556,7 @@ class TetrisEngine(private val random: Random = Random.Default) {
                 grid[(offset + index) * COLS + column] = if (char == '.') 0 else TetrominoType.O.code
             }
         }
+        solidShadows = 0
         gridDirty = true
     }
 
@@ -401,8 +569,20 @@ class TetrisEngine(private val random: Random = Random.Default) {
         status = GameStatus.PLAYING
     }
 
+    /** Pula direto para o nivel pedido. So para testes. */
+    internal fun setLevelForTest(target: Int) {
+        level = target
+        strikeTimer = strikeInterval()
+    }
+
+    /** Faz a sombra atacar agora, sem esperar o temporizador. So para testes. */
+    internal fun forceShadowStrikeForTest() = solidifyShadowCell()
+
     companion object {
         private val LINE_SCORES = intArrayOf(0, 100, 300, 500, 800)
+
+        /** Pontos extras por limpeza encadeada, multiplicados pelo nivel. */
+        private const val COMBO_BONUS = 50
 
         /** Empurroes tentados quando a rotacao esbarra numa parede ou peca. */
         private val WALL_KICKS = arrayOf(

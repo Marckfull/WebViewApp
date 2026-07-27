@@ -1,6 +1,7 @@
 package com.neonsombra.game.ui.theme
 
 import androidx.compose.ui.graphics.Color
+import com.neonsombra.game.game.SHADOW_CODE
 import com.neonsombra.game.game.TetrominoType
 
 // Fundo e superficies
@@ -27,6 +28,10 @@ val NeonTextMuted = Color(0xFF9C8FC4)
 val ShadowBlock = Color(0xFF07040E)
 val ShadowEdge = Color(0xFF3B1050)
 
+/** Bloco que a sombra solidificou: preto de verdade, com borda que arde. */
+val SolidShadowBlock = Color(0xFF120523)
+val SolidShadowEdge = Color(0xFFB026FF)
+
 /** Cor viva de cada peca. */
 val TetrominoType.neonColor: Color
     get() = when (this) {
@@ -40,5 +45,7 @@ val TetrominoType.neonColor: Color
     }
 
 /** Cor da peca a partir do codigo gravado no tabuleiro. */
-fun colorForCode(code: Int): Color =
-    TetrominoType.fromCode(code)?.neonColor ?: NeonCyan
+fun colorForCode(code: Int): Color = when (code) {
+    SHADOW_CODE -> SolidShadowEdge
+    else -> TetrominoType.fromCode(code)?.neonColor ?: NeonCyan
+}

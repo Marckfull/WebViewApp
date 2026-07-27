@@ -55,6 +55,7 @@ class GameViewModel(
     private var lastDragMs = 0L
     private var draggedDuringPress = false
     private var softDropStarted = false
+    private var gestureConsumed = false
     private var scoreSubmitted = false
 
     init {
@@ -121,29 +122,34 @@ class GameViewModel(
         pressing = true
         draggedDuringPress = false
         softDropStarted = false
+        gestureConsumed = false
         pressStartMs = SystemClock.uptimeMillis()
         lastDragMs = 0L
     }
 
     /**
      * Dedo saiu da tela. Se foi um toque rapido, sem arrastar e sem ter virado
-     * queda acelerada, a peca gira.
+     * queda acelerada ou queda instantanea, a peca gira.
      */
     fun onPressEnd() {
         val wasPressing = pressing
         val duration = SystemClock.uptimeMillis() - pressStartMs
         pressing = false
         engine.softDropping = false
-        if (wasPressing && !draggedDuringPress && !softDropStarted && duration <= TAP_MAX_MS) {
+        if (wasPressing && !draggedDuringPress && !softDropStarted && !gestureConsumed &&
+            duration <= TAP_MAX_MS
+        ) {
             engine.rotate()
             consumeEvents()
             publish()
         }
         softDropStarted = false
+        gestureConsumed = false
     }
 
     /** O jogador arrastou o dedo o equivalente a uma coluna. */
     fun onHorizontalStep(direction: Int) {
+        if (gestureConsumed) return
         draggedDuringPress = true
         lastDragMs = SystemClock.uptimeMillis()
         engine.softDropping = false
@@ -152,8 +158,18 @@ class GameViewModel(
         publish()
     }
 
+    /** Deslize rapido para baixo: a peca despenca e trava na hora. */
+    fun onHardDrop() {
+        if (gestureConsumed) return
+        gestureConsumed = true
+        engine.softDropping = false
+        engine.hardDrop()
+        consumeEvents()
+        publish()
+    }
+
     private fun updateSoftDrop() {
-        if (!pressing || engine.status != GameStatus.PLAYING) {
+        if (!pressing || gestureConsumed || engine.status != GameStatus.PLAYING) {
             engine.softDropping = false
             return
         }
@@ -190,6 +206,12 @@ class GameViewModel(
                     sound.vibrate(18)
                 }
 
+                is GameEvent.HardDropped -> {
+                    sound.play(Sfx.HARD_DROP)
+                    // Quanto mais alto o tombo, mais forte o baque.
+                    sound.vibrate((20L + event.distance * 2L).coerceAtMost(60L))
+                }
+
                 is GameEvent.LinesCleared -> {
                     if (event.count >= 4) {
                         sound.play(Sfx.TETRIS)
@@ -199,6 +221,24 @@ class GameViewModel(
                         sound.vibrate(30L * event.count)
                     }
                 }
+
+                // Combos vibram no compasso da trilha.
+                is GameEvent.Combo -> {
+                    sound.play(Sfx.COMBO)
+                    sound.vibrateComboOnBeat(event.count)
+                }
+
+                is GameEvent.ShadowStrike -> {
+                    sound.play(Sfx.SHADOW_STRIKE)
+                    sound.vibratePattern(longArrayOf(0, 70, 50, 30))
+                }
+
+                GameEvent.PurgeStarted -> {
+                    sound.play(Sfx.PURGE)
+                    sound.vibratePattern(longArrayOf(0, 30, 40, 30, 40, 120))
+                }
+
+                GameEvent.PurgeEnded -> sound.play(Sfx.SHADOW_STRIKE)
 
                 GameEvent.LevelUp -> {
                     sound.play(Sfx.LEVEL_UP)

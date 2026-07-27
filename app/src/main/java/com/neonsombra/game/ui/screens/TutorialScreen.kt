@@ -65,7 +65,7 @@ private data class TutorialPage(
     val illustration: Illustration,
 )
 
-private enum class Illustration { OBJETIVO, CONTROLES, SOMBRA, PONTOS }
+private enum class Illustration { OBJETIVO, CONTROLES, SOMBRA, PURGA, PONTOS }
 
 private val pages = listOf(
     TutorialPage(
@@ -82,7 +82,9 @@ private val pages = listOf(
             "SEGURE o dedo na tela: a peca desce bem mais rapido e voce " +
             "ainda ganha um ponto por linha descida.\n\n" +
             "TOQUE rapidinho: a peca gira. Sao tres posicoes novas antes de " +
-            "voltar ao formato original.",
+            "voltar ao formato original.\n\n" +
+            "DESLIZE rapido para baixo: a peca despenca de uma vez e trava na " +
+            "hora, valendo dois pontos por linha.",
         accent = NeonLime,
         illustration = Illustration.CONTROLES,
     ),
@@ -92,16 +94,32 @@ private val pages = listOf(
             "embaixo ganha um espelho preto na parte de cima do tabuleiro.\n\n" +
             "A sombra nao bate em nada, nao empurra nada -- ela so atrapalha a " +
             "sua visao. Quanto mais alta a pilha, mais escuro fica o caminho " +
-            "das pecas novas. Jogar limpo e a unica forma de enxergar bem.",
+            "das pecas novas.\n\n" +
+            "E do NIVEL 5 em diante ela revida: de tempos em tempos um pedaco " +
+            "da sombra SOLIDIFICA e vira bloco de verdade, marcado com um X " +
+            "roxo. Esse ai atrapalha mesmo.",
         accent = NeonMagenta,
         illustration = Illustration.SOMBRA,
     ),
     TutorialPage(
+        title = "A PURGA",
+        body = "Limpou QUATRO LINHAS de uma vez? A sombra inteira apaga por 15 " +
+            "segundos. Sem espelho, sem ataque: so voce e o tabuleiro limpo. " +
+            "A moldura fica verde e comeca a contagem.\n\n" +
+            "E se voce limpar linha em jogadas seguidas, entra o COMBO: pontos " +
+            "extras e o aparelho vibrando no compasso da trilha. Quanto maior " +
+            "a sequencia, mais forte o ritmo.",
+        accent = NeonLime,
+        illustration = Illustration.PURGA,
+    ),
+    TutorialPage(
         title = "PONTOS E NIVEIS",
         body = "1 linha vale 100, duas valem 300, tres valem 500 e quatro de uma " +
-            "vez valem 800 -- tudo multiplicado pelo nivel.\n\n" +
-            "A cada 10 linhas voce sobe de nivel: as pecas caem mais rapido e a " +
-            "sombra fica mais densa. Seu recorde fica guardado no aparelho.",
+            "vez valem 800 -- tudo multiplicado pelo nivel. Cada limpeza " +
+            "encadeada soma mais 50 por combo.\n\n" +
+            "A cada 10 linhas voce sobe de nivel: as pecas caem mais rapido, a " +
+            "sombra fica mais densa e ataca com mais frequencia. Seu recorde " +
+            "fica guardado no aparelho.",
         accent = NeonYellow,
         illustration = Illustration.PONTOS,
     ),
@@ -249,6 +267,7 @@ private fun TutorialArt(
                 when (illustration) {
                     Illustration.OBJETIVO -> drawObjectiveArt(time, accent)
                     Illustration.SOMBRA -> drawShadowArt(time)
+                    Illustration.PURGA -> drawPurgeArt(time)
                     Illustration.PONTOS -> drawScoreArt(time, accent)
                     else -> Unit
                 }
@@ -259,13 +278,24 @@ private fun TutorialArt(
 
 @Composable
 private fun ControlsArt(time: Float) {
-    Row(
+    Column(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        ControlCard("ARRASTAR", "< >", NeonCyan, Modifier.weight(1f), time)
-        ControlCard("SEGURAR", "v", NeonMagenta, Modifier.weight(1f), time)
-        ControlCard("TOCAR", "@", NeonLime, Modifier.weight(1f), time)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            ControlCard("ARRASTAR", "< >", NeonCyan, Modifier.weight(1f), time)
+            ControlCard("SEGURAR", "v", NeonMagenta, Modifier.weight(1f), time)
+        }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            ControlCard("TOCAR", "@", NeonLime, Modifier.weight(1f), time)
+            ControlCard("DESLIZAR", "vv", NeonYellow, Modifier.weight(1f), time)
+        }
     }
 }
 
@@ -360,6 +390,40 @@ private fun DrawScope.drawShadowArt(time: Float) {
         )
     }
 
+    // Um dos blocos da sombra solidificou: e o ataque do lado sombrio.
+    val burn = 0.5f + 0.5f * abs(sin(time * 4f * Math.PI.toFloat()))
+    val solidColumn = 2
+    val solidRow = rows - 1 - 5
+    val sx = originX + solidColumn * cell
+    val sy = originY + solidRow * cell
+    drawRoundRect(
+        color = Color(0xFF120523),
+        topLeft = Offset(sx + 1f, sy + 1f),
+        size = Size(cell - 2f, cell - 2f),
+        cornerRadius = CornerRadius(cell * 0.2f),
+    )
+    drawRoundRect(
+        color = Color(0xFFB026FF).copy(alpha = 0.5f + 0.5f * burn),
+        topLeft = Offset(sx + 1f, sy + 1f),
+        size = Size(cell - 2f, cell - 2f),
+        cornerRadius = CornerRadius(cell * 0.2f),
+        style = Stroke(width = cell * 0.1f),
+    )
+    val mark = cell * 0.24f
+    val center = Offset(sx + cell / 2f, sy + cell / 2f)
+    drawLine(
+        color = Color(0xFFB026FF).copy(alpha = burn),
+        start = Offset(center.x - mark, center.y - mark),
+        end = Offset(center.x + mark, center.y + mark),
+        strokeWidth = cell * 0.08f,
+    )
+    drawLine(
+        color = Color(0xFFB026FF).copy(alpha = burn),
+        start = Offset(center.x + mark, center.y - mark),
+        end = Offset(center.x - mark, center.y + mark),
+        strokeWidth = cell * 0.08f,
+    )
+
     // Seta ligando o que esta embaixo ao que aparece em cima.
     val arrowX = originX + cell * columns + cell * 0.2f
     if (arrowX < size.width) {
@@ -370,6 +434,41 @@ private fun DrawScope.drawShadowArt(time: Float) {
             strokeWidth = 2f,
         )
     }
+}
+
+/**
+ * A Purga: quatro linhas piscando embaixo e o topo do tabuleiro limpo, sem
+ * nenhuma sombra -- exatamente o que o jogador ganha ao fechar um tetris.
+ */
+private fun DrawScope.drawPurgeArt(time: Float) {
+    val columns = 8
+    val rows = 6
+    val cell = minOf(size.width / columns, size.height / rows)
+    val originX = (size.width - cell * columns) / 2f
+    val originY = (size.height - cell * rows) / 2f
+
+    drawMiniGrid(originX, originY, cell, columns, rows)
+
+    val flash = 0.35f + 0.65f * abs(sin(time * 6f * Math.PI.toFloat()))
+    for (row in rows - 4 until rows) {
+        for (column in 0 until columns) {
+            drawMiniBlock(originX + column * cell, originY + row * cell, cell, NeonLime)
+        }
+        drawRect(
+            color = Color.White.copy(alpha = 0.55f * flash),
+            topLeft = Offset(originX, originY + row * cell),
+            size = Size(cell * columns, cell),
+        )
+    }
+
+    // Moldura verde pulsando, como fica no jogo durante a Purga.
+    drawRoundRect(
+        color = NeonLime.copy(alpha = 0.35f + 0.4f * flash),
+        topLeft = Offset(originX, originY),
+        size = Size(cell * columns, cell * rows),
+        cornerRadius = CornerRadius(cell * 0.3f),
+        style = Stroke(width = cell * 0.12f),
+    )
 }
 
 private fun DrawScope.drawScoreArt(time: Float, accent: Color) {

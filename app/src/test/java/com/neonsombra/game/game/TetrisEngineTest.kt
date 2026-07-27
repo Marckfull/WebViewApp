@@ -250,6 +250,257 @@ class TetrisEngineTest {
         assertTrue("o nivel 1 e o mais lento", engine.gravityInterval() > 0.5f)
     }
 
+    // ------------------------------------------------------- queda instantanea
+
+    @Test
+    fun `deslizar para baixo despenca a peca ate o fundo e trava na hora`() {
+        val engine = engine()
+        engine.placeForTest(ActivePiece(TetrominoType.O, rotation = 0, x = 4, y = 0))
+
+        engine.hardDrop()
+
+        val snapshot = engine.snapshot()
+        // As duas ultimas linhas ganharam a peca nas colunas 4 e 5.
+        assertTrue(snapshot.codeAt(ROWS - 1, 4) != 0)
+        assertTrue(snapshot.codeAt(ROWS - 1, 5) != 0)
+        assertTrue(snapshot.codeAt(ROWS - 2, 4) != 0)
+        assertTrue("uma peca nova ja deveria estar caindo", snapshot.active != null)
+    }
+
+    @Test
+    fun `a queda instantanea vale dois pontos por linha`() {
+        val engine = engine()
+        engine.placeForTest(ActivePiece(TetrominoType.O, rotation = 0, x = 4, y = 0))
+        val distancia = engine.ghostY() - engine.active!!.y
+
+        engine.hardDrop()
+
+        assertEquals(distancia * 2, engine.snapshot().score)
+    }
+
+    @Test
+    fun `a queda instantanea avisa a distancia percorrida`() {
+        val engine = engine()
+        engine.placeForTest(ActivePiece(TetrominoType.O, rotation = 0, x = 4, y = 0))
+        engine.drainEvents()
+
+        engine.hardDrop()
+
+        val evento = engine.drainEvents().filterIsInstance<GameEvent.HardDropped>().firstOrNull()
+        assertNotNull(evento)
+        assertEquals(ROWS - 2, evento!!.distance)
+    }
+
+    // ------------------------------------------------------------ sombra ataca
+
+    @Test
+    fun `a sombra so ataca a partir do nivel cinco`() {
+        val engine = engine()
+        assertTrue("nivel 1 nao ataca", !engine.shadowAttacksActive())
+
+        engine.setLevelForTest(5)
+        assertTrue("nivel 5 ataca", engine.shadowAttacksActive())
+    }
+
+    @Test
+    fun `o ataque solidifica uma celula que era sombra`() {
+        val engine = engine()
+        engine.setLevelForTest(6)
+        // Pilha no fundo: o espelho dela ocupa as primeiras linhas.
+        engine.loadForTest(listOf("###.......", "###.......", "###......."))
+        engine.placeForTest(ActivePiece(TetrominoType.O, rotation = 0, x = 8, y = 0))
+
+        engine.forceShadowStrikeForTest()
+
+        val snapshot = engine.snapshot()
+        val solidos = (0 until ROWS).flatMap { row ->
+            (0 until COLS).map { column -> row to column }
+        }.filter { (row, column) -> snapshot.codeAt(row, column) == SHADOW_CODE }
+
+        assertEquals(1, solidos.size)
+        val (row, column) = solidos.first()
+        assertTrue("o bloco nasce onde havia sombra", column in 0..2 && row in 0..2)
+    }
+
+    @Test
+    fun `o ataque nunca sufoca a area onde as pecas nascem`() {
+        val engine = engine()
+        engine.setLevelForTest(9)
+        // Fundo inteiro cheio: a sombra cobre o tabuleiro todo.
+        engine.loadForTest(List(ROWS) { "##########" }.take(2))
+
+        repeat(30) { engine.forceShadowStrikeForTest() }
+
+        val snapshot = engine.snapshot()
+        for (row in 0..1) {
+            for (column in 3..6) {
+                assertEquals(
+                    "nasceu bloco sombrio na area de spawn ($row,$column)",
+                    0,
+                    snapshot.codeAt(row, column),
+                )
+            }
+        }
+    }
+
+    @Test
+    fun `o ataque respeita o teto de blocos sombrios`() {
+        val engine = engine()
+        engine.setLevelForTest(9)
+        engine.loadForTest(List(2) { "##########" })
+
+        repeat(40) { engine.forceShadowStrikeForTest() }
+
+        val total = engine.snapshot().cells.count { it == SHADOW_CODE }
+        assertTrue("no maximo 8 blocos sombrios vivos, veio $total", total <= 8)
+    }
+
+    @Test
+    fun `o bloco sombrio conta para completar a linha`() {
+        val engine = engine()
+        engine.setLevelForTest(6)
+        engine.loadForTest(List(2) { "##########" })
+        repeat(3) { engine.forceShadowStrikeForTest() }
+        val antes = engine.snapshot().cells.count { it == SHADOW_CODE }
+        assertTrue("o teste precisa de pelo menos um bloco sombrio", antes > 0)
+
+        // O bloco sombrio e solido: colide com a peca que desce.
+        val ocupada = engine.snapshot().cells.indexOfFirst { it == SHADOW_CODE }
+        val linha = ocupada / COLS
+        val coluna = ocupada % COLS
+        engine.placeForTest(ActivePiece(TetrominoType.O, rotation = 0, x = coluna, y = linha - 2))
+
+        assertTrue("a peca deveria parar em cima do bloco sombrio", engine.ghostY() < linha - 1)
+    }
+
+    // -------------------------------------------------------------- purga
+
+    @Test
+    fun `quatro linhas ligam a purga e apagam a sombra`() {
+        val engine = engine()
+        engine.loadForTest(
+            listOf(
+                "....######",
+                "....######",
+                "....######",
+                "....######",
+            ),
+        )
+        listOf(0, 1, 2, 3).forEach { column ->
+            engine.placeForTest(verticalBar(column))
+            engine.run(seconds = 3f)
+        }
+
+        val snapshot = engine.snapshot()
+        assertTrue("a purga deveria estar rodando", snapshot.purgeActive)
+        assertEquals("com a purga a sombra some", 0f, snapshot.shadowStrength, 0.001f)
+    }
+
+    @Test
+    fun `a purga acaba depois de quinze segundos`() {
+        val engine = engine()
+        engine.loadForTest(
+            listOf(
+                "....######",
+                "....######",
+                "....######",
+                "....######",
+            ),
+        )
+        listOf(0, 1, 2, 3).forEach { column ->
+            engine.placeForTest(verticalBar(column))
+            engine.run(seconds = 3f)
+        }
+        assertTrue(engine.snapshot().purgeActive)
+
+        engine.run(seconds = 16f)
+
+        val snapshot = engine.snapshot()
+        assertTrue("a purga deveria ter acabado", !snapshot.purgeActive)
+        assertTrue("a sombra volta depois da purga", snapshot.shadowStrength > 0f)
+    }
+
+    @Test
+    fun `a sombra nao ataca durante a purga`() {
+        val engine = engine()
+        engine.setLevelForTest(9)
+        engine.loadForTest(
+            listOf(
+                "....######",
+                "....######",
+                "....######",
+                "....######",
+            ),
+        )
+        listOf(0, 1, 2, 3).forEach { column ->
+            engine.placeForTest(verticalBar(column))
+            engine.run(seconds = 3f)
+        }
+        assertTrue(engine.snapshot().purgeActive)
+        val antes = engine.snapshot().cells.count { it == SHADOW_CODE }
+
+        engine.run(seconds = 10f)
+
+        assertEquals(antes, engine.snapshot().cells.count { it == SHADOW_CODE })
+        assertTrue(!engine.snapshot().shadowAttacksActive)
+    }
+
+    // -------------------------------------------------------------- combo
+
+    @Test
+    fun `limpezas seguidas somam combo e bonus`() {
+        val engine = engine()
+        // A linha 18 tem dois buracos e a 19 so um: assim cada barra fecha
+        // exatamente uma linha, encadeando duas limpezas seguidas.
+        engine.loadForTest(listOf("..########", ".#########"))
+
+        engine.placeForTest(verticalBar(column = 0))
+        engine.run(seconds = 3f)
+        val depoisDaPrimeira = engine.snapshot()
+        assertEquals("a primeira limpeza ainda nao e combo", 1, depoisDaPrimeira.combo)
+        assertEquals(100, depoisDaPrimeira.score)
+
+        engine.placeForTest(verticalBar(column = 1))
+        engine.run(seconds = 3f)
+
+        val snapshot = engine.snapshot()
+        assertEquals(2, snapshot.combo)
+        // 100 da primeira + 100 da segunda + 50 de bonus do combo 2.
+        assertEquals(250, snapshot.score)
+    }
+
+    @Test
+    fun `travar sem limpar linha zera o combo`() {
+        val engine = engine()
+        engine.loadForTest(listOf(".#########"))
+        engine.placeForTest(verticalBar(column = 0))
+        engine.run(seconds = 3f)
+        assertEquals(1, engine.snapshot().combo)
+
+        engine.placeForTest(ActivePiece(TetrominoType.O, rotation = 0, x = 4, y = 16))
+        engine.run(seconds = 3f)
+
+        assertEquals(0, engine.snapshot().combo)
+    }
+
+    @Test
+    fun `o combo avisa o som a partir da segunda limpeza seguida`() {
+        val engine = engine()
+        // A linha 18 tem dois buracos e a 19 so um: assim cada barra fecha
+        // exatamente uma linha, encadeando duas limpezas seguidas.
+        engine.loadForTest(listOf("..########", ".#########"))
+        engine.placeForTest(verticalBar(column = 0))
+        engine.run(seconds = 3f)
+        engine.drainEvents()
+
+        engine.placeForTest(verticalBar(column = 1))
+        engine.run(seconds = 3f)
+
+        val combo = engine.drainEvents().filterIsInstance<GameEvent.Combo>().firstOrNull()
+        assertNotNull(combo)
+        assertEquals(2, combo!!.count)
+    }
+
     @Test
     fun `os avisos do motor chegam para o som`() {
         val engine = engine()

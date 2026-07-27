@@ -110,4 +110,8 @@ data class ActivePiece(
 
     fun absoluteCells(): List<IntArray> =
         type.cells(rotation).map { intArrayOf(x + it[0], y + it[1]) }
+
+    /** True se a peca esta ocupando a celula pedida do tabuleiro. */
+    fun occupies(column: Int, row: Int): Boolean =
+        type.cells(rotation).any { x + it[0] == column && y + it[1] == row }
 }

@@ -2,6 +2,11 @@ package com.neonsombra.game.ui.screens
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
@@ -38,6 +43,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.neonsombra.game.NeonSombraApplication
+import com.neonsombra.game.game.GameSnapshot
 import com.neonsombra.game.game.GameStatus
 import com.neonsombra.game.game.GameViewModel
 import com.neonsombra.game.game.NEXT_COUNT
@@ -56,6 +62,7 @@ import com.neonsombra.game.ui.theme.NeonMagenta
 import com.neonsombra.game.ui.theme.NeonPurple
 import com.neonsombra.game.ui.theme.NeonTextMuted
 import com.neonsombra.game.ui.theme.NeonYellow
+import kotlin.math.ceil
 
 /**
  * A tela de jogo, montada como no rascunho: o tabuleiro a esquerda, a coluna de
@@ -98,7 +105,9 @@ fun GameScreen(onExitToMenu: () -> Unit) {
                 )
             }
 
-            Spacer(Modifier.height(8.dp))
+            StatusStrip(snapshot = snapshot)
+
+            Spacer(Modifier.height(6.dp))
 
             Row(modifier = Modifier.weight(1f)) {
                 TetrisBoard(
@@ -107,6 +116,7 @@ fun GameScreen(onExitToMenu: () -> Unit) {
                     onPressStart = viewModel::onPressStart,
                     onPressEnd = viewModel::onPressEnd,
                     onHorizontalStep = viewModel::onHorizontalStep,
+                    onHardDrop = viewModel::onHardDrop,
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxHeight(),
@@ -153,6 +163,52 @@ fun GameScreen(onExitToMenu: () -> Unit) {
                 highScore = viewModel.highScore,
                 onRestart = viewModel::newGame,
                 onExit = onExitToMenu,
+            )
+        }
+    }
+}
+
+/**
+ * Uma linha so, entre o logo e o tabuleiro, dizendo o que esta em jogo agora:
+ * a Purga rodando, o combo em andamento ou o aviso de que a sombra ataca.
+ */
+@Composable
+private fun StatusStrip(snapshot: GameSnapshot) {
+    val transition = rememberInfiniteTransition(label = "estado")
+    val pulse by transition.animateFloat(
+        initialValue = 0.55f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(tween(600), RepeatMode.Reverse),
+        label = "pisca",
+    )
+
+    val status: Pair<String, Color>? = when {
+        snapshot.purgeActive ->
+            "PURGA ATIVA  ${ceil(snapshot.purgeSecondsLeft).toInt()}s" to NeonLime
+
+        snapshot.combo >= 2 ->
+            "COMBO x${snapshot.combo}" to NeonYellow
+
+        snapshot.shadowAttacksActive ->
+            "CUIDADO: A SOMBRA ATACA" to NeonMagenta
+
+        else -> null
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(22.dp),
+        contentAlignment = Alignment.Center,
+    ) {
+        if (status != null) {
+            NeonText(
+                text = status.first,
+                color = status.second,
+                glowRadius = 18f * pulse,
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.labelLarge.copy(fontSize = 12.sp),
+                modifier = Modifier.fillMaxWidth(),
             )
         }
     }

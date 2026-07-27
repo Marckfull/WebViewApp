@@ -177,7 +177,8 @@ fun MenuScreen(
             Spacer(Modifier.height(20.dp))
 
             Text(
-                text = "ARRASTE PARA MOVER  -  SEGURE PARA CAIR  -  TOQUE PARA GIRAR",
+                text = "ARRASTE PARA MOVER  -  SEGURE PARA CAIR\n" +
+                    "TOQUE PARA GIRAR  -  DESLIZE PARA BAIXO PARA DESPENCAR",
                 color = NeonTextMuted,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth(),

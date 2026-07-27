@@ -24,6 +24,29 @@ por diante).
 Ou seja: deixar a pilha crescer nao so aproxima o fim de jogo, como tambem cega
 o jogador. Jogar limpo e a unica forma de continuar enxergando.
 
+### A sombra ataca
+
+Do **nivel 5** em diante o lado sombrio revida: de tempos em tempos uma celula
+da sombra **solidifica** e vira bloco de verdade, marcado com um X roxo. Esse
+bloco colide, ocupa espaco e conta para completar linha como qualquer outro.
+
+Duas travas mantem o jogo justo: o ataque nunca acontece nas duas primeiras
+linhas das colunas onde as pecas nascem, e no maximo 8 blocos sombrios existem
+ao mesmo tempo. O intervalo entre ataques encurta com o nivel (de 10s a 4s).
+
+### A Purga
+
+Limpar **quatro linhas de uma vez** apaga a sombra inteira por **15 segundos**:
+sem espelho e sem ataque. A moldura do tabuleiro fica verde e pulsa, e nos dois
+segundos finais a sombra volta aparecendo aos poucos, avisando que o intervalo
+acabou.
+
+### Combo
+
+Limpezas em jogadas seguidas acumulam combo: cada elo rende **+50 x nivel** e
+faz o aparelho **vibrar no compasso da trilha** -- os pulsos duram uma
+semicolcheia do mesmo BPM da musica, e a sequencia cresce com o combo.
+
 ## Controles
 
 Tudo acontece com um dedo, direto no tabuleiro:
@@ -33,13 +56,14 @@ Tudo acontece com um dedo, direto no tabuleiro:
 | Arrastar para os lados | Move a peca, coluna a coluna |
 | Segurar o dedo na tela | A peca cai depressa (e rende 1 ponto por linha) |
 | Tocar rapidinho | Gira a peca (3 posicoes novas antes de voltar a original) |
+| Deslizar rapido para baixo | A peca despenca e trava na hora (2 pontos por linha) |
 
 ## Telas
 
 1. **Splash** — logo acendendo, as sete pecas desfilando e barra de carregamento.
 2. **Termos de uso e privacidade** — exigido no primeiro acesso, depois fica
    disponivel para leitura no menu.
-3. **Tutorial** — quatro paginas ilustradas e animadas, mostradas na primeira
+3. **Tutorial** — cinco paginas ilustradas e animadas, mostradas na primeira
    abertura (e sempre que o jogador quiser rever em "Como jogar").
 4. **Menu** — apelido do jogador, recorde e os caminhos do jogo.
 5. **Jogo** — tabuleiro a esquerda; a direita o nome do jogador, a pontuacao, o
@@ -47,6 +71,10 @@ Tudo acontece com um dedo, direto no tabuleiro:
    alto de tudo.
 6. **Configuracoes** — musica, efeitos sonoros, vibracao e peca fantasma podem
    ser ligados e desligados; da tambem para apagar o recorde.
+
+Na tela de jogo, uma faixa entre o logo e o tabuleiro avisa o que esta em jogo
+agora: a Purga correndo com a contagem, o combo em andamento ou o alerta de que
+a sombra comecou a atacar.
 
 ## Pontuacao
 
@@ -57,8 +85,10 @@ Tudo acontece com um dedo, direto no tabuleiro:
 | 3 | 500 x nivel |
 | 4 (o "tetris") | 800 x nivel |
 
-Queda acelerada rende 1 ponto por linha. A cada 10 linhas o nivel sobe: as pecas
-caem mais rapido e a sombra fica mais densa.
+Queda acelerada rende 1 ponto por linha e a queda instantanea rende 2. Cada elo
+de combo soma +50 x nivel. A cada 10 linhas o nivel sobe: as pecas caem mais
+rapido, a sombra fica mais densa e (do nivel 5 em diante) ataca com mais
+frequencia.
 
 ## Som sem nenhum arquivo de audio
 
@@ -107,9 +137,10 @@ app/src/main/java/com/neonsombra/game/
 
 `TetrisEngine` e Kotlin puro de proposito: da para testar a regra inteira na JVM,
 sem emulador. Os testes ficam em
-`app/src/test/java/com/neonsombra/game/game/TetrisEngineTest.kt` e cobrem
-rotacao, queda, queda acelerada, limpeza de linha, pontuacao, o espelho sombrio,
-fim de jogo, pausa e reinicio.
+`app/src/test/java/com/neonsombra/game/game/TetrisEngineTest.kt`: sao 33 testes
+cobrindo rotacao, queda, queda acelerada, queda instantanea, limpeza de linha,
+pontuacao, combo, o espelho sombrio, o ataque da sombra (incluindo as travas de
+area de spawn e teto de blocos), a Purga, fim de jogo, pausa e reinicio.
 
 ## Privacidade
 

@@ -17,7 +17,20 @@ import kotlin.math.pow
 import kotlin.random.Random
 
 /** Efeitos curtos disparados pelo jogo. */
-enum class Sfx { MOVE, ROTATE, LOCK, CLEAR, TETRIS, LEVEL_UP, GAME_OVER, UI_CLICK }
+enum class Sfx {
+    MOVE,
+    ROTATE,
+    LOCK,
+    HARD_DROP,
+    CLEAR,
+    TETRIS,
+    COMBO,
+    SHADOW_STRIKE,
+    PURGE,
+    LEVEL_UP,
+    GAME_OVER,
+    UI_CLICK,
+}
 
 private enum class Wave { SQUARE, TRIANGLE, NOISE }
 
@@ -136,6 +149,27 @@ class SoundEngine(context: Context, private val prefs: Prefs) {
         }
     }
 
+    /**
+     * Vibracao encaixada no compasso da trilha.
+     *
+     * Cada pulso dura uma semicolcheia do mesmo BPM que a musica usa, entao o
+     * combo e sentido no ritmo do que esta tocando -- quanto maior a sequencia,
+     * mais pulsos.
+     */
+    fun vibrateComboOnBeat(combo: Int) {
+        val pulses = combo.coerceIn(2, 6)
+        val step = (60_000f / BPM / 4f).toLong()
+        val on = step * 4 / 10
+        val off = step - on
+        val pattern = LongArray(pulses * 2 + 1)
+        pattern[0] = 0
+        for (index in 0 until pulses) {
+            pattern[index * 2 + 1] = on
+            pattern[index * 2 + 2] = off
+        }
+        vibratePattern(pattern)
+    }
+
     private fun enabledVibrator(): Vibrator? {
         if (released || !prefs.vibrationEnabled) return null
         return vibrator?.takeIf { it.hasVibrator() }
@@ -170,6 +204,10 @@ class SoundEngine(context: Context, private val prefs: Prefs) {
             Sfx.LOCK to listOf(
                 Note(freq = 240f, durationMs = 60, endFreq = 130f, volume = 0.6f),
             ),
+            Sfx.HARD_DROP to listOf(
+                Note(freq = 900f, durationMs = 70, endFreq = 120f, volume = 0.65f),
+                Note(freq = 90f, durationMs = 90, wave = Wave.NOISE, volume = 0.35f),
+            ),
             Sfx.CLEAR to listOf(
                 Note(freq = 660f, durationMs = 60, volume = 0.55f),
                 Note(freq = 880f, durationMs = 60, volume = 0.55f),
@@ -181,6 +219,22 @@ class SoundEngine(context: Context, private val prefs: Prefs) {
                 Note(freq = 784f, durationMs = 60, volume = 0.6f),
                 Note(freq = 1047f, durationMs = 70, volume = 0.6f),
                 Note(freq = 1319f, durationMs = 140, volume = 0.6f),
+            ),
+            Sfx.COMBO to listOf(
+                Note(freq = 780f, durationMs = 50, endFreq = 1040f, volume = 0.55f),
+                Note(freq = 1040f, durationMs = 50, endFreq = 1400f, volume = 0.55f),
+            ),
+            // A sombra atacando: grave, arrastado e sujo.
+            Sfx.SHADOW_STRIKE to listOf(
+                Note(freq = 320f, durationMs = 90, endFreq = 70f, volume = 0.6f),
+                Note(freq = 60f, durationMs = 140, wave = Wave.NOISE, volume = 0.30f),
+            ),
+            // A Purga: subida limpa, o oposto do ataque.
+            Sfx.PURGE to listOf(
+                Note(freq = 330f, durationMs = 70, wave = Wave.TRIANGLE, volume = 0.6f),
+                Note(freq = 494f, durationMs = 70, wave = Wave.TRIANGLE, volume = 0.6f),
+                Note(freq = 660f, durationMs = 70, wave = Wave.TRIANGLE, volume = 0.6f),
+                Note(freq = 988f, durationMs = 260, endFreq = 1320f, wave = Wave.TRIANGLE, volume = 0.6f),
             ),
             Sfx.LEVEL_UP to listOf(
                 Note(freq = 440f, durationMs = 70, volume = 0.55f),
