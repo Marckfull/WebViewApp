@@ -92,8 +92,8 @@ gta_cuts_factory/
 │   ├── broll.py                  ⏳ gameplay de fundo / split-screen
 │   ├── narracao.py               ⏳ MODO B: roteiro + TTS
 │   ├── metadados.py              ⏳ título, descrição, hashtags (PT/EN)
-│   ├── seguranca.py              ⏳ 🛡️ checagem anti-strike + reputação
-│   ├── banco.py                  ⏳ SQLite: anti-repetição + reputação
+│   ├── seguranca.py              ✅ 🛡️ checagem anti-strike + reputação
+│   ├── banco.py                  ✅ SQLite: anti-repetição + reputação
 │   └── publicacao.py             ⏳ YouTube API + pasta/rascunho TikTok
 │
 ├── painel/                       ⏳ interface web local
@@ -103,10 +103,13 @@ gta_cuts_factory/
 │
 ├── scripts/                      ← comandos que VOCÊ roda no terminal
 │   ├── teste_rapido.py           ✅ testa legenda/reframe SEM baixar nada
-│   └── etapa1_pipeline.py        ✅ 1 vídeo → 9:16 → legenda animada
+│   ├── etapa1_pipeline.py        ✅ 1 vídeo → checagem 🛡️ → 9:16 → legenda
+│   ├── etapa2_teste.py           ✅ demonstra o banco e as 6 checagens
+│   └── fontes.py                 ✅ ver canais, registrar claim, ver a fila
 │
 ├── testes/                       ← testes automáticos
-│   └── test_legendas.py          ✅
+│   ├── test_legendas.py          ✅ 23 testes
+│   └── test_seguranca.py         ✅ 32 testes
 │
 ├── dados/                        ← downloads, transcrições, banco.sqlite
 └── saida/                        ← vídeos finais prontos + metadados
@@ -123,7 +126,7 @@ Cada etapa só começa quando a anterior estiver **rodando na sua máquina**.
 | Etapa | O que entrega | Como você testa |
 |-------|---------------|-----------------|
 | **1. NÚCLEO** ✅ | baixar 1 vídeo → cortar 9:16 → legenda karaokê com destaque de palavra-chave → gancho de 2s | `python scripts/teste_rapido.py` e depois `python scripts/etapa1_pipeline.py --url ...` |
-| **2. BANCO + SEGURANÇA** | SQLite (anti-repetição + reputação de fontes) e o módulo 🛡️ que aprova/reprova | rodar a etapa 1 duas vezes no mesmo trecho → segunda vez deve ser bloqueada |
+| **2. BANCO + SEGURANÇA** ✅ | SQLite (anti-repetição + reputação de fontes) e o módulo 🛡️ que aprova/reprova | `python scripts/etapa2_teste.py` e rodar a etapa 1 duas vezes no mesmo trecho → segunda vez é bloqueada |
 | **3. FONTES + TENDÊNCIAS** | banco de canais aprovados, busca do que está em alta, escolha diversificada | listar os candidatos que ele encontrou, sem gerar vídeo |
 | **4. SELEÇÃO INTELIGENTE** | escolher os 3 melhores momentos DISTINTOS (heurística + IA opcional) | ver os 3 trechos escolhidos e os motivos |
 | **5. MODO B (narrado)** | roteiro + TTS + trailer oficial de fundo | gerar 1 vídeo narrado completo |
@@ -183,7 +186,7 @@ Roda **sempre**, como uma barreira antes da fila. Retorna um selo:
 | 🟡 **Amarelo** | fonte `em teste` OU violência moderada | entra na fila, mas com aviso |
 | 🔴 **Vermelho** | qualquer risco alto | **não** entra na fila; vai para "reprovados" com o motivo |
 
-Checagens implementadas na Etapa 2:
+As seis checagens (todas implementadas em `nucleo/seguranca.py`):
 
 1. `trecho_ja_usado()` — sobreposição de timestamps no banco.
 2. `fonte_bloqueada()` — reputação do canal.
@@ -192,7 +195,20 @@ Checagens implementadas na Etapa 2:
 4. `nivel_violencia()` — analisa amostras de frames (vermelho/sangue, movimento
    brusco) + palavras da transcrição → descartar, borrar ou avisar. Conta a
    **duração acumulada** de cenas gráficas, como a política do YouTube faz.
-5. `spoiler()` — lista de termos de enredo/final → bloqueio.
+5. `checar_spoiler()` — lista de termos de enredo/final → bloqueio.
+6. `checar_assunto_proibido()` — sua lista pessoal de temas banidos → bloqueio.
+
+Detalhes que fazem diferença na prática:
+
+- **Repetição não exige tempos idênticos**: se o novo trecho tem mais de 10 s
+  (ou 25% da duração) em comum com um corte já feito, é bloqueado. Deslocar o
+  corte em 5 segundos não engana o sistema.
+- **Assunto repetido é checado por idioma**: o vídeo em inglês pode falar do
+  mesmo tema dos vídeos em português (públicos diferentes).
+- **Reprovado não "queima" o trecho**: um corte barrado por violência pode ser
+  reaproveitado depois com outros tempos — só o aprovado marca o trecho como usado.
+- **Detector de violência com dois cuidados**: sangue é vermelho escuro e
+  texturizado, então vermelho chapado (carro, menu, tela de "WASTED") não conta.
 
 **Reputação de fontes (SQLite):** cada canal guarda
 `videos_gerados, claims, restricoes_idade, remocoes, status`. Um claim ou

@@ -17,8 +17,8 @@ Estamos construindo **por partes**, testando cada uma antes de avançar.
 | Etapa | O que faz | Status |
 |-------|-----------|--------|
 | **1. Núcleo** | baixar vídeo → cortar 9:16 → legenda karaokê + gancho | ✅ **pronto e testado** |
-| 2. Banco + Segurança | anti-repetição (SQLite) + módulo 🛡️ anti-strike | ⏳ próxima |
-| 3. Fontes + Tendências | canais aprovados + assuntos em alta | ⏳ |
+| **2. Banco + Segurança** | anti-repetição (SQLite) + módulo 🛡️ anti-strike | ✅ **pronto e testado** |
+| 3. Fontes + Tendências | canais aprovados + assuntos em alta | ⏳ próxima |
 | 4. Seleção inteligente | escolher os 3 melhores momentos distintos | ⏳ |
 | 5. Modo B (narrado) | roteiro + voz sintética + trailer de fundo | ⏳ |
 | 6. Metadados + B-roll | título/descrição/hashtags PT-EN + gameplay de fundo | ⏳ |
@@ -50,8 +50,23 @@ python scripts\teste_rapido.py
 # 4. TESTE 2 — pipeline real com um vídeo do YouTube
 python scripts\etapa1_pipeline.py --url "https://youtu.be/XXXX" --inicio 00:01:20 --duracao 75 --idioma pt
 
-# 5. conferir se o núcleo está saudável
+# 5. TESTE 3 — banco anti-repetição + checagens de segurança
+python scripts\etapa2_teste.py
+
+# 6. conferir se está tudo saudável (55 testes)
 python testes\test_legendas.py
+python testes\test_seguranca.py
+```
+
+### Comandos do dia a dia
+
+```powershell
+python scripts\fontes.py listar             # canais e reputação de cada um
+python scripts\fontes.py fila               # vídeos esperando sua aprovação
+python scripts\fontes.py reprovados         # o que foi barrado, e por quê
+
+# ⚠️ tomou um Content ID no YouTube? avise o sistema — o canal é bloqueado na hora
+python scripts\fontes.py claim "@CanalX" --nota "claim de trilha sonora"
 ```
 
 Tudo o que você pode ajustar (cores, fonte, tamanho, posição da legenda,
@@ -155,9 +170,10 @@ Cada canal-fonte tem um status no banco local:
 | `em_teste` | canal de terceiro novo — usado com cautela e monitorado |
 | `bloqueado` | deu problema (claim/restrição/remoção) — não é mais usado |
 
-Todo canal novo entra como **`em_teste`**. Se um vídeo daquela fonte tomar
-claim, restrição de idade ou remoção, o canal é **rebaixado automaticamente
-para `bloqueado`** e você é avisado no painel.
+Todo canal novo entra como **`em_teste`**. Quando você registrar um problema
+(`python scripts\fontes.py claim "@CanalX"`), o canal é **bloqueado na hora** e
+nunca mais é usado — nem que ele continue escrito no seu `canais_fontes.yaml`.
+Só você pode liberar de volta, com `desbloquear`.
 
 ### 7. Diversifique e vá devagar
 

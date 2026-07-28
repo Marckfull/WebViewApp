@@ -181,6 +181,33 @@ um corte de 60s leva ~2–4 minutos em notebook comum.
 
 ---
 
+## Passo 9 — TESTE 3: o escudo anti-strike (30 segundos, sem internet)
+
+```powershell
+python scripts\etapa2_teste.py
+```
+
+Ele encena 7 situações e mostra o sistema aceitando e recusando vídeos: trecho
+repetido, assunto repetido, cinemática oficial sem narração, canal que tomou
+claim e o detector de violência.
+
+Depois, veja a memória do sistema:
+
+```powershell
+python scripts\fontes.py listar        # seus canais e a reputação de cada um
+python scripts\fontes.py fila          # o que está esperando sua aprovação
+python scripts\fontes.py reprovados    # o que foi barrado, com o motivo
+```
+
+⚠️ **Importante no dia a dia:** se um vídeo publicado tomar Content ID, avise o
+sistema — o canal é bloqueado na hora e não é mais usado:
+
+```powershell
+python scripts\fontes.py claim "@CanalX" --nota "claim de trilha sonora"
+```
+
+---
+
 ## Onde conseguir cada chave de API (só nas etapas finais)
 
 | Chave | Onde pegar | Precisa agora? |
