@@ -1,0 +1,29 @@
+# ============================================================================
+#  GTA Cuts Factory — bibliotecas Python
+#  Instale com:  pip install -r requirements.txt
+# ============================================================================
+
+# --- ETAPA 1: NÚCLEO (obrigatório) ------------------------------------------
+yt-dlp>=2024.8.6          # baixa vídeos do YouTube
+faster-whisper>=1.0.3     # transcrição com timestamp POR PALAVRA (offline, grátis)
+PyYAML>=6.0.1             # lê os arquivos de configuração
+opencv-python>=4.9.0,<5.0.0   # detecção de rosto/ação (a 5.x removeu o detector Haar)
+numpy>=1.24.0             # cálculos usados pelo reframe e pela análise de cena
+
+# --- PRÓXIMAS ETAPAS --------------------------------------------------------
+Flask>=3.0.0              # painel local (fila de aprovação)
+requests>=2.31.0          # chamadas HTTP (tendências, APIs)
+edge-tts>=6.1.10          # narração do MODO B — voz sintética GRÁTIS
+
+# --- PUBLICAÇÃO NO YOUTUBE (só na etapa final) ------------------------------
+google-api-python-client>=2.120.0
+google-auth-oauthlib>=1.2.0
+google-auth-httplib2>=0.2.0
+
+# ============================================================================
+#  OPCIONAIS (instale só se for usar — NÃO são necessários)
+# ============================================================================
+# anthropic>=0.34.0       # IA para gancho/roteiro/metadados (~US$ 0,01–0,03/vídeo)
+# openai>=1.40.0          # alternativa à Anthropic
+# elevenlabs>=1.5.0       # voz premium (Edge-TTS acima já é boa e grátis)
+# imageio-ffmpeg>=0.5.1   # ffmpeg embutido, caso não consiga instalar o oficial

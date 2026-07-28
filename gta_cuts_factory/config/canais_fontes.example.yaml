@@ -1,0 +1,82 @@
+# ============================================================================
+#  BANCO DE CANAIS-FONTE APROVADOS
+# ============================================================================
+#  O sistema SÓ procura vídeos nos canais listados aqui. Ele nunca sai varrendo
+#  o YouTube inteiro — isso é proposital, é a sua principal proteção.
+#
+#  COMO USAR: copie para "canais_fontes.yaml" e edite à vontade.
+#
+#  STATUS possíveis:
+#    oficial   → canal da Rockstar. Use SEMPRE com narração sua por cima (Modo B).
+#    proprio   → suas próprias gravações. Risco zero.
+#    em_teste  → canal de terceiro que você adicionou. O sistema usa com cautela
+#                e monitora os primeiros resultados.
+#    bloqueado → não usar. O sistema também marca sozinho após um claim.
+#
+#  PESO: 1 a 10. Quanto maior, mais o sistema prefere esse canal.
+#        A diversificação é automática: ele evita repetir o mesmo canal seguido.
+# ============================================================================
+
+canais:
+
+  # --- FONTES OFICIAIS (mais seguras — sempre com sua narração por cima) -----
+  - nome: "Rockstar Games"
+    url: "https://www.youtube.com/@RockstarGames"
+    status: "oficial"
+    peso: 10
+    idioma: "en"
+    observacao: "Trailers e vídeos oficiais. Usar SÓ no Modo B (narrado)."
+
+  # --- SUAS PRÓPRIAS GRAVAÇÕES (risco zero) ---------------------------------
+  # Aponte para uma pasta local do seu PC com seus vídeos de gameplay.
+  - nome: "Minhas gravações"
+    pasta_local: "C:/Users/SEU_USUARIO/Videos/GTA"
+    status: "proprio"
+    peso: 10
+    idioma: "pt"
+    observacao: "Coloque aqui suas gravações. Nenhum risco de Content ID."
+
+  # --- CANAIS DE TERCEIROS (começam SEMPRE como "em_teste") -----------------
+  # Substitua pelos canais que VOCÊ acompanha e aprova.
+  # Dica: prefira canais de notícia/análise falada (mais transformativo)
+  #       do que canais que só repostam gameplay.
+  - nome: "EXEMPLO - Canal de notícias GTA (troque por um real)"
+    url: "https://www.youtube.com/@EXEMPLO"
+    status: "em_teste"
+    peso: 5
+    idioma: "pt"
+    observacao: "Apague esta linha e coloque canais reais que você aprova."
+
+
+# ============================================================================
+#  ASSUNTOS QUE O SISTEMA DEVE PERSEGUIR (usado na busca de tendências)
+# ============================================================================
+assuntos_base:
+  pt:
+    - "GTA 6 data de lançamento"
+    - "GTA 6 trailer"
+    - "GTA 6 vazamento"
+    - "GTA 6 mapa"
+    - "GTA 6 notícias"
+    - "GTA 5 segredos"
+    - "GTA Online atualização"
+  en:
+    - "GTA 6 release date"
+    - "GTA 6 trailer"
+    - "GTA 6 leak"
+    - "GTA 6 map"
+    - "GTA 6 news"
+    - "GTA 5 secrets"
+    - "GTA Online update"
+
+
+# ============================================================================
+#  ASSUNTOS PROIBIDOS (nunca virar vídeo — proteção contra spoiler/strike)
+# ============================================================================
+assuntos_proibidos:
+  - "final do GTA 6"
+  - "GTA 6 ending"
+  - "quem morre em GTA"
+  - "GTA 6 download"
+  - "GTA 6 APK"
+  - "GTA 6 mobile grátis"

@@ -1,0 +1,240 @@
+# ============================================================================
+#  GTA CUTS FACTORY — ARQUIVO DE CONFIGURAÇÃO CENTRAL
+# ============================================================================
+#  COMO USAR:
+#   1. Copie este arquivo para "config.yaml" (mesmo pasta)
+#   2. Edite o config.yaml (NUNCA edite o .example, ele é o modelo)
+#   3. Linhas que começam com "#" são comentários, o programa ignora
+#
+#  ⚠️ O config.yaml guarda suas chaves de API e NÃO vai para o Git.
+# ============================================================================
+
+
+# ----------------------------------------------------------------------------
+# 1) PROGRAMAS EXTERNOS
+# ----------------------------------------------------------------------------
+# Deixe "ffmpeg" e "ffprobe" se você instalou pelo winget (Passo 2 da instalação).
+# Se instalou manualmente, escreva o caminho completo COM BARRA NORMAL "/", ex:
+#   ffmpeg_caminho: "C:/ffmpeg/bin/ffmpeg.exe"
+ffmpeg_caminho: "ffmpeg"
+ffprobe_caminho: "ffprobe"
+
+
+# ----------------------------------------------------------------------------
+# 2) SAÍDA DO VÍDEO
+# ----------------------------------------------------------------------------
+video:
+  largura: 1080            # 9:16 padrão TikTok/Shorts/Reels
+  altura: 1920
+  fps: 30
+  crf: 20                  # qualidade: menor = melhor e mais pesado (18–24 é bom)
+  preset: "veryfast"       # velocidade do encode: ultrafast > veryfast > medium > slow
+  bitrate_audio: "160k"
+
+  # Como transformar vídeo horizontal em vertical:
+  #   "auto"   = tenta achar o rosto/ação com OpenCV e corta em volta (recomendado)
+  #   "centro" = corta o meio da tela (rápido e previsível)
+  #   "blur"   = vídeo inteiro no centro + fundo desfocado (não corta nada)
+  modo_reframe: "auto"
+
+  duracao_minima_corte: 60   # segundos (1 minuto)
+  duracao_maxima_corte: 180  # segundos (3 minutos)
+
+
+# ----------------------------------------------------------------------------
+# 3) LEGENDAS  (a parte mais importante do vídeo!)
+# ----------------------------------------------------------------------------
+legendas:
+  # Nome EXATO da fonte instalada no Windows.
+  # Opções que já vêm no Windows: "Arial Black", "Impact"
+  # Recomendada (instalar pelo Google Fonts): "Montserrat ExtraBold"
+  fonte: "Arial Black"
+  tamanho_fonte: 96          # tamanho do texto (em vídeo 1080x1920)
+  maiusculas: true           # true = TUDO EM MAIÚSCULO (mais impacto)
+
+  palavras_por_linha: 3      # 2 a 4. Menos palavras = texto maior e mais legível
+  max_caracteres_linha: 16   # quebra a linha se passar disso
+
+  # Posição vertical: 0.5 = centro exato da tela, 1.0 = base.
+  # 0.62 deixa "um pouco abaixo do centro" (pedido do projeto).
+  posicao_vertical: 0.62
+
+  # Cores no formato #RRGGBB (como no Paint / seletor de cor)
+  cor_texto: "#FFFFFF"           # palavras normais (branco)
+  cor_palavra_ativa: "#00E5FF"   # palavra sendo falada AGORA (ciano)
+  cor_palavra_chave: "#FFE100"   # palavras de impacto (amarelo)
+  cor_contorno: "#000000"        # contorno preto
+  cor_sombra: "#000000"
+
+  espessura_contorno: 7      # contorno grosso = legível em qualquer fundo
+  sombra: 4
+  escala_pop: 118            # quanto a palavra ativa "pula" (100 = sem efeito)
+
+  # Palavras que ganham cor de destaque automaticamente.
+  # Pode usar duas palavras juntas, ex: "GTA 6".
+  palavras_chave_pt:
+    - "GTA 6"
+    - "GTA 5"
+    - "GTA VI"
+    - "ROCKSTAR"
+    - "VAZOU"
+    - "VAZAMENTO"
+    - "CONFIRMADO"
+    - "CONFIRMOU"
+    - "OFICIAL"
+    - "TRAILER"
+    - "LANÇAMENTO"
+    - "DATA"
+    - "ADIADO"
+    - "NOVO"
+    - "MAPA"
+    - "GRÁTIS"
+    - "SEGREDO"
+    - "AGORA"
+  palavras_chave_en:
+    - "GTA 6"
+    - "GTA 5"
+    - "GTA VI"
+    - "ROCKSTAR"
+    - "LEAK"
+    - "LEAKED"
+    - "CONFIRMED"
+    - "OFFICIAL"
+    - "TRAILER"
+    - "RELEASE"
+    - "DATE"
+    - "DELAYED"
+    - "NEW"
+    - "MAP"
+    - "FREE"
+    - "SECRET"
+    - "NOW"
+
+
+# ----------------------------------------------------------------------------
+# 4) GANCHO DE ABERTURA (os 2 primeiros segundos — prioridade máxima)
+# ----------------------------------------------------------------------------
+gancho:
+  duracao: 2.2               # segundos que a frase fica na tela
+  fonte: "Arial Black"
+  tamanho_fonte: 110
+  cor_texto: "#FFFFFF"
+  cor_destaque: "#FFE100"    # a palavra mais forte da frase sai em amarelo
+  cor_contorno: "#000000"
+  espessura_contorno: 9
+  posicao_vertical: 0.30     # 0.30 = parte de cima da tela
+  maiusculas: true
+  caixa_fundo: true          # tarja escura atrás do texto (ajuda a ler)
+
+  # Frases usadas quando a IA está desligada (o sistema sorteia uma).
+  # {assunto} é trocado pelo tema do vídeo.
+  modelos_pt:
+    - "A ROCKSTAR CONFIRMOU ISSO DO {assunto}?!"
+    - "NINGUÉM VIU ISSO NO {assunto}"
+    - "ISSO MUDA TUDO NO {assunto}"
+    - "VAZOU AGORA: {assunto}"
+    - "VOCÊ NÃO SABIA DISSO DO {assunto}"
+  modelos_en:
+    - "ROCKSTAR JUST CONFIRMED THIS ABOUT {assunto}?!"
+    - "NOBODY NOTICED THIS IN {assunto}"
+    - "THIS CHANGES EVERYTHING IN {assunto}"
+    - "LEAKED: {assunto}"
+    - "YOU DIDN'T KNOW THIS ABOUT {assunto}"
+
+
+# ----------------------------------------------------------------------------
+# 5) TRANSCRIÇÃO (Whisper)
+# ----------------------------------------------------------------------------
+transcricao:
+  # Quanto maior, melhor a qualidade e mais lento:
+  #   "base" (rápido) < "small" (equilibrado) < "medium" (melhor, pesado)
+  modelo: "small"
+  dispositivo: "auto"        # "auto", "cpu" ou "cuda" (se tiver placa NVIDIA)
+  tipo_computacao: "int8"    # "int8" é rápido na CPU; use "float16" com CUDA
+  idioma: null               # null = detecta sozinho; ou "pt" / "en"
+  usar_vad: true             # ignora silêncios (melhora muito os tempos)
+
+
+# ----------------------------------------------------------------------------
+# 6) PRODUÇÃO DOS 3 VÍDEOS POR CLIQUE
+# ----------------------------------------------------------------------------
+producao:
+  quantidade: 3
+  idiomas: ["pt", "pt", "en"]   # vídeo 1 e 2 em português, vídeo 3 em inglês
+
+  # Quantos dos 3 são MODO A (corte) e quantos são MODO B (narrado com TTS).
+  # Modo B tem risco quase zero de Content ID.
+  modo_a_cortes: 2
+  modo_b_narrados: 1
+
+  jogos_prioridade: ["GTA 6", "GTA 5"]
+
+
+# ----------------------------------------------------------------------------
+# 7) SEGURANÇA ANTI-STRIKE  🛡️
+# ----------------------------------------------------------------------------
+seguranca:
+  bloquear_cinematica_sem_narracao: true   # regra da Rockstar
+  bloquear_spoilers: true
+  nivel_violencia_maximo: "moderado"       # "nenhum" | "moderado" | "qualquer"
+  segundos_maximos_cena_grafica: 8         # duração ACUMULADA de cena pesada
+  rebaixar_fonte_apos_claim: true          # 1 claim → canal vira "bloqueado"
+  exigir_credito_fonte: true
+
+  termos_spoiler:
+    - "final do jogo"
+    - "ending"
+    - "morte de"
+    - "quem morre"
+    - "final secreto"
+    - "plot twist"
+    - "spoiler"
+
+  termos_violencia:
+    - "tortura"
+    - "torture"
+    - "massacre"
+    - "sangue"
+    - "gore"
+    - "brutal"
+
+
+# ----------------------------------------------------------------------------
+# 8) CHAVES DE API (deixe em branco até chegar nas etapas finais)
+# ----------------------------------------------------------------------------
+ia:
+  ativa: false               # false = usa frases prontas, custo R$ 0,00
+  provedor: "anthropic"      # "anthropic" ou "openai"
+  chave_api: ""
+  modelo: "claude-sonnet-4-5"
+  # Custo aproximado com IA ligada: US$ 0,01 a 0,03 por vídeo.
+
+tts:
+  ativo: true
+  provedor: "edge"           # "edge" = GRÁTIS (recomendado) | "elevenlabs" = pago
+  voz_pt: "pt-BR-AntonioNeural"
+  voz_en: "en-US-GuyNeural"
+  chave_elevenlabs: ""
+  voz_elevenlabs: ""
+
+youtube:
+  arquivo_client_secret: "config/client_secret.json"
+  privacidade_upload: "unlisted"    # sempre não-listado: você confere antes
+  categoria: "20"                   # 20 = Gaming
+
+tiktok:
+  pasta_saida: "saida/tiktok"
+  usar_api: false
+  client_key: ""
+  client_secret: ""
+
+
+# ----------------------------------------------------------------------------
+# 9) PASTAS (não precisa mexer)
+# ----------------------------------------------------------------------------
+pastas:
+  downloads: "dados/downloads"
+  transcricoes: "dados/transcricoes"
+  temporario: "dados/temp"
+  saida: "saida"
+  banco: "dados/banco.sqlite"

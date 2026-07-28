@@ -1,0 +1,24 @@
+# --- Segredos: NUNCA subir para o GitHub ---
+config/config.yaml
+config/canais_fontes.yaml
+config/client_secret.json
+config/token_youtube.json
+*.env
+
+# --- Arquivos pesados gerados pelo sistema ---
+dados/
+saida/
+*.mp4
+*.mkv
+*.webm
+*.wav
+*.mp3
+*.ass
+*.srt
+
+# --- Python ---
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
