@@ -163,6 +163,49 @@ def transcrever(
     return resultado
 
 
+def recortar(resultado: dict, inicio: float, fim: float) -> dict:
+    """
+    Pega um PEDAÇO de uma transcrição já feita e reescreve os tempos como se
+    ele começasse do zero.
+
+    Para que serve: no modo automático, o sistema transcreve o vídeo inteiro
+    uma vez e depois escolhe o melhor trecho. Sem esta função, seria preciso
+    rodar o Whisper de novo só para pegar os tempos do corte — desperdício de
+    vários minutos.
+
+        recortar(transcricao_completa, 122, 212)
+        → só o que foi falado entre 2:02 e 3:32, com os tempos começando em 0
+    """
+    inicio, fim = float(inicio), float(fim)
+
+    def dentro(item: dict) -> bool:
+        # o item conta se o MEIO dele estiver dentro do trecho — assim uma
+        # palavra que começa 0,1s antes do corte não é perdida nem duplicada
+        meio = (float(item.get("inicio", 0)) + float(item.get("fim", 0))) / 2
+        return inicio <= meio <= fim
+
+    def deslocar(itens: list[dict]) -> list[dict]:
+        return [
+            {**item,
+             "inicio": round(float(item.get("inicio", 0)) - inicio, 3),
+             "fim": round(float(item.get("fim", 0)) - inicio, 3)}
+            for item in itens if dentro(item)
+        ]
+
+    frases = deslocar(resultado.get("frases", []) or [])
+    palavras = deslocar(resultado.get("palavras", []) or [])
+
+    return {
+        "idioma": resultado.get("idioma", "pt"),
+        "texto": " ".join(f.get("texto", "") for f in frases).strip()
+                 or " ".join(p.get("texto", "") for p in palavras).strip(),
+        "palavras": palavras,
+        "frases": frases,
+        "origem": resultado.get("origem", ""),
+        "inicio_no_original": float(resultado.get("inicio_no_original", 0.0)) + inicio,
+    }
+
+
 def palavras_de(resultado: dict) -> list[Palavra]:
     """Converte o dicionário da transcrição na lista de Palavra usada pela legenda."""
     return [Palavra.de_dict(item) for item in resultado.get("palavras", [])]

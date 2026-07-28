@@ -241,6 +241,40 @@ está com os exemplos. Sem internet, use `python scripts\etapa3_teste.py --offli
 
 ---
 
+## Passo 11 — TESTE 5: onde cortar dentro do vídeo
+
+```powershell
+python scripts\etapa4_teste.py --demo
+```
+
+Ele usa um vídeo de mentirinha com roteiro **conhecido de propósito** (intro
+chata, patrocínio, papo morno, dois trechos quentes e despedida) e mostra o
+sistema fugindo do lixo e achando o ouro. No fim, ele mesmo confere o resultado
+item por item.
+
+Para usar num vídeo seu de verdade:
+
+```powershell
+python scripts\etapa4_teste.py --video "C:\Videos\gameplay.mp4"
+```
+
+### 🤖 O modo automático
+
+Agora o pipeline consegue escolher o trecho sozinho:
+
+```powershell
+python scripts\etapa1_pipeline.py --url "https://youtu.be/XXXX" --auto --idioma pt
+```
+
+Ele transcreve o vídeo uma vez, escolhe o melhor momento, corta em frase
+completa e renderiza. Rodando de novo no mesmo vídeo, escolhe outro trecho.
+
+Se o resultado não te agradar, ajuste os pesos em `config/config.yaml`, na
+seção `selecao` — `peso_gancho`, `peso_emocao`, `nota_minima` e as listas de
+expressões são todos seus para mexer.
+
+---
+
 ## Onde conseguir cada chave de API (só nas etapas finais)
 
 | Chave | Onde pegar | Precisa agora? |

@@ -19,8 +19,8 @@ Estamos construindo **por partes**, testando cada uma antes de avançar.
 | **1. Núcleo** | baixar vídeo → cortar 9:16 → legenda karaokê + gancho | ✅ **pronto e testado** |
 | **2. Banco + Segurança** | anti-repetição (SQLite) + módulo 🛡️ anti-strike | ✅ **pronto e testado** |
 | **3. Fontes + Tendências** | canais aprovados + assuntos em alta + diversificação | ✅ **pronto e testado** |
-| 4. Seleção inteligente | escolher os 3 melhores momentos distintos | ⏳ próxima |
-| 5. Modo B (narrado) | roteiro + voz sintética + trailer de fundo | ⏳ |
+| **4. Seleção inteligente** | escolher os melhores momentos, distintos e em frase completa | ✅ **pronto e testado** |
+| 5. Modo B (narrado) | roteiro + voz sintética + trailer de fundo | ⏳ próxima |
 | 6. Metadados + B-roll | título/descrição/hashtags PT-EN + gameplay de fundo | ⏳ |
 | 7. Painel | fila de aprovação com selo de segurança 🟢🟡🔴 | ⏳ |
 | 8. Publicação | YouTube (não-listado) + rascunho TikTok | ⏳ |
@@ -56,11 +56,28 @@ python scripts\etapa2_teste.py
 # 6. TESTE 4 — o que está em alta e de onde cortar (não gera vídeo)
 python scripts\etapa3_teste.py
 
-# 7. conferir se está tudo saudável (77 testes)
+# 7. TESTE 5 — onde cortar dentro do vídeo (demonstração com roteiro conhecido)
+python scripts\etapa4_teste.py --demo
+
+# 8. conferir se está tudo saudável (99 testes)
 python testes\test_legendas.py
 python testes\test_seguranca.py
 python testes\test_fontes.py
+python testes\test_selecao.py
 ```
+
+### Modo automático 🤖
+
+Com a Etapa 4 pronta, você não precisa mais escolher o trecho na mão:
+
+```powershell
+python scripts\etapa1_pipeline.py --url "https://youtu.be/XXXX" --auto --idioma pt
+```
+
+O `--auto` transcreve o vídeo **uma vez**, escolhe o melhor momento (fugindo de
+intro, patrocínio e despedida), corta em frase completa e renderiza. Rodando de
+novo no mesmo vídeo, ele escolhe **outro** momento — o anterior já está no log
+anti-repetição.
 
 ### Comandos do dia a dia
 
@@ -116,7 +133,15 @@ dono do conteúdo. Um **strike de direitos autorais** é grave (3 = canal
 removido). O sistema é desenhado para evitar os dois, com prioridade para
 nunca chegar perto de um strike.
 
-### 2. Transformação real é a sua defesa
+### 2. Corte bom não é corte aleatório
+
+O sistema procura trechos com **gancho, palavra-chave e emoção**, e foge de
+introdução, patrocínio e despedida. Um detalhe importante: se não houver trecho
+bom o bastante (nota mínima em `selecao.nota_minima`), ele entrega **menos
+vídeos** em vez de completar a cota com material fraco. Três cortes por dia só
+valem a pena se os três forem bons.
+
+### 3. Transformação real é a sua defesa
 
 Um corte de 60 s que é só um pedaço do vídeo de outra pessoa, com legenda
 automática, é **reupload com enfeite**. O que muda o jogo:
@@ -130,14 +155,14 @@ automática, é **reupload com enfeite**. O que muda o jogo:
 
 Quanto mais itens dessa lista, mais transformativo — e mais seguro.
 
-### 3. Regras da Rockstar (o sistema aplica automaticamente)
+### 4. Regras da Rockstar (o sistema aplica automaticamente)
 
 - ✅ Cutscene/cinemática **dentro** de conteúdo narrado ou de um vídeo maior
 - ❌ Cutscene **isolada**, sem comentário → o módulo de segurança **bloqueia**
 - ❌ Final do jogo, grandes revelações, spoilers de enredo → **bloqueado**
 - ❌ Compilações editadas só de cinemáticas → **bloqueado**
 
-### 4. Política de conteúdo violento do YouTube
+### 5. Política de conteúdo violento do YouTube
 
 O sistema evita por padrão violência gráfica forte (sangue em excesso, tortura,
 violência sustentada contra NPCs). Quando um trecho candidato tem violência
@@ -156,7 +181,7 @@ que violência — e não colocam o canal em risco.
 > atual em <https://support.google.com/youtube/answer/2802002> e ajuste o
 > `config.yaml` se necessário.
 
-### 5. Metadados honestos ajudam a classificação
+### 6. Metadados honestos ajudam a classificação
 
 Use títulos e tags que descrevem o que é de fato: "Gameplay",
 "Cutscene Narrada", "Story Discussion", "Notícia". Isso ajuda o YouTube a
@@ -164,7 +189,7 @@ classificar corretamente e evita restrição de idade por engano.
 **Nunca** use clickbait que promete algo que o vídeo não mostra — além de
 derrubar a retenção, é o caminho mais rápido para "conteúdo enganoso".
 
-### 6. Sistema de reputação de fontes
+### 7. Sistema de reputação de fontes
 
 Cada canal-fonte tem um status no banco local:
 
@@ -180,7 +205,7 @@ Todo canal novo entra como **`em_teste`**. Quando você registrar um problema
 nunca mais é usado — nem que ele continue escrito no seu `canais_fontes.yaml`.
 Só você pode liberar de volta, com `desbloquear`.
 
-### 7. Diversifique e vá devagar
+### 8. Diversifique e vá devagar
 
 - não corte sempre do mesmo canal — o sistema alterna sozinho: na escolha dos
   3 vídeos ele exige **canais diferentes E assuntos diferentes**, e nunca tira
@@ -189,7 +214,7 @@ Só você pode liberar de volta, com `desbloquear`.
 - olhe o YouTube Studio: se aparecer claim, tire aquela fonte de circulação
   antes de gerar mais.
 
-### 8. Crédito sempre
+### 9. Crédito sempre
 
 O link do vídeo original vai automaticamente na descrição. Crédito **não é**
 licença — mas mostra boa-fé, e vários canais liberam cortes justamente por

@@ -106,12 +106,14 @@ gta_cuts_factory/
 │   ├── etapa1_pipeline.py        ✅ 1 vídeo → checagem 🛡️ → 9:16 → legenda
 │   ├── etapa2_teste.py           ✅ demonstra o banco e as 6 checagens
 │   ├── etapa3_teste.py           ✅ mostra tendências e candidatos (sem gerar)
+│   ├── etapa4_teste.py           ✅ mostra ONDE cortar dentro de um vídeo
 │   └── fontes.py                 ✅ ver canais, registrar claim, ver a fila
 │
 ├── testes/                       ← testes automáticos
 │   ├── test_legendas.py          ✅ 23 testes
 │   ├── test_seguranca.py         ✅ 32 testes
-│   └── test_fontes.py            ✅ 22 testes
+│   ├── test_fontes.py            ✅ 22 testes
+│   └── test_selecao.py           ✅ 22 testes
 │
 ├── dados/                        ← downloads, transcrições, banco.sqlite
 └── saida/                        ← vídeos finais prontos + metadados
@@ -130,7 +132,7 @@ Cada etapa só começa quando a anterior estiver **rodando na sua máquina**.
 | **1. NÚCLEO** ✅ | baixar 1 vídeo → cortar 9:16 → legenda karaokê com destaque de palavra-chave → gancho de 2s | `python scripts/teste_rapido.py` e depois `python scripts/etapa1_pipeline.py --url ...` |
 | **2. BANCO + SEGURANÇA** ✅ | SQLite (anti-repetição + reputação de fontes) e o módulo 🛡️ que aprova/reprova | `python scripts/etapa2_teste.py` e rodar a etapa 1 duas vezes no mesmo trecho → segunda vez é bloqueada |
 | **3. FONTES + TENDÊNCIAS** ✅ | busca do que está em alta (YouTube + Reddit + sua lista), candidatos dos canais aprovados, escolha diversificada | `python scripts/etapa3_teste.py` — lista os candidatos sem gerar vídeo |
-| **4. SELEÇÃO INTELIGENTE** | escolher os 3 melhores momentos DISTINTOS (heurística + IA opcional) | ver os 3 trechos escolhidos e os motivos |
+| **4. SELEÇÃO INTELIGENTE** ✅ | escolher os melhores momentos DISTINTOS, sempre em frase completa | `python scripts/etapa4_teste.py --demo` e `etapa1_pipeline.py --auto` |
 | **5. MODO B (narrado)** | roteiro + TTS + trailer oficial de fundo | gerar 1 vídeo narrado completo |
 | **6. METADADOS + B-ROLL** | título/descrição/hashtags PT e EN, gameplay de fundo/split | conferir textos gerados |
 | **7. PAINEL** | Flask com botão CRIAR, fila, selo 🟢🟡🔴, edição, reprovados | abrir `http://localhost:5000` |

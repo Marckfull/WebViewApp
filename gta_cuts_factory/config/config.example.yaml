@@ -177,6 +177,106 @@ producao:
 
 
 # ----------------------------------------------------------------------------
+# 6.1) SELEÇÃO DOS MELHORES MOMENTOS (Etapa 4)
+# ----------------------------------------------------------------------------
+# Aqui você ensina o sistema a reconhecer um "bom momento" dentro do vídeo.
+selecao:
+  duracao_alvo: 90            # tamanho ideal do corte, em segundos
+  ignorar_inicio: 45          # pula a introdução/vinheta do vídeo-fonte
+  ignorar_fim: 30             # pula a despedida ("se inscreve, até a próxima")
+  distancia_minima_entre_cortes: 30   # segundos entre um corte e outro
+
+  # Nota mínima para um trecho poder virar vídeo. Trecho abaixo disso é
+  # DESCARTADO mesmo que falte corte para completar os 3 — é melhor entregar
+  # 2 cortes bons do que 3 com um pegando patrocínio ou papo morno.
+  # Aumente para ser mais exigente (2.0), diminua para aceitar mais (0.0).
+  nota_minima: 1.0
+
+  # Quanto cada coisa vale na nota do trecho (mexa se quiser mudar o "gosto")
+  peso_gancho: 3.0            # frase de curiosidade nos primeiros segundos
+  peso_palavras_chave: 2.0    # densidade de GTA 6, VAZOU, CONFIRMADO...
+  peso_emocao: 1.5            # reação forte (retém mais)
+  peso_densidade_fala: 1.0    # trecho com fala constante, sem silêncio longo
+  penalidade_autopromocao: 3.0  # "se inscreve", "link na descrição", patrocínio
+
+  # Expressões que indicam um GANCHO (o trecho promete algo)
+  palavras_gancho_pt:
+    - "olha isso"
+    - "presta atenção"
+    - "você sabia"
+    - "ninguém percebeu"
+    - "pela primeira vez"
+    - "acabou de"
+    - "confirmou"
+    - "vazou"
+    - "descobri"
+    - "olha o que"
+    - "não acredito"
+    - "isso muda tudo"
+    - "o segredo"
+    - "a verdade"
+  palavras_gancho_en:
+    - "look at this"
+    - "pay attention"
+    - "did you know"
+    - "nobody noticed"
+    - "for the first time"
+    - "just confirmed"
+    - "leaked"
+    - "i found"
+    - "no way"
+    - "this changes everything"
+    - "the secret"
+    - "the truth"
+
+  # Expressões de EMOÇÃO (reação forte segura o espectador)
+  palavras_emocao_pt:
+    - "caramba"
+    - "meu deus"
+    - "inacreditável"
+    - "absurdo"
+    - "impressionante"
+    - "chocado"
+    - "que loucura"
+    - "surreal"
+    - "eu não esperava"
+  palavras_emocao_en:
+    - "oh my god"
+    - "insane"
+    - "unbelievable"
+    - "crazy"
+    - "shocked"
+    - "i can't believe"
+    - "wow"
+
+  # Expressões de AUTOPROMOÇÃO — cortar aqui estraga o vídeo (nota negativa)
+  autopromocao_pt:
+    - "se inscreve"
+    - "se inscreva"
+    - "deixa o like"
+    - "deixe seu like"
+    - "comenta aí"
+    - "link na descrição"
+    - "ativa o sininho"
+    - "patrocínio"
+    - "patrocinado"
+    - "cupom"
+    - "vídeo passado"
+    - "próximo vídeo"
+    - "membros do canal"
+  autopromocao_en:
+    - "subscribe"
+    - "like the video"
+    - "hit the bell"
+    - "link in the description"
+    - "sponsored by"
+    - "use my code"
+    - "last video"
+    - "next video"
+    - "channel members"
+
+
+# ----------------------------------------------------------------------------
 # 7) SEGURANÇA ANTI-STRIKE  🛡️
 # ----------------------------------------------------------------------------
 seguranca:

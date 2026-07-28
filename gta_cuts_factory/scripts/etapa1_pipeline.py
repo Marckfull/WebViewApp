@@ -43,10 +43,11 @@ from nucleo import (  # noqa: E402
     legendas,
     render,
     seguranca,
+    selecao,
     transcricao,
 )
 from nucleo.config import carregar_canais, carregar_config  # noqa: E402
-from nucleo.utils import log, nome_seguro, para_segundos, titulo  # noqa: E402
+from nucleo.utils import info_video, log, nome_seguro, para_segundos, titulo  # noqa: E402
 
 
 def montar_argumentos() -> argparse.Namespace:
@@ -57,6 +58,9 @@ def montar_argumentos() -> argparse.Namespace:
     origem.add_argument("--url", help="link do vídeo-fonte (YouTube etc.)")
     origem.add_argument("--arquivo", help="vídeo que já está no seu computador")
 
+    parser.add_argument("--auto", action="store_true",
+                        help="deixa o sistema escolher o melhor trecho sozinho "
+                             "(transcreve o vídeo todo e usa a Etapa 4)")
     parser.add_argument("--inicio", default="0",
                         help='onde o corte começa: "90" ou "00:01:30"')
     parser.add_argument("--duracao", default="60",
@@ -87,7 +91,7 @@ def main() -> int:
 
     minimo = float(cfg.pegar("video.duracao_minima_corte", 60))
     maximo = float(cfg.pegar("video.duracao_maxima_corte", 180))
-    if not (minimo <= duracao <= maximo):
+    if not args.auto and not (minimo <= duracao <= maximo):
         log(f"Duração {duracao:.0f}s está fora da faixa recomendada "
             f"({minimo:.0f}s a {maximo:.0f}s). Seguindo mesmo assim.", "aviso")
 
@@ -118,7 +122,42 @@ def main() -> int:
         # --------------------------------------- 2) transcrição por palavra
         palavras: list[legendas.Palavra] = []
         resultado_transcricao: dict = {}
-        if not args.sem_transcricao:
+
+        if args.auto:
+            if args.sem_transcricao:
+                log("--auto precisa da transcrição para escolher o trecho. "
+                    "Ignorando --sem-transcricao.", "aviso")
+            # transcreve o vídeo INTEIRO uma vez só, e depois recorta
+            completa = transcricao.transcrever(
+                fonte.arquivo, cfg, inicio=0, duracao=None, idioma=args.idioma,
+            )
+            titulo("2b/6 — ESCOLHENDO O MELHOR MOMENTO (modo automático)")
+            informacoes = info_video(
+                fonte.arquivo, str(cfg.pegar("ffprobe_caminho", "ffprobe")),
+                str(cfg.pegar("ffmpeg_caminho", "ffmpeg")),
+            )
+            momento = selecao.melhor_momento(
+                completa, cfg, idioma=args.idioma,
+                duracao_video=informacoes.duracao,
+                conexao=conexao, video_id=fonte.id,
+            )
+            if momento is None:
+                log("Não achei nenhum trecho bom neste vídeo. Tente outro vídeo, "
+                    "ou escolha o trecho na mão com --inicio e --duracao.", "erro")
+                return 3
+
+            inicio, duracao = momento.inicio, momento.duracao
+            log(f"Trecho escolhido: {selecao.formatar_tempo(momento.inicio)} → "
+                f"{selecao.formatar_tempo(momento.fim)} ({duracao:.0f}s), "
+                f"nota {momento.pontuacao:.2f}", "ok")
+            print(f'   abre com: "{momento.primeira_frase[:70]}"')
+            print(f"   motivos : {', '.join(momento.motivos)}")
+
+            # aproveita a transcrição que já temos (não roda o Whisper de novo)
+            resultado_transcricao = transcricao.recortar(completa, inicio, inicio + duracao)
+            palavras = transcricao.palavras_de(resultado_transcricao)
+
+        elif not args.sem_transcricao:
             resultado_transcricao = transcricao.transcrever(
                 fonte.arquivo, cfg, inicio=inicio, duracao=duracao,
                 idioma=args.idioma,
