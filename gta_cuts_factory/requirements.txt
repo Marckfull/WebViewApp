@@ -11,7 +11,7 @@ opencv-python>=4.9.0,<5.0.0   # detecção de rosto/ação (a 5.x removeu o dete
 numpy>=1.24.0             # cálculos usados pelo reframe e pela análise de cena
 
 # --- PRÓXIMAS ETAPAS --------------------------------------------------------
-Flask>=3.0.0              # painel local (fila de aprovação)
+Flask>=3.0.0              # painel local (fila de aprovação) — Etapa 7
 requests>=2.31.0          # chamadas HTTP (tendências, APIs)
 edge-tts>=6.1.10          # narração do MODO B — voz sintética GRÁTIS
 

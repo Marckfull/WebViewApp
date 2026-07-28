@@ -96,10 +96,10 @@ gta_cuts_factory/
 │   ├── banco.py                  ✅ SQLite: anti-repetição + reputação
 │   └── publicacao.py             ⏳ YouTube API + pasta/rascunho TikTok
 │
-├── painel/                       ⏳ interface web local
-│   ├── app.py                    ⏳ Flask: botão CRIAR + fila + publicar
-│   ├── templates/
-│   └── static/
+├── painel/                       ✅ interface web local (Flask)
+│   ├── app.py                    ✅ rotas: CRIAR, fila, editar, aprovar
+│   ├── templates/index.html      ✅ a tela única do painel
+│   └── static/estilo.css         ✅ visual escuro, feito para bater o olho
 │
 ├── scripts/                      ← comandos que VOCÊ roda no terminal
 │   ├── teste_rapido.py           ✅ testa legenda/reframe SEM baixar nada
@@ -109,6 +109,7 @@ gta_cuts_factory/
 │   ├── etapa4_teste.py           ✅ mostra ONDE cortar dentro de um vídeo
 │   ├── etapa5_narrado.py         ✅ MODO B completo (roteiro → voz → vídeo)
 │   ├── etapa6_teste.py           ✅ mostra os metadados e a decisão de b-roll
+│   ├── painel.py                 ✅ abre o painel no navegador
 │   └── fontes.py                 ✅ ver canais, registrar claim, ver a fila
 │
 ├── testes/                       ← testes automáticos
@@ -117,7 +118,8 @@ gta_cuts_factory/
 │   ├── test_fontes.py            ✅ 22 testes
 │   ├── test_selecao.py           ✅ 22 testes
 │   ├── test_narracao.py          ✅ 17 testes
-│   └── test_metadados.py         ✅ 29 testes
+│   ├── test_metadados.py         ✅ 29 testes
+│   └── test_painel.py            ✅ 20 testes
 │
 ├── dados/                        ← downloads, transcrições, banco.sqlite
 └── saida/                        ← vídeos finais prontos + metadados
@@ -139,7 +141,7 @@ Cada etapa só começa quando a anterior estiver **rodando na sua máquina**.
 | **4. SELEÇÃO INTELIGENTE** ✅ | escolher os melhores momentos DISTINTOS, sempre em frase completa | `python scripts/etapa4_teste.py --demo` e `etapa1_pipeline.py --auto` |
 | **5. MODO B (narrado)** ✅ | roteiro com os SEUS fatos + voz sintética grátis + trailer de fundo em loop | `python scripts/etapa5_narrado.py --assunto ... --fundo ... --fatos ...` |
 | **6. METADADOS + B-ROLL** ✅ | título/descrição/hashtags PT e EN com crédito automático, gameplay em split-screen ou de fundo | `python scripts/etapa6_teste.py` |
-| **7. PAINEL** | Flask com botão CRIAR, fila, selo 🟢🟡🔴, edição, reprovados | abrir `http://localhost:5000` |
+| **7. PAINEL** ✅ | Flask com botão CRIAR, fila com prévia, selo 🟢🟡🔴, edição de metadados, reprovados e reputação | `python scripts/painel.py` → `http://localhost:5000` |
 | **8. PUBLICAÇÃO** | YouTube (não-listado) + pasta/rascunho TikTok | subir 1 vídeo de teste não-listado |
 
 ---

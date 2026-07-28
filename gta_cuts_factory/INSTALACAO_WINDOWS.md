@@ -340,6 +340,39 @@ python scripts\etapa1_pipeline.py --arquivo "C:\Videos\corte.mp4" --auto --broll
 
 ---
 
+## Passo 14 — O PAINEL (é assim que você vai usar no dia a dia)
+
+```powershell
+python scripts\painel.py
+```
+
+O navegador abre sozinho em `http://localhost:5000`. Se não abrir, digite esse
+endereço na barra do navegador.
+
+**Como usar a tela, de cima para baixo:**
+
+1. **CRIAR** — se quiser o vídeo narrado com notícia de verdade, escreva os
+   fatos (um por linha) na caixa antes de clicar. Depois clique no botão azul.
+   A produção demora alguns minutos e o andamento aparece na tela.
+2. **Fila de aprovação** — cada vídeo aparece com um selo:
+   - 🟢 **verde**: fonte oficial ou sua, sem violência forte → pode publicar
+   - 🟡 **amarelo**: fonte em teste ou violência moderada → confira antes
+   - 🔴 **vermelho**: risco — nem chega na fila
+3. **Assista o vídeo ali mesmo**, ajuste título/descrição/hashtags e clique em
+   **Salvar alterações**.
+4. Depois de subir o vídeo, clique em **Publicado** para tirá-lo da fila
+   (o upload automático chega na Etapa 8).
+5. **Reprovados** — o que o escudo barrou, com o motivo de cada bloqueio.
+6. **Seus canais-fonte** — se algum vídeo tomar Content ID, clique em
+   **"Tomou claim"** na linha do canal: ele é bloqueado na hora.
+
+Para fechar o painel, volte ao PowerShell e aperte **Ctrl + C**.
+
+> ⚠️ A porta 5000 pode estar ocupada por outro programa. Nesse caso:
+> `python scripts\painel.py --porta 5001`
+
+---
+
 ## Onde conseguir cada chave de API (só nas etapas finais)
 
 | Chave | Onde pegar | Precisa agora? |

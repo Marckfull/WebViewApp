@@ -22,14 +22,25 @@ Estamos construindo **por partes**, testando cada uma antes de avançar.
 | **4. Seleção inteligente** | escolher os melhores momentos, distintos e em frase completa | ✅ **pronto e testado** |
 | **5. Modo B (narrado)** | roteiro + voz sintética grátis + trailer de fundo | ✅ **pronto e testado** |
 | **6. Metadados + B-roll** | título/descrição/hashtags PT-EN + gameplay junto | ✅ **pronto e testado** |
-| 7. Painel | fila de aprovação com selo de segurança 🟢🟡🔴 | ⏳ próxima |
-| 8. Publicação | YouTube (não-listado) + rascunho TikTok | ⏳ |
+| **7. Painel** | botão CRIAR + fila de aprovação com selo 🟢🟡🔴 | ✅ **pronto e testado** |
+| 8. Publicação | YouTube (não-listado) + rascunho TikTok | ⏳ próxima |
 
 O plano completo está em [`ARQUITETURA.md`](ARQUITETURA.md).
 
 ---
 
 ## 🚀 Começando (resumo)
+
+### 🎮 O jeito normal de usar: o painel
+
+```powershell
+python scripts\painel.py
+```
+
+Abre em `http://localhost:5000`: você clica em **CRIAR**, assiste aos vídeos
+prontos, confere o selo de segurança, edita título/descrição/hashtags e aprova
+— tudo numa tela só. Os comandos de terminal abaixo continuam existindo para
+quem quiser controle fino de cada etapa.
 
 O passo a passo detalhado, com o que clicar, está em
 [`INSTALACAO_WINDOWS.md`](INSTALACAO_WINDOWS.md). Resumo:
@@ -62,13 +73,17 @@ python scripts\etapa4_teste.py --demo
 # 8. TESTE 7 — títulos, descrições e hashtags que o sistema escreveria
 python scripts\etapa6_teste.py
 
-# 9. conferir se está tudo saudável (145 testes)
+# 9. abrir o painel (o jeito normal de usar no dia a dia)
+python scripts\painel.py
+
+# 10. conferir se está tudo saudável (165 testes)
 python testes\test_legendas.py
 python testes\test_seguranca.py
 python testes\test_fontes.py
 python testes\test_selecao.py
 python testes\test_narracao.py
 python testes\test_metadados.py
+python testes\test_painel.py
 ```
 
 ### Modo automático 🤖

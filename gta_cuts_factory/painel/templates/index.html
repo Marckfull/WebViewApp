@@ -1,0 +1,283 @@
+{# =========================================================================
+   index.html — a tela única do painel.
+
+   Ordem pensada para o seu dia a dia:
+     1. botão CRIAR (e o andamento da produção)
+     2. FILA de aprovação — é aqui que você trabalha
+     3. REPROVADOS — o que o escudo barrou, e por quê
+     4. FONTES — reputação dos canais
+   ========================================================================= #}
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GTA Cuts Factory</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='estilo.css') }}">
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>🎮 GTA Cuts Factory</h1>
+    <div class="resumo">
+      {{ resumo.na_fila }} na fila · {{ resumo.reprovados }} reprovados ·
+      {{ resumo.publicados }} publicados · {{ resumo.trechos_usados }} trechos já usados
+    </div>
+  </div>
+  <div class="resumo">
+    {{ producao_cfg.cortes }} corte(s) + {{ producao_cfg.narrados }} narrado(s)
+    · idiomas: {{ producao_cfg.idiomas | join(', ') | upper }}
+  </div>
+</header>
+
+<main>
+
+  <!-- ================================================== 1) BOTÃO CRIAR -->
+  <section>
+    <h2>Criar</h2>
+    <form class="criar" method="post" action="{{ url_for('criar') }}">
+      <div>
+        <label for="fatos">
+          Fatos para o vídeo narrado (um por linha) — <strong>opcional, mas
+          recomendado</strong>. O sistema não inventa notícia: ele narra o que
+          você escrever aqui.
+        </label>
+        <textarea id="fatos" name="fatos" rows="4"
+          placeholder="a Rockstar publicou um comunicado no site oficial&#10;o comunicado fala do trailer, sem data fechada"></textarea>
+      </div>
+      <div>
+        <label for="fundo">Vídeo de fundo do narrado (opcional — se vazio, sorteia da pasta de gameplay)</label>
+        <input type="text" id="fundo" name="fundo" placeholder="C:/Videos/trailer_oficial.mp4">
+      </div>
+      <button type="submit" class="botao-criar" id="botao-criar"
+              {% if estado.rodando %}disabled{% endif %}>
+        {% if estado.rodando %}⏳ Produzindo...{% else %}▶️ CRIAR {{ producao_cfg.quantidade }} VÍDEOS{% endif %}
+      </button>
+    </form>
+
+    <div id="painel-progresso" style="margin-top:14px; {% if not estado.rodando and not estado.historico %}display:none{% endif %}">
+      <div class="progresso" id="progresso">
+        {% for linha in estado.historico %}
+          <div class="linha">{{ linha.hora }} — {{ linha.texto }}</div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ 2) FILA DE APROVAÇÃO -->
+  <section id="fila">
+    <h2>Fila de aprovação ({{ fila | length }})</h2>
+
+    {% if not fila %}
+      <div class="vazio">
+        Nada na fila ainda. Clique em <strong>CRIAR</strong> para produzir os
+        vídeos do dia.
+      </div>
+    {% else %}
+      <div class="videos">
+        {% for item in fila %}
+          {% set ficha = item.ficha %}
+          {% set meta = ficha.get('metadados', {}) %}
+          <article class="cartao {{ item.selo }}" id="video-{{ item.id }}">
+            <video controls preload="metadata"
+                   poster="{{ url_for('miniatura', id_video=item.id) }}">
+              <source src="{{ url_for('video', id_video=item.id) }}" type="video/mp4">
+            </video>
+
+            <div class="corpo">
+              <div class="selo {{ item.selo }}">
+                {{ item.selo | emoji_selo }} {{ item.selo | upper }}
+                · {{ item.idioma | upper }}
+                · {{ 'CORTE' if item.modo == 'A_corte' else 'NARRADO' }}
+                · {{ item.inicio | tempo }}–{{ item.fim | tempo }}
+              </div>
+
+              <ul class="motivos">
+                {% for motivo in item.motivos %}
+                  {% if motivo.gravidade != 'info' %}
+                    <li class="{{ motivo.gravidade }}">
+                      {{ '🔴' if motivo.gravidade == 'bloqueio' else '🟡' }}
+                      {{ motivo.mensagem }}
+                    </li>
+                  {% endif %}
+                {% endfor %}
+                {% if ficha.get('broll') %}
+                  <li>🎬 com gameplay junto</li>
+                {% endif %}
+                {% if ficha.get('gancho') %}
+                  <li>🪝 gancho: “{{ ficha.gancho }}”</li>
+                {% endif %}
+              </ul>
+
+              <form method="post" action="{{ url_for('salvar', id_video=item.id) }}">
+                <div>
+                  <label>Título</label>
+                  <input type="text" name="titulo" maxlength="100"
+                         value="{{ meta.get('titulo', item.titulo or '') }}">
+                </div>
+                <div>
+                  <label>Descrição (o crédito da fonte já está aqui)</label>
+                  <textarea name="descricao">{{ meta.get('descricao', '') }}</textarea>
+                </div>
+                <div>
+                  <label>Hashtags</label>
+                  <input type="text" name="hashtags"
+                         value="{{ meta.get('hashtags', []) | join(' ') }}">
+                </div>
+
+                <div class="acoes" style="margin-top:10px">
+                  <button type="submit" class="btn-salvar">💾 Salvar alterações</button>
+                </div>
+              </form>
+
+              <div class="credito">
+                  Fonte:
+                  {% if ficha.get('fonte', {}).get('url') %}
+                    <a href="{{ ficha.fonte.url }}" target="_blank" rel="noopener">
+                      {{ ficha.fonte.get('canal') or ficha.fonte.url }}</a>
+                  {% else %}
+                    {{ ficha.get('fonte', {}).get('canal', '—') }}
+                  {% endif %}
+                  <br>
+                  Arquivo: {{ item.arquivo }}
+                  {% if ficha.get('tiktok_txt') %}
+                    <br>TikTok: {{ ficha.tiktok_txt }}
+                  {% endif %}
+                </div>
+
+              <div class="acoes">
+                <form method="post" action="{{ url_for('publicar', id_video=item.id) }}">
+                  <button type="submit" class="btn-publicar">✅ Publicado</button>
+                </form>
+                <form method="post" action="{{ url_for('descartar', id_video=item.id) }}">
+                  <button type="submit" class="btn-descartar">🗑️ Descartar</button>
+                </form>
+              </div>
+            </div>
+          </article>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </section>
+
+  <!-- =================================================== 3) REPROVADOS -->
+  {% if reprovados %}
+  <section id="reprovados">
+    <h2>Reprovados pelo escudo 🛡️ ({{ reprovados | length }})</h2>
+    <div class="aviso-caixa">
+      Estes vídeos <strong>não</strong> foram publicados nem renderizados. Estão
+      aqui só para você conferir o motivo — se discordar de algum, clique em
+      "Mandar para a fila".
+    </div>
+    <div class="videos">
+      {% for item in reprovados %}
+        <article class="cartao vermelho">
+          <div class="corpo">
+            <div class="selo vermelho">🔴 {{ item.assunto or '(sem assunto)' }}</div>
+            <div class="credito">
+              {{ item.idioma | upper }} ·
+              {{ 'CORTE' if item.modo == 'A_corte' else 'NARRADO' }} ·
+              {{ item.inicio | tempo }}–{{ item.fim | tempo }}
+            </div>
+            <ul class="motivos">
+              {% for motivo in item.motivos %}
+                {% if motivo.gravidade == 'bloqueio' %}
+                  <li class="bloqueio">🔴 {{ motivo.mensagem }}</li>
+                {% endif %}
+              {% endfor %}
+            </ul>
+            {% if item.arquivo %}
+              <form method="post" action="{{ url_for('reavaliar', id_video=item.id) }}">
+                <button type="submit" class="btn-reavaliar">↩️ Mandar para a fila</button>
+              </form>
+            {% endif %}
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  <!-- ======================================================= 4) FONTES -->
+  <section id="fontes">
+    <h2>Seus canais-fonte</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Canal</th><th>Status</th><th>Vídeos</th><th>Problemas</th><th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for fonte in fontes %}
+          <tr>
+            <td>{{ fonte.nome }}</td>
+            <td>{{ fonte.status | emoji_status }} {{ fonte.status }}</td>
+            <td>{{ fonte.videos_gerados }}</td>
+            <td>
+              {{ fonte.claims }} claim ·
+              {{ fonte.restricoes_idade }} restrição ·
+              {{ fonte.remocoes }} remoção
+            </td>
+            <td>
+              {% if fonte.status == 'bloqueado' %}
+                <form method="post" action="{{ url_for('fonte', acao='desbloquear') }}">
+                  <input type="hidden" name="canal_id" value="{{ fonte.canal_id }}">
+                  <button type="submit">Desbloquear</button>
+                </form>
+              {% else %}
+                <form method="post" action="{{ url_for('fonte', acao='claim') }}">
+                  <input type="hidden" name="canal_id" value="{{ fonte.canal_id }}">
+                  <button type="submit">Tomou claim</button>
+                </form>
+                <form method="post" action="{{ url_for('fonte', acao='restricao_idade') }}">
+                  <input type="hidden" name="canal_id" value="{{ fonte.canal_id }}">
+                  <button type="submit">Restrição de idade</button>
+                </form>
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <p class="credito" style="margin-top:10px">
+      Registrar um claim <strong>bloqueia o canal na hora</strong> — o sistema
+      para de usá-lo. Só você pode liberar de volta.
+    </p>
+  </section>
+
+</main>
+
+<script>
+// Enquanto a produção roda, a página busca o andamento de 2 em 2 segundos.
+// Quando termina, recarrega sozinha para mostrar os vídeos novos na fila.
+(function () {
+  const rodando = {{ 'true' if estado.rodando else 'false' }};
+  if (!rodando) return;
+
+  const caixa = document.getElementById('progresso');
+  const painel = document.getElementById('painel-progresso');
+  painel.style.display = 'block';
+
+  const timer = setInterval(async () => {
+    try {
+      const resposta = await fetch('{{ url_for("status") }}');
+      const dados = await resposta.json();
+
+      caixa.innerHTML = (dados.historico || [])
+        .map(l => `<div class="linha">${l.hora} — ${l.texto}</div>`).join('');
+      caixa.scrollTop = caixa.scrollHeight;
+
+      if (!dados.rodando) {
+        clearInterval(timer);
+        setTimeout(() => window.location.reload(), 1200);
+      }
+    } catch (erro) {
+      // sem drama: se falhar uma consulta, tenta de novo na próxima
+    }
+  }, 2000);
+})();
+</script>
+
+</body>
+</html>
