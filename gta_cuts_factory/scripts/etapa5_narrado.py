@@ -35,7 +35,9 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from nucleo import banco, gancho, legendas, narracao, render, seguranca  # noqa: E402
+from nucleo import (  # noqa: E402
+    banco, gancho, legendas, metadados, narracao, render, seguranca,
+)
 from nucleo.config import carregar_canais, carregar_config  # noqa: E402
 from nucleo.downloader import usar_arquivo_local  # noqa: E402
 from nucleo.utils import log, nome_seguro, titulo  # noqa: E402
@@ -190,8 +192,21 @@ def main() -> int:
         )
         render.gerar_miniatura(final, pasta_saida / f"{base}.jpg", cfg, segundo=1.0)
 
+        dados = metadados.gerar(
+            args.assunto, cfg, idioma=args.idioma, modo="B_narrado",
+            credito=fonte.credito, texto_falado=roteiro.texto, gancho=frase,
+        )
+        for aviso in dados.avisos:
+            log(aviso, "aviso")
+        arquivo_tiktok = metadados.salvar_para_tiktok(
+            dados, str(final), cfg.raiz / str(cfg.pegar("tiktok.pasta_saida",
+                                                        "saida/tiktok")))
+
         ficha = {
             "arquivo": str(final),
+            "titulo": dados.titulo,
+            "metadados": dados.para_dict(),
+            "tiktok_txt": str(arquivo_tiktok),
             "miniatura": str(pasta_saida / f"{base}.jpg"),
             "idioma": args.idioma, "modo": "B_narrado",
             "assunto": args.assunto, "gancho": frase,
@@ -215,6 +230,9 @@ def main() -> int:
         print(f"Selo  : {avaliacao.emoji} {avaliacao.selo.upper()} "
               f"(registro #{id_registro} na fila)")
         print(f"Voz   : {voz.voz} ({voz.provedor}) — {voz.duracao:.0f}s")
+        print(f"Título: {dados.titulo}")
+        print(f"Tags  : {' '.join(dados.hashtags)}")
+        print(f"TikTok: {arquivo_tiktok}")
         print("\nEste é o modo mais seguro contra Content ID: o áudio é seu.")
         return 0
     finally:

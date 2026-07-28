@@ -308,6 +308,38 @@ legenda e o corte 9:16 estão certos. Nunca publique um vídeo feito assim.
 
 ---
 
+## Passo 13 — TESTE 7: metadados e gameplay junto
+
+```powershell
+python scripts\etapa6_teste.py
+```
+
+Ele mostra os títulos, descrições e hashtags que o sistema escreveria em quatro
+situações (rumor, fato confirmado, vídeo em inglês e vídeo sem crédito) e
+confere o comportamento sozinho. Tudo isso já entra automaticamente nos vídeos
+das Etapas 1 e 5 — este teste é só para você conferir o tom.
+
+### Gameplay junto do corte (b-roll)
+
+Para os cortes de "cabeça falando", o sistema coloca gameplay rodando junto.
+Configure a pasta no `config/config.yaml`:
+
+```yaml
+broll:
+  pasta: "C:/Videos/GTA/gameplay"   # seus vídeos de gameplay
+  layout: "split"                   # ou "fundo"
+```
+
+Depois é automático: se a tela do corte estiver quase parada e houver bastante
+fala, ele sorteia um gameplay e monta a tela dividida. Para mandar você mesmo:
+
+```powershell
+python scripts\etapa1_pipeline.py --arquivo "C:\Videos\corte.mp4" --auto --broll split
+python scripts\etapa1_pipeline.py --arquivo "C:\Videos\corte.mp4" --auto --broll nao
+```
+
+---
+
 ## Onde conseguir cada chave de API (só nas etapas finais)
 
 | Chave | Onde pegar | Precisa agora? |

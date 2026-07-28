@@ -108,6 +108,7 @@ gta_cuts_factory/
 │   ├── etapa3_teste.py           ✅ mostra tendências e candidatos (sem gerar)
 │   ├── etapa4_teste.py           ✅ mostra ONDE cortar dentro de um vídeo
 │   ├── etapa5_narrado.py         ✅ MODO B completo (roteiro → voz → vídeo)
+│   ├── etapa6_teste.py           ✅ mostra os metadados e a decisão de b-roll
 │   └── fontes.py                 ✅ ver canais, registrar claim, ver a fila
 │
 ├── testes/                       ← testes automáticos
@@ -115,7 +116,8 @@ gta_cuts_factory/
 │   ├── test_seguranca.py         ✅ 32 testes
 │   ├── test_fontes.py            ✅ 22 testes
 │   ├── test_selecao.py           ✅ 22 testes
-│   └── test_narracao.py          ✅ 17 testes
+│   ├── test_narracao.py          ✅ 17 testes
+│   └── test_metadados.py         ✅ 29 testes
 │
 ├── dados/                        ← downloads, transcrições, banco.sqlite
 └── saida/                        ← vídeos finais prontos + metadados
@@ -136,7 +138,7 @@ Cada etapa só começa quando a anterior estiver **rodando na sua máquina**.
 | **3. FONTES + TENDÊNCIAS** ✅ | busca do que está em alta (YouTube + Reddit + sua lista), candidatos dos canais aprovados, escolha diversificada | `python scripts/etapa3_teste.py` — lista os candidatos sem gerar vídeo |
 | **4. SELEÇÃO INTELIGENTE** ✅ | escolher os melhores momentos DISTINTOS, sempre em frase completa | `python scripts/etapa4_teste.py --demo` e `etapa1_pipeline.py --auto` |
 | **5. MODO B (narrado)** ✅ | roteiro com os SEUS fatos + voz sintética grátis + trailer de fundo em loop | `python scripts/etapa5_narrado.py --assunto ... --fundo ... --fatos ...` |
-| **6. METADADOS + B-ROLL** | título/descrição/hashtags PT e EN, gameplay de fundo/split | conferir textos gerados |
+| **6. METADADOS + B-ROLL** ✅ | título/descrição/hashtags PT e EN com crédito automático, gameplay em split-screen ou de fundo | `python scripts/etapa6_teste.py` |
 | **7. PAINEL** | Flask com botão CRIAR, fila, selo 🟢🟡🔴, edição, reprovados | abrir `http://localhost:5000` |
 | **8. PUBLICAÇÃO** | YouTube (não-listado) + pasta/rascunho TikTok | subir 1 vídeo de teste não-listado |
 

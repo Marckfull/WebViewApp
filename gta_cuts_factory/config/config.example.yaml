@@ -292,6 +292,88 @@ narracao:
 
 
 # ----------------------------------------------------------------------------
+# 6.4) B-ROLL — gameplay junto do corte (Etapa 6)
+# ----------------------------------------------------------------------------
+# Para cortes de "cabeça falando": coloca gameplay rodando junto, para a tela
+# não ficar parada. O áudio continua sendo o do corte original.
+broll:
+  ativo: true
+  pasta: ""              # pasta com seus vídeos de gameplay (ex.: "C:/Videos/GTA/broll")
+
+  # "split" = corte em cima, gameplay embaixo
+  # "fundo" = gameplay na tela toda, corte como janela em cima
+  layout: "split"
+
+  proporcao_principal: 0.55   # (split) quanto da altura fica com o corte
+  largura_janela: 0.92        # (fundo) largura da janela do corte
+  topo_janela: 0.12           # (fundo) altura em que a janela começa
+
+  # Abaixo deste movimento, a tela é considerada "parada" e o sistema
+  # recomenda gameplay junto. Aumente para recomendar mais vezes.
+  limite_movimento: 0.08
+
+
+# ----------------------------------------------------------------------------
+# 6.3) METADADOS — título, descrição e hashtags (Etapa 6)
+# ----------------------------------------------------------------------------
+metadados:
+  incluir_credito: true        # link da fonte na descrição (deixe sempre true)
+  incluir_aviso_rumor: true    # avisa quando o assunto não é confirmado
+  max_hashtags: 6
+
+  # Hashtags amplas (alcance). As específicas do tópico são criadas sozinhas.
+  hashtags_base_pt: ["#gta6", "#gta", "#rockstargames", "#shorts"]
+  hashtags_base_en: ["#gta6", "#gta", "#rockstargames", "#shorts"]
+
+  # Tags do YouTube (campo separado, não aparece para o público)
+  tags_base_pt: ["GTA 6 notícias", "GTA 6 vazamento", "GTA 6 trailer",
+                 "GTA 6 data de lançamento", "GTA 5", "GTA Online"]
+  tags_base_en: ["GTA 6 news", "GTA 6 leak", "GTA 6 trailer",
+                 "GTA 6 release date", "GTA 5", "GTA Online"]
+
+  # Modelos de título quando o fato NÃO é confirmado (viram pergunta).
+  # {assunto} é trocado pelo tema do vídeo.
+  titulos_perguntas_pt:
+    - "{assunto}? Olha o que apareceu"
+    - "Será que é verdade isso do {assunto}?"
+    - "{assunto}: o que a gente sabe até agora"
+    - "Isso muda tudo no {assunto}?"
+  titulos_perguntas_en:
+    - "{assunto}? Here's what showed up"
+    - "Is this real? {assunto}"
+    - "{assunto}: what we know so far"
+    - "Does this change everything about {assunto}?"
+
+  # Modelos de título quando o fato É confirmado oficialmente
+  titulos_afirmativos_pt:
+    - "CONFIRMADO: {assunto}"
+    - "{assunto} — agora é OFICIAL"
+    - "A Rockstar confirmou: {assunto}"
+  titulos_afirmativos_en:
+    - "CONFIRMED: {assunto}"
+    - "{assunto} — now it's OFFICIAL"
+    - "Rockstar confirmed: {assunto}"
+
+  resumo_padrao_pt: "Tudo sobre {assunto} em menos de 2 minutos."
+  resumo_padrao_en: "Everything about {assunto} in under 2 minutes."
+
+  aviso_rumor_pt: "⚠️ Ainda não há confirmação oficial da Rockstar. Trate como rumor."
+  aviso_rumor_en: "⚠️ No official confirmation from Rockstar yet. Treat this as a rumor."
+
+  assinatura_pt: "🔔 Conteúdo diário sobre GTA 6 e GTA 5."
+  assinatura_en: "🔔 Daily GTA 6 and GTA 5 content."
+
+  aviso_legal_pt: |
+    Este canal não é afiliado nem endossado pela Rockstar Games ou Take-Two.
+    Todas as marcas e imagens do jogo pertencem aos seus donos. Uso com fins
+    de comentário e análise.
+  aviso_legal_en: |
+    This channel is not affiliated with or endorsed by Rockstar Games or
+    Take-Two. All game trademarks and footage belong to their owners. Used
+    for commentary and analysis.
+
+
+# ----------------------------------------------------------------------------
 # 7) SEGURANÇA ANTI-STRIKE  🛡️
 # ----------------------------------------------------------------------------
 seguranca:

@@ -21,8 +21,8 @@ Estamos construindo **por partes**, testando cada uma antes de avançar.
 | **3. Fontes + Tendências** | canais aprovados + assuntos em alta + diversificação | ✅ **pronto e testado** |
 | **4. Seleção inteligente** | escolher os melhores momentos, distintos e em frase completa | ✅ **pronto e testado** |
 | **5. Modo B (narrado)** | roteiro + voz sintética grátis + trailer de fundo | ✅ **pronto e testado** |
-| 6. Metadados + B-roll | título/descrição/hashtags PT-EN + gameplay de fundo | ⏳ próxima |
-| 7. Painel | fila de aprovação com selo de segurança 🟢🟡🔴 | ⏳ |
+| **6. Metadados + B-roll** | título/descrição/hashtags PT-EN + gameplay junto | ✅ **pronto e testado** |
+| 7. Painel | fila de aprovação com selo de segurança 🟢🟡🔴 | ⏳ próxima |
 | 8. Publicação | YouTube (não-listado) + rascunho TikTok | ⏳ |
 
 O plano completo está em [`ARQUITETURA.md`](ARQUITETURA.md).
@@ -59,11 +59,16 @@ python scripts\etapa3_teste.py
 # 7. TESTE 5 — onde cortar dentro do vídeo (demonstração com roteiro conhecido)
 python scripts\etapa4_teste.py --demo
 
-# 8. conferir se está tudo saudável (99 testes)
+# 8. TESTE 7 — títulos, descrições e hashtags que o sistema escreveria
+python scripts\etapa6_teste.py
+
+# 9. conferir se está tudo saudável (145 testes)
 python testes\test_legendas.py
 python testes\test_seguranca.py
 python testes\test_fontes.py
 python testes\test_selecao.py
+python testes\test_narracao.py
+python testes\test_metadados.py
 ```
 
 ### Modo automático 🤖
@@ -208,11 +213,16 @@ que violência — e não colocam o canal em risco.
 
 ### 6. Metadados honestos ajudam a classificação
 
-Use títulos e tags que descrevem o que é de fato: "Gameplay",
-"Cutscene Narrada", "Story Discussion", "Notícia". Isso ajuda o YouTube a
-classificar corretamente e evita restrição de idade por engano.
-**Nunca** use clickbait que promete algo que o vídeo não mostra — além de
-derrubar a retenção, é o caminho mais rápido para "conteúdo enganoso".
+O sistema escreve título, descrição e hashtags sozinho, e aplica três regras:
+
+- **etiqueta de classificação** no título ("Análise", "Notícia", "Gameplay"),
+  que ajuda o YouTube a entender o vídeo e evita restrição de idade por engano;
+- **sem confirmação oficial, o título vira PERGUNTA** — nunca "CONFIRMADO".
+  Clickbait mentiroso derruba a retenção e leva a "conteúdo enganoso";
+- **crédito da fonte na descrição**, sempre, junto do aviso de que o canal não
+  é afiliado à Rockstar.
+
+A legenda pronta do TikTok é salva em `saida/tiktok/` junto do vídeo.
 
 ### 7. Sistema de reputação de fontes
 

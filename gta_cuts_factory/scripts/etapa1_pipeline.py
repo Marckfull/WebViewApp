@@ -38,9 +38,11 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from nucleo import (  # noqa: E402
     banco,
+    broll,
     downloader,
     gancho,
     legendas,
+    metadados,
     render,
     seguranca,
     selecao,
@@ -73,6 +75,10 @@ def montar_argumentos() -> argparse.Namespace:
                         help="força o modo de enquadramento 9:16")
     parser.add_argument("--sem-transcricao", action="store_true",
                         help="pula o Whisper (gera vídeo sem legenda de fala)")
+    parser.add_argument("--broll", default="auto",
+                        choices=["auto", "nao", "split", "fundo"],
+                        help="gameplay junto do corte: 'auto' decide sozinho "
+                             "(padrão), 'nao' desliga, ou force o formato")
     parser.add_argument("--forcar", action="store_true",
                         help="renderiza mesmo se a checagem de segurança reprovar")
     return parser.parse_args()
@@ -238,24 +244,69 @@ def main() -> int:
         )
         log(f"{len(palavras)} palavras na legenda → {arquivo_ass.name}", "ok")
 
+        # -------------------------------------- 5b) gameplay junto (b-roll)
+        video_broll = None
+        layout_broll = ""
+        if args.broll != "nao":
+            cobertura = float(avaliacao.detalhes.get("fala", {}).get("cobertura", 0))
+            if args.broll == "auto":
+                recomendado, explicacao, _ = broll.precisa_de_broll(
+                    fonte.arquivo, cfg, inicio, duracao, cobertura)
+                log(f"B-roll: {explicacao}", "ok" if recomendado else "info")
+            else:
+                recomendado, layout_broll = True, args.broll
+                log(f"B-roll forçado por você: {args.broll}", "info")
+
+            if recomendado:
+                video_broll = broll.escolher_gameplay(cfg, evitar=fonte.arquivo)
+                if video_broll is None:
+                    log("Sem gameplay disponível: configure 'broll.pasta' no "
+                        "config.yaml. Seguindo sem b-roll.", "aviso")
+
         # ------------------------------------------------------------ 6) render
         titulo("6/6 — RENDERIZANDO 1080x1920")
-        final = render.renderizar_corte(
-            entrada=fonte.arquivo,
-            saida=pasta_saida / f"{base}.mp4",
-            cfg=cfg,
-            arquivo_ass=arquivo_ass,
-            inicio=inicio,
-            duracao=duracao,
-        )
+        if video_broll is not None:
+            log(f"Gameplay escolhido: {Path(video_broll).name}", "ok")
+            final = render.renderizar_corte_com_broll(
+                entrada=fonte.arquivo, video_broll=video_broll,
+                saida=pasta_saida / f"{base}.mp4", cfg=cfg,
+                arquivo_ass=arquivo_ass, inicio=inicio, duracao=duracao,
+                layout=layout_broll,
+            )
+        else:
+            final = render.renderizar_corte(
+                entrada=fonte.arquivo,
+                saida=pasta_saida / f"{base}.mp4",
+                cfg=cfg,
+                arquivo_ass=arquivo_ass,
+                inicio=inicio,
+                duracao=duracao,
+            )
         render.gerar_miniatura(final, pasta_saida / f"{base}.jpg", cfg, segundo=1.0)
 
         # ------------------------------------------- ficha + registro no banco
+        # ---------------------------------------------- metadados de publicação
+        dados = metadados.gerar(
+            assunto, cfg, idioma=args.idioma, modo="A_corte",
+            credito=fonte.credito,
+            texto_falado=resultado_transcricao.get("texto", ""),
+            gancho=frase,
+        )
+        for aviso in dados.avisos:
+            log(aviso, "aviso")
+        arquivo_tiktok = metadados.salvar_para_tiktok(
+            dados, str(final), cfg.raiz / str(cfg.pegar("tiktok.pasta_saida",
+                                                        "saida/tiktok")))
+
         ficha = dict(ficha_base)
         ficha.update({
             "arquivo": str(final),
             "miniatura": str(pasta_saida / f"{base}.jpg"),
             "gancho": frase,
+            "titulo": dados.titulo,
+            "metadados": dados.para_dict(),
+            "broll": str(video_broll) if video_broll else "",
+            "tiktok_txt": str(arquivo_tiktok),
         })
         id_registro = seguranca.registrar_aprovacao(conexao, ficha, avaliacao)
 
@@ -266,6 +317,9 @@ def main() -> int:
 
         titulo(f"PRONTO {avaliacao.emoji}")
         print(f"Vídeo   : {final}")
+        print(f"Título  : {dados.titulo}")
+        print(f"Hashtags: {' '.join(dados.hashtags)}")
+        print(f"TikTok  : {arquivo_tiktok}")
         print(f"Ficha   : {caminho_ficha}")
         print(f"Selo    : {avaliacao.emoji} {avaliacao.selo.upper()} "
               f"(registro #{id_registro} na "

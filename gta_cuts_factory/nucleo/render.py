@@ -154,6 +154,89 @@ def renderizar_corte(
     return saida
 
 
+def renderizar_corte_com_broll(
+    entrada: str | Path,
+    video_broll: str | Path,
+    saida: str | Path,
+    cfg,
+    arquivo_ass: str | Path | None = None,
+    inicio: float | str = 0.0,
+    duracao: float | str | None = None,
+    inicio_broll: float = 0.0,
+    layout: str = "",
+) -> Path:
+    """
+    MODO A com gameplay junto: corte original + b-roll na mesma tela.
+
+    O áudio é sempre o do CORTE ORIGINAL — é a fala e a reação que seguram o
+    espectador; o gameplay entra mudo, só para dar movimento à tela.
+
+    Se o gameplay for mais curto que o corte, ele roda em LOOP.
+    """
+    from . import broll as modulo_broll
+
+    ffmpeg = achar_ffmpeg(str(cfg.pegar("ffmpeg_caminho", "ffmpeg")))
+    entrada, video_broll, saida = Path(entrada), Path(video_broll), Path(saida)
+    saida.parent.mkdir(parents=True, exist_ok=True)
+
+    inicio_seg = para_segundos(inicio)
+    duracao_seg = para_segundos(duracao) if duracao is not None else None
+
+    ffprobe = str(cfg.pegar("ffprobe_caminho", "ffprobe"))
+    caminho_ffmpeg = str(cfg.pegar("ffmpeg_caminho", "ffmpeg"))
+    info_principal = info_video(entrada, ffprobe, caminho_ffmpeg)
+    info_broll = info_video(video_broll, ffprobe, caminho_ffmpeg)
+
+    log(f"Corte: {info_principal.largura}x{info_principal.altura} | "
+        f"gameplay: {info_broll.largura}x{info_broll.altura} "
+        f"({modulo_broll.descrever_layout(cfg, layout)})", "info")
+
+    filtro = modulo_broll.construir_filtro(info_principal, info_broll, cfg,
+                                           "base", layout)
+    rotulo_final = "base"
+    if arquivo_ass is not None:
+        opcoes = [f"filename={caminho_para_filtro(arquivo_ass)}"]
+        pasta_fontes = cfg.raiz / "fontes"
+        if pasta_fontes.exists():
+            opcoes.append(f"fontsdir={caminho_para_filtro(pasta_fontes)}")
+        filtro += f";[base]subtitles={':'.join(opcoes)}[final]"
+        rotulo_final = "final"
+
+    comando = [ffmpeg, "-y", "-hide_banner", "-loglevel", "error", "-stats"]
+    comando += ["-ss", str(inicio_seg), "-i", str(entrada)]
+    # o gameplay repete para sempre; o -t corta tudo no tamanho do corte
+    comando += ["-stream_loop", "-1", "-ss", str(float(inicio_broll)),
+                "-i", str(video_broll)]
+    if duracao_seg is not None:
+        comando += ["-t", str(duracao_seg)]
+
+    comando += ["-filter_complex", filtro, "-map", f"[{rotulo_final}]"]
+    if info_principal.tem_audio:
+        comando += ["-map", "0:a:0"]
+
+    comando += [
+        "-c:v", "libx264",
+        "-preset", str(cfg.pegar("video.preset", "veryfast")),
+        "-crf", str(cfg.pegar("video.crf", 20)),
+        "-pix_fmt", "yuv420p", "-profile:v", "high", "-level", "4.1",
+        "-r", str(cfg.pegar("video.fps", 30)),
+        "-g", str(int(cfg.pegar("video.fps", 30)) * 2),
+    ]
+    if info_principal.tem_audio:
+        comando += ["-c:a", "aac", "-b:a", str(cfg.pegar("video.bitrate_audio", "160k")),
+                    "-ar", "48000", "-ac", "2"]
+    comando += ["-movflags", "+faststart", str(saida)]
+
+    log("Renderizando com gameplay junto...", "etapa")
+    rodar(comando, descricao="renderizar corte com b-roll")
+
+    if not saida.exists() or saida.stat().st_size == 0:
+        raise RuntimeError("O ffmpeg terminou mas o arquivo final não foi criado.")
+
+    log(f"Vídeo pronto: {saida} ({saida.stat().st_size / (1024 * 1024):.1f} MB)", "ok")
+    return saida
+
+
 def duracao_do_audio(caminho: str | Path, cfg) -> float:
     """Descobre quantos segundos tem um arquivo de áudio."""
     informacoes = info_video(
