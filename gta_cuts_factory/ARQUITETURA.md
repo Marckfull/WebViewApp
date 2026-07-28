@@ -86,8 +86,8 @@ gta_cuts_factory/
 │   ├── gancho.py                 ✅ frase de impacto nos 2 primeiros segundos
 │   ├── render.py                 ✅ junta tudo e chama o ffmpeg
 │   │
-│   ├── tendencias.py             ⏳ o que está em alta sobre GTA 6 / GTA 5
-│   ├── fontes.py                 ⏳ escolhe vídeos dos canais aprovados
+│   ├── tendencias.py             ✅ o que está em alta sobre GTA 6 / GTA 5
+│   ├── fontes.py                 ✅ escolhe vídeos dos canais aprovados
 │   ├── selecao.py                ⏳ escolhe os 3 melhores momentos (distintos)
 │   ├── broll.py                  ⏳ gameplay de fundo / split-screen
 │   ├── narracao.py               ⏳ MODO B: roteiro + TTS
@@ -105,11 +105,13 @@ gta_cuts_factory/
 │   ├── teste_rapido.py           ✅ testa legenda/reframe SEM baixar nada
 │   ├── etapa1_pipeline.py        ✅ 1 vídeo → checagem 🛡️ → 9:16 → legenda
 │   ├── etapa2_teste.py           ✅ demonstra o banco e as 6 checagens
+│   ├── etapa3_teste.py           ✅ mostra tendências e candidatos (sem gerar)
 │   └── fontes.py                 ✅ ver canais, registrar claim, ver a fila
 │
 ├── testes/                       ← testes automáticos
 │   ├── test_legendas.py          ✅ 23 testes
-│   └── test_seguranca.py         ✅ 32 testes
+│   ├── test_seguranca.py         ✅ 32 testes
+│   └── test_fontes.py            ✅ 22 testes
 │
 ├── dados/                        ← downloads, transcrições, banco.sqlite
 └── saida/                        ← vídeos finais prontos + metadados
@@ -127,7 +129,7 @@ Cada etapa só começa quando a anterior estiver **rodando na sua máquina**.
 |-------|---------------|-----------------|
 | **1. NÚCLEO** ✅ | baixar 1 vídeo → cortar 9:16 → legenda karaokê com destaque de palavra-chave → gancho de 2s | `python scripts/teste_rapido.py` e depois `python scripts/etapa1_pipeline.py --url ...` |
 | **2. BANCO + SEGURANÇA** ✅ | SQLite (anti-repetição + reputação de fontes) e o módulo 🛡️ que aprova/reprova | `python scripts/etapa2_teste.py` e rodar a etapa 1 duas vezes no mesmo trecho → segunda vez é bloqueada |
-| **3. FONTES + TENDÊNCIAS** | banco de canais aprovados, busca do que está em alta, escolha diversificada | listar os candidatos que ele encontrou, sem gerar vídeo |
+| **3. FONTES + TENDÊNCIAS** ✅ | busca do que está em alta (YouTube + Reddit + sua lista), candidatos dos canais aprovados, escolha diversificada | `python scripts/etapa3_teste.py` — lista os candidatos sem gerar vídeo |
 | **4. SELEÇÃO INTELIGENTE** | escolher os 3 melhores momentos DISTINTOS (heurística + IA opcional) | ver os 3 trechos escolhidos e os motivos |
 | **5. MODO B (narrado)** | roteiro + TTS + trailer oficial de fundo | gerar 1 vídeo narrado completo |
 | **6. METADADOS + B-ROLL** | título/descrição/hashtags PT e EN, gameplay de fundo/split | conferir textos gerados |

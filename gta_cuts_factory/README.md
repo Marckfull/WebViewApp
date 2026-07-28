@@ -18,8 +18,8 @@ Estamos construindo **por partes**, testando cada uma antes de avançar.
 |-------|-----------|--------|
 | **1. Núcleo** | baixar vídeo → cortar 9:16 → legenda karaokê + gancho | ✅ **pronto e testado** |
 | **2. Banco + Segurança** | anti-repetição (SQLite) + módulo 🛡️ anti-strike | ✅ **pronto e testado** |
-| 3. Fontes + Tendências | canais aprovados + assuntos em alta | ⏳ próxima |
-| 4. Seleção inteligente | escolher os 3 melhores momentos distintos | ⏳ |
+| **3. Fontes + Tendências** | canais aprovados + assuntos em alta + diversificação | ✅ **pronto e testado** |
+| 4. Seleção inteligente | escolher os 3 melhores momentos distintos | ⏳ próxima |
 | 5. Modo B (narrado) | roteiro + voz sintética + trailer de fundo | ⏳ |
 | 6. Metadados + B-roll | título/descrição/hashtags PT-EN + gameplay de fundo | ⏳ |
 | 7. Painel | fila de aprovação com selo de segurança 🟢🟡🔴 | ⏳ |
@@ -53,14 +53,19 @@ python scripts\etapa1_pipeline.py --url "https://youtu.be/XXXX" --inicio 00:01:2
 # 5. TESTE 3 — banco anti-repetição + checagens de segurança
 python scripts\etapa2_teste.py
 
-# 6. conferir se está tudo saudável (55 testes)
+# 6. TESTE 4 — o que está em alta e de onde cortar (não gera vídeo)
+python scripts\etapa3_teste.py
+
+# 7. conferir se está tudo saudável (77 testes)
 python testes\test_legendas.py
 python testes\test_seguranca.py
+python testes\test_fontes.py
 ```
 
 ### Comandos do dia a dia
 
 ```powershell
+python scripts\etapa3_teste.py              # o que está em alta + candidatos
 python scripts\fontes.py listar             # canais e reputação de cada um
 python scripts\fontes.py fila               # vídeos esperando sua aprovação
 python scripts\fontes.py reprovados         # o que foi barrado, e por quê
@@ -177,7 +182,9 @@ Só você pode liberar de volta, com `desbloquear`.
 
 ### 7. Diversifique e vá devagar
 
-- não corte sempre do mesmo canal (o sistema alterna sozinho);
+- não corte sempre do mesmo canal — o sistema alterna sozinho: na escolha dos
+  3 vídeos ele exige **canais diferentes E assuntos diferentes**, e nunca tira
+  mais que 3 cortes do mesmo vídeo-fonte (`producao.max_cortes_por_video`);
 - comece com **3 vídeos por dia**, observe 1 semana, e só então aumente;
 - olhe o YouTube Studio: se aparecer claim, tire aquela fonte de circulação
   antes de gerar mais.

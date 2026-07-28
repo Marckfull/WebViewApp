@@ -49,6 +49,29 @@ def titulo(texto: str) -> None:
 #  FFMPEG
 # ============================================================================
 
+class LoggerSilencioso:
+    """
+    "Tapa-boca" para o yt-dlp durante as BUSCAS (tendências e listagem de canal).
+
+    Sem isso, quando a internet cai ou o YouTube muda algo, o yt-dlp imprime um
+    erro enorme pedindo para você abrir um chamado no GitHub dele — o que
+    assusta à toa, já que o nosso código trata a falha e segue com os outros
+    sinais. Nos DOWNLOADS de verdade os erros continuam aparecendo.
+    """
+
+    def debug(self, mensagem: str) -> None:  # noqa: D102
+        pass
+
+    def info(self, mensagem: str) -> None:  # noqa: D102
+        pass
+
+    def warning(self, mensagem: str) -> None:  # noqa: D102
+        pass
+
+    def error(self, mensagem: str) -> None:  # noqa: D102
+        pass
+
+
 class FFmpegNaoEncontrado(RuntimeError):
     """Erro amigável quando o ffmpeg não está instalado."""
 

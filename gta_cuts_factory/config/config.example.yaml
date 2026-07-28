@@ -169,6 +169,12 @@ producao:
 
   jogos_prioridade: ["GTA 6", "GTA 5"]
 
+  # --- Busca de fontes e tendências (Etapa 3) ---
+  dias_recentes: 30           # vídeo mais novo que isso ganha pontos na escolha
+  candidatos_por_canal: 8     # quantos vídeos recentes olhar em cada canal
+  max_cortes_por_video: 3     # nunca tirar mais que isso do MESMO vídeo-fonte
+  buscar_tendencias_online: true   # false = usa só a sua lista de assuntos base
+
 
 # ----------------------------------------------------------------------------
 # 7) SEGURANÇA ANTI-STRIKE  🛡️

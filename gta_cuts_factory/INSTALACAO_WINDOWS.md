@@ -208,6 +208,39 @@ python scripts\fontes.py claim "@CanalX" --nota "claim de trilha sonora"
 
 ---
 
+## Passo 10 — TESTE 4: o que está em alta e de onde vamos cortar
+
+Antes deste teste, edite o seu banco de canais e coloque canais **reais** que
+você aprova (o arquivo vem com exemplos de mentira):
+
+```powershell
+notepad config\canais_fontes.yaml
+```
+
+Dicas para escolher canais:
+- prefira canais de **notícia/análise falada** (mais transformativo) a canais
+  que só repostam gameplay;
+- se você tiver gravações suas, aponte `pasta_local` para a pasta delas —
+  é a fonte de **risco zero**;
+- todo canal de terceiro entra como `em_teste`. Isso é de propósito.
+
+Agora rode (ele **não** baixa nem gera vídeo nenhum):
+
+```powershell
+python scripts\etapa3_teste.py
+```
+
+Você vai ver três blocos:
+
+1. **assuntos em alta** — vindos da sua lista + YouTube + Reddit
+2. **candidatos** — vídeos dos seus canais, com nota e o porquê de cada nota
+3. **os 3 escolhidos** — com canais e assuntos diferentes entre si
+
+Se aparecer "nenhum candidato", é sinal de que o `canais_fontes.yaml` ainda
+está com os exemplos. Sem internet, use `python scripts\etapa3_teste.py --offline`.
+
+---
+
 ## Onde conseguir cada chave de API (só nas etapas finais)
 
 | Chave | Onde pegar | Precisa agora? |
