@@ -20,8 +20,8 @@ Estamos construindo **por partes**, testando cada uma antes de avançar.
 | **2. Banco + Segurança** | anti-repetição (SQLite) + módulo 🛡️ anti-strike | ✅ **pronto e testado** |
 | **3. Fontes + Tendências** | canais aprovados + assuntos em alta + diversificação | ✅ **pronto e testado** |
 | **4. Seleção inteligente** | escolher os melhores momentos, distintos e em frase completa | ✅ **pronto e testado** |
-| 5. Modo B (narrado) | roteiro + voz sintética + trailer de fundo | ⏳ próxima |
-| 6. Metadados + B-roll | título/descrição/hashtags PT-EN + gameplay de fundo | ⏳ |
+| **5. Modo B (narrado)** | roteiro + voz sintética grátis + trailer de fundo | ✅ **pronto e testado** |
+| 6. Metadados + B-roll | título/descrição/hashtags PT-EN + gameplay de fundo | ⏳ próxima |
 | 7. Painel | fila de aprovação com selo de segurança 🟢🟡🔴 | ⏳ |
 | 8. Publicação | YouTube (não-listado) + rascunho TikTok | ⏳ |
 
@@ -121,6 +121,31 @@ producao:
   modo_a_cortes: 2      # 2 cortes
   modo_b_narrados: 1    # + 1 narrado
 ```
+
+**Como gerar um vídeo narrado:**
+
+```powershell
+python scripts\etapa5_narrado.py ^
+    --assunto "GTA 6 segundo trailer" ^
+    --fundo "C:\Videos\trailer_oficial.mp4" ^
+    --fatos "a Rockstar publicou um comunicado no site oficial" ^
+            "o comunicado fala do trailer, sem data fechada" ^
+            "a página do jogo foi atualizada no mesmo dia"
+```
+
+⚠️ **Os fatos são a alma do vídeo — e o sistema não inventa notícia.** Ele narra
+o que VOCÊ apurar. Sem `--fatos`, ele monta um roteiro de pergunta aberta,
+dizendo claramente que nada foi confirmado. Toda narração leva a ressalva
+"enquanto a Rockstar não confirmar, trate como rumor".
+
+Isso não é frescura: publicar "a Rockstar CONFIRMOU" quando ninguém confirmou
+queima a confiança do canal e ainda esbarra na política de conteúdo enganoso
+do YouTube.
+
+**Voz:** o padrão é o **Edge-TTS, grátis**, que ainda informa o tempo exato de
+cada palavra — a legenda karaokê fica perfeitamente sincronizada, sem precisar
+transcrever nada. Para testar o Modo B sem internet, use `tts.provedor: "teste"`
+(gera vídeo mudo, só para conferir o resto).
 
 ---
 

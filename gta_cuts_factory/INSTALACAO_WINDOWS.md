@@ -275,6 +275,39 @@ expressões são todos seus para mexer.
 
 ---
 
+## Passo 12 — TESTE 6: o vídeo narrado (MODO B)
+
+Este é o modo mais seguro do sistema. Você precisa de duas coisas:
+um **vídeo de fundo** (trailer oficial da Rockstar ou gravação sua) e os
+**fatos** que você apurou.
+
+```powershell
+python scripts\etapa5_narrado.py ^
+    --assunto "GTA 6 segundo trailer" ^
+    --fundo "C:\Videos\trailer_oficial.mp4" ^
+    --fatos "a Rockstar publicou um comunicado no site oficial" ^
+            "o comunicado fala do trailer, sem data fechada" ^
+            "a pagina do jogo foi atualizada no mesmo dia"
+```
+
+Quer ver só o texto antes de gastar tempo gerando o vídeo?
+
+```powershell
+python scripts\etapa5_narrado.py --assunto "GTA 6 trailer" --so-roteiro ^
+    --fatos "a Rockstar publicou um comunicado"
+```
+
+**Sobre a voz:** o padrão é o Edge-TTS, que é **grátis** e não precisa de
+chave nenhuma — só de internet. Vozes brasileiras boas:
+`pt-BR-AntonioNeural` (masculina) e `pt-BR-FranciscaNeural` (feminina).
+Para ver todas: `python -m edge_tts --list-voices`
+
+**Sem internet?** Coloque `provedor: "teste"` na seção `tts` do
+`config/config.yaml`. O vídeo sai **mudo**, mas você confere se o fundo, a
+legenda e o corte 9:16 estão certos. Nunca publique um vídeo feito assim.
+
+---
+
 ## Onde conseguir cada chave de API (só nas etapas finais)
 
 | Chave | Onde pegar | Precisa agora? |

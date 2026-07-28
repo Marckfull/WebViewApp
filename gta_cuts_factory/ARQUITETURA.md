@@ -107,13 +107,15 @@ gta_cuts_factory/
 │   ├── etapa2_teste.py           ✅ demonstra o banco e as 6 checagens
 │   ├── etapa3_teste.py           ✅ mostra tendências e candidatos (sem gerar)
 │   ├── etapa4_teste.py           ✅ mostra ONDE cortar dentro de um vídeo
+│   ├── etapa5_narrado.py         ✅ MODO B completo (roteiro → voz → vídeo)
 │   └── fontes.py                 ✅ ver canais, registrar claim, ver a fila
 │
 ├── testes/                       ← testes automáticos
 │   ├── test_legendas.py          ✅ 23 testes
 │   ├── test_seguranca.py         ✅ 32 testes
 │   ├── test_fontes.py            ✅ 22 testes
-│   └── test_selecao.py           ✅ 22 testes
+│   ├── test_selecao.py           ✅ 22 testes
+│   └── test_narracao.py          ✅ 17 testes
 │
 ├── dados/                        ← downloads, transcrições, banco.sqlite
 └── saida/                        ← vídeos finais prontos + metadados
@@ -133,7 +135,7 @@ Cada etapa só começa quando a anterior estiver **rodando na sua máquina**.
 | **2. BANCO + SEGURANÇA** ✅ | SQLite (anti-repetição + reputação de fontes) e o módulo 🛡️ que aprova/reprova | `python scripts/etapa2_teste.py` e rodar a etapa 1 duas vezes no mesmo trecho → segunda vez é bloqueada |
 | **3. FONTES + TENDÊNCIAS** ✅ | busca do que está em alta (YouTube + Reddit + sua lista), candidatos dos canais aprovados, escolha diversificada | `python scripts/etapa3_teste.py` — lista os candidatos sem gerar vídeo |
 | **4. SELEÇÃO INTELIGENTE** ✅ | escolher os melhores momentos DISTINTOS, sempre em frase completa | `python scripts/etapa4_teste.py --demo` e `etapa1_pipeline.py --auto` |
-| **5. MODO B (narrado)** | roteiro + TTS + trailer oficial de fundo | gerar 1 vídeo narrado completo |
+| **5. MODO B (narrado)** ✅ | roteiro com os SEUS fatos + voz sintética grátis + trailer de fundo em loop | `python scripts/etapa5_narrado.py --assunto ... --fundo ... --fatos ...` |
 | **6. METADADOS + B-ROLL** | título/descrição/hashtags PT e EN, gameplay de fundo/split | conferir textos gerados |
 | **7. PAINEL** | Flask com botão CRIAR, fila, selo 🟢🟡🔴, edição, reprovados | abrir `http://localhost:5000` |
 | **8. PUBLICAÇÃO** | YouTube (não-listado) + pasta/rascunho TikTok | subir 1 vídeo de teste não-listado |

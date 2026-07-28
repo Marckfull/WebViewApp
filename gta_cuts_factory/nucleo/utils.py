@@ -218,10 +218,10 @@ def _info_via_ffmpeg(caminho: str | Path, ffmpeg: str = "ffmpeg") -> InfoVideo:
     )
     texto = processo.stderr or ""
 
+    # Arquivo só de áudio (a narração do Modo B, por exemplo) não tem
+    # dimensões — e isso é normal, não é erro.
     dimensoes = re.search(r"Video:.*?(\d{2,5})x(\d{2,5})", texto)
-    if not dimensoes:
-        raise RuntimeError(f"Não consegui ler as informações do vídeo: {caminho}")
-    largura, altura = int(dimensoes.group(1)), int(dimensoes.group(2))
+    largura, altura = (int(dimensoes.group(1)), int(dimensoes.group(2))) if dimensoes else (0, 0)
 
     fps = 30.0
     achou_fps = re.search(r"(\d+(?:\.\d+)?)\s+fps", texto)
@@ -234,7 +234,13 @@ def _info_via_ffmpeg(caminho: str | Path, ffmpeg: str = "ffmpeg") -> InfoVideo:
         h, m, s = achou_duracao.groups()
         duracao = int(h) * 3600 + int(m) * 60 + float(s)
 
-    return InfoVideo(largura, altura, duracao, fps, "Audio:" in texto)
+    tem_audio = "Audio:" in texto
+    if not dimensoes and not tem_audio:
+        raise RuntimeError(
+            f"Não consegui ler o arquivo (não achei vídeo nem áudio nele): {caminho}"
+        )
+
+    return InfoVideo(largura, altura, duracao, fps, tem_audio)
 
 
 def caminho_para_filtro(caminho: str | Path) -> str:

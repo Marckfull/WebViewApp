@@ -277,6 +277,21 @@ selecao:
 
 
 # ----------------------------------------------------------------------------
+# 6.2) MODO B — VÍDEO NARRADO (Etapa 5)
+# ----------------------------------------------------------------------------
+# O modo mais seguro contra Content ID: a voz é sua (sintética), o vídeo de
+# fundo entra só como apoio de um conteúdo comentado.
+narracao:
+  duracao_alvo: 75           # tamanho da narração, em segundos
+  volume_fundo: 0.12         # 0.0 = fundo mudo | 0.12 = ambiente baixinho
+  manter_audio_do_fundo: true
+
+  # Vídeos de fundo padrão (gameplay/trailer). Pode ser arquivo ou pasta.
+  # Deixe vazio e passe o fundo pela linha de comando, se preferir.
+  pasta_fundos: ""
+
+
+# ----------------------------------------------------------------------------
 # 7) SEGURANÇA ANTI-STRIKE  🛡️
 # ----------------------------------------------------------------------------
 seguranca:
@@ -317,7 +332,11 @@ ia:
 
 tts:
   ativo: true
-  provedor: "edge"           # "edge" = GRÁTIS (recomendado) | "elevenlabs" = pago
+  # "edge"       = GRÁTIS, vozes PT-BR boas, com tempo exato de cada palavra
+  # "elevenlabs" = pago (~US$ 0,02–0,05/vídeo), voz mais natural
+  # "teste"      = SEM VOZ (áudio mudo) — só para testar o resto do sistema
+  #                sem internet. Nunca publique um vídeo feito assim.
+  provedor: "edge"
   voz_pt: "pt-BR-AntonioNeural"
   voz_en: "en-US-GuyNeural"
   chave_elevenlabs: ""
