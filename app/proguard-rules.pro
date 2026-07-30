@@ -1,17 +1,14 @@
-# Add project specific ProGuard rules here.
-# By default, the flags in this file are appended to flags specified
-# in E:\Android\sdk/tools/proguard/proguard-android.txt
-# You can edit the include path and order by changing the proguardFiles
-# directive in build.gradle.
-#
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/proguard.html
+# NeuroFlip — regras de ofuscação
 
-# Add any project specific keep options here:
+# Mantém os nomes dos enums do domínio para deixar os crash reports legíveis.
+-keepclassmembers enum com.neuroflip.game.** { *; }
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
+# AdMob / Play Services / UMP já trazem as próprias regras (consumer rules);
+# estas linhas apenas silenciam avisos de classes opcionais.
+-dontwarn com.google.android.gms.**
+-dontwarn com.google.android.ump.**
+-dontwarn androidx.compose.**
+
+# Stack traces com número de linha
+-keepattributes SourceFile,LineNumberTable
+-renamesourcefileattribute SourceFile
