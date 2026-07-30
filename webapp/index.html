@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<title>Conferência de Estoque — bipagem e PDF</title>
+<meta name="description" content="Conferência de estoque por código de barras a partir de planilha do Bling. Processa tudo no navegador e gera PDF.">
+<style>
+/* ============================================================
+   DESIGN TOKENS — tema "inventário / almoxarifado premium"
+   ============================================================ */
+:root{
+  --paper:#f3efe4;
+  --paper-2:#eae4d4;
+  --card:#ffffff;
+  --ink:#12211c;
+  --ink-60:#12211ca6;
+  --ink-40:#12211c66;
+  --moss:#3f6b4f;
+  --moss-dark:#2c4d39;
+  --moss-soft:#3f6b4f1a;
+  --amber:#c9822b;
+  --amber-soft:#c9822b1f;
+  --alert:#a5382b;
+  --alert-soft:#a5382b17;
+  --line:#12211c1f;
+  --line-strong:#12211c33;
+
+  --r-md:14px; --r-lg:20px;
+  --shadow-1:0 1px 2px #12211c0f, 0 6px 18px -10px #12211c40;
+
+  --font-display:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+  --font-ui:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --font-mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+
+  --ease:cubic-bezier(.22,.68,.32,1);
+  --dur:200ms;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  font-family:var(--font-ui);
+  color:var(--ink);
+  background:
+    radial-gradient(1200px 620px at 12% -8%, #ffffffcc, transparent 60%),
+    radial-gradient(900px 520px at 100% 0%, var(--amber-soft), transparent 55%),
+    var(--paper);
+  min-height:100dvh;
+  line-height:1.5;
+}
+h1,h2,h3{font-family:var(--font-display);font-weight:700;letter-spacing:-.01em;margin:0}
+p{margin:0}
+button,input,select{font:inherit;color:inherit}
+
+/* Foco sempre visível (acessibilidade) */
+:where(a,button,input,select,[tabindex]):focus-visible{
+  outline:3px solid var(--amber);
+  outline-offset:2px;
+  border-radius:6px;
+}
+
+.wrap{width:min(1080px,100% - 2rem);margin-inline:auto}
+
+/* ---------- Cabeçalho ---------- */
+.site-header{padding:clamp(1.5rem,4vw,2.75rem) 0 1.25rem}
+.brand{display:flex;align-items:center;gap:.85rem}
+.brand-mark{
+  width:46px;height:46px;flex:none;border-radius:13px;
+  background:linear-gradient(150deg,var(--moss),var(--moss-dark));
+  color:#fff;display:grid;place-items:center;box-shadow:var(--shadow-1);
+}
+.brand-mark svg{width:24px;height:24px}
+.brand h1{font-size:clamp(1.5rem,4.4vw,2.1rem);line-height:1.1}
+.brand-sub{font-size:.85rem;color:var(--ink-60);margin-top:.15rem}
+.tagline{
+  margin-top:1rem;max-width:62ch;color:var(--ink-60);font-size:.95rem;
+  border-left:3px solid var(--amber);padding-left:.85rem;
+}
+.tagline strong{color:var(--ink)}
+
+/* ---------- Cartões / passos ---------- */
+main{padding-bottom:4rem;display:grid;gap:1.15rem}
+.card{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--r-lg);
+  box-shadow:var(--shadow-1);padding:clamp(1.1rem,3vw,1.6rem);
+  min-width:0;   /* item de grid: permite que a tabela role dentro do cartão */
+}
+.step-head{display:flex;gap:.9rem;align-items:flex-start;margin-bottom:1.1rem}
+.step-badge{
+  flex:none;width:34px;height:34px;border-radius:11px;display:grid;place-items:center;
+  background:var(--moss-soft);color:var(--moss-dark);
+  font-family:var(--font-mono);font-size:.95rem;font-weight:700;
+  border:1px solid #3f6b4f30;
+}
+.step[data-done="true"] .step-badge{background:var(--moss);color:#fff;border-color:var(--moss)}
+.step-head h2{font-size:1.22rem}
+.step-sub{color:var(--ink-60);font-size:.9rem;margin-top:.15rem}
+
+/* Revelação por etapa: fade + slide */
+@keyframes reveal{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.reveal{animation:reveal .28s var(--ease) both}
+
+/* ---------- Dropzone ---------- */
+.dropzone{
+  border:2px dashed var(--line-strong);border-radius:var(--r-md);
+  background:linear-gradient(180deg,#fdfcf8,#f7f4ec);
+  padding:clamp(1.4rem,5vw,2.4rem) 1rem;text-align:center;cursor:pointer;
+  transition:border-color var(--dur) var(--ease),background var(--dur) var(--ease),transform var(--dur) var(--ease);
+}
+.dropzone:hover{border-color:var(--moss);background:#fbfaf4}
+.dropzone.is-over{border-color:var(--amber);background:#fdf6ea;transform:scale(1.008)}
+.dz-icon{width:40px;height:40px;color:var(--moss);margin-bottom:.5rem}
+.dz-title{font-family:var(--font-display);font-size:1.1rem}
+.dz-hint{color:var(--ink-60);font-size:.87rem;margin-top:.3rem}
+.dz-formats{
+  margin-top:.75rem;display:flex;gap:.4rem;justify-content:center;flex-wrap:wrap;
+  font-family:var(--font-mono);font-size:.75rem;color:var(--moss-dark);
+}
+.dz-formats span{background:var(--moss-soft);padding:.16rem .5rem;border-radius:999px}
+
+/* Skeleton de carregamento */
+.skeleton{display:grid;gap:.55rem;margin-top:1rem}
+.skeleton[hidden]{display:none}   /* [hidden] precisa vencer o display:grid */
+.sk-line{height:12px;border-radius:6px;background:linear-gradient(90deg,#ece7db 25%,#f6f2e8 37%,#ece7db 63%);background-size:400% 100%;animation:sk 1.2s ease-in-out infinite}
+.sk-line:nth-child(2){width:82%}
+.sk-line:nth-child(3){width:64%}
+@keyframes sk{0%{background-position:100% 50%}100%{background-position:0 50%}}
+
+/* ---------- Avisos ---------- */
+.notice{
+  display:flex;gap:.6rem;align-items:flex-start;border-radius:var(--r-md);
+  padding:.8rem .9rem;font-size:.9rem;margin-top:1rem;border:1px solid transparent;
+}
+.notice svg{width:18px;height:18px;flex:none;margin-top:.15rem}
+.notice-error{background:var(--alert-soft);border-color:#a5382b3d;color:#7d281e}
+.notice-ok{background:var(--moss-soft);border-color:#3f6b4f3d;color:var(--moss-dark)}
+.notice-warn{background:var(--amber-soft);border-color:#c9822b45;color:#8a5716}
+.notice .nt{display:block}
+.notice p{margin-top:.15rem;opacity:.9}
+.notice p b{font-weight:700}
+
+/* ---------- Mapeamento ---------- */
+.map-grid{display:grid;gap:.9rem;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.field{display:flex;flex-direction:column;gap:.35rem}
+.field label{font-size:.78rem;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-60);font-weight:600}
+.field label .req{color:var(--alert)}
+select{
+  appearance:none;width:100%;padding:.66rem 2.1rem .66rem .75rem;border-radius:10px;
+  border:1px solid var(--line-strong);background:#fff url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2312211c' stroke-width='2' stroke-linecap='round'><path d='M6 9l6 6 6-6'/></svg>") no-repeat right .6rem center/16px;
+  transition:border-color var(--dur) var(--ease),box-shadow var(--dur) var(--ease);
+}
+select:hover{border-color:var(--moss)}
+select:focus{border-color:var(--moss);box-shadow:0 0 0 3px var(--moss-soft)}
+.map-preview{margin-top:1rem;border:1px solid var(--line);border-radius:var(--r-md);overflow:hidden}
+.map-preview-head{
+  background:var(--paper-2);padding:.5rem .8rem;font-size:.76rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:.07em;color:var(--ink-60);
+}
+.map-preview-body{padding:.7rem .8rem;display:grid;gap:.55rem;font-size:.85rem}
+.pv-row{display:grid;gap:.15rem;padding-bottom:.55rem;border-bottom:1px dashed var(--line)}
+.pv-row:last-child{border-bottom:0;padding-bottom:0}
+.pv-code{font-family:var(--font-mono);color:var(--moss-dark);font-weight:600}
+.pv-meta{color:var(--ink-60);font-size:.8rem}
+
+/* ---------- Botões ---------- */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:.45rem;
+  padding:.7rem 1.1rem;border-radius:11px;border:1px solid transparent;cursor:pointer;
+  font-weight:600;font-size:.94rem;
+  transition:background var(--dur) var(--ease),color var(--dur) var(--ease),
+             border-color var(--dur) var(--ease),box-shadow var(--dur) var(--ease),transform 90ms var(--ease);
+}
+.btn svg{width:17px;height:17px}
+.btn:active{transform:translateY(1px) scale(.99)}
+.btn-primary{background:var(--moss);color:#fff;box-shadow:0 1px 2px #12211c1f,0 8px 18px -12px #2c4d39}
+.btn-primary:hover{background:var(--moss-dark);box-shadow:0 2px 4px #12211c26,0 14px 26px -14px #2c4d39}
+.btn-amber{background:var(--amber);color:#22160a;box-shadow:0 1px 2px #12211c1f,0 8px 18px -12px var(--amber)}
+.btn-amber:hover{background:#b3721f;color:#fff}
+.btn-ghost{background:transparent;border-color:var(--line-strong);color:var(--ink)}
+.btn-ghost:hover{border-color:var(--moss);background:var(--moss-soft);color:var(--moss-dark)}
+.btn-danger{background:transparent;border-color:#a5382b45;color:var(--alert)}
+.btn-danger:hover{background:var(--alert-soft);border-color:var(--alert)}
+.btn[disabled]{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
+.btn-row{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1rem}
+
+/* ---------- Passo 3: bipagem (herói) ---------- */
+.scan-hero{
+  background:linear-gradient(160deg,var(--moss-dark),#20382a 70%);
+  color:#f6f3e9;border-radius:var(--r-md);padding:clamp(1rem,3.5vw,1.5rem);
+  position:relative;overflow:hidden;
+}
+.scan-hero::after{ /* linha de "laser" decorativa */
+  content:"";position:absolute;inset:auto 0 0 0;height:3px;
+  background:linear-gradient(90deg,transparent,var(--amber),transparent);opacity:.7;
+}
+.scan-label{
+  font-size:.76rem;text-transform:uppercase;letter-spacing:.09em;
+  color:#f6f3e9b8;font-weight:600;display:block;margin-bottom:.5rem;
+}
+.scan-field{position:relative}
+#scanInput{
+  width:100%;padding:.85rem 1rem;border-radius:12px;border:2px solid #ffffff2e;
+  background:#0f1d17;color:#f6f3e9;font-family:var(--font-mono);
+  font-size:clamp(1.1rem,4.6vw,1.5rem);letter-spacing:.06em;
+  transition:border-color var(--dur) var(--ease),box-shadow var(--dur) var(--ease);
+}
+#scanInput::placeholder{color:#f6f3e94d;letter-spacing:.02em}
+#scanInput:focus{border-color:var(--amber);box-shadow:0 0 0 4px #c9822b30;outline:none}
+.scan-field.is-error #scanInput{border-color:#e4796a;box-shadow:0 0 0 4px #a5382b40}
+.scan-field.is-ok #scanInput{animation:pulse-ok .5s var(--ease)}
+@keyframes pulse-ok{0%{box-shadow:0 0 0 0 #7fc79a80}100%{box-shadow:0 0 0 16px #7fc79a00}}
+@keyframes shake{10%,90%{transform:translateX(-2px)}20%,80%{transform:translateX(4px)}30%,50%,70%{transform:translateX(-7px)}40%,60%{transform:translateX(7px)}}
+.scan-field.shake{animation:shake .42s cubic-bezier(.36,.07,.19,.97) both}
+.scan-help{margin-top:.6rem;font-size:.83rem;color:#f6f3e9a8}
+kbd{
+  font-family:var(--font-mono);font-size:.75rem;background:#ffffff1f;
+  border:1px solid #ffffff2e;border-bottom-width:2px;border-radius:5px;padding:.05rem .35rem;margin:0 .1rem;white-space:nowrap;
+}
+
+/* Painel do produto encontrado */
+@keyframes pop-in{from{opacity:0;transform:scale(.96) translateY(8px)}to{opacity:1;transform:none}}
+.found-panel{
+  margin-top:1rem;border:1px solid #3f6b4f3d;border-left:4px solid var(--moss);
+  background:linear-gradient(180deg,#fbfdfa,#f4f8f3);
+  border-radius:var(--r-md);padding:1rem;animation:pop-in .22s var(--ease) both;
+}
+.found-panel.is-missing{border-color:#c9822b52;border-left-color:var(--amber);background:linear-gradient(180deg,#fffcf6,#fdf7ec)}
+.fp-code{font-family:var(--font-mono);font-size:1.15rem;font-weight:700;color:var(--moss-dark);word-break:break-all}
+.found-panel.is-missing .fp-code{color:#8a5716}
+.fp-name{font-family:var(--font-display);font-size:1.12rem;margin-top:.2rem}
+.fp-meta{display:flex;gap:.45rem;align-items:center;flex-wrap:wrap;margin-top:.45rem;font-size:.85rem;color:var(--ink-60)}
+.chip{
+  display:inline-flex;align-items:center;gap:.3rem;background:var(--amber-soft);
+  border:1px solid #c9822b3d;color:#8a5716;border-radius:999px;padding:.12rem .6rem;
+  font-family:var(--font-mono);font-size:.78rem;
+}
+.qty-row{display:flex;gap:.6rem;align-items:flex-end;margin-top:.9rem;flex-wrap:wrap}
+.qty-field{flex:1 1 150px;min-width:130px;display:flex;flex-direction:column;gap:.3rem}
+.qty-field label{font-size:.76rem;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-60);font-weight:600}
+#qtyInput{
+  width:100%;padding:.7rem .8rem;border-radius:11px;border:2px solid var(--line-strong);
+  background:#fff;font-family:var(--font-mono);font-size:1.25rem;text-align:center;
+  transition:border-color var(--dur) var(--ease),box-shadow var(--dur) var(--ease);
+}
+#qtyInput:focus{border-color:var(--moss);box-shadow:0 0 0 3px var(--moss-soft);outline:none}
+#qtyInput.is-error{border-color:var(--alert);box-shadow:0 0 0 3px var(--alert-soft)}
+.qty-error{color:var(--alert);font-size:.82rem;margin-top:.4rem;min-height:1.1em}
+
+/* ---------- Passo 4: contagem ---------- */
+.stats{display:flex;gap:.7rem;flex-wrap:wrap;margin-bottom:1rem}
+.stat{
+  flex:1 1 140px;background:linear-gradient(180deg,#fdfcf8,#f6f3ea);
+  border:1px solid var(--line);border-radius:var(--r-md);padding:.75rem .9rem;
+}
+.stat-label{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-60);font-weight:700}
+.stat-value{font-family:var(--font-mono);font-size:1.75rem;font-weight:700;line-height:1.15;color:var(--moss-dark);font-variant-numeric:tabular-nums}
+.stat:last-child .stat-value{color:var(--amber)}
+
+.toolbar{display:flex;gap:.7rem;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:.9rem}
+.switch{display:inline-flex;align-items:center;gap:.55rem;cursor:pointer;font-size:.88rem;color:var(--ink-60)}
+.switch input{position:absolute;opacity:0;width:0;height:0}
+.switch .track{
+  width:42px;height:24px;border-radius:999px;background:var(--line-strong);position:relative;
+  transition:background var(--dur) var(--ease);flex:none;
+}
+.switch .track::after{
+  content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;
+  background:#fff;box-shadow:0 1px 3px #12211c40;transition:transform var(--dur) var(--ease);
+}
+.switch input:checked + .track{background:var(--moss)}
+.switch input:checked + .track::after{transform:translateX(18px)}
+.switch input:focus-visible + .track{outline:3px solid var(--amber);outline-offset:2px}
+
+/* position:relative prende os textos .sr-only da tabela (que é mais larga que a tela)
+   dentro do container, senão eles esticam a rolagem horizontal da página no celular */
+.table-wrap{border:1px solid var(--line);border-radius:var(--r-md);overflow:hidden;position:relative}
+.table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:.9rem;min-width:560px}
+thead th{
+  background:var(--moss-dark);color:#f6f3e9;text-align:left;padding:.6rem .75rem;
+  font-size:.74rem;text-transform:uppercase;letter-spacing:.07em;font-weight:700;white-space:nowrap;
+}
+tbody td{padding:.6rem .75rem;border-top:1px solid var(--line);vertical-align:top}
+tbody tr:nth-child(even){background:#fbfaf5}
+td.c-code{font-family:var(--font-mono);font-weight:600;color:var(--moss-dark);white-space:nowrap}
+td.c-qty{font-family:var(--font-mono);font-weight:700;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+td.c-os{color:var(--ink-60)}
+td.c-act{text-align:right;width:1%}
+.tag-missing{display:inline-block;margin-left:.35rem;font-size:.68rem;font-family:var(--font-ui);
+  background:var(--amber-soft);color:#8a5716;border:1px solid #c9822b3d;border-radius:999px;padding:0 .4rem;vertical-align:middle}
+.reads{display:block;font-size:.72rem;color:var(--ink-40);font-family:var(--font-mono)}
+.icon-btn{
+  background:transparent;border:1px solid transparent;border-radius:9px;padding:.3rem;cursor:pointer;
+  color:var(--ink-40);display:inline-grid;place-items:center;
+  transition:color var(--dur) var(--ease),background var(--dur) var(--ease),border-color var(--dur) var(--ease);
+}
+.icon-btn svg{width:17px;height:17px}
+.icon-btn:hover{color:var(--alert);background:var(--alert-soft);border-color:#a5382b3d}
+
+@keyframes row-in{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+@keyframes row-flash{from{background-color:#c9822b3d}to{background-color:transparent}}
+tr.row-in{animation:row-in .24s var(--ease) both, row-flash 1.1s var(--ease) both}
+@keyframes row-out{to{opacity:0;transform:translateX(24px)}}
+tr.row-out{animation:row-out .18s var(--ease) both}
+
+.empty{
+  text-align:center;padding:2.2rem 1rem;color:var(--ink-60);
+  background:linear-gradient(180deg,#fdfcf8,#f7f4ec);
+}
+.empty svg{width:34px;height:34px;color:var(--ink-40);margin-bottom:.5rem}
+.empty b{display:block;font-family:var(--font-display);color:var(--ink);font-size:1.02rem}
+
+footer{padding:1.5rem 0 3rem;color:var(--ink-40);font-size:.8rem;text-align:center}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+/* Banner de falha de CDN */
+#cdnBanner{margin-bottom:1rem}
+
+@media (max-width:520px){
+  .btn{width:100%}
+  .btn-row .btn{flex:1 1 100%}
+  .qty-row .btn{width:auto;flex:1 1 auto}
+  .stat-value{font-size:1.5rem}
+}
+
+/* ---------- prefers-reduced-motion: desliga as animações ---------- */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.001ms !important;animation-iteration-count:1 !important;
+    transition-duration:.001ms !important;scroll-behavior:auto !important;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="site-header">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M3 5v14M6.5 5v14M10 5v14M13.5 5v10M17 5v14M20.5 5v14"/>
+        </svg>
+      </div>
+      <div>
+        <h1>Conferência de Estoque</h1>
+        <p class="brand-sub">Bipagem por código de barras · planilha do Bling · PDF do dia</p>
+      </div>
+    </div>
+    <p class="tagline">
+      Tudo é processado <strong>no seu aparelho</strong> — nenhum dado é enviado para servidor.
+      Esta ferramenta é <strong>somente leitura</strong>: ela nunca altera o estoque do Bling.
+    </p>
+  </header>
+
+  <main>
+    <div id="cdnBanner" hidden></div>
+
+    <!-- ================= PASSO 1 — CARREGAR PLANILHA ================= -->
+    <section class="card step" id="step1" aria-labelledby="h-step1">
+      <div class="step-head">
+        <span class="step-badge" aria-hidden="true">1</span>
+        <div>
+          <h2 id="h-step1">Carregar planilha</h2>
+          <p class="step-sub">Exportação de produtos do Bling em .xlsx, .xls ou .csv.</p>
+        </div>
+      </div>
+
+      <div class="dropzone" id="dropzone" role="button" tabindex="0"
+           aria-describedby="dzHint" aria-label="Selecionar arquivo da planilha">
+        <svg class="dz-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 16V4m0 0L8 8m4-4 4 4"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/>
+        </svg>
+        <div class="dz-title">Arraste a planilha aqui</div>
+        <div class="dz-hint" id="dzHint">ou toque para escolher um arquivo do aparelho</div>
+        <div class="dz-formats" aria-hidden="true"><span>.xlsx</span><span>.xls</span><span>.csv</span></div>
+      </div>
+      <input type="file" id="fileInput" accept=".xlsx,.xls,.csv,text/csv" hidden>
+
+      <div id="loadSkeleton" class="skeleton" hidden aria-hidden="true">
+        <div class="sk-line"></div><div class="sk-line"></div><div class="sk-line"></div>
+      </div>
+      <div id="fileFeedback" role="status" aria-live="polite"></div>
+    </section>
+
+    <!-- ================= PASSO 2 — MAPEAR COLUNAS ================= -->
+    <section class="card step" id="step2" aria-labelledby="h-step2" hidden>
+      <div class="step-head">
+        <span class="step-badge" aria-hidden="true">2</span>
+        <div>
+          <h2 id="h-step2">Mapear colunas</h2>
+          <p class="step-sub">Conferimos automaticamente pelos nomes das colunas. Corrija se algo ficou trocado.</p>
+        </div>
+      </div>
+
+      <div class="map-grid">
+        <div class="field">
+          <label for="colBarcode">Código de barras <span class="req" aria-hidden="true">*</span><span class="sr-only">(obrigatório)</span></label>
+          <select id="colBarcode" required></select>
+        </div>
+        <div class="field">
+          <label for="colSku">Código / SKU</label>
+          <select id="colSku"></select>
+        </div>
+        <div class="field">
+          <label for="colName">Nome do produto</label>
+          <select id="colName"></select>
+        </div>
+        <div class="field">
+          <label for="colOs">Ordem de serviço</label>
+          <select id="colOs"></select>
+        </div>
+      </div>
+
+      <div class="map-preview" id="mapPreview" hidden>
+        <div class="map-preview-head">Prévia — primeiras linhas com esse mapeamento</div>
+        <div class="map-preview-body" id="mapPreviewBody"></div>
+      </div>
+
+      <div id="mapFeedback" aria-live="polite"></div>
+
+      <div class="btn-row">
+        <button type="button" class="btn btn-primary" id="btnConfirmMap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+          Confirmar e começar a bipar
+        </button>
+        <button type="button" class="btn btn-ghost" id="btnOtherFile">Trocar planilha</button>
+      </div>
+    </section>
+
+    <!-- ================= PASSO 3 — BIPAR ================= -->
+    <section class="card step" id="step3" aria-labelledby="h-step3" hidden>
+      <div class="step-head">
+        <span class="step-badge" aria-hidden="true">3</span>
+        <div>
+          <h2 id="h-step3">Bipar produtos</h2>
+          <p class="step-sub" id="step3Sub">Leia o código e digite a quantidade contada.</p>
+        </div>
+      </div>
+
+      <div class="scan-hero">
+        <label class="scan-label" for="scanInput">Código de barras</label>
+        <div class="scan-field" id="scanField">
+          <input id="scanInput" type="text" placeholder="bipe o código…"
+                 autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"
+                 enterkeyhint="search" aria-describedby="scanHelp">
+        </div>
+        <p class="scan-help" id="scanHelp">
+          O leitor envia <kbd>Enter</kbd> sozinho ao final da leitura. Depois é só digitar a quantidade.
+        </p>
+      </div>
+
+      <div id="scanResult"></div>
+      <div class="sr-only" id="liveRegion" role="status" aria-live="assertive"></div>
+    </section>
+
+    <!-- ================= PASSO 4 — CONTAGEM / PDF ================= -->
+    <section class="card step" id="step4" aria-labelledby="h-step4" hidden>
+      <div class="step-head">
+        <span class="step-badge" aria-hidden="true">4</span>
+        <div>
+          <h2 id="h-step4">Contagem</h2>
+          <p class="step-sub">Confira as linhas e gere o PDF do dia.</p>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-label">Itens (linhas)</div>
+          <div class="stat-value" id="statItems">0</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Unidades contadas</div>
+          <div class="stat-value" id="statUnits">0</div>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <label class="switch" for="groupToggle">
+          <input type="checkbox" id="groupToggle">
+          <span class="track" aria-hidden="true"></span>
+          <span>Agrupar por código (somar quantidades)</span>
+        </label>
+      </div>
+
+      <div class="table-wrap">
+        <div class="table-scroll">
+          <table id="countTable">
+            <caption class="sr-only">Itens contados nesta conferência</caption>
+            <thead>
+              <tr>
+                <th scope="col">Código</th>
+                <th scope="col">Produto</th>
+                <th scope="col">Ordem de serviço</th>
+                <th scope="col" style="text-align:right">Qtd.</th>
+                <th scope="col"><span class="sr-only">Remover</span></th>
+              </tr>
+            </thead>
+            <tbody id="countBody"></tbody>
+          </table>
+        </div>
+        <div class="empty" id="emptyState">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 7l9-4 9 4-9 4-9-4Z"/><path d="M3 12l9 4 9-4"/><path d="M3 17l9 4 9-4"/>
+          </svg>
+          <b>Nenhum item contado ainda</b>
+          <span>Bipe o primeiro código no passo 3 para começar.</span>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button type="button" class="btn btn-amber" id="btnPdf" disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 3v12m0 0-4-4m4 4 4-4"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/>
+          </svg>
+          Gerar PDF da contagem
+        </button>
+        <button type="button" class="btn btn-danger" id="btnClear" disabled>Limpar contagem</button>
+      </div>
+      <div id="pdfFeedback" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <footer>
+    Conferência local · nada é enviado para a internet · o estoque do Bling permanece intacto.
+  </footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<script>
+(function(){
+"use strict";
+
+/* ============================================================
+   ESTADO — tudo em memória. Sem localStorage/sessionStorage
+   (o ambiente de artifacts não suporta e quebraria o app).
+   ============================================================ */
+const state = {
+  headers: [],        // nomes das colunas detectadas
+  rows: [],           // linhas da planilha (objetos)
+  mapping: {barcode:'', sku:'', name:'', os:''},
+  index: new Map(),   // código normalizado -> produto
+  pending: null,      // leitura aguardando quantidade
+  entries: [],        // linhas da contagem: {id, code, name, os, qty, missing}
+  seq: 0,
+  grouped: false
+};
+
+const $ = (sel) => document.querySelector(sel);
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const nf = new Intl.NumberFormat('pt-BR', {maximumFractionDigits:3});
+
+/* ---------- utilidades ---------- */
+function esc(s){
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c => (
+    {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]
+  ));
+}
+// remove acentos e baixa a caixa — usado nas heurísticas de coluna
+function slug(s){
+  return String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
+}
+// texto de célula: evita notação científica quando o Excel guardou o GTIN como número
+function cellText(v){
+  if (v == null) return '';
+  if (typeof v === 'number') return Number.isInteger(v) ? v.toFixed(0) : String(v);
+  return String(v).trim();
+}
+// chave de busca do código de barras (tolerante a espaços, hífens e apóstrofo do Excel)
+function keyOf(v){
+  return cellText(v).replace(/^'+/,'').replace(/[\s\-.]/g,'').toUpperCase();
+}
+
+function showNotice(host, type, title, body){
+  const icons = {
+    error:'<path d="M12 8v5"/><circle cx="12" cy="16.5" r="1"/><circle cx="12" cy="12" r="9"/>',
+    ok:'<path d="M20 6 9 17l-5-5"/>',
+    warn:'<path d="M12 9v4"/><circle cx="12" cy="16.5" r="1"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/>'
+  };
+  host.innerHTML =
+    '<div class="notice notice-' + type + '">' +
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + icons[type] + '</svg>' +
+      '<div><b class="nt">' + esc(title) + '</b>' + (body ? '<p>' + body + '</p>' : '') + '</div>' +
+    '</div>';
+}
+function clearNotice(host){ host.innerHTML = ''; }
+function announce(msg){ $('#liveRegion').textContent = msg; }
+
+// revela um passo com fade+slide; rola até ele quando scroll !== false
+function revealStep(el, scroll){
+  const wasHidden = el.hasAttribute('hidden');
+  el.removeAttribute('hidden');
+  if (wasHidden && !reduceMotion){
+    el.classList.remove('reveal');
+    void el.offsetWidth;               // força reflow para reiniciar a animação
+    el.classList.add('reveal');
+  }
+  if (scroll !== false){
+    el.scrollIntoView({behavior: reduceMotion ? 'auto' : 'smooth', block:'start'});
+  }
+}
+
+/* ============================================================
+   VERIFICAÇÃO DAS BIBLIOTECAS (CDN)
+   ============================================================ */
+window.addEventListener('load', function(){
+  const faltando = [];
+  if (typeof XLSX === 'undefined') faltando.push('leitura de planilhas (SheetJS)');
+  if (!window.jspdf || !window.jspdf.jsPDF) faltando.push('geração de PDF (jsPDF)');
+  if (faltando.length){
+    const b = $('#cdnBanner');
+    b.hidden = false;
+    showNotice(b, 'error', 'Não foi possível carregar: ' + faltando.join(' e '),
+      'O app precisa de internet apenas na primeira abertura, para baixar as bibliotecas. ' +
+      'Verifique a conexão e recarregue a página.');
+  }
+});
+
+/* ============================================================
+   PASSO 1 — CARREGAR ARQUIVO
+   ============================================================ */
+const dropzone = $('#dropzone');
+const fileInput = $('#fileInput');
+const fileFeedback = $('#fileFeedback');
+
+dropzone.addEventListener('click', () => fileInput.click());
+dropzone.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); fileInput.click(); }
+});
+['dragenter','dragover'].forEach(ev =>
+  dropzone.addEventListener(ev, (e) => { e.preventDefault(); dropzone.classList.add('is-over'); }));
+['dragleave','drop'].forEach(ev =>
+  dropzone.addEventListener(ev, (e) => { e.preventDefault(); dropzone.classList.remove('is-over'); }));
+dropzone.addEventListener('drop', (e) => {
+  const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+  if (f) handleFile(f);
+});
+fileInput.addEventListener('change', () => {
+  const f = fileInput.files && fileInput.files[0];
+  if (f) handleFile(f);
+  fileInput.value = '';   // permite recarregar o mesmo arquivo depois
+});
+$('#btnOtherFile').addEventListener('click', () => {
+  $('#step1').scrollIntoView({behavior: reduceMotion ? 'auto' : 'smooth', block:'start'});
+  fileInput.click();
+});
+
+async function handleFile(file){
+  clearNotice(fileFeedback);
+
+  if (typeof XLSX === 'undefined'){
+    showNotice(fileFeedback,'error','A biblioteca de leitura de planilhas não carregou',
+      'Recarregue a página com internet disponível e tente de novo.');
+    return;
+  }
+  const ext = (file.name.split('.').pop() || '').toLowerCase();
+  if (['xlsx','xls','csv'].indexOf(ext) === -1){
+    showNotice(fileFeedback,'error','Formato não suportado: .' + esc(ext),
+      'Exporte a lista de produtos do Bling em <b>.xlsx</b> ou <b>.csv</b> e tente novamente.');
+    return;
+  }
+  if (state.entries.length &&
+      !confirm('Carregar outra planilha? Os itens já contados serão mantidos.')) return;
+
+  $('#loadSkeleton').hidden = false;
+  await new Promise(r => setTimeout(r, 60));   // deixa o skeleton pintar antes do parse
+
+  try {
+    let wb;
+    if (ext === 'csv'){
+      // CSV do Bling costuma vir em UTF-8, mas há exportações em latin-1.
+      const buf = await file.arrayBuffer();
+      let text = new TextDecoder('utf-8').decode(buf);
+      if (text.indexOf('\uFFFD') !== -1) text = new TextDecoder('iso-8859-1').decode(buf);
+      wb = XLSX.read(text.replace(/^\uFEFF/,''), {type:'string'});
+    } else {
+      wb = XLSX.read(new Uint8Array(await file.arrayBuffer()), {type:'array'});
+    }
+
+    const sheetName = wb.SheetNames[0];
+    if (!sheetName) throw new Error('SEM_ABA');
+    const ws = wb.Sheets[sheetName];
+    const matrix = XLSX.utils.sheet_to_json(ws, {header:1, defval:'', blankrows:false});
+    if (!matrix.length) throw new Error('VAZIO');
+
+    // Exportações do Bling às vezes têm linhas de preâmbulo antes do cabeçalho:
+    // escolhemos, entre as 10 primeiras linhas, a que tem mais células preenchidas.
+    let headerIdx = 0, best = -1;
+    for (let i = 0; i < Math.min(matrix.length, 10); i++){
+      const filled = matrix[i].filter(c => cellText(c) !== '').length;
+      if (filled > best && filled >= 2){ best = filled; headerIdx = i; }
+    }
+    if (best < 2) throw new Error('SEM_CABECALHO');
+
+    const rows = XLSX.utils.sheet_to_json(ws, {range: headerIdx, defval:''});
+    if (!rows.length) throw new Error('SEM_LINHAS');
+
+    state.headers = matrix[headerIdx].map((h, i) => cellText(h) || ('Coluna ' + (i + 1)));
+    state.rows = rows;
+    state.index = new Map();
+    state.pending = null;
+    $('#scanResult').innerHTML = '';
+
+    $('#step1').dataset.done = 'true';
+    showNotice(fileFeedback,'ok', file.name,
+      '<b>' + nf.format(rows.length) + '</b> linhas na aba “' + esc(sheetName) +
+      '” · ' + state.headers.length + ' colunas detectadas.');
+
+    buildMappingUI();
+    revealStep($('#step2'));
+
+  } catch (err){
+    const msgs = {
+      SEM_ABA:['A planilha não tem nenhuma aba','O arquivo parece vazio. Exporte novamente pelo Bling.'],
+      VAZIO:['A primeira aba está vazia','Confira se você exportou a lista de produtos, e não um relatório em branco.'],
+      SEM_CABECALHO:['Não encontramos a linha de cabeçalho','A primeira aba precisa ter uma linha com os nomes das colunas (GTIN, SKU, Descrição…).'],
+      SEM_LINHAS:['O cabeçalho foi lido, mas não há produtos abaixo dele','Exporte a planilha com os produtos preenchidos.']
+    };
+    const m = msgs[err && err.message];
+    showNotice(fileFeedback,'error',
+      m ? m[0] : 'Não conseguimos ler este arquivo',
+      m ? m[1] : 'Ele pode estar corrompido ou protegido por senha. Tente reexportar do Bling em .xlsx ou .csv.');
+    console.error(err);
+  } finally {
+    $('#loadSkeleton').hidden = true;
+  }
+}
+
+/* ============================================================
+   PASSO 2 — MAPEAMENTO DE COLUNAS (com auto-detecção)
+   ============================================================ */
+// padrões por campo, do mais específico para o mais genérico
+const PATTERNS = {
+  barcode: [/codigo de barras/, /cod.? ?barras/, /\bbarras?\b/, /\bgtin\b/, /\bean\b/, /barcode/, /\bupc\b/],
+  sku:     [/\bsku\b/, /codigo ?\(?sku\)?/, /codigo interno/, /referencia/, /\bref\b/, /^codigo$/, /\bcodigo\b/],
+  name:    [/descricao/, /^nome/, /nome do produto/, /\bproduto\b/, /\bitem\b/, /\btitulo\b/],
+  os:      [/ordem de servico/, /\bo\.?s\.?\b/, /\bordem\b/, /\bservico\b/]
+};
+function autoDetect(headers){
+  const used = new Set();
+  const pick = {};
+  ['barcode','sku','name','os'].forEach(field => {
+    let chosen = '';
+    outer:
+    for (const re of PATTERNS[field]){
+      for (const h of headers){
+        if (used.has(h)) continue;
+        const s = slug(h);
+        // "código de barras" nunca deve virar SKU
+        if (field === 'sku' && /barras|gtin|ean/.test(s)) continue;
+        if (re.test(s)){ chosen = h; break outer; }
+      }
+    }
+    if (chosen) used.add(chosen);
+    pick[field] = chosen;
+  });
+  return pick;
+}
+
+function buildMappingUI(){
+  const guess = autoDetect(state.headers);
+  const fields = [['colBarcode','barcode',true],['colSku','sku',false],['colName','name',false],['colOs','os',false]];
+  fields.forEach(([id, field, required]) => {
+    const sel = document.getElementById(id);
+    sel.innerHTML = (required ? '' : '<option value="">— nenhuma —</option>') +
+      state.headers.map(h => '<option value="' + esc(h) + '">' + esc(h) + '</option>').join('');
+    if (required && !guess.barcode) sel.insertAdjacentHTML('afterbegin','<option value="">— selecione —</option>');
+    sel.value = guess[field] || '';
+    sel.onchange = () => { state.mapping[field] = sel.value; renderMapPreview(); };
+    state.mapping[field] = sel.value;
+  });
+
+  const fb = $('#mapFeedback');
+  if (guess.barcode){
+    showNotice(fb,'ok','Colunas identificadas automaticamente',
+      'Confira a prévia abaixo antes de continuar.');
+  } else {
+    showNotice(fb,'warn','Não identificamos a coluna do código de barras',
+      'Escolha manualmente qual coluna guarda o GTIN/EAN — ela é obrigatória.');
+  }
+  renderMapPreview();
+}
+
+function renderMapPreview(){
+  const {barcode, sku, name, os} = state.mapping;
+  const host = $('#mapPreview'), body = $('#mapPreviewBody');
+  if (!barcode){ host.hidden = true; return; }
+  const sample = state.rows.slice(0, 3);
+  body.innerHTML = sample.map(r => {
+    const code = cellText(r[barcode]) || '—';
+    const s = sku ? cellText(r[sku]) : '';
+    const n = name ? cellText(r[name]) : '';
+    const o = os ? cellText(r[os]) : '';
+    return '<div class="pv-row">' +
+      '<span class="pv-code">' + esc(code) + (s ? '  ·  ' + esc(s) : '') + '</span>' +
+      '<span>' + esc(n || 'sem nome mapeado') + '</span>' +
+      '<span class="pv-meta">OS: ' + esc(o || '—') + '</span>' +
+    '</div>';
+  }).join('');
+  host.hidden = false;
+}
+
+$('#btnConfirmMap').addEventListener('click', () => {
+  const {barcode} = state.mapping;
+  if (!barcode){
+    showNotice($('#mapFeedback'),'error','Escolha a coluna do código de barras',
+      'Sem ela não é possível localizar os produtos ao bipar.');
+    $('#colBarcode').focus();
+    return;
+  }
+  buildIndex();
+  if (state.index.size === 0){
+    showNotice($('#mapFeedback'),'error','Nenhum código de barras válido nessa coluna',
+      'A coluna “' + esc(barcode) + '” está vazia. Selecione outra coluna (ex.: GTIN ou EAN).');
+    return;
+  }
+  showNotice($('#mapFeedback'),'ok','Índice pronto',
+    '<b>' + nf.format(state.index.size) + '</b> códigos de barras carregados para busca.');
+  $('#step2').dataset.done = 'true';
+  $('#step3Sub').textContent =
+    state.index.size + ' códigos disponíveis. Leia o código e digite a quantidade contada.';
+  revealStep($('#step4'), false);   // já fica pronto, mas o foco vai para a bipagem
+  revealStep($('#step3'));
+  focusScan();
+});
+
+// Map de busca: chave normalizada -> {code, name, os}
+function buildIndex(){
+  const {barcode, sku, name, os} = state.mapping;
+  const idx = new Map();
+  state.rows.forEach(r => {
+    const raw = cellText(r[barcode]);
+    if (!raw) return;
+    const k = keyOf(raw);
+    if (!k) return;
+    const item = {
+      barcode: raw,
+      code: (sku ? cellText(r[sku]) : '') || raw,
+      name: name ? cellText(r[name]) : '',
+      os: os ? cellText(r[os]) : ''
+    };
+    if (!idx.has(k)) idx.set(k, item);
+    // alias sem zeros à esquerda: cobre UPC-A de 12 dígitos lido como EAN-13
+    const noZeros = k.replace(/^0+/, '');
+    if (noZeros && noZeros !== k && !idx.has(noZeros)) idx.set(noZeros, item);
+  });
+  state.index = idx;
+}
+
+/* ============================================================
+   PASSO 3 — BIPAGEM
+   ============================================================ */
+const scanInput = $('#scanInput');
+const scanField = $('#scanField');
+const scanResult = $('#scanResult');
+
+// nunca rouba o foco de uma quantidade em aberto (ex.: leitura logo após confirmar o mapeamento)
+function focusScan(){
+  if (state.pending) return;
+  scanInput.focus(); scanInput.select();
+}
+
+// O leitor físico "digita" o código e manda Enter no final.
+scanInput.addEventListener('keydown', (e) => {
+  if (e.key !== 'Enter') return;
+  e.preventDefault();
+  lookup(scanInput.value);
+});
+
+function flash(cls){
+  scanField.classList.remove('shake','is-error','is-ok');
+  void scanField.offsetWidth;
+  scanField.classList.add(cls);
+  if (cls !== 'is-error') setTimeout(() => scanField.classList.remove(cls), 700);
+}
+
+function lookup(raw){
+  const value = cellText(raw);
+  if (!value) return;
+  const k = keyOf(value);
+  const hit = state.index.get(k) || state.index.get(k.replace(/^0+/,''));
+
+  if (hit){
+    scanField.classList.remove('is-error','shake');
+    state.pending = {
+      code: hit.code, name: hit.name, os: hit.os, scanned: value, missing:false
+    };
+    renderPending();
+    announce('Produto encontrado: ' + (hit.name || hit.code) + '. Digite a quantidade.');
+  } else {
+    // Não encontrado: avisa, sacode o campo e mantém o fluxo livre.
+    state.pending = {code: value, name:'', os:'', scanned: value, missing:true};
+    renderNotFound(value);
+    flash('is-error'); flash('shake'); scanField.classList.add('is-error');
+    announce('Código ' + value + ' não encontrado na planilha.');
+  }
+  scanInput.value = '';
+}
+
+function renderPending(){
+  const p = state.pending;
+  scanResult.innerHTML =
+    '<div class="found-panel" id="foundPanel">' +
+      '<div class="fp-code">' + esc(p.code) + '</div>' +
+      '<div class="fp-name">' + esc(p.name || 'Produto sem nome na planilha') + '</div>' +
+      '<div class="fp-meta">' +
+        '<span class="chip">OS: ' + esc(p.os || '—') + '</span>' +
+        (p.scanned !== p.code ? '<span class="chip">bipado: ' + esc(p.scanned) + '</span>' : '') +
+      '</div>' +
+      '<div class="qty-row">' +
+        '<div class="qty-field">' +
+          '<label for="qtyInput">Quantidade contada</label>' +
+          '<input id="qtyInput" type="text" inputmode="decimal" autocomplete="off" placeholder="0">' +
+        '</div>' +
+        '<button type="button" class="btn btn-primary" id="btnAdd">Adicionar à contagem</button>' +
+        '<button type="button" class="btn btn-ghost" id="btnCancel">Cancelar</button>' +
+      '</div>' +
+      '<div class="qty-error" id="qtyError" aria-live="polite"></div>' +
+    '</div>';
+  wireQty();
+}
+
+function renderNotFound(code){
+  scanResult.innerHTML =
+    '<div class="found-panel is-missing">' +
+      '<div class="fp-code">' + esc(code) + '</div>' +
+      '<div class="fp-name">Código não encontrado na planilha</div>' +
+      '<p class="fp-meta" style="display:block">Confira o cadastro do produto no Bling (o GTIN/EAN pode estar em branco ou diferente). ' +
+      'Você pode registrar a contagem mesmo assim — o item sai marcado como <b>não cadastrado</b> no PDF.</p>' +
+      '<div class="qty-row">' +
+        '<div class="qty-field">' +
+          '<label for="qtyInput">Quantidade contada</label>' +
+          '<input id="qtyInput" type="text" inputmode="decimal" autocomplete="off" placeholder="0">' +
+        '</div>' +
+        '<button type="button" class="btn btn-amber" id="btnAdd">Registrar mesmo assim</button>' +
+        '<button type="button" class="btn btn-ghost" id="btnCancel">Ignorar e continuar</button>' +
+      '</div>' +
+      '<div class="qty-error" id="qtyError" aria-live="polite"></div>' +
+    '</div>';
+  wireQty();
+}
+
+function wireQty(){
+  const qty = $('#qtyInput');
+  qty.focus();
+  qty.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter'){ e.preventDefault(); commitPending(); }
+    if (e.key === 'Escape'){ e.preventDefault(); cancelPending(); }
+  });
+  $('#btnAdd').addEventListener('click', commitPending);
+  $('#btnCancel').addEventListener('click', cancelPending);
+}
+
+// aceita "3", "1,5" e "1.5"; se vier "1.234,5" trata o ponto como milhar
+function parseQty(str){
+  let s = String(str || '').trim();
+  if (!s) return NaN;
+  if (s.indexOf(',') > -1 && s.indexOf('.') > -1) s = s.replace(/\./g,'');
+  s = s.replace(',', '.');
+  if (!/^\d*\.?\d+$/.test(s)) return NaN;
+  return parseFloat(s);
+}
+
+function commitPending(){
+  if (!state.pending) return;
+  const input = $('#qtyInput');
+  const errBox = $('#qtyError');
+  const qty = parseQty(input.value);
+
+  if (Number.isNaN(qty)){
+    errBox.textContent = 'Digite a quantidade contada (ex.: 12 ou 1,5).';
+    input.classList.add('is-error'); input.focus(); input.select();
+    return;
+  }
+  if (qty <= 0){
+    errBox.textContent = 'A quantidade precisa ser maior que zero.';
+    input.classList.add('is-error'); input.focus(); input.select();
+    return;
+  }
+
+  const p = state.pending;
+  state.entries.push({
+    id: ++state.seq, code: p.code, name: p.name, os: p.os, qty: qty, missing: p.missing
+  });
+  state.pending = null;
+  scanResult.innerHTML = '';
+  scanField.classList.remove('is-error');
+  flash('is-ok');
+  renderTable(state.seq);   // realça a linha que acabou de entrar
+  announce('Adicionado: ' + nf.format(qty) + ' de ' + (p.name || p.code) + '.');
+  focusScan();   // foco volta ao campo de leitura para a próxima bipagem
+}
+
+function cancelPending(){
+  state.pending = null;
+  scanResult.innerHTML = '';
+  scanField.classList.remove('is-error');
+  focusScan();
+}
+
+/* ============================================================
+   PASSO 4 — TABELA, CONTADORES E PDF
+   ============================================================ */
+const tbody = $('#countBody');
+
+$('#groupToggle').addEventListener('change', (e) => {
+  state.grouped = e.target.checked;
+  renderTable(false);
+});
+
+// Modo agrupado: soma as quantidades por código (visualização e PDF)
+function viewRows(){
+  if (!state.grouped){
+    return state.entries.map(e => ({
+      key:'e' + e.id, ids:[e.id], code:e.code, name:e.name, os:e.os, qty:e.qty, missing:e.missing, reads:1
+    }));
+  }
+  const map = new Map();
+  state.entries.forEach(e => {
+    const k = keyOf(e.code) + '|' + (e.missing ? 'M' : 'F');
+    if (!map.has(k)){
+      map.set(k, {key:'g' + k, ids:[e.id], code:e.code, name:e.name, os:e.os, qty:e.qty, missing:e.missing, reads:1});
+    } else {
+      const g = map.get(k);
+      g.qty += e.qty; g.reads++; g.ids.push(e.id);
+      if (!g.name && e.name) g.name = e.name;
+      if (!g.os && e.os) g.os = e.os;
+    }
+  });
+  return Array.from(map.values());
+}
+
+// highlightId: id da leitura recém-adicionada (opcional) — a linha entra com flash
+function renderTable(highlightId){
+  const rows = viewRows();
+  const empty = $('#emptyState');
+  const table = $('#countTable');
+
+  empty.hidden = rows.length > 0;
+  table.style.display = rows.length ? '' : 'none';
+
+  tbody.innerHTML = rows.map(r =>
+    '<tr data-key="' + esc(r.key) + '" data-ids="' + r.ids.join(',') + '">' +
+      '<td class="c-code">' + esc(r.code) + (r.missing ? '<span class="tag-missing">não cadastrado</span>' : '') + '</td>' +
+      '<td>' + esc(r.name || '—') +
+        (state.grouped && r.reads > 1 ? '<span class="reads">' + r.reads + ' leituras somadas</span>' : '') +
+      '</td>' +
+      '<td class="c-os">' + esc(r.os || '—') + '</td>' +
+      '<td class="c-qty">' + nf.format(r.qty) + '</td>' +
+      '<td class="c-act">' +
+        '<button type="button" class="icon-btn" data-remove="' + r.ids.join(',') + '" ' +
+          'aria-label="Remover ' + esc(r.code) + ' da contagem" title="Remover">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">' +
+          '<path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12"/></svg>' +
+        '</button>' +
+      '</td>' +
+    '</tr>'
+  ).join('');
+
+  // realce da linha recém-adicionada (no modo agrupado ela pode não ser a última)
+  if (highlightId && !reduceMotion){
+    const tr = Array.prototype.find.call(tbody.rows, row =>
+      row.dataset.ids.split(',').indexOf(String(highlightId)) !== -1);
+    if (tr){
+      tr.classList.add('row-in');
+      // duas animações encadeadas (entrada + flash): removemos após a mais longa
+      setTimeout(() => tr.classList.remove('row-in'), 1200);
+    }
+  }
+
+  const totalItems = rows.length;
+  const totalUnits = rows.reduce((a, r) => a + r.qty, 0);
+  countUp($('#statItems'), totalItems);
+  countUp($('#statUnits'), totalUnits);
+
+  $('#btnPdf').disabled = state.entries.length === 0;
+  $('#btnClear').disabled = state.entries.length === 0;
+}
+
+tbody.addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-remove]');
+  if (!btn) return;
+  const ids = btn.getAttribute('data-remove').split(',').map(Number);
+  const tr = btn.closest('tr');
+  const drop = () => {
+    state.entries = state.entries.filter(en => ids.indexOf(en.id) === -1);
+    renderTable(false);
+    focusScan();
+  };
+  if (reduceMotion){ drop(); return; }
+  tr.classList.add('row-out');
+  tr.addEventListener('animationend', drop, {once:true});
+});
+
+$('#btnClear').addEventListener('click', () => {
+  if (!state.entries.length) return;
+  if (!confirm('Limpar a contagem? Todas as ' + state.entries.length + ' linhas serão apagadas.')) return;
+  state.entries = [];
+  renderTable(false);
+  focusScan();
+});
+
+// contador animado (count-up rápido)
+const countTimers = new WeakMap();
+function countUp(el, target){
+  const from = parseFloat(String(el.dataset.value || '0')) || 0;
+  el.dataset.value = String(target);
+  if (reduceMotion || from === target){ el.textContent = nf.format(target); return; }
+  cancelAnimationFrame(countTimers.get(el) || 0);
+  const t0 = performance.now(), dur = 320;
+  (function tick(now){
+    const p = Math.min(1, (now - t0) / dur);
+    const eased = 1 - Math.pow(1 - p, 3);
+    el.textContent = nf.format(from + (target - from) * eased);
+    if (p < 1) countTimers.set(el, requestAnimationFrame(tick));
+    else el.textContent = nf.format(target);
+  })(performance.now());
+}
+
+/* ---------- PDF ---------- */
+$('#btnPdf').addEventListener('click', () => {
+  const fb = $('#pdfFeedback');
+  clearNotice(fb);
+  if (!window.jspdf || !window.jspdf.jsPDF){
+    showNotice(fb,'error','A biblioteca de PDF não carregou',
+      'Recarregue a página com internet disponível e tente novamente.');
+    return;
+  }
+  try { buildPdf(); }
+  catch (err){
+    console.error(err);
+    showNotice(fb,'error','Não foi possível gerar o PDF',
+      'Tente novamente; se persistir, recarregue a página (a contagem atual será perdida).');
+  }
+});
+
+function pad(n){ return String(n).padStart(2,'0'); }
+
+function buildPdf(){
+  const {jsPDF} = window.jspdf;
+  const doc = new jsPDF({unit:'pt', format:'a4'});
+  const rows = viewRows();
+  const now = new Date();
+  const dateISO = now.getFullYear() + '-' + pad(now.getMonth()+1) + '-' + pad(now.getDate());
+  const dateBR = pad(now.getDate()) + '/' + pad(now.getMonth()+1) + '/' + now.getFullYear();
+  const timeBR = pad(now.getHours()) + ':' + pad(now.getMinutes());
+  const totalUnits = rows.reduce((a, r) => a + r.qty, 0);
+  const pageW = doc.internal.pageSize.getWidth();
+
+  // ----- cabeçalho -----
+  doc.setFillColor(44,77,57);                       // verde-musgo escuro
+  doc.rect(0, 0, pageW, 92, 'F');
+  doc.setTextColor(255,255,255);
+  doc.setFont('helvetica','bold'); doc.setFontSize(18);
+  doc.text('Conferência de Estoque', 40, 40);
+  doc.setFont('helvetica','normal'); doc.setFontSize(10);
+  doc.text('Contagem de ' + dateBR + ' às ' + timeBR, 40, 58);
+  doc.setTextColor(201,130,43);                     // âmbar
+  doc.setFont('helvetica','bold'); doc.setFontSize(10);
+  doc.text('Itens (linhas): ' + nf.format(rows.length) +
+           '     Unidades contadas: ' + nf.format(totalUnits) +
+           (state.grouped ? '     (agrupado por código)' : ''), 40, 76);
+
+  // ----- tabela -----
+  doc.autoTable({
+    startY: 112,
+    margin: {left:40, right:40, top:40},
+    head: [['Código','Produto','Ordem de serviço','Qtd.']],
+    body: rows.map(r => [
+      r.code + (r.missing ? ' (não cadastrado)' : ''),
+      r.name || '—',
+      r.os || '—',
+      nf.format(r.qty)
+    ]),
+    styles: {font:'helvetica', fontSize:9, cellPadding:5, textColor:[18,33,28], lineColor:[220,214,200], lineWidth:.5},
+    headStyles: {fillColor:[63,107,79], textColor:[255,255,255], fontStyle:'bold', fontSize:8.5},
+    alternateRowStyles: {fillColor:[248,246,240]},
+    columnStyles: {
+      0:{cellWidth:110, font:'courier'},
+      2:{cellWidth:110},
+      3:{cellWidth:52, halign:'right', font:'courier', fontStyle:'bold'}
+    },
+    didDrawPage: function(data){
+      const h = doc.internal.pageSize.getHeight();
+      doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(120,120,120);
+      doc.text('Documento gerado localmente para conferência. Não altera o estoque do Bling.', 40, h - 24);
+      doc.text('Página ' + doc.internal.getNumberOfPages(), pageW - 40, h - 24, {align:'right'});
+    }
+  });
+
+  // ----- rodapé de assinatura -----
+  let y = (doc.lastAutoTable ? doc.lastAutoTable.finalY : 112) + 40;
+  if (y > doc.internal.pageSize.getHeight() - 90){ doc.addPage(); y = 80; }
+  doc.setDrawColor(180,174,160); doc.setLineWidth(.8);
+  doc.line(40, y, 250, y); doc.line(pageW - 250, y, pageW - 40, y);
+  doc.setFontSize(8.5); doc.setTextColor(90,90,90);
+  doc.text('Responsável pela contagem', 40, y + 14);
+  doc.text('Conferido por', pageW - 250, y + 14);
+
+  doc.save('contagem_' + dateISO + '.pdf');
+  showNotice($('#pdfFeedback'),'ok','PDF gerado: contagem_' + dateISO + '.pdf',
+    'Confira a pasta de downloads do aparelho.');
+}
+
+/* ---------- foco: o campo de leitura é o padrão da tela ---------- */
+document.addEventListener('click', (e) => {
+  if ($('#step3').hasAttribute('hidden')) return;
+  if (state.pending) return;                                  // quantidade em aberto tem prioridade
+  if (e.target.closest('input, select, button, a, label, [tabindex]')) return;
+  scanInput.focus();
+});
+
+renderTable(false);
+})();
+</script>
+</body>
+</html>
