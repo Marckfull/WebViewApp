@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+      O tema nativo existe só para a janela antes de o Compose assumir: a cor de
+      fundo igual à do jogo evita o flash branco na abertura.
+    -->
+    <style name="Theme.Prisma" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/noite_profunda</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+</resources>

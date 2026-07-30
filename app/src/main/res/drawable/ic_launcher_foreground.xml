@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  O prisma decompondo a luz: a mesma metafora da splash e da mecanica do jogo.
+  Area segura do icone adaptativo: 72x72 dp centrados no canvas de 108x108.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Feixe branco entrando pela esquerda -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M22,53 L45,53 L45,55 L22,55 Z" />
+
+    <!-- Espectro saindo pela direita -->
+    <path android:fillColor="#FFFF4D6D" android:pathData="M62,54 L86,40 L86,43 L62,56 Z" />
+    <path android:fillColor="#FFFF9F45" android:pathData="M62,54 L86,45 L86,48 L62,56 Z" />
+    <path android:fillColor="#FFFFDD57" android:pathData="M62,54 L86,50 L86,53 L62,56 Z" />
+    <path android:fillColor="#FF4ADE80" android:pathData="M62,55 L86,55 L86,58 L62,57 Z" />
+    <path android:fillColor="#FF48BFE3" android:pathData="M62,55 L86,60 L86,63 L62,57 Z" />
+    <path android:fillColor="#FFB185FF" android:pathData="M62,55 L86,65 L86,68 L62,57 Z" />
+
+    <!-- O prisma -->
+    <path
+        android:pathData="M54,26 L76,72 L32,72 Z"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="4">
+        <aapt:attr xmlns:aapt="http://schemas.android.com/aapt" name="android:fillColor">
+            <gradient
+                android:startX="32" android:startY="26"
+                android:endX="76" android:endY="72"
+                android:type="linear">
+                <item android:offset="0" android:color="#66FFFFFF" />
+                <item android:offset="1" android:color="#1AFFFFFF" />
+            </gradient>
+        </aapt:attr>
+    </path>
+</vector>

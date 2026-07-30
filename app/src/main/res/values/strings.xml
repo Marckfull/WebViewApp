@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">PRISMA</string>
+    <string name="app_full_name">PRISMA — Fusão Cromática</string>
 
-    <string name="app_name">WebViewApp</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
-
+    <!--
+      ID de TESTE oficial do Google. Troque pelo ID real do seu app AdMob antes de
+      publicar. Manter o ID de teste em produção não gera receita; usar o ID real
+      durante o desenvolvimento pode gerar tráfego inválido e suspensão da conta.
+    -->
+    <string name="admob_app_id" translatable="false">ca-app-pub-3940256099942544~3347511713</string>
 </resources>
