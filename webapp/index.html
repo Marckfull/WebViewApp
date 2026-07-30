@@ -313,6 +313,32 @@ tr.row-out{animation:row-out .18s var(--ease) both}
 .empty svg{width:34px;height:34px;color:var(--ink-40);margin-bottom:.5rem}
 .empty b{display:block;font-family:var(--font-display);color:var(--ink);font-size:1.02rem}
 
+/* ---------- Passo 5: novos produtos ---------- */
+.np-input{
+  width:100%;padding:.66rem .75rem;border-radius:10px;border:1px solid var(--line-strong);
+  background:#fff;transition:border-color var(--dur) var(--ease),box-shadow var(--dur) var(--ease);
+}
+.np-input:hover{border-color:var(--moss)}
+.np-input:focus{border-color:var(--moss);box-shadow:0 0 0 3px var(--moss-soft);outline:none}
+.np-input.is-error{border-color:var(--alert);box-shadow:0 0 0 3px var(--alert-soft)}
+.np-input:disabled{background:var(--paper-2);color:var(--ink-40);cursor:not-allowed}
+.field .hint{font-size:.76rem;color:var(--ink-40);text-transform:none;letter-spacing:0;font-weight:400}
+#npBarcode{font-family:var(--font-mono);letter-spacing:.04em}
+.np-list{margin-top:1rem;border:1px solid var(--line);border-radius:var(--r-md);overflow:hidden}
+.np-list-head{
+  background:var(--paper-2);padding:.5rem .8rem;font-size:.76rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:.07em;color:var(--ink-60);
+}
+.np-list ul{list-style:none;margin:0;padding:0}
+.np-list li{
+  display:flex;gap:.6rem;align-items:center;justify-content:space-between;
+  padding:.6rem .8rem;border-top:1px solid var(--line);font-size:.88rem;
+  animation:row-in .24s var(--ease) both;
+}
+.np-list li:first-child{border-top:0}
+.np-list .np-code{font-family:var(--font-mono);font-weight:600;color:var(--moss-dark)}
+.np-list .np-meta{color:var(--ink-60);font-size:.8rem}
+
 footer{padding:1.5rem 0 3rem;color:var(--ink-40);font-size:.8rem;text-align:center}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 
@@ -324,6 +350,44 @@ footer{padding:1.5rem 0 3rem;color:var(--ink-40);font-size:.8rem;text-align:cent
   .btn-row .btn{flex:1 1 100%}
   .qty-row .btn{width:auto;flex:1 1 auto}
   .stat-value{font-size:1.5rem}
+}
+
+/* ============================================================
+   IMPRESSÃO — imprime só a folha da contagem, no mesmo formato do PDF
+   ============================================================ */
+.print-head,.print-sign,.print-foot{display:none}
+@media print{
+  @page{size:A4;margin:14mm}
+  body{background:#fff;color:#000}
+  .site-header,footer,#cdnBanner,#step1,#step2,#step3,#step5,
+  .step-head,.toolbar,.btn-row,#pdfFeedback,.empty,
+  td.c-act,th.c-act{display:none !important}
+  .wrap{width:100%}
+  main{display:block;padding:0}
+  .card{border:0;box-shadow:none;padding:0;border-radius:0}
+
+  .print-head{display:block;margin-bottom:10pt;border-bottom:2pt solid #2c4d39;padding-bottom:6pt}
+  .print-head h2{font-size:17pt}
+  .print-head p{font-size:9.5pt;color:#333;margin-top:2pt}
+
+  .stats{display:none}
+  .table-wrap{border:0;border-radius:0}
+  .table-scroll{overflow:visible}
+  table{min-width:0;width:100%;font-size:9.5pt}
+  thead{display:table-header-group}          /* repete o cabeçalho a cada página */
+  tr{break-inside:avoid;page-break-inside:avoid}
+  thead th{
+    background:#3f6b4f !important;color:#fff !important;font-size:8pt;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;
+  }
+  tbody tr:nth-child(even){background:#f4f2ec !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  tbody td{border-top:.5pt solid #bbb}
+  td.c-code,td.c-qty{color:#000}
+
+  .print-sign{display:flex;gap:24pt;margin-top:34pt;break-inside:avoid}
+  .print-sign div{flex:1;font-size:8.5pt;color:#444}
+  .print-sign span{display:block;border-top:.8pt solid #888;margin-bottom:3pt}
+  .print-foot{display:block;margin-top:14pt;font-size:8pt;color:#666}
 }
 
 /* ---------- prefers-reduced-motion: desliga as animações ---------- */
@@ -463,8 +527,14 @@ footer{padding:1.5rem 0 3rem;color:var(--ink-40);font-size:.8rem;text-align:cent
         <span class="step-badge" aria-hidden="true">4</span>
         <div>
           <h2 id="h-step4">Contagem</h2>
-          <p class="step-sub">Confira as linhas e gere o PDF do dia.</p>
+          <p class="step-sub">Confira as linhas e, quando terminar, gere o PDF ou mande direto para a impressora.</p>
         </div>
+      </div>
+
+      <!-- cabeçalho que só aparece na impressão (espelha o cabeçalho do PDF) -->
+      <div class="print-head" id="printHead" aria-hidden="true">
+        <h2>Conferência de Estoque</h2>
+        <p id="printMeta"></p>
       </div>
 
       <div class="stats">
@@ -496,7 +566,7 @@ footer{padding:1.5rem 0 3rem;color:var(--ink-40);font-size:.8rem;text-align:cent
                 <th scope="col">Produto</th>
                 <th scope="col">Ordem de serviço</th>
                 <th scope="col" style="text-align:right">Qtd.</th>
-                <th scope="col"><span class="sr-only">Remover</span></th>
+                <th scope="col" class="c-act" aria-label="Remover"></th>
               </tr>
             </thead>
             <tbody id="countBody"></tbody>
@@ -518,9 +588,78 @@ footer{padding:1.5rem 0 3rem;color:var(--ink-40);font-size:.8rem;text-align:cent
           </svg>
           Gerar PDF da contagem
         </button>
+        <button type="button" class="btn btn-primary" id="btnPrint" disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M6 9V3h12v6"/><path d="M6 18H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v7H6z"/>
+          </svg>
+          Imprimir contagem
+        </button>
         <button type="button" class="btn btn-danger" id="btnClear" disabled>Limpar contagem</button>
       </div>
       <div id="pdfFeedback" aria-live="polite"></div>
+
+      <!-- linhas de assinatura: só na impressão -->
+      <div class="print-sign" aria-hidden="true">
+        <div><span></span>Responsável pela contagem</div>
+        <div><span></span>Conferido por</div>
+      </div>
+      <p class="print-foot" aria-hidden="true">
+        Documento gerado localmente para conferência. Não altera o estoque do Bling.
+      </p>
+    </section>
+
+    <!-- ================= PASSO 5 — NOVOS PRODUTOS ================= -->
+    <section class="card step" id="step5" aria-labelledby="h-step5" hidden>
+      <div class="step-head">
+        <span class="step-badge" aria-hidden="true">5</span>
+        <div>
+          <h2 id="h-step5">Novos produtos</h2>
+          <p class="step-sub">
+            Itens que ainda não estão na planilha — produtos que serão fabricados.
+            Eles ficam disponíveis para bipagem na hora e entram na planilha que você baixa aqui.
+          </p>
+        </div>
+      </div>
+
+      <div class="map-grid" id="npGrid">
+        <div class="field">
+          <label for="npBarcode">Código de barras <span class="req" aria-hidden="true">*</span><span class="sr-only">(obrigatório)</span></label>
+          <input type="text" id="npBarcode" class="np-input" autocomplete="off" autocapitalize="off"
+                 spellcheck="false" placeholder="bipe ou digite">
+        </div>
+        <div class="field" id="npSkuField">
+          <label for="npSku">Código / SKU</label>
+          <input type="text" id="npSku" class="np-input" autocomplete="off" placeholder="ex.: PRD-0042">
+        </div>
+        <div class="field" id="npNameField">
+          <label for="npName">Nome do produto</label>
+          <input type="text" id="npName" class="np-input" autocomplete="off" placeholder="descrição do item">
+        </div>
+        <div class="field" id="npOsField">
+          <label for="npOs">Ordem de serviço</label>
+          <input type="text" id="npOs" class="np-input" autocomplete="off" placeholder="ex.: OS-2024-130">
+        </div>
+      </div>
+
+      <div id="npFeedback" aria-live="polite"></div>
+
+      <div class="btn-row">
+        <button type="button" class="btn btn-primary" id="btnAddProduct">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+          Adicionar à planilha
+        </button>
+        <button type="button" class="btn btn-ghost" id="btnExportSheet" disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 3v12m0 0-4-4m4 4 4-4"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/>
+          </svg>
+          Baixar planilha atualizada (.xlsx)
+        </button>
+      </div>
+
+      <div class="np-list" id="npList" hidden>
+        <div class="np-list-head">Cadastrados nesta sessão</div>
+        <ul id="npItems"></ul>
+      </div>
     </section>
   </main>
 
@@ -548,7 +687,9 @@ const state = {
   pending: null,      // leitura aguardando quantidade
   entries: [],        // linhas da contagem: {id, code, name, os, qty, missing}
   seq: 0,
-  grouped: false
+  grouped: false,
+  newProducts: [],    // produtos cadastrados na sessão (a fabricar)
+  sheetName: 'Produtos'
 };
 
 const $ = (sel) => document.querySelector(sel);
@@ -704,6 +845,9 @@ async function handleFile(file){
     state.rows = rows;
     state.index = new Map();
     state.pending = null;
+    state.newProducts = [];
+    state.sheetName = sheetName;
+    renderNewProducts();
     $('#scanResult').innerHTML = '';
 
     $('#step1').dataset.done = 'true';
@@ -824,7 +968,9 @@ $('#btnConfirmMap').addEventListener('click', () => {
   $('#step2').dataset.done = 'true';
   $('#step3Sub').textContent =
     state.index.size + ' códigos disponíveis. Leia o código e digite a quantidade contada.';
-  revealStep($('#step4'), false);   // já fica pronto, mas o foco vai para a bipagem
+  prepareNewProductForm();
+  revealStep($('#step4'), false);   // já ficam prontos, mas o foco vai para a bipagem
+  revealStep($('#step5'), false);
   revealStep($('#step3'));
   focusScan();
 });
@@ -931,13 +1077,15 @@ function renderNotFound(code){
       '<div class="fp-code">' + esc(code) + '</div>' +
       '<div class="fp-name">Código não encontrado na planilha</div>' +
       '<p class="fp-meta" style="display:block">Confira o cadastro do produto no Bling (o GTIN/EAN pode estar em branco ou diferente). ' +
-      'Você pode registrar a contagem mesmo assim — o item sai marcado como <b>não cadastrado</b> no PDF.</p>' +
+      'Você pode registrar a contagem mesmo assim — o item sai marcado como <b>não cadastrado</b> no PDF, ' +
+      'ou cadastrá-lo como produto novo no passo 5.</p>' +
       '<div class="qty-row">' +
         '<div class="qty-field">' +
           '<label for="qtyInput">Quantidade contada</label>' +
           '<input id="qtyInput" type="text" inputmode="decimal" autocomplete="off" placeholder="0">' +
         '</div>' +
         '<button type="button" class="btn btn-amber" id="btnAdd">Registrar mesmo assim</button>' +
+        '<button type="button" class="btn btn-ghost" id="btnRegister">Cadastrar produto</button>' +
         '<button type="button" class="btn btn-ghost" id="btnCancel">Ignorar e continuar</button>' +
       '</div>' +
       '<div class="qty-error" id="qtyError" aria-live="polite"></div>' +
@@ -954,6 +1102,12 @@ function wireQty(){
   });
   $('#btnAdd').addEventListener('click', commitPending);
   $('#btnCancel').addEventListener('click', cancelPending);
+  const reg = $('#btnRegister');
+  if (reg) reg.addEventListener('click', () => {
+    const code = state.pending ? state.pending.scanned : '';
+    cancelPending();
+    startNewProduct(code);   // leva o código bipado para o formulário do passo 5
+  });
 }
 
 // aceita "3", "1,5" e "1.5"; se vier "1.234,5" trata o ponto como milhar
@@ -1078,7 +1232,15 @@ function renderTable(highlightId){
   countUp($('#statItems'), totalItems);
   countUp($('#statUnits'), totalUnits);
 
+  // cabeçalho da folha impressa (espelha o do PDF)
+  $('#printMeta').textContent =
+    'Contagem de ' + stamp().br + ' às ' + stamp().time +
+    ' · Itens (linhas): ' + nf.format(totalItems) +
+    ' · Unidades contadas: ' + nf.format(totalUnits) +
+    (state.grouped ? ' · agrupado por código' : '');
+
   $('#btnPdf').disabled = state.entries.length === 0;
+  $('#btnPrint').disabled = state.entries.length === 0;
   $('#btnClear').disabled = state.entries.length === 0;
 }
 
@@ -1140,15 +1302,20 @@ $('#btnPdf').addEventListener('click', () => {
 });
 
 function pad(n){ return String(n).padStart(2,'0'); }
+function stamp(){
+  const d = new Date();
+  return {
+    iso: d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate()),
+    br: pad(d.getDate()) + '/' + pad(d.getMonth()+1) + '/' + d.getFullYear(),
+    time: pad(d.getHours()) + ':' + pad(d.getMinutes())
+  };
+}
 
 function buildPdf(){
   const {jsPDF} = window.jspdf;
   const doc = new jsPDF({unit:'pt', format:'a4'});
   const rows = viewRows();
-  const now = new Date();
-  const dateISO = now.getFullYear() + '-' + pad(now.getMonth()+1) + '-' + pad(now.getDate());
-  const dateBR = pad(now.getDate()) + '/' + pad(now.getMonth()+1) + '/' + now.getFullYear();
-  const timeBR = pad(now.getHours()) + ':' + pad(now.getMinutes());
+  const {iso: dateISO, br: dateBR, time: timeBR} = stamp();
   const totalUnits = rows.reduce((a, r) => a + r.qty, 0);
   const pageW = doc.internal.pageSize.getWidth();
 
@@ -1207,10 +1374,195 @@ function buildPdf(){
     'Confira a pasta de downloads do aparelho.');
 }
 
+/* ---------- Impressão ---------- */
+// A folha impressa é a própria tabela da tela, formatada por @media print —
+// funciona offline e não depende das bibliotecas de PDF.
+$('#btnPrint').addEventListener('click', () => {
+  if (!state.entries.length) return;
+  clearNotice($('#pdfFeedback'));
+  renderTable();          // garante cabeçalho da impressão com data/hora atuais
+  window.print();
+});
+
+/* ============================================================
+   PASSO 5 — NOVOS PRODUTOS (a fabricar)
+   ============================================================ */
+const NP_FIELDS = [
+  ['barcode','#npBarcode', null],
+  ['sku','#npSku','#npSkuField'],
+  ['name','#npName','#npNameField'],
+  ['os','#npOs','#npOsField']
+];
+
+// Só faz sentido preencher um campo cuja coluna existe na planilha.
+function prepareNewProductForm(){
+  NP_FIELDS.forEach(([field, inputSel, fieldSel]) => {
+    if (!fieldSel) return;
+    const input = $(inputSel), wrap = $(fieldSel);
+    const mapped = state.mapping[field];
+    input.disabled = !mapped;
+    input.value = '';
+    const label = wrap.querySelector('label');
+    let hint = wrap.querySelector('.hint');
+    if (!mapped){
+      if (!hint){
+        hint = document.createElement('span');
+        hint.className = 'hint';
+        label.appendChild(hint);
+      }
+      hint.textContent = ' — sem coluna mapeada';
+    } else if (hint){
+      hint.remove();
+    }
+  });
+  $('#npBarcode').value = '';
+  renderNewProducts();
+}
+
+// chamado pelo painel de "código não encontrado"
+function startNewProduct(code){
+  const el = $('#npBarcode');
+  el.value = code || '';
+  revealStep($('#step5'));
+  setTimeout(() => {
+    const next = $('#npName').disabled ? el : $('#npName');
+    next.focus();
+  }, reduceMotion ? 0 : 260);
+}
+
+$('#btnAddProduct').addEventListener('click', addNewProduct);
+NP_FIELDS.forEach(([, sel]) => {
+  $(sel).addEventListener('keydown', (e) => {
+    if (e.key === 'Enter'){ e.preventDefault(); addNewProduct(); }
+  });
+});
+
+function addNewProduct(){
+  const fb = $('#npFeedback');
+  const barcodeEl = $('#npBarcode');
+  const barcode = cellText(barcodeEl.value);
+  barcodeEl.classList.remove('is-error');
+
+  if (!state.mapping.barcode){
+    showNotice(fb,'error','Carregue e mapeie uma planilha primeiro',
+      'O cadastro usa as mesmas colunas da planilha aberta.');
+    return;
+  }
+  if (!barcode){
+    showNotice(fb,'error','Informe o código de barras',
+      'É por ele que o produto será encontrado na bipagem.');
+    barcodeEl.classList.add('is-error'); barcodeEl.focus();
+    return;
+  }
+  const k = keyOf(barcode);
+  if (state.index.has(k)){
+    const j = state.index.get(k);
+    showNotice(fb,'warn','Esse código já existe na planilha',
+      'Ele pertence a <b>' + esc(j.name || j.code) + '</b>. Use outro código ou bipe o produto direto no passo 3.');
+    barcodeEl.classList.add('is-error'); barcodeEl.focus(); barcodeEl.select();
+    return;
+  }
+
+  const sku = $('#npSku').disabled ? '' : cellText($('#npSku').value);
+  const name = $('#npName').disabled ? '' : cellText($('#npName').value);
+  const os = $('#npOs').disabled ? '' : cellText($('#npOs').value);
+
+  // linha nova com as MESMAS colunas da planilha original (nada é inventado)
+  const row = {};
+  state.headers.forEach(h => { row[h] = ''; });
+  row[state.mapping.barcode] = barcode;
+  if (state.mapping.sku) row[state.mapping.sku] = sku;
+  if (state.mapping.name) row[state.mapping.name] = name;
+  if (state.mapping.os) row[state.mapping.os] = os;
+
+  state.rows.push(row);
+  state.newProducts.push({barcode, sku, name, os, row});
+
+  // fica disponível para bipagem imediatamente
+  const item = {barcode, code: sku || barcode, name, os};
+  state.index.set(k, item);
+  const noZeros = k.replace(/^0+/,'');
+  if (noZeros && noZeros !== k && !state.index.has(noZeros)) state.index.set(noZeros, item);
+
+  showNotice(fb,'ok','Produto cadastrado: ' + esc(name || sku || barcode),
+    'Já pode ser bipado no passo 3. Baixe a planilha atualizada para guardar o cadastro.');
+  $('#step3Sub').textContent =
+    state.index.size + ' códigos disponíveis. Leia o código e digite a quantidade contada.';
+
+  NP_FIELDS.forEach(([, sel]) => { $(sel).value = ''; });
+  barcodeEl.focus();
+  renderNewProducts();
+}
+
+function renderNewProducts(){
+  const list = $('#npList'), items = $('#npItems');
+  const n = state.newProducts.length;
+  list.hidden = n === 0;
+  $('#btnExportSheet').disabled = n === 0;
+  items.innerHTML = state.newProducts.map((p, i) =>
+    '<li>' +
+      '<span>' +
+        '<span class="np-code">' + esc(p.barcode) + (p.sku ? ' · ' + esc(p.sku) : '') + '</span><br>' +
+        esc(p.name || 'sem nome') +
+        '<span class="np-meta"> · OS: ' + esc(p.os || '—') + '</span>' +
+      '</span>' +
+      '<button type="button" class="icon-btn" data-np="' + i + '" ' +
+        'aria-label="Remover ' + esc(p.barcode) + ' do cadastro" title="Remover">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">' +
+        '<path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12"/></svg>' +
+      '</button>' +
+    '</li>'
+  ).join('');
+}
+
+$('#npItems').addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-np]');
+  if (!btn) return;
+  const i = Number(btn.getAttribute('data-np'));
+  const p = state.newProducts[i];
+  if (!p) return;
+  // desfaz o cadastro: sai da planilha e do índice de busca
+  state.rows = state.rows.filter(r => r !== p.row);
+  const k = keyOf(p.barcode);
+  state.index.delete(k);
+  state.index.delete(k.replace(/^0+/,''));
+  state.newProducts.splice(i, 1);
+  clearNotice($('#npFeedback'));
+  renderNewProducts();
+});
+
+/* ---------- exportar planilha atualizada ---------- */
+$('#btnExportSheet').addEventListener('click', () => {
+  const fb = $('#npFeedback');
+  if (typeof XLSX === 'undefined'){
+    showNotice(fb,'error','A biblioteca de planilhas não carregou',
+      'Recarregue a página com internet disponível e tente novamente.');
+    return;
+  }
+  if (!state.newProducts.length) return;
+  try {
+    // mesma estrutura de colunas da planilha original + as linhas novas no fim
+    const ws = XLSX.utils.json_to_sheet(state.rows, {header: state.headers});
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, (state.sheetName || 'Produtos').slice(0,31));
+    const nome = 'planilha_atualizada_' + stamp().iso + '.xlsx';
+    XLSX.writeFile(wb, nome);
+    showNotice(fb,'ok','Planilha gerada: ' + nome,
+      '<b>' + nf.format(state.rows.length) + '</b> linhas, sendo <b>' + state.newProducts.length +
+      '</b> cadastrada(s) agora. Importe no Bling quando os produtos forem fabricados.');
+  } catch (err){
+    console.error(err);
+    showNotice(fb,'error','Não foi possível gerar a planilha',
+      'Tente novamente; se persistir, recarregue a página.');
+  }
+});
+
 /* ---------- foco: o campo de leitura é o padrão da tela ---------- */
 document.addEventListener('click', (e) => {
   if ($('#step3').hasAttribute('hidden')) return;
   if (state.pending) return;                                  // quantidade em aberto tem prioridade
+  if (e.target.closest('#step5')) return;                     // não atrapalha o cadastro de produto
+  if (document.activeElement && document.activeElement.closest('#step5')) return;
   if (e.target.closest('input, select, button, a, label, [tabindex]')) return;
   scanInput.focus();
 });

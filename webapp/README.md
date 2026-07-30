@@ -1,4 +1,4 @@
-# Conferência de Estoque — bipagem → PDF
+# Conferência de Estoque — bipagem → PDF / impressão
 
 App de página única para **conferência/contagem de estoque por leitura de código de barras**, usando como
 fonte de dados uma planilha exportada do Bling (`.xlsx`, `.xls` ou `.csv`).
@@ -21,9 +21,15 @@ fonte de dados uma planilha exportada do Bling (`.xlsx`, `.xls` ou `.csv`).
    digita o código e envia `Enter` sozinho. O app mostra **código, nome do produto e ordem de serviço**
    e foca o campo de **quantidade**, que é sempre digitada pelo operador (não assume 1).
    Confirme com `Enter` ou pelo botão — o foco volta ao campo de leitura para o próximo item.
-4. **Contagem e PDF** — a tabela mostra tudo o que foi contado, com totais ao vivo de itens e unidades.
-   O botão **Gerar PDF da contagem** baixa o arquivo `contagem_AAAA-MM-DD.pdf` com cabeçalho
-   (data, hora, totais), a tabela completa e linhas para assinatura.
+4. **Contagem, PDF e impressão** — a tabela mostra tudo o que foi contado, com totais ao vivo de itens
+   e unidades. Quando todos os itens desejados estiverem na lista:
+   - **Gerar PDF da contagem** baixa `contagem_AAAA-MM-DD.pdf` com cabeçalho (data, hora, totais),
+     a tabela completa e linhas para assinatura;
+   - **Imprimir contagem** abre a impressão do navegador já com a folha formatada — mesmo cabeçalho,
+     mesma tabela e as assinaturas, sem os botões e sem os outros passos. Serve tanto para papel quanto
+     para "Salvar como PDF" pela própria impressora.
+5. **Novos produtos** — cadastre aqui itens que ainda não existem na planilha (produtos que serão
+   fabricados). Veja abaixo.
 
 ### Detalhes úteis do fluxo
 
@@ -36,10 +42,30 @@ fonte de dados uma planilha exportada do Bling (`.xlsx`, `.xls` ou `.csv`).
   vazio são recusados com mensagem no próprio campo.
 - **Remover linha**: botão de lixeira na própria linha. No modo agrupado ele remove todas as leituras
   daquele código.
-- **Limpar contagem**: pede confirmação antes de apagar tudo.
+- **Limpar contagem**: pede confirmação antes de apagar tudo. Trocar de planilha **mantém** o que já
+  foi contado (o app pergunta antes).
 - **Busca tolerante**: espaços, hífens, pontos e o apóstrofo que o Excel às vezes coloca antes do número
   são ignorados na comparação; códigos com zeros à esquerda (UPC-A lido como EAN-13) também casam.
 - **CSV**: separador (`;` ou `,`) e acentuação em UTF-8 ou latin-1 são detectados automaticamente.
+
+## Cadastrar produtos que ainda vão ser fabricados
+
+O passo 5 tem um formulário com os mesmos campos da planilha aberta (código de barras, SKU, nome e
+ordem de serviço — só ficam ativos os campos cujas colunas existem na planilha). Ao clicar em
+**Adicionar à planilha**:
+
+- o produto passa a ser encontrado na bipagem **na mesma hora**, então já dá para contá-lo;
+- ele entra na lista "cadastrados nesta sessão", de onde pode ser removido;
+- o botão **Baixar planilha atualizada (.xlsx)** gera `planilha_atualizada_AAAA-MM-DD.xlsx` com as
+  linhas originais **mais** as novas, nas mesmas colunas — pronto para importar no Bling quando os
+  produtos forem fabricados.
+
+Quando um código bipado não existe, o aviso traz um botão **Cadastrar produto** que já leva o código
+lido para esse formulário. Códigos repetidos são recusados, dizendo a qual produto pertencem.
+
+> O arquivo original **não é alterado** — o app gera uma cópia nova para download. Se a exportação do
+> Bling tinha linhas de preâmbulo acima do cabeçalho, elas não vão para a cópia: o arquivo sai só com
+> a linha de cabeçalho e os produtos.
 
 ## Testando sem leitor
 
@@ -54,13 +80,15 @@ estática. Funciona em desktop e celular, com leitor USB ou Bluetooth.
 
 É necessária **internet apenas no carregamento da página**, para baixar as três bibliotecas via CDN
 (SheetJS, jsPDF e jsPDF-AutoTable). Se elas não carregarem, o app avisa no topo da tela em vez de falhar
-em silêncio. Depois de carregada, a leitura da planilha e a geração do PDF são 100% locais.
+em silêncio. Depois de carregada, a leitura da planilha, a geração do PDF e a impressão são 100% locais.
 
 ## Observações técnicas
 
 - Um único arquivo `index.html` com HTML, CSS e JS — sem build, sem backend, sem framework.
-- O estado (planilha, mapeamento e contagem) vive **apenas em memória durante a sessão**: não usamos
-  `localStorage` nem `sessionStorage`. **Recarregar a página zera a contagem** — gere o PDF antes de fechar.
+- O estado (planilha, mapeamento, contagem e produtos novos) vive **apenas em memória durante a
+  sessão**: não usamos `localStorage` nem `sessionStorage`. **Recarregar a página zera tudo** — gere o
+  PDF e baixe a planilha atualizada antes de fechar.
+- A impressão usa `@media print` na própria página, sem depender das bibliotecas de PDF.
 - Acessibilidade: foco de teclado visível, labels associadas, avisos anunciados por leitor de tela e
   contraste adequado. As animações são desligadas quando o sistema tem
   `prefers-reduced-motion` (redução de movimento) ativado.
