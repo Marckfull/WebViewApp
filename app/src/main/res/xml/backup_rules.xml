@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<full-backup-content>
+    <!-- O progresso e as preferencias acompanham o backup do aparelho. -->
+    <include domain="file" path="datastore/" />
+    <!-- Os arquivos de audio sao gerados na primeira execucao: nao vale a pena copiar. -->
+    <exclude domain="external" path="." />
+</full-backup-content>
