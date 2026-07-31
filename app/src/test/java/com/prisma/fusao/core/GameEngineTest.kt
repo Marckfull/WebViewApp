@@ -134,6 +134,62 @@ class GameEngineTest {
     }
 
     @Test
+    fun `duas pecas de nivel dois encostadas geram a Nova Cromatica`() {
+        // Prisma parado em (1,1). Duas essências vão fundir exatamente ao lado dele,
+        // em (1,2) — e a supernova resultante encosta no prisma, subindo de nível.
+        val engine = engineWith(
+            listOf("123451", "1P4312", "345123", "451234", "123451", "234512"),
+        )
+        var id = 900_000L
+        engine.board.setGem(Pos(1, 3), Gem(id++, GemKind.ESSENCE, GemColor.RUBI))
+        engine.board.setGem(Pos(1, 2), Gem(id, GemKind.ESSENCE, GemColor.RUBI))
+
+        val steps = engine.useHammer(Pos(5, 5))
+        val fused = steps.flatMap { it.fusions }.map { it.result.kind }
+        assertTrue("as essências precisam fundir primeiro", fused.contains(GemKind.SUPERNOVA))
+        assertTrue(
+            "duas peças de nível 2 encostadas têm que virar uma Nova, veio $fused",
+            fused.contains(GemKind.NOVA),
+        )
+    }
+
+    @Test
+    fun `a Nova detona o tabuleiro inteiro`() {
+        val engine = engineWith(
+            listOf("123451", "134512", "145123", "312012", "123451", "134512"),
+        )
+        engine.board.setGem(Pos(2, 2), Gem(999_001, GemKind.NOVA))
+        val playable = engine.board.playablePositions().count()
+
+        val outcome = engine.trySwap(Pos(2, 2), Pos(2, 3)) as MoveOutcome.Accepted
+        assertTrue(
+            "a Nova deveria varrer o tabuleiro, limpou ${outcome.steps.first().cleared.size} de $playable",
+            outcome.steps.first().cleared.size >= playable - 2,
+        )
+    }
+
+    @Test
+    fun `a Nova e o topo da escada e nao funde com mais nada`() {
+        assertEquals(1, Gem(1, GemKind.ESSENCE, GemColor.RUBI).fusionTier)
+        assertEquals(2, Gem(2, GemKind.PRISM).fusionTier)
+        assertEquals(2, Gem(3, GemKind.SUPERNOVA, GemColor.RUBI).fusionTier)
+        assertEquals("a Nova não sobe mais de nível", 0, Gem(4, GemKind.NOVA).fusionTier)
+        assertEquals(0, Gem(5, GemKind.NORMAL, GemColor.RUBI).fusionTier)
+
+        // Duas Novas encostadas não fundem — mas ainda podem ser trocadas entre si.
+        val engine = engineWith(
+            listOf("123451", "134512", "145123", "312012", "123451", "134512"),
+        )
+        engine.board.setGem(Pos(2, 2), Gem(999_002, GemKind.NOVA))
+        engine.board.setGem(Pos(2, 3), Gem(999_003, GemKind.NOVA))
+        val steps = engine.useHammer(Pos(5, 5))
+        assertTrue(
+            "não pode existir nível 4",
+            steps.flatMap { it.fusions }.isEmpty(),
+        )
+    }
+
+    @Test
     fun `prisma detona linha e coluna`() {
         val engine = engineWith(
             listOf("123451", "134512", "14P123", "312012", "123451", "134512"),

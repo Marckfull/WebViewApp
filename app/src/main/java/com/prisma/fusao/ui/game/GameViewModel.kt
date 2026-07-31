@@ -189,7 +189,9 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
             fusions += step.fusions.size
             gems += step.cleared.count { it.gem.kind == GemKind.NORMAL }
 
-            if (step.fusions.isNotEmpty()) {
+            if (step.fusions.any { it.result.kind == GemKind.NOVA }) {
+                _state.value = _state.value.copy(toast = "NOVA CROMÁTICA!")
+            } else if (step.fusions.isNotEmpty()) {
                 _state.value = _state.value.copy(toast = "FUSÃO!")
             } else if (step.cascade >= 2 && step.cleared.isNotEmpty()) {
                 _state.value = _state.value.copy(toast = "CASCATA x${step.cascade}")
@@ -227,6 +229,8 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
 
     private fun playStepSounds(step: ResolveStep) {
         when {
+            step.fusions.any { it.result.kind == GemKind.NOVA } -> sound.play(Sfx.NOVA)
+            step.blasts.any { it.kind == GemKind.NOVA } -> sound.play(Sfx.NOVA)
             step.fusions.isNotEmpty() -> sound.play(Sfx.FUSION)
             step.blasts.any { it.kind == GemKind.SUPERNOVA } -> sound.play(Sfx.SUPERNOVA)
             step.blasts.any { it.kind == GemKind.PRISM } -> sound.play(Sfx.PRISM)

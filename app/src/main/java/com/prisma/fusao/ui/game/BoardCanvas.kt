@@ -202,6 +202,7 @@ private fun DrawScope.drawSprites(visuals: BoardVisuals, cell: Float) {
             GemKind.ESSENCE -> drawEssence(center, radius, sprite.color!!, sprite.alpha, sprite.spin, sprite.glow)
             GemKind.PRISM -> drawPrism(center, radius, sprite.alpha, sprite.spin, sprite.glow)
             GemKind.SUPERNOVA -> drawSupernova(center, radius, sprite.color, sprite.alpha, sprite.spin, sprite.glow)
+            GemKind.NOVA -> drawNova(center, radius, sprite.alpha, sprite.spin, sprite.glow)
             GemKind.PRISMOID -> drawPrismoid(center, radius, sprite.alpha, sprite.spin)
             GemKind.STONE -> drawStone(center, radius, sprite.alpha, sprite.hp)
         }
@@ -416,6 +417,67 @@ private fun DrawScope.drawSupernova(
         )
     }
     drawCircle(color = Color.White.copy(alpha = alpha), radius = radius * 0.3f, center = center)
+}
+
+/**
+ * A Nova Cromática: um vórtice das seis cores girando em torno de um núcleo branco.
+ * É a peça mais rara do jogo, então ela é também a mais barulhenta visualmente —
+ * quando aparece no tabuleiro, o jogador tem que notar de imediato.
+ */
+private fun DrawScope.drawNova(center: Offset, radius: Float, alpha: Float, spin: Float, glow: Float) {
+    val cores = listOf(
+        Color(0xFFFF4D6D), Color(0xFFFF9F45), Color(0xFFFFDD57),
+        Color(0xFF4ADE80), Color(0xFF48BFE3), Color(0xFFB185FF),
+    )
+
+    // Halo pulsante bem maior que o das outras peças.
+    val aura = radius * (2.1f + glow * 1.2f)
+    drawCircle(
+        brush = Brush.radialGradient(
+            listOf(Color.White.copy(alpha = alpha * 0.5f), Color.Transparent),
+            center = center,
+            radius = aura,
+        ),
+        radius = aura,
+        center = center,
+    )
+
+    // Seis pétalas em órbita, uma por cor de gema: a "assinatura" do jogo.
+    cores.forEachIndexed { index, cor ->
+        val angulo = spin * 1.5f + index * 2f * PI.toFloat() / cores.size
+        val orbita = radius * 0.92f
+        val petala = center + Offset(cos(angulo) * orbita, sin(angulo) * orbita)
+        drawCircle(
+            brush = Brush.radialGradient(
+                listOf(cor.copy(alpha = alpha), cor.copy(alpha = alpha * 0.1f)),
+                center = petala,
+                radius = radius * 0.55f,
+            ),
+            radius = radius * 0.52f,
+            center = petala,
+        )
+    }
+
+    // Anel externo girando ao contrário, para o olho ler "instável".
+    rotate(degrees = -spin * 40f, pivot = center) {
+        drawCircle(
+            color = Color.White.copy(alpha = alpha * 0.75f),
+            radius = radius * 1.12f,
+            center = center,
+            style = Stroke(width = radius * 0.08f),
+        )
+    }
+
+    // Núcleo branco.
+    drawCircle(
+        brush = Brush.radialGradient(
+            listOf(Color.White.copy(alpha = alpha), Color(0xFFB185FF).copy(alpha = alpha)),
+            center = center,
+            radius = radius * 0.7f,
+        ),
+        radius = radius * 0.48f,
+        center = center,
+    )
 }
 
 private fun DrawScope.drawPrismoid(center: Offset, radius: Float, alpha: Float, spin: Float) {

@@ -184,6 +184,9 @@ class GameEngine(
         GemKind.ESSENCE -> square(pos, 1)
         GemKind.PRISM -> prismCells(pos)
         GemKind.SUPERNOVA -> supernovaCells(pos, gem.color)
+        // A Nova varre o tabuleiro inteiro. É desproporcional de propósito: chegar
+        // até ela custa três jogadas encadeadas e um pouco de sorte de cascata.
+        GemKind.NOVA -> board.playablePositions().toList()
         else -> emptyList()
     }
 
@@ -219,8 +222,18 @@ class GameEngine(
         return out.distinct()
     }
 
-    /** Combinação de duas peças especiais trocadas entre si. */
+    /**
+     * Combinação de duas peças detonadoras trocadas entre si.
+     *
+     * Com a fusão por nível, duas peças de nível 2 encostadas viram uma Nova antes
+     * de o jogador conseguir trocá-las — então na prática isto cobre as combinações
+     * de níveis diferentes (Nova ao lado de prisma/supernova). Mantido completo
+     * mesmo assim: a regra não deve depender de um estado ser inalcançável.
+     */
     private fun megaBlast(a: Pos, ga: Gem, b: Pos, gb: Gem): List<Pos> {
+        if (ga.kind == GemKind.NOVA || gb.kind == GemKind.NOVA) {
+            return board.playablePositions().toList()
+        }
         val kinds = listOf(ga.kind, gb.kind)
         return when {
             kinds.all { it == GemKind.PRISM } -> band(a) + band(b)
@@ -228,9 +241,10 @@ class GameEngine(
                 square(a, 3) + board.playablePositions()
                     .filter { board.gemAt(it)?.color == ga.color || board.gemAt(it)?.color == gb.color }
             else -> {
-                val prism = if (ga.kind == GemKind.PRISM) a else b
-                val nova = if (ga.kind == GemKind.PRISM) gb else ga
-                band(prism) + board.playablePositions().filter { board.gemAt(it)?.color == nova.color }
+                val prismAt = if (ga.kind == GemKind.PRISM) a else b
+                val supernova = if (ga.kind == GemKind.PRISM) gb else ga
+                band(prismAt) +
+                    board.playablePositions().filter { board.gemAt(it)?.color == supernova.color }
             }
         }.distinct()
     }
@@ -264,6 +278,7 @@ class GameEngine(
         GemKind.ESSENCE -> 120
         GemKind.PRISM -> 220
         GemKind.SUPERNOVA -> 260
+        GemKind.NOVA -> 400
         GemKind.STONE -> 90
         GemKind.PRISMOID -> 0
     }
@@ -344,17 +359,22 @@ class GameEngine(
 
     // ----------------------------------------------------------------- fusão
 
-    /** Pares de essências encostadas, prontas para fundir. */
+    /**
+     * Pares de peças encostadas **do mesmo nível de fusão**, prontas para subir um
+     * degrau. Uma regra só serve para toda a escada: duas essências viram prisma ou
+     * supernova; dois desses viram uma Nova Cromática.
+     */
     private fun findFusionPairs(): List<Pair<Pos, Pos>> {
         val used = mutableSetOf<Pos>()
         val pairs = mutableListOf<Pair<Pos, Pos>>()
         for (p in board.playablePositions()) {
             if (p in used) continue
-            if (board.gemAt(p)?.kind != GemKind.ESSENCE) continue
+            val tier = board.gemAt(p)?.fusionTier ?: 0
+            if (tier == 0) continue
             for (d in listOf(0 to 1, 1 to 0)) {
                 val n = Pos(p.r + d.first, p.c + d.second)
                 if (!board.inBounds(n) || n in used) continue
-                if (board.gemAt(n)?.kind != GemKind.ESSENCE) continue
+                if (board.gemAt(n)?.fusionTier != tier) continue
                 pairs += p to n
                 used += p
                 used += n
@@ -369,13 +389,12 @@ class GameEngine(
         for ((a, b) in pairs) {
             val ga = board.gemAt(a) ?: continue
             val gb = board.gemAt(b) ?: continue
-            // A peça nasce onde estava a essência mais recente: é a que o jogador acabou de mover.
+            // A peça nasce onde estava a peça mais recente: é a que o jogador acabou de mover.
             val at = if (ga.id >= gb.id) a else b
-            val other = if (at == a) b else a
-            val result = if (ga.color == gb.color) {
-                Gem(newId(), GemKind.SUPERNOVA, ga.color)
-            } else {
-                Gem(newId(), GemKind.PRISM, null)
+            val result = when {
+                ga.fusionTier >= 2 -> Gem(newId(), GemKind.NOVA, null)
+                ga.color == gb.color -> Gem(newId(), GemKind.SUPERNOVA, ga.color)
+                else -> Gem(newId(), GemKind.PRISM, null)
             }
             board.setGem(a, null)
             board.setGem(b, null)
@@ -383,7 +402,7 @@ class GameEngine(
             events += FusionEvent(a, b, at, result)
             fusionCount++
             progress.add(ObjectiveType.FUSION, 1)
-            score += 400
+            score += if (result.kind == GemKind.NOVA) 1500 else 400
         }
         return events
     }
@@ -702,7 +721,7 @@ class GameEngine(
         movesLeft--
         lastSwap = a to b
 
-        val detonators = listOf(GemKind.PRISM, GemKind.SUPERNOVA)
+        val detonators = listOf(GemKind.PRISM, GemKind.SUPERNOVA, GemKind.NOVA)
         val initialClear: Collection<Pos>? = when {
             ga.kind in detonators && gb.kind in detonators -> megaBlast(b, ga, a, gb)
             ga.kind in detonators -> blastCells(b, ga) + b

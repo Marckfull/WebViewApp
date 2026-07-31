@@ -44,6 +44,16 @@ enum class GemKind {
     /** Fusão de duas essências da mesma cor. Guarda a cor de origem. */
     SUPERNOVA,
 
+    /**
+     * Terceiro nível: fusão de duas peças de nível 2 encostadas.
+     *
+     * É a jogada mais difícil do jogo por um motivo estrutural: prismas e supernovas
+     * **detonam ao serem trocados**, então não dá para caminhar um até o outro como
+     * se faz com uma essência. A única forma de encostá-los é fundir duas essências
+     * exatamente na casa ao lado de um nível 2 que já estava no tabuleiro.
+     */
+    NOVA,
+
     /** Coletável que precisa descer até a base do tabuleiro. Cai, mas não é trocável. */
     PRISMOID,
 
@@ -73,9 +83,21 @@ data class Gem(
     /** Peças que o jogador pode arrastar. */
     val swappable: Boolean get() = kind != GemKind.STONE && kind != GemKind.PRISMOID
 
-    /** Essência, prisma e supernova formam a família "especial". */
+    /** Essência, prisma, supernova e nova formam a família "especial". */
     val isSpecial: Boolean
-        get() = kind == GemKind.ESSENCE || kind == GemKind.PRISM || kind == GemKind.SUPERNOVA
+        get() = kind == GemKind.ESSENCE || kind == GemKind.PRISM ||
+            kind == GemKind.SUPERNOVA || kind == GemKind.NOVA
+
+    /**
+     * Nível na escada de fusão. Duas peças **do mesmo nível** encostadas se fundem
+     * e sobem um degrau. Zero significa que a peça não participa de fusão.
+     */
+    val fusionTier: Int
+        get() = when (kind) {
+            GemKind.ESSENCE -> 1
+            GemKind.PRISM, GemKind.SUPERNOVA -> 2
+            else -> 0 // a Nova é o topo: não funde com mais nada
+        }
 }
 
 /** Coordenada no tabuleiro: linha (de cima para baixo) e coluna. */

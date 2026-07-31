@@ -32,6 +32,7 @@ ou três jogadas.
 | **Essência** | Match de 4, L/T, ou match de 3 dentro de cascata | Não estoura ao ser movida; troca livre com qualquer vizinha |
 | **Prisma** (incolor) | Fusão de duas essências de **cores diferentes** | Ao ser trocada: limpa linha + coluna + braços diagonais |
 | **Supernova** (colorida) | Fusão de duas essências da **mesma cor** | Ao ser trocada: limpa toda aquela cor + área 5x5 |
+| **Nova Cromática** | Fusão de duas peças de nível 2 encostadas | Ao ser trocada: **varre o tabuleiro inteiro** |
 | **Prismoide** | Nasce no topo em fases que pedem | Cai com a gravidade, imune a estouros; precisa chegar à base |
 | **Pedra** | Definida no formato da fase | Não cai nem troca; some depois de dois estouros vizinhos |
 
@@ -40,14 +41,35 @@ ou três jogadas.
 - Duas gemas comuns: **só** se a troca formar um match.
 - Qualquer troca envolvendo peça especial: **sempre permitida**.
   - Essência ↔ vizinha: apenas reposiciona (custa uma jogada).
-  - Prisma / Supernova ↔ vizinha: **detona**.
-  - Especial ↔ especial: combo maior (feixes triplos, duas cores de uma vez).
+  - Prisma / Supernova / Nova ↔ vizinha: **detona**.
+  - Especial ↔ especial de níveis diferentes: combo maior (feixes triplos, duas
+    cores de uma vez). Do **mesmo** nível isso não chega a acontecer — eles se
+    fundem antes de o jogador conseguir trocá-los.
 
-### Fusão
+### Fusão — a escada
 
-Ao fim de cada etapa de cascata, essências **encostadas** se fundem
-automaticamente. A peça nova nasce na casa da essência mais recente — ou seja,
-naquela que o jogador acabou de mover, que é onde ele está olhando.
+Ao fim de cada etapa de cascata, duas peças **do mesmo nível** que estejam
+encostadas se fundem automaticamente e sobem um degrau:
+
+```
+nivel 1   Essencia + Essencia   ->  Supernova (mesma cor) ou Prisma (cores diferentes)
+nivel 2   Prisma/Supernova x2   ->  NOVA CROMATICA
+nivel 3   (topo)                ->  nao funde com mais nada
+```
+
+A peça nova nasce na casa da peça mais recente — ou seja, naquela que o jogador
+acabou de mover, que é onde ele está olhando.
+
+**Por que o nível 3 é difícil de propósito.** Uma essência pode ser caminhada
+casa a casa porque mover uma essência não a detona. Um prisma, não: trocá-lo com
+qualquer vizinha o faz explodir. Logo, não existe "levar um prisma até o outro".
+A única rota é: ter um nível 2 parado no tabuleiro e conseguir que uma fusão de
+essências aconteça **exatamente na casa ao lado dele**. São três jogadas
+encadeadas mais um pouco de sorte de cascata.
+
+Medindo com bots que perseguem fusões, a Nova aparece em torno de **11% das
+partidas** — rara o suficiente para ser um acontecimento, frequente o suficiente
+para não ser folclore.
 
 ### Cascata
 
@@ -110,7 +132,9 @@ tinha 20 — uma fase impossível. Hoje existe um teste que falha se isso voltar
 | Supernova | 260 |
 | Pedra | 90 |
 | Camada de cristal | 30 |
-| **Fusão** | **400** |
+| Nova Cromática | 400 |
+| **Fusão (nível 1)** | **400** |
+| **Fusão (Nova Cromática)** | **1.500** |
 | **Prismoide entregue** | **500** |
 
 Tudo dentro de uma cascata é multiplicado por `1 + 0,5 × profundidade`, então o

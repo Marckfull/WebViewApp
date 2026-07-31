@@ -242,6 +242,15 @@ fun TutorialScreen(onFinished: () -> Unit) {
                         style = MaterialTheme.typography.bodyMedium,
                         color = LilasClaro,
                     )
+                    VSpace(10)
+                    // Deixado como enigma de propósito: a Nova é descoberta, não lição.
+                    Text(
+                        "E há um terceiro nível. A regra é sempre a mesma — peças do mesmo " +
+                            "nível que se encostam sobem um degrau. Descobrir como encostar " +
+                            "duas delas é com você.",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = LilasClaro.copy(alpha = 0.85f),
+                    )
                     VSpace(14)
                     Text(
                         "Prêmio de boas-vindas: 200 moedas e 1 martelo.",

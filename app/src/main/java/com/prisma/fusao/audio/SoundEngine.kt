@@ -28,6 +28,7 @@ enum class Sfx {
     FUSION,
     PRISM,
     SUPERNOVA,
+    NOVA,
     ICE,
     STONE,
     PRISMOID,
@@ -167,6 +168,13 @@ class SoundEngine(private val context: Context) {
         Sfx.SUPERNOVA -> mix(
             noise(0.55f, decay = 7f, amp = 0.30f),
             sweep(180f, 60f, 0.7f, decay = 4f, amp = 0.36f),
+        )
+        // A Nova e o som mais cheio do jogo: varredura grave, acorde maior aberto e
+        // um estouro de ruido por cima. E o unico momento em que o jogo grita.
+        Sfx.NOVA -> mix(
+            sweep(2400f, 120f, 0.9f, decay = 3f, amp = 0.30f),
+            chord(listOf(261.63f, 329.63f, 392f, 523.25f, 659.25f), 1.2f, decay = 2.2f, amp = 0.32f),
+            noise(0.5f, decay = 6f, amp = 0.22f),
         )
         Sfx.ICE -> noise(0.16f, decay = 30f, amp = 0.26f, highpass = true)
         Sfx.STONE -> sweep(180f, 70f, 0.22f, decay = 20f, amp = 0.34f)

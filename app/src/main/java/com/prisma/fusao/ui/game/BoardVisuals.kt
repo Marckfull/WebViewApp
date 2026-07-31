@@ -159,7 +159,14 @@ class BoardVisuals(val rows: Int, val cols: Int) {
         for (blast in step.blasts) {
             val color = blast.color?.primary() ?: Color(0xFFEFF6FF)
             beams += Beam(blast.origin, blast.cells, color, life = BEAM_LIFE, maxLife = BEAM_LIFE)
-            shake = maxOf(shake, if (blast.kind == GemKind.SUPERNOVA) 1f else 0.6f)
+            shake = maxOf(
+                shake,
+                when (blast.kind) {
+                    GemKind.NOVA -> 1.6f
+                    GemKind.SUPERNOVA -> 1f
+                    else -> 0.6f
+                },
+            )
         }
 
         for (cleared in step.cleared) {
@@ -192,9 +199,10 @@ class BoardVisuals(val rows: Int, val cols: Int) {
                 }
             }
             val color = fusion.result.color?.primary() ?: Color.White
-            burst(fusion.at, color, count = 26, spread = 3.2f)
+            val grande = fusion.result.kind == GemKind.NOVA
+            burst(fusion.at, color, count = if (grande) 60 else 26, spread = if (grande) 5f else 3.2f)
             beams += Beam(fusion.at, listOf(fusion.at), color, FUSION_FLASH, FUSION_FLASH)
-            shake = maxOf(shake, 0.85f)
+            shake = maxOf(shake, if (grande) 1.6f else 0.85f)
             sprites[fusion.result.id] = Sprite(
                 fusion.result.id,
                 fusion.result.kind,

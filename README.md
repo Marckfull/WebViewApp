@@ -20,10 +20,20 @@ Nos jogos do gênero, um match de 4 vira uma peça que explode. Aqui ele vira um
 | **Trocar uma essência** | Ela pode ir para **qualquer casa vizinha, sem precisar formar match** — e **não explode** ao ser movida |
 | **Duas essências encostadas** | Fundem sozinhas: mesma cor → **SUPERNOVA**, cores diferentes → **PRISMA** |
 | Trocar Prisma / Supernova | Detonam. Prisma limpa linha + coluna + diagonais; Supernova limpa a cor inteira + área 5x5 |
+| **Dois Prismas/Supernovas encostados** | Fundem na **NOVA CROMÁTICA**, que varre o tabuleiro inteiro |
+
+A regra é uma só, em todos os níveis: **peças especiais que se encostam se
+fundem e sobem um degrau; peças especiais trocadas com uma gema comum detonam.**
 
 O resultado é uma pergunta que nenhum outro jogo do gênero faz: a boa jogada
 deixa de ser *"onde eu limpo agora"* e passa a ser *"onde eu deposito essa
 essência para fundir daqui a duas jogadas"*.
+
+E o topo da escada é genuinamente difícil por um motivo estrutural: um Prisma
+**detona ao ser trocado**, então não dá para caminhá-lo até outro. A única forma
+de encostar dois é fundir duas essências exatamente na casa ao lado de um que já
+estava lá — uma jogada de três etapas. Medindo com bots, a Nova aparece em cerca
+de **11% das partidas**.
 
 Como as essências não formam match por cor, elas ficam no caminho — e essa
 tensão entre "ela atrapalha" e "ela vale muito" é o coração do jogo.
@@ -48,7 +58,7 @@ tensão entre "ela atrapalha" e "ela vale muito" é o coração do jogo.
   e intersticiais só em pausa natural — ver [docs/ANUNCIOS.md](docs/ANUNCIOS.md).
 - **Gamificação**: estrelas, XP e nível do jogador, moedas, vidas com
   regeneração, missões diárias, prêmio diário em ciclo de 7 dias e loja.
-- **Áudio 100% sintetizado em tempo de execução** — trilha em loop e 15 efeitos,
+- **Áudio 100% sintetizado em tempo de execução** — trilha em loop e 16 efeitos,
   sem um único arquivo binário no repositório.
 - **Efeitos visuais**: partículas, feixes de detonação, tremor de tela, números
   de pontuação flutuantes e peças desenhadas vetorialmente no Canvas.
