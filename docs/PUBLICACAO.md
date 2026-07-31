@@ -92,13 +92,19 @@ Teste manual mínimo, num aparelho limpo:
 
 Este projeto foi escrito num ambiente **sem acesso ao repositório Maven do Google
 e sem o Android SDK** — `dl.google.com` estava bloqueado por política de rede.
-Consequência prática:
+O que foi verificado, e como:
 
-- O **motor, a campanha e o roteiro do tutorial** foram compilados e testados de
-  verdade: 20 testes JUnit passando, mais bots jogando as 150 fases.
-- A **camada Android/Compose** (telas, renderizador, áudio, anúncios) foi escrita
-  com cuidado, mas **não passou por um `assembleDebug`**.
+| Camada | Verificação |
+|---|---|
+| Motor, campanha, roteiro do tutorial | Compilados e **testados de verdade**: 20 testes JUnit passando, mais bots jogando as 150 fases milhares de vezes |
+| Telas, renderizador, áudio, anúncios | **Compilados** contra stubs escritos à mão das APIs de Compose/AndroidX/AdMob — sintaxe, tipos, escopos (`ColumnScope`/`RowScope`/`BoxScope`) e consistência entre os arquivos do projeto |
 
-Ou seja: espere resolver alguns detalhes de compilação na primeira build dentro
-do Android Studio — tipicamente import não usado ou assinatura de API do Compose.
-A lógica de jogo, essa sim, está verificada.
+O segundo caso **não substitui** um `assembleDebug`: ele valida o código do
+projeto, mas não pega divergência entre um stub e a assinatura real da
+biblioteca. Foi assim, por exemplo, que apareceu um import errado real
+(`rememberInfiniteTransition` vinha de `androidx.compose.runtime`, quando mora em
+`androidx.compose.animation.core`) — mas um erro do tipo "este parâmetro do
+Compose mudou de nome na versão X" passaria batido.
+
+Na primeira build dentro do Android Studio, portanto, ainda pode haver ajuste
+pontual de assinatura. A lógica de jogo, essa está verificada de fato.
