@@ -1,0 +1,77 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//**)",
+      "Write(episodios/**)",
+      "Write(pautas/**)",
+      "Write(biblia/**)",
+      "Write(analytics/**)",
+      "Edit(episodios/**)",
+      "Edit(pautas/**)",
+      "Edit(analytics/**)",
+      "Bash(python3 scripts/*.py:*)",
+      "Bash(python scripts/*.py:*)",
+      "Bash(ffmpeg:*)",
+      "Bash(ffprobe:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(cp -r episodios/_TEMPLATE:*)",
+      "WebSearch",
+      "WebFetch"
+    ],
+    "ask": [
+      "Edit(biblia/**)",
+      "Edit(CLAUDE.md)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Read(./secrets/**)",
+      "Read(./**/*.pem)",
+      "Write(.claude/hooks/**)",
+      "Edit(.claude/hooks/**)",
+      "Write(.claude/settings.json)",
+      "Edit(.claude/settings.json)",
+      "Bash(rm -rf:*)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit|NotebookEdit|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/guard_qa.py\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/lint_vocabulario.py\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/checklist_stop.py\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,23 @@
+# Credenciais — nunca versionar
+.env
+secrets/
+*.pem
+client_secret*.json
+token.json
+
+# Mídia gerada (pesada; o repositório guarda texto e decisão, não render)
+episodios/*/audio/
+episodios/*/imagens/
+episodios/*/render/
+*.mp4
+*.mov
+*.wav
+*.mp3
+
+# Exports brutos de analytics (regeráveis)
+analytics/retencao/*.csv
+
+# Sistema
+.DS_Store
+__pycache__/
+*.pyc
