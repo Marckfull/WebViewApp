@@ -81,8 +81,8 @@ faz: partida terminada, fase da Receita fechada, missão do dia concluída.
 
 Cada degrau tem duas faixas: a **grátis**, que abre só por jogar, e a de
 **vídeo**, liberada degrau a degrau assistindo um anúncio premiado — nunca por
-dinheiro. As três peles pagas do jogo (Sorvete, Meia-Noite e Tropical) são
-recompensa dos degraus 10, 20 e 30 da faixa de vídeo.
+dinheiro. As três peles exclusivas de temporada são recompensa dos degraus 10,
+20 e 30 da faixa de vídeo.
 
 ### As frutas falam
 
@@ -118,7 +118,7 @@ O Adubo **conta para o pedido** no Modo Receita: ele cria uma fruta de verdade,
 ### Progressão, conquistas e loja
 Sementes, níveis com patente (de "Aprendiz de Feirante" a "Lenda da Feira"),
 presente diário de 7 dias, 3 missões novas por dia, álbum de frutas, mapa de
-fases com estrelas, **23 conquistas** e 5 peles de tabuleiro.
+fases com estrelas, **23 conquistas** e 7 peles de tabuleiro.
 
 As conquistas são locais de propósito — sem login, sem conta, sem servidor —,
 então funcionam offline desde o primeiro minuto. A que fica pronta durante a
@@ -129,10 +129,15 @@ Ligação, notificação, bateria: em celular, sessão cortada é regra. O tabul
 é guardado quando o app vai para o fundo, e a tela inicial oferece
 **"Continuar partida"** com o modo e o placar de onde você parou.
 
-### Tutorial travado
-6 passos. **O próximo só libera depois que o anterior for cumprido de verdade** —
-se o passo pede arrastar para a direita, os outros lados nem respondem (o
-tabuleiro chacoalha e explica).
+### Dois tutoriais travados
+O primeiro tem 6 passos e ensina o básico: **o próximo só libera depois que o
+anterior for cumprido de verdade** — se o passo pede arrastar para a direita,
+os outros lados nem respondem (o tabuleiro chacoalha e explica).
+
+O segundo tem 3 passos e dispara sozinho na primeira fase do Modo Receita,
+porque ali existe uma regra que ninguém adivinha: **só conta a fruta que você
+cria**. O passo do meio só fecha quando a fusão acontece — é ver o contador
+andar que ensina, não o texto.
 
 ### Notificações
 Lembretes escritos para arrancar sorriso, agendados com WorkManager
