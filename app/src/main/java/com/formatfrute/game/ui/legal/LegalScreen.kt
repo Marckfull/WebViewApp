@@ -189,10 +189,11 @@ object LegalTexts {
             "danos indiretos decorrentes do uso do aplicativo. Nada aqui afasta os direitos " +
             "garantidos pelo Código de Defesa do Consumidor.",
 
-        "9. Crianças" to
-            "O jogo tem tema infantil e pode ser jogado por crianças com a supervisão de " +
-            "pais ou responsáveis. Recomendamos que o responsável configure os controles " +
-            "parentais da loja de aplicativos e acompanhe o uso.",
+        "9. Idade" to
+            "O Format Frute é indicado para todas as idades e configurado para exibir " +
+            "somente anúncios de classificação geral. Ainda assim, recomendamos que " +
+            "responsáveis configurem os controles parentais da loja de aplicativos e " +
+            "acompanhem o uso por crianças.",
 
         "10. Lei aplicável" to
             "Estes Termos são regidos pelas leis do Brasil. Dúvidas, sugestões ou reclamações " +
@@ -209,9 +210,18 @@ object LegalTexts {
             "Guardamos localmente, usando as preferências do Android:\n" +
             "• Pontuação, recordes e melhor fruta alcançada;\n" +
             "• Sementes, poderes, peles compradas e nível do jogador;\n" +
+            "• Fases da Receita, estrelas, conquistas e degrau do Passe da Feira;\n" +
             "• Missões do dia, sequência de presentes e progresso do tutorial;\n" +
+            "• A partida em andamento, para você retomar de onde parou;\n" +
             "• Suas preferências de música, efeitos, vibração e notificações.\n\n" +
             "Esses dados não são enviados para nenhum servidor nosso — nós nem temos servidor.",
+
+        "1b. Relatório de erro" to
+            "Se o jogo travar, guardamos no aparelho um relatório técnico com modelo do " +
+            "celular, versão do Android, versão do app e o detalhe do erro. Na abertura " +
+            "seguinte perguntamos se você quer enviá-lo por e-mail para $EMAIL.\n\n" +
+            "Nada é enviado automaticamente: o relatório só sai se você tocar em \"Mandar\", " +
+            "e sai pelo seu próprio aplicativo de e-mail. Se recusar, ele é apagado.",
 
         "2. Dados usados pelos anúncios" to
             "Os anúncios são fornecidos pelo Google AdMob. Para exibi-los, o Google pode " +
@@ -239,12 +249,14 @@ object LegalTexts {
             "• Internet: apenas para carregar os anúncios.\n\n" +
             "Não pedimos acesso a contatos, câmera, microfone, fotos nem localização.",
 
-        "6. Crianças e famílias" to
-            "O Format Frute foi pensado para o público familiar. Não coletamos " +
-            "intencionalmente dados pessoais de crianças. Quando o app é distribuído no " +
-            "programa para famílias do Google Play, as chamadas de anúncio são marcadas como " +
-            "dirigidas a crianças e o conteúdo é limitado a classificações apropriadas. " +
-            "Se você é responsável e acredita que uma criança forneceu algum dado pessoal, " +
+        "6. Público e conteúdo dos anúncios" to
+            "O Format Frute é um jogo para todas as idades. Configuramos o AdMob com a " +
+            "classificação de conteúdo \"G\" (público geral), então os anúncios exibidos " +
+            "são apropriados para qualquer faixa etária — sem bebida, apostas, violência " +
+            "ou conteúdo adulto.\n\n" +
+            "Não coletamos intencionalmente dados pessoais de ninguém, de qualquer idade. " +
+            "Recomendamos que responsáveis usem os controles parentais da loja de " +
+            "aplicativos. Se você acredita que alguma criança forneceu algum dado pessoal, " +
             "escreva para $EMAIL e apagaremos o que estiver ao nosso alcance.",
 
         "7. Seus direitos (LGPD)" to

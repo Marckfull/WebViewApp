@@ -5,68 +5,12 @@ import android.content.SharedPreferences
 import androidx.core.content.edit
 import com.formatfrute.game.core.GameMode
 import com.formatfrute.game.core.Power
-import com.formatfrute.game.core.RecipeBook
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-
-/** Retrato do jogador, observado pela UI inteira. */
-data class Profile(
-    val coins: Int = 250,
-    val xp: Int = 0,
-    val powers: Map<String, Int> = emptyMap(),
-    val best: Map<String, Int> = emptyMap(),
-    val highestFruit: Int = 0,
-    val theme: String = BoardTheme.FEIRA.id,
-    val unlockedThemes: Set<String> = setOf(BoardTheme.FEIRA.id),
-    val music: Boolean = true,
-    val sfx: Boolean = true,
-    val vibration: Boolean = true,
-    val notifications: Boolean = true,
-    val tutorialDone: Boolean = false,
-    val streak: Int = 0,
-    val lastClaimDay: String = "",
-    val totalMerges: Int = 0,
-    val totalGames: Int = 0,
-    val totalHarvests: Int = 0,
-    val powersUsed: Int = 0,
-    val missionsDay: String = "",
-    val missionProgress: Map<String, Int> = emptyMap(),
-    val missionsClaimed: Set<String> = emptySet(),
-    val cestaClearedDay: String = "",
-    val legalAccepted: Boolean = false,
-    /** Estrelas por fase do Modo Receita: "12" -> 3. */
-    val recipeStars: Map<String, Int> = emptyMap(),
-    val passSeason: String = "",
-    val passPoints: Int = 0,
-    val passClaimedFree: Set<String> = emptySet(),
-    val passClaimedPremium: Set<String> = emptySet(),
-    val passTitle: String = "",
-) {
-    val level: Int get() = Ranks.levelFor(xp)
-    val rank: String get() = Ranks.title(level)
-    val boardTheme: BoardTheme get() = BoardTheme.byId(theme)
-
-    fun powerCount(power: Power): Int = powers[power.id] ?: 0
-    fun bestOf(mode: GameMode): Int = best[mode.id] ?: 0
-
-    fun starsOf(recipe: Int): Int = recipeStars[recipe.toString()] ?: 0
-
-    /** A fase 1 está sempre aberta; as outras pedem a anterior concluída. */
-    fun isRecipeUnlocked(recipe: Int): Boolean = recipe <= 1 || starsOf(recipe - 1) > 0
-
-    val recipeCleared: Int get() = recipeStars.count { it.value > 0 }
-    val recipeStarTotal: Int get() = recipeStars.values.sum()
-
-    /** Próxima fase a jogar — é nela que o mapa abre. */
-    val nextRecipe: Int
-        get() = (1..RecipeBook.TOTAL).firstOrNull { starsOf(it) == 0 } ?: RecipeBook.TOTAL
-
-    val passTier: Int get() = SeasonPass.tierOf(passPoints)
-}
 
 /**
  * Toda a persistencia do jogo num lugar so. E de proposito sincrono e
@@ -85,8 +29,8 @@ class GameRepository private constructor(context: Context) {
     // ------------------------------------------------------------ carga
 
     private fun load(): Profile = Profile(
-        coins = prefs.getInt(K_COINS, 250),
-        xp = prefs.getInt(K_XP, 0),
+        coins = readGuarded(K_COINS, 250),
+        xp = readGuarded(K_XP, 0),
         powers = readCounts(K_POWERS),
         best = readCounts(K_BEST),
         highestFruit = prefs.getInt(K_HIGHEST, 0),
@@ -106,18 +50,20 @@ class GameRepository private constructor(context: Context) {
         missionsDay = prefs.getString(K_MISSION_DAY, "") ?: "",
         missionProgress = readCounts(K_MISSION_PROGRESS),
         missionsClaimed = prefs.getStringSet(K_MISSION_CLAIMED, null) ?: emptySet(),
-        cestaClearedDay = prefs.getString(K_CESTA_DAY, "") ?: "",
+        dailyRecipeDay = prefs.getString(K_DAILY_RECIPE, "") ?: "",
         legalAccepted = prefs.getBoolean(K_LEGAL, false),
+        achievementsClaimed = prefs.getStringSet(K_ACHIEVEMENTS, null) ?: emptySet(),
         recipeStars = readCounts(K_RECIPE_STARS),
         passSeason = prefs.getString(K_PASS_SEASON, "") ?: "",
-        passPoints = prefs.getInt(K_PASS_POINTS, 0),
+        passPoints = readGuarded(K_PASS_POINTS, 0),
         passClaimedFree = prefs.getStringSet(K_PASS_FREE, null) ?: emptySet(),
         passClaimedPremium = prefs.getStringSet(K_PASS_PREMIUM, null) ?: emptySet(),
         passTitle = prefs.getString(K_PASS_TITLE, "") ?: "",
     )
 
+    // Os valores que alguém teria vontade de editar passam pelo Vault.
     private fun readCounts(key: String): Map<String, Int> {
-        val raw = prefs.getString(key, "").orEmpty()
+        val raw = Vault.decode(prefs.getString(key, "")).orEmpty()
         if (raw.isBlank()) return emptyMap()
         return raw.split('|').mapNotNull {
             val parts = it.split(':')
@@ -126,7 +72,15 @@ class GameRepository private constructor(context: Context) {
     }
 
     private fun writeCounts(key: String, map: Map<String, Int>) {
-        prefs.edit { putString(key, map.entries.joinToString("|") { "${it.key}:${it.value}" }) }
+        val raw = map.entries.joinToString("|") { "${it.key}:${it.value}" }
+        prefs.edit { putString(key, Vault.encode(raw)) }
+    }
+
+    private fun readGuarded(key: String, fallback: Int): Int =
+        Vault.decode(prefs.getString(key, null))?.toIntOrNull() ?: fallback
+
+    private fun writeGuarded(key: String, value: Int) {
+        prefs.edit { putString(key, Vault.encode(value.toString())) }
     }
 
     private fun update(block: (Profile) -> Profile) {
@@ -138,7 +92,7 @@ class GameRepository private constructor(context: Context) {
     fun addCoins(amount: Int) {
         if (amount == 0) return
         val next = (current.coins + amount).coerceAtLeast(0)
-        prefs.edit { putInt(K_COINS, next) }
+        writeGuarded(K_COINS, next)
         update { it.copy(coins = next) }
     }
 
@@ -151,7 +105,7 @@ class GameRepository private constructor(context: Context) {
     fun addXp(amount: Int): Boolean {
         val before = current.level
         val next = current.xp + amount
-        prefs.edit { putInt(K_XP, next) }
+        writeGuarded(K_XP, next)
         update { it.copy(xp = next) }
         return current.level > before
     }
@@ -273,10 +227,10 @@ class GameRepository private constructor(context: Context) {
         if (current.passSeason == season) return
         prefs.edit {
             putString(K_PASS_SEASON, season)
-            putInt(K_PASS_POINTS, 0)
             putStringSet(K_PASS_FREE, emptySet())
             putStringSet(K_PASS_PREMIUM, emptySet())
         }
+        writeGuarded(K_PASS_POINTS, 0)
         update {
             it.copy(
                 passSeason = season,
@@ -291,7 +245,7 @@ class GameRepository private constructor(context: Context) {
         if (points <= 0) return
         ensureSeasonFresh()
         val next = current.passPoints + points
-        prefs.edit { putInt(K_PASS_POINTS, next) }
+        writeGuarded(K_PASS_POINTS, next)
         update { it.copy(passPoints = next) }
     }
 
@@ -332,10 +286,37 @@ class GameRepository private constructor(context: Context) {
         return true
     }
 
-    fun markCestaCleared() {
+    fun markDailyRecipeCleared() {
         val day = today()
-        prefs.edit { putString(K_CESTA_DAY, day) }
-        update { it.copy(cestaClearedDay = day) }
+        prefs.edit { putString(K_DAILY_RECIPE, day) }
+        update { it.copy(dailyRecipeDay = day) }
+    }
+
+    val dailyRecipeDone: Boolean get() = current.dailyRecipeDay == today()
+
+    // ------------------------------------------------------- conquistas
+
+    fun claimAchievement(achievement: Achievement): Int {
+        if (!achievement.isDone(current)) return 0
+        if (achievement.id in current.achievementsClaimed) return 0
+        val claimed = current.achievementsClaimed + achievement.id
+        prefs.edit { putStringSet(K_ACHIEVEMENTS, claimed) }
+        update { it.copy(achievementsClaimed = claimed) }
+        addCoins(achievement.reward)
+        addXp(achievement.reward / 3)
+        return achievement.reward
+    }
+
+    // -------------------------------------------------- partida salva
+
+    fun saveResume(game: SavedGame) {
+        prefs.edit { putString(K_RESUME, game.encode()) }
+    }
+
+    fun loadResume(): SavedGame? = SavedGame.decode(prefs.getString(K_RESUME, null))
+
+    fun clearResume() {
+        prefs.edit { remove(K_RESUME) }
     }
 
     // --------------------------------------------------------- missoes
@@ -487,8 +468,10 @@ class GameRepository private constructor(context: Context) {
         private const val K_MISSION_DAY = "mission_day"
         private const val K_MISSION_PROGRESS = "mission_progress"
         private const val K_MISSION_CLAIMED = "mission_claimed"
-        private const val K_CESTA_DAY = "cesta_day"
+        private const val K_DAILY_RECIPE = "daily_recipe_day"
         private const val K_LEGAL = "legal"
+        private const val K_ACHIEVEMENTS = "achievements"
+        private const val K_RESUME = "resume"
         private const val K_LAST_PLAYED = "last_played"
         private const val K_RECIPE_STARS = "recipe_stars"
         private const val K_PASS_SEASON = "pass_season"

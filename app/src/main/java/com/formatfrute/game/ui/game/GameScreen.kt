@@ -2,6 +2,8 @@ package com.formatfrute.game.ui.game
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
@@ -37,6 +39,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -52,6 +55,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.formatfrute.game.ads.AdsManager
@@ -60,7 +66,9 @@ import com.formatfrute.game.core.Fruit
 import com.formatfrute.game.core.GameMode
 import com.formatfrute.game.core.Order
 import com.formatfrute.game.core.Power
+import com.formatfrute.game.data.Achievement
 import com.formatfrute.game.data.GameRepository
+import com.formatfrute.game.diag.CrashReporter
 import com.formatfrute.game.game.GameStatus
 import com.formatfrute.game.game.GameUi
 import com.formatfrute.game.game.GameViewModel
@@ -71,6 +79,7 @@ import com.formatfrute.game.ui.components.JuicyButton
 import com.formatfrute.game.ui.components.OutlinedTitle
 import com.formatfrute.game.ui.components.PaperCard
 import com.formatfrute.game.ui.components.Pulse
+import com.formatfrute.game.ui.components.RollingNumber
 import com.formatfrute.game.ui.components.StatPill
 import com.formatfrute.game.ui.components.lighten
 import com.formatfrute.game.ui.findActivity
@@ -83,6 +92,7 @@ fun GameScreen(
     mode: GameMode,
     tutorial: Boolean,
     recipeNumber: Int = 1,
+    resume: Boolean = false,
     onExit: () -> Unit,
     onShop: () -> Unit,
     vm: GameViewModel = viewModel(),
@@ -97,7 +107,27 @@ fun GameScreen(
     var showPause by remember { mutableStateOf(false) }
 
     LaunchedEffect(mode, tutorial, recipeNumber) {
-        if (mode.isCampaign) vm.startRecipe(recipeNumber) else vm.start(mode, tutorial)
+        CrashReporter.breadcrumb(context, "jogo:${mode.id}:$recipeNumber")
+        if (resume) vm.resumeSaved() else if (mode.isCampaign) vm.startRecipe(recipeNumber)
+        else vm.start(mode, tutorial)
+    }
+
+    // Partida guardada quando o app vai para o fundo — ligação não custa o jogo.
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_STOP) vm.saveProgress()
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
+
+    // Baque de fruta grande: a tela inteira sente o impacto.
+    val thump = remember { Animatable(0f) }
+    LaunchedEffect(ui.impactToken) {
+        if (ui.impactToken == 0L) return@LaunchedEffect
+        thump.snapTo(1f)
+        thump.animateTo(0f, tween(360, easing = FastOutSlowInEasing))
     }
 
     LaunchedEffect(ui.hint) {
@@ -121,6 +151,13 @@ fun GameScreen(
         Column(
             Modifier
                 .fillMaxSize()
+                .graphicsLayer {
+                    val wave = kotlin.math.sin(thump.value * 15f) * thump.value
+                    translationY = wave * 16f * ui.impactPower
+                    val zoom = 1f + thump.value * 0.012f * ui.impactPower
+                    scaleX = zoom
+                    scaleY = zoom
+                }
                 .windowInsetsPadding(WindowInsets.systemBars)
                 .padding(horizontal = 14.dp, vertical = 8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -232,7 +269,11 @@ fun GameScreen(
             )
         }
 
-        if (ui.status != GameStatus.PLAYING) {
+        ui.unlocked?.let { achievement ->
+            AchievementDialog(achievement = achievement, onClose = vm::dismissAchievement)
+        }
+
+        if (ui.status != GameStatus.PLAYING && ui.unlocked == null) {
             EndDialog(
                 ui = ui,
                 best = profile.bestOf(ui.mode),
@@ -314,7 +355,7 @@ private fun ScoreBox(label: String, value: Int, color: Color, modifier: Modifier
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(label, style = MaterialTheme.typography.labelSmall, color = Color.White.copy(alpha = 0.85f))
-            Text(formatScore(value), style = MaterialTheme.typography.headlineSmall, color = Color.White)
+            RollingNumber(value = value, format = ::formatScore)
         }
     }
 }
@@ -848,6 +889,57 @@ private fun EndDialog(
             }
         }
         Confetti(active = won || ui.newRecord)
+    }
+}
+
+/** Comemoração da conquista — entra antes do placar final, com confete. */
+@Composable
+private fun AchievementDialog(achievement: Achievement, onClose: () -> Unit) {
+    Box(Modifier.fillMaxSize()) {
+        Scrim {
+            PaperCard(color = Color.White) {
+                Column(
+                    Modifier.padding(24.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Text(
+                        "CONQUISTA!",
+                        style = MaterialTheme.typography.labelLarge,
+                        color = Fruta.InkSoft,
+                    )
+                    Spacer(Modifier.height(10.dp))
+                    Box(contentAlignment = Alignment.Center) {
+                        Pulse(Fruta.Sun.copy(alpha = 0.55f), Modifier.size(110.dp), corner = 50.dp)
+                        Text(achievement.emoji, style = MaterialTheme.typography.displayLarge)
+                    }
+                    Spacer(Modifier.height(12.dp))
+                    Text(
+                        achievement.title,
+                        style = MaterialTheme.typography.headlineSmall,
+                        color = Fruta.Berry,
+                        textAlign = TextAlign.Center,
+                    )
+                    Spacer(Modifier.height(4.dp))
+                    Text(
+                        achievement.desc,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Fruta.InkSoft,
+                        textAlign = TextAlign.Center,
+                    )
+                    Spacer(Modifier.height(14.dp))
+                    StatPill("🌱", "+${achievement.reward}")
+                    Spacer(Modifier.height(18.dp))
+                    JuicyButton(
+                        text = "Boa!",
+                        emoji = "🎉",
+                        color = Fruta.Leaf,
+                        modifier = Modifier.fillMaxWidth(),
+                        onClick = onClose,
+                    )
+                }
+            }
+        }
+        Confetti(active = true)
     }
 }
 

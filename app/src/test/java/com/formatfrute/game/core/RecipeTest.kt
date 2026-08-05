@@ -13,8 +13,7 @@ import kotlin.random.Random
  */
 class RecipeTest {
 
-    private fun boardOf(recipe: Recipe) =
-        RecipeBook.board(recipe, Random(recipe.number * 104_729L))
+    private fun boardOf(recipe: Recipe) = RecipeBook.board(recipe, Random(recipe.seed))
 
     @Test
     fun `todas as fases tem pedido valido`() {
@@ -111,6 +110,36 @@ class RecipeTest {
             boardOf(a).tiles.map { it.level to (it.row to it.col) },
             boardOf(b).tiles.map { it.level to (it.row to it.col) },
         )
+    }
+
+    @Test
+    fun `a receita do dia e a mesma o dia inteiro e muda amanha`() {
+        val hoje = RecipeBook.daily("2026-08-05")
+        val denovo = RecipeBook.daily("2026-08-05")
+        val amanha = RecipeBook.daily("2026-08-06")
+
+        assertEquals(hoje, denovo)
+        assertTrue("a fase do dia não mudou", hoje.seed != amanha.seed)
+        assertTrue(hoje.daily)
+        assertEquals(RecipeBook.DAILY, hoje.number)
+    }
+
+    @Test
+    fun `a receita do dia nunca cai nas fases faceis`() {
+        (1..400).forEach { dia ->
+            val day = "2026-%02d-%02d".format((dia % 12) + 1, (dia % 28) + 1)
+            assertTrue("dia $day sorteou fase fácil", RecipeBook.dailyNumber(day) >= 6)
+            assertTrue(RecipeBook.dailyNumber(day) <= RecipeBook.TOTAL)
+        }
+    }
+
+    @Test
+    fun `a receita do dia nasce jogavel`() {
+        val recipe = RecipeBook.daily("2026-08-05")
+        val board = boardOf(recipe)
+
+        assertTrue(board.tiles.isNotEmpty())
+        assertTrue(Engine.canMove(board))
     }
 
     @Test

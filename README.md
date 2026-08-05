@@ -41,7 +41,7 @@ Três peças especiais mudam o jogo:
 | 🤢 **Podre** | Desliza, nunca funde, entope o tabuleiro. Some com uma fusão ao lado. |
 | 🌈 **Arco-íris** | Coringa: combina com qualquer fruta e sobe um nível. |
 
-### Modo Receita — a campanha (60 fases)
+### Modo Receita — a campanha (60 fases + a do dia)
 
 O freguês faz o pedido: "1 Pera, 3 Laranjas, 4 Bananas". Só conta a fruta que
 você **criar fundindo** — o que já está no tabuleiro é matéria-prima. Jogadas
@@ -59,14 +59,18 @@ profundidade (da fase 25 em diante o pedido principal nasce dois degraus
 abaixo, exigindo montar as peças antes de juntá-las) e os obstáculos (gelo a
 partir da fase 10, fruta podre caindo a partir da 20).
 
-### Seis modos avulsos, seis regras diferentes
+A **Receita do Dia** é uma fase sorteada pela data, igual para todo mundo no
+mundo inteiro, com tabuleiro próprio e bônus de sementes. Ela substituiu o modo
+"Cesta do Dia" original: eram o mesmo jogo (puzzle com jogadas contadas) em duas
+telas diferentes, e dois lugares meia-boca valem menos que um lugar bom.
+
+### Cinco modos avulsos, cinco regras diferentes
 
 | Modo | O que muda |
 |---|---|
 | 🍎 **Pomar Clássico** | 4×4, sem pressa. Meta: chegar na Pitaya. |
 | 🍊 **Vitamina Turbo** | 60 segundos. Cada fusão devolve tempo, combo multiplica pontos. |
 | 🍇 **Geleia Congelada** | 5×5 com frutas nascendo dentro do gelo. |
-| 🍍 **Cesta do Dia** | Tabuleiro e objetivo sorteados pela data — iguais para todo mundo — com movimentos contados. |
 | 🍐 **Zen do Pomar** | 5×5 sem relógio e sem derrota: lotou, o pomar colhe as menores sozinho. |
 | 🍋 **Batalha do Suco** | Contra o Monstro Azedo: fusão vira dano, ele cospe frutas podres de volta. |
 
@@ -93,14 +97,29 @@ As falas são deliberadamente econômicas: só estreia de fruta grande e combo
 alto. Falar demais vira ruído e o jogador para de ler.
 
 ### Poderes
-Martelinho, Adubo Mágico, Voltar no Tempo, Peneira, Relógio de Açúcar e Fruta
-Arco-íris. Todos podem ser comprados com Sementes, **mas o caminho principal é o
-vídeo premiado** — o jogo oferece o vídeo sempre que falta o poder.
+Martelinho, Adubo Mágico, Voltar no Tempo, Peneira, Relógio de Açúcar, Fruta
+Arco-íris e **Olho Bom** (acende as duas frutas que dá para juntar agora — a
+válvula de escape do tabuleiro travado, e o melhor lugar do jogo para um vídeo
+premiado: é onde o jogador realmente quer). Todos podem ser comprados com
+Sementes, **mas o caminho principal é o vídeo** — o jogo oferece o vídeo sempre
+que falta o poder.
 
-### Progressão e loja
+O Adubo **conta para o pedido** no Modo Receita: ele cria uma fruta de verdade,
+é o que o jogador espera, e é o que dá sentido a gastar poder na campanha.
+
+### Progressão, conquistas e loja
 Sementes, níveis com patente (de "Aprendiz de Feirante" a "Lenda da Feira"),
 presente diário de 7 dias, 3 missões novas por dia, álbum de frutas, mapa de
-fases com estrelas e 5 peles de tabuleiro.
+fases com estrelas, **23 conquistas** e 5 peles de tabuleiro.
+
+As conquistas são locais de propósito — sem login, sem conta, sem servidor —,
+então funcionam offline desde o primeiro minuto. A que fica pronta durante a
+partida vira comemoração na hora, com confete, antes do placar final.
+
+### A partida sobrevive à interrupção
+Ligação, notificação, bateria: em celular, sessão cortada é regra. O tabuleiro
+é guardado quando o app vai para o fundo, e a tela inicial oferece
+**"Continuar partida"** com o modo e o placar de onde você parou.
 
 ### Tutorial travado
 6 passos. **O próximo só libera depois que o anterior for cumprido de verdade** —
@@ -137,6 +156,24 @@ lugares:
 O consentimento (UMP/GDPR) é pedido antes de qualquer anúncio, e a opção de rever
 a escolha fica em **Ajustes › Opções de privacidade**.
 
+**Classificação do conteúdo:** o jogo é para todas as idades, então o AdMob é
+configurado com `MAX_AD_CONTENT_RATING_G` — só entram anúncios de público geral,
+sem bebida, apostas ou violência. Isso é feito em código
+(`AdsManager.init`), e a Política de Privacidade dentro do app descreve
+exatamente esse comportamento.
+
+## Diagnóstico
+
+Sem servidor não há telemetria remota, mas jogo publicado às cegas não se
+conserta. Se o app travar, o `CrashReporter` guarda no aparelho um relatório
+(modelo, versão do Android, versão do app, tela em que estava e a pilha do erro)
+e, na abertura seguinte, pergunta se o jogador quer mandá-lo por e-mail. Nada
+sai sem ele tocar em "Mandar".
+
+Para trocar por Crashlytics depois, basta adicionar o plugin do Firebase e
+chamar `recordException` dentro de `CrashReporter.install` — o resto do app não
+muda.
+
 ---
 
 ## Arte, som e música
@@ -163,21 +200,36 @@ app/src/main/java/com/formatfrute/game/
 ├── audio/        SoundManager (SoundPool + MediaPlayer) e Haptics
 ├── ads/          AdMob (intersticial, premiado) e consentimento UMP
 ├── notify/       Notificações engraçadas + agendamento com WorkManager
+├── diag/         Relatório de travamento guardado no aparelho
 └── ui/           Compose: splash, home, tabuleiro, mapa de fases, passe,
-                  loja, ajustes, documentos
+                  conquistas, loja, ajustes, documentos
 ```
 
 Todo o `core/` é 100% Kotlin puro, sem dependência de Android — por isso dá
 para testá-lo direto na JVM:
 
 ```
-./gradlew test    # EngineTest      fusão, gelo, podre, coringa, colheita,
-                  #                 fim de jogo, poderes, 200 partidas aleatórias
-                  # RecipeTest      as 60 fases: matéria-prima suficiente,
-                  #                 espaço para manobrar, gelo em peça certa,
-                  #                 folga de jogadas, determinismo
-                  # SeasonPassTest  os 30 degraus e a conta de fichas
+./gradlew test    # 51 testes, todos na JVM (sem emulador):
+                  # EngineTest       fusão, gelo, podre, coringa, colheita, fim
+                  #                  de jogo, dica, poderes, 200 partidas aleatórias
+                  # RecipeTest       as 60 fases + a do dia: matéria-prima
+                  #                  suficiente, espaço para manobrar, gelo em
+                  #                  peça certa, folga de jogadas, determinismo
+                  # SeasonPassTest   os 30 degraus e a conta de fichas
+                  # AchievementsTest catálogo, progresso e pendências
+                  # VaultTest        save embaralhado, adulteração e retrocompat.
+                  # SavedGameTest    a partida volta exatamente como parou
 ```
+
+## Nota sobre trapaça no save
+
+O progresso é embaralhado com checksum (`Vault`) antes de ir para as
+preferências, então o caminho "abri o XML e troquei 250 por 999999" não
+funciona mais. Não é criptografia e não pretende ser: **sem servidor, quem tem
+o aparelho na mão sempre vence**. Como o jogo não tem ranking, o único
+prejudicado por burlar é o próprio jogador — a proteção existe só para não
+deixar a porta escancarada. Se um dia entrar placar online, aí sim a validação
+precisa mudar de lugar (servidor), não de força.
 
 ---
 
@@ -191,11 +243,30 @@ Contato: **formatfrute@gmail.com**
 
 ---
 
+## Animação
+
+O que faz o jogo parecer vivo, e onde está cada coisa:
+
+- **Squash & stretch** (`BoardView.TileView`): a fruta em movimento estica no
+  eixo do deslize e achata no outro. É o truque que separa deslize gostoso de
+  deslize duro, e sai só da distância que ainda falta percorrer.
+- **Clarão na fusão**: a fruta sobrevivente pisca branco antes do pulo de
+  escala. É o clarão que vende o impacto, não o pulo.
+- **Baque de tela** (`GameScreen`): da Pera para cima, e em toda colheita, a
+  tela inteira sacode e dá um zoom de 1%.
+- **Placar rolando** (`RollingNumber`): o número corre até o valor novo em vez
+  de pular.
+- **Transição entre telas**: deslize horizontal + fade, com o sentido invertido
+  na volta.
+- **Fundo vivo, com freio**: as frutas fantasmas continuam boiando, mas são 5
+  em vez de 9, menores — e caem para 2 em aparelho marcado como `isLowRamDevice`.
+  Cada uma é um bitmap redesenhado todo frame; em celular de entrada isso custa.
+
 ## Antes de publicar
 
 - [ ] Trocar os IDs do AdMob (manifest + `AdsManager.kt`)
 - [ ] Definir `applicationId` final e assinar o release (`signingConfigs`)
 - [ ] Hospedar a Política de Privacidade em uma URL pública (o Google Play exige
       link externo, além do texto que já está no app)
-- [ ] Preencher o questionário de classificação e, se for o caso, inscrever no
-      programa **Apps para Famílias**
+- [ ] Preencher o questionário de classificação indicativa como **Livre / para
+      todas as idades** (é como o AdMob já está configurado)

@@ -48,6 +48,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.formatfrute.game.core.Fruit
 import com.formatfrute.game.core.FruitVoice
 import com.formatfrute.game.core.GameMode
+import com.formatfrute.game.data.Achievements
 import com.formatfrute.game.data.DailyRewards
 import com.formatfrute.game.data.GameRepository
 import com.formatfrute.game.data.Mission
@@ -73,6 +74,9 @@ fun HomeScreen(
     onSettings: () -> Unit,
     onRecipes: () -> Unit,
     onPass: () -> Unit,
+    onAchievements: () -> Unit,
+    onDailyRecipe: () -> Unit,
+    onResume: () -> Unit,
 ) {
     val context = LocalContext.current
     val repo = remember { GameRepository.get(context) }
@@ -89,6 +93,8 @@ fun HomeScreen(
     }
 
     val mascot = remember { FruitVoice.greetingOfTheDay(GameRepository.today()) }
+    val saved = remember(profile) { repo.loadResume() }
+    val pendingAchievements = remember(profile) { Achievements.pending(profile).size }
 
     val missions = remember(profile.missionsDay, profile.missionProgress) { repo.missions() }
 
@@ -115,6 +121,16 @@ fun HomeScreen(
             item { Logo(theme.dark) }
 
             item { Mascot(fruit = mascot.first, line = mascot.second) }
+
+            if (saved != null) {
+                item {
+                    ResumeCard(
+                        mode = saved.mode.title,
+                        score = saved.state.score,
+                        onClick = onResume,
+                    )
+                }
+            }
 
             if (!profile.tutorialDone) {
                 item {
@@ -147,6 +163,13 @@ fun HomeScreen(
             }
 
             item {
+                DailyRecipeCard(
+                    done = profile.dailyRecipeDay == GameRepository.today(),
+                    onClick = onDailyRecipe,
+                )
+            }
+
+            item {
                 Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                     JuicyButton(
                         text = "Barraquinha",
@@ -169,6 +192,36 @@ fun HomeScreen(
             }
 
             item {
+                Box {
+                    JuicyButton(
+                        text = "Conquistas",
+                        emoji = "🏅",
+                        color = Fruta.Sky,
+                        height = 54.dp,
+                        modifier = Modifier.fillMaxWidth(),
+                        onClick = onAchievements,
+                    )
+                    if (pendingAchievements > 0) {
+                        Box(
+                            Modifier
+                                .align(Alignment.TopEnd)
+                                .padding(top = 2.dp, end = 6.dp)
+                                .clip(RoundedCornerShape(50))
+                                .background(Fruta.Berry)
+                                .border(2.dp, Color.White, RoundedCornerShape(50))
+                                .padding(horizontal = 8.dp, vertical = 1.dp),
+                        ) {
+                            Text(
+                                "$pendingAchievements",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = Color.White,
+                            )
+                        }
+                    }
+                }
+            }
+
+            item {
                 SectionTitle("Modos avulsos", theme.dark)
             }
 
@@ -177,7 +230,6 @@ fun HomeScreen(
                     mode = mode,
                     best = profile.bestOf(mode),
                     locked = !profile.tutorialDone && mode != GameMode.POMAR,
-                    cleared = mode == GameMode.CESTA && profile.cestaClearedDay == GameRepository.today(),
                     onClick = { onPlay(mode) },
                 )
             }
@@ -402,6 +454,76 @@ private fun RecipeCard(next: Int, cleared: Int, stars: Int, onClick: () -> Unit)
     }
 }
 
+/** Convite para voltar exatamente de onde parou. */
+@Composable
+private fun ResumeCard(mode: String, score: Int, onClick: () -> Unit) {
+    PaperCard(
+        Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
+        color = Color.White,
+        corner = 22.dp,
+    ) {
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .background(Brush.horizontalGradient(listOf(Fruta.Leaf, Color(0xFFB7EFC5))))
+                .padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text("⏸️", style = MaterialTheme.typography.displayMedium)
+            Spacer(Modifier.width(12.dp))
+            Column(Modifier.weight(1f)) {
+                Text("Continuar partida", style = MaterialTheme.typography.titleLarge, color = Color.White)
+                Text(
+                    "$mode • ${formatScore(score)} pontos",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.White.copy(alpha = 0.92f),
+                )
+            }
+            Text("▶", style = MaterialTheme.typography.headlineMedium, color = Color.White)
+        }
+    }
+}
+
+/** A Receita do Dia: a mesma fase para todo mundo, trocada à meia-noite. */
+@Composable
+private fun DailyRecipeCard(done: Boolean, onClick: () -> Unit) {
+    PaperCard(
+        Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
+        color = Color.White,
+        corner = 22.dp,
+    ) {
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .background(
+                    Brush.horizontalGradient(
+                        if (done) listOf(Fruta.InkSoft, Color(0xFFB8A99C))
+                        else listOf(Color(0xFF7B61FF), Color(0xFFC4B5FF))
+                    )
+                )
+                .padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(if (done) "✅" else "📅", style = MaterialTheme.typography.displayMedium)
+            Spacer(Modifier.width(12.dp))
+            Column(Modifier.weight(1f)) {
+                Text("Receita do Dia", style = MaterialTheme.typography.titleLarge, color = Color.White)
+                Text(
+                    if (done) "Fechada hoje! Volta amanhã pra próxima."
+                    else "Mesma fase para todo mundo. Vale sementes extras.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.White.copy(alpha = 0.92f),
+                )
+            }
+            Text(if (done) "↻" else "▶", style = MaterialTheme.typography.headlineMedium, color = Color.White)
+        }
+    }
+}
+
 /** Cartão de entrada do Passe da Feira, com o degrau atual. */
 @Composable
 private fun PassCard(tier: Int, progress: Pair<Int, Int>, daysLeft: Int, onClick: () -> Unit) {
@@ -456,7 +578,6 @@ private fun ModeCard(
     mode: GameMode,
     best: Int,
     locked: Boolean,
-    cleared: Boolean,
     onClick: () -> Unit,
 ) {
     PaperCard(
@@ -490,13 +611,7 @@ private fun ModeCard(
             }
             Spacer(Modifier.width(12.dp))
             Column(Modifier.weight(1f)) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(mode.title, style = MaterialTheme.typography.titleLarge, color = Color.White)
-                    if (cleared) {
-                        Spacer(Modifier.width(6.dp))
-                        Text("✅", style = MaterialTheme.typography.bodyMedium)
-                    }
-                }
+                Text(mode.title, style = MaterialTheme.typography.titleLarge, color = Color.White)
                 Text(
                     if (locked) "Faça o tutorial para liberar" else mode.tagline,
                     style = MaterialTheme.typography.bodySmall,

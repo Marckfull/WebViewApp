@@ -278,6 +278,29 @@ object Engine {
         return state.copy(tiles = tiles, dying = emptyList())
     }
 
+    /**
+     * Olho Bom: acha o par que vale mais a pena juntar agora — o de maior
+     * degrau entre os vizinhos que podem fundir. Devolve null quando nao ha
+     * nenhuma fusao possivel (ai o problema e outro).
+     */
+    fun findHint(state: GameState): Pair<Tile, Tile>? {
+        var best: Pair<Tile, Tile>? = null
+        var bestLevel = -1
+        for (r in 0 until state.size) for (c in 0 until state.size) {
+            val tile = state.at(r, c) ?: continue
+            listOfNotNull(state.at(r, c + 1), state.at(r + 1, c)).forEach { neighbour ->
+                if (canMerge(tile, neighbour)) {
+                    val level = maxOf(tile.level, neighbour.level)
+                    if (level > bestLevel) {
+                        bestLevel = level
+                        best = tile to neighbour
+                    }
+                }
+            }
+        }
+        return best
+    }
+
     /** Colheita de emergencia: tira as [count] menores frutas do tabuleiro. */
     fun harvestSmallest(state: GameState, count: Int): GameState {
         val victims = state.tiles

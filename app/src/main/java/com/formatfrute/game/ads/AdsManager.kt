@@ -9,6 +9,7 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.RequestConfiguration
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.android.gms.ads.rewarded.RewardedAd
@@ -72,6 +73,15 @@ object AdsManager {
         if (initialized) return
         initialized = true
         runCatching {
+            // O Format Frute é para todas as idades: mesmo sem entrar no
+            // programa Famílias, o anúncio precisa ser aceitável para uma
+            // criança jogando ao lado do adulto. "G" é a classificação de
+            // conteúdo geral do AdMob — nada de bebida, aposta ou violência.
+            MobileAds.setRequestConfiguration(
+                RequestConfiguration.Builder()
+                    .setMaxAdContentRating(RequestConfiguration.MAX_AD_CONTENT_RATING_G)
+                    .build()
+            )
             MobileAds.initialize(context.applicationContext) {
                 available = true
                 preload(context)

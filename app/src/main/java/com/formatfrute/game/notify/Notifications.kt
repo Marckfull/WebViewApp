@@ -55,16 +55,18 @@ object FunnyMessages {
         "✨ Poder novo desbloqueado na feira." to "Dá pra pegar assistindo um vídeo rapidinho.",
     )
 
-    private val cesta = listOf(
-        "🧺 A Cesta do Dia mudou!" to "Desafio novo, movimentos contados. Bora?",
-        "📅 Cesta de hoje está aberta." to "Todo mundo joga a mesma. Sem desculpa.",
+    private val receita = listOf(
+        "🧾 A Receita do Dia mudou!" to "Pedido novo, jogadas contadas. Bora?",
+        "📅 A receita de hoje está aberta." to "Todo mundo joga a mesma. Sem desculpa.",
+        "👨‍🍳 O freguês chegou com um pedido." to "Ele disse que só você sabe montar.",
+        "🏅 Tem conquista quase fechando." to "Falta pouquinho. Vem terminar!",
     )
 
     fun pick(kind: String, seed: Long = System.currentTimeMillis()): Pair<String, String> {
         val list = when (kind) {
             KIND_DESAFIO -> desafio
             KIND_ECONOMIA -> economia
-            KIND_CESTA -> cesta
+            KIND_RECEITA -> receita
             else -> saudade
         }
         return list[Random(seed).nextInt(list.size)]
@@ -73,7 +75,7 @@ object FunnyMessages {
     const val KIND_SAUDADE = "saudade"
     const val KIND_DESAFIO = "desafio"
     const val KIND_ECONOMIA = "economia"
-    const val KIND_CESTA = "cesta"
+    const val KIND_RECEITA = "receita"
 }
 
 object Notifier {
@@ -176,7 +178,7 @@ object ReminderScheduler {
 
         comeback(context, COMEBACK_1, 1, FunnyMessages.KIND_SAUDADE)
         comeback(context, COMEBACK_3, 3, FunnyMessages.KIND_DESAFIO)
-        comeback(context, COMEBACK_7, 7, FunnyMessages.KIND_CESTA)
+        comeback(context, COMEBACK_7, 7, FunnyMessages.KIND_RECEITA)
     }
 
     /** Chamado quando o jogador abre o app: reprograma os "volta aqui". */
@@ -185,7 +187,7 @@ object ReminderScheduler {
         if (!repo.current.notifications) return
         comeback(context, COMEBACK_1, 1, FunnyMessages.KIND_SAUDADE)
         comeback(context, COMEBACK_3, 3, FunnyMessages.KIND_DESAFIO)
-        comeback(context, COMEBACK_7, 7, FunnyMessages.KIND_CESTA)
+        comeback(context, COMEBACK_7, 7, FunnyMessages.KIND_RECEITA)
     }
 
     private fun comeback(context: Context, name: String, days: Long, kind: String) {

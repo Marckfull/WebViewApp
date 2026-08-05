@@ -157,6 +157,7 @@ fun BoardView(
                         cell = cell,
                         dying = dying,
                         highlighted = ui.pendingPower != null,
+                        hinted = tile.id in ui.hintTiles,
                     )
                 }
             }
@@ -244,20 +245,25 @@ private fun TileView(
     cell: Dp,
     dying: Boolean,
     highlighted: Boolean,
+    hinted: Boolean,
 ) {
+    val targetX = cellX(tile.col, cell)
+    val targetY = cellX(tile.row, cell)
+
     val x by androidx.compose.animation.core.animateDpAsState(
-        targetValue = cellX(tile.col, cell),
+        targetValue = targetX,
         animationSpec = tween(125, easing = FastOutSlowInEasing),
         label = "x",
     )
     val y by androidx.compose.animation.core.animateDpAsState(
-        targetValue = cellX(tile.row, cell),
+        targetValue = targetY,
         animationSpec = tween(125, easing = FastOutSlowInEasing),
         label = "y",
     )
 
     val scale = remember { Animatable(if (tile.spawned) 0.15f else 1f) }
     val alpha = remember { Animatable(1f) }
+    val flash = remember { Animatable(0f) }
 
     LaunchedEffect(Unit) {
         if (tile.spawned) {
@@ -266,7 +272,10 @@ private fun TileView(
     }
     LaunchedEffect(tile.level, tile.merged) {
         if (tile.merged) {
+            // O clarão vem antes do pulo: é ele que vende o impacto da fusão.
+            flash.snapTo(0.85f)
             scale.animateTo(1.24f, tween(90))
+            flash.animateTo(0f, tween(220))
             scale.animateTo(1f, spring(dampingRatio = 0.38f, stiffness = 650f))
         }
     }
@@ -277,25 +286,35 @@ private fun TileView(
         }
     }
 
-    val pulse = if (highlighted && !dying) {
+    val pulse = if ((highlighted || hinted) && !dying) {
         val transition = rememberInfiniteTransition(label = "sel")
         transition.animateFloat(
             initialValue = 1f,
-            targetValue = 1.06f,
-            animationSpec = infiniteRepeatable(tween(520), RepeatMode.Reverse),
+            targetValue = if (hinted) 1.1f else 1.06f,
+            animationSpec = infiniteRepeatable(tween(if (hinted) 400 else 520), RepeatMode.Reverse),
             label = "selp",
         ).value
     } else {
         1f
     }
 
+    // Squash & stretch: a fruta que ainda está viajando estica no eixo do
+    // movimento e achata no outro. É o detalhe que separa deslize gostoso de
+    // deslize duro — e sai de graça, só com a distância que falta percorrer.
+    val travelX = (targetX - x).value
+    val travelY = (targetY - y).value
+    val stretch = (kotlin.math.abs(travelX) + kotlin.math.abs(travelY)) / cell.value
+    val horizontal = kotlin.math.abs(travelX) >= kotlin.math.abs(travelY)
+    val squash = (stretch * 0.22f).coerceAtMost(0.20f)
+
     Box(
         Modifier
             .offset(x = x, y = y)
             .size(cell)
             .graphicsLayer {
-                scaleX = scale.value * pulse
-                scaleY = scale.value * pulse
+                val base = scale.value * pulse
+                scaleX = base * (if (horizontal) 1f + squash else 1f - squash)
+                scaleY = base * (if (horizontal) 1f - squash else 1f + squash)
                 this.alpha = alpha.value
             },
         contentAlignment = Alignment.Center,
@@ -306,7 +325,27 @@ private fun TileView(
             TileKind.FRUIT -> FruitTile(tile, cell)
         }
         if (tile.frozen) IceOverlay(cell)
+        if (hinted) HintRing(cell)
+        if (flash.value > 0f) {
+            Box(
+                Modifier
+                    .fillMaxSize()
+                    .clip(RoundedCornerShape(cell * 0.22f))
+                    .background(Color.White.copy(alpha = flash.value)),
+            )
+        }
     }
+}
+
+/** Anel dourado do Olho Bom em volta das duas frutas indicadas. */
+@Composable
+private fun HintRing(cell: Dp) {
+    Box(
+        Modifier
+            .fillMaxSize()
+            .clip(RoundedCornerShape(cell * 0.22f))
+            .border(4.dp, Color(0xFFFFD54F), RoundedCornerShape(cell * 0.22f)),
+    )
 }
 
 @Composable

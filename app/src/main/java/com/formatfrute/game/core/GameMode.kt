@@ -67,20 +67,6 @@ enum class GameMode(
         iceChance = 0.20f,
     ),
 
-    CESTA(
-        id = "cesta",
-        title = "Cesta do Dia",
-        tagline = "Um desafio novo a cada dia",
-        howTo = "Tabuleiro e objetivo sorteados pela data de hoje — iguais para " +
-            "todo mundo. Movimentos contados. Consegue fechar a cesta?",
-        emblem = Fruit.ABACAXI,
-        gridSize = 4,
-        accent = Color(0xFF7B61FF),
-        accent2 = Color(0xFFC4B5FF),
-        moveLimit = 30,
-        rainbowChance = 0.05f,
-    ),
-
     ZEN(
         id = "zen",
         title = "Zen do Pomar",

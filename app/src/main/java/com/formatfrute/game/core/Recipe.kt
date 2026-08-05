@@ -25,6 +25,8 @@ data class Recipe(
     val iceBlocks: Int,
     /** A cada quantas jogadas cai uma fruta podre; 0 = nenhuma. */
     val rottenEvery: Int,
+    /** Semente do tabuleiro: é ela que faz a fase ser igual para todo mundo. */
+    val seed: Long,
 ) {
     /** Fusões no mínimo absoluto, se cada peça caísse no lugar certo. */
     val minMerges: Int
@@ -34,6 +36,9 @@ data class Recipe(
         }
 
     val hardest: Fruit get() = Fruit.of(orders.maxOf { it.level })
+
+    /** Sorteada pela data em vez de escolhida na trilha. */
+    val daily: Boolean get() = number == RecipeBook.DAILY
 
     fun starsFor(movesLeft: Int): Int = when {
         movesLeft >= moves * 0.40f -> 3
@@ -53,6 +58,29 @@ data class Recipe(
 object RecipeBook {
 
     const val TOTAL = 60
+
+    /** Número reservado para a Receita do Dia (nunca é uma fase da trilha). */
+    const val DAILY = 0
+
+    /**
+     * A Receita do Dia: uma fase da trilha sorteada pela data — a mesma para
+     * todo mundo, no mundo inteiro, e diferente amanhã. Nunca sorteia as cinco
+     * primeiras, que são fáceis demais para valer prêmio de dia.
+     */
+    fun dailyNumber(day: String): Int {
+        val rng = Random(day.hashCode().toLong() * 8191)
+        return 6 + rng.nextInt(TOTAL - 5)
+    }
+
+    /** A fase do dia, com tabuleiro próprio (não é a mesma jogada da trilha). */
+    fun daily(day: String): Recipe {
+        val base = recipe(dailyNumber(day))
+        return base.copy(
+            number = DAILY,
+            title = "Receita do Dia",
+            seed = day.hashCode().toLong() * 104_729L,
+        )
+    }
 
     /**
      * Casas que ficam livres na largada. Sem esse respiro o tabuleiro nasce
@@ -118,6 +146,7 @@ object RecipeBook {
                 n < 40 -> 7
                 else -> 5
             },
+            seed = n * 104_729L,
         )
     }
 

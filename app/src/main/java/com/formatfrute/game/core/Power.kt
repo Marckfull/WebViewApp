@@ -65,6 +65,14 @@ enum class Power(
         emoji = "🌈",
         price = 260,
         color = Color(0xFFE0197B),
+    ),
+    DICA(
+        id = "dica",
+        title = "Olho Bom",
+        desc = "Acende as duas frutas que dá para juntar agora.",
+        emoji = "👀",
+        price = 70,
+        color = Color(0xFF3FA9F5),
     );
 
     companion object {

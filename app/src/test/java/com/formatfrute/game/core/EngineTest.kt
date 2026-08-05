@@ -2,6 +2,8 @@ package com.formatfrute.game.core
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import kotlin.random.Random
@@ -205,6 +207,40 @@ class EngineTest {
         assertEquals(state.tiles.size, shuffled.tiles.size)
         val cells = shuffled.tiles.map { it.row to it.col }
         assertEquals(cells.size, cells.toSet().size)
+    }
+
+    // ------------------------------------------------------- olho bom
+
+    @Test
+    fun `a dica aponta o par mais valioso`() {
+        val hint = Engine.findHint(
+            board(
+                4,
+                tile(1, 0, 0, 0),
+                tile(2, 5, 1, 1),
+                tile(3, 5, 1, 2),
+                tile(4, 0, 3, 3),
+            )
+        )
+
+        assertNotNull(hint)
+        assertEquals(setOf(2L, 3L), setOf(hint!!.first.id, hint.second.id))
+    }
+
+    @Test
+    fun `sem par possivel nao ha dica`() {
+        val tiles = listOf(0, 1, 2, 3).mapIndexed { i, level ->
+            tile(i.toLong(), level, i / 2, i % 2)
+        }
+        assertNull(Engine.findHint(GameState(size = 2, tiles = tiles)))
+    }
+
+    @Test
+    fun `fruta congelada nunca vira dica`() {
+        val congelada = Engine.findHint(
+            board(2, tile(1, 3, 0, 0, ice = 1), tile(2, 3, 0, 1))
+        )
+        assertNull(congelada)
     }
 
     // ----------------------------------------------------------- spawn

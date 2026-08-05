@@ -1,9 +1,13 @@
 package com.formatfrute.game.ui.components
 
+import android.app.ActivityManager
+import android.content.Context
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.spring
@@ -216,17 +220,29 @@ fun PaperCard(
 fun FruitBackground(
     theme: BoardTheme,
     modifier: Modifier = Modifier,
-    density: Int = 9,
+    density: Int = 5,
     content: @Composable () -> Unit,
 ) {
-    val floaters = remember(density) {
-        val rng = Random(density * 7919L)
-        List(density) {
+    // Cada fruta boiando é um bitmap redesenhado todo frame. Em aparelho de
+    // entrada isso come orçamento de graça, então o cenário encolhe sozinho
+    // onde a memória é curta — sem sumir com o clima em quem tem folga.
+    val context = LocalContext.current
+    val budget = remember(density) {
+        val lowRam = runCatching {
+            (context.getSystemService(Context.ACTIVITY_SERVICE) as? ActivityManager)
+                ?.isLowRamDevice == true
+        }.getOrDefault(false)
+        if (lowRam) (density / 2).coerceAtLeast(2) else density
+    }
+
+    val floaters = remember(budget) {
+        val rng = Random(budget * 7919L)
+        List(budget) {
             FloatingFruit(
                 fruit = Fruit.entries[rng.nextInt(Fruit.entries.size)],
                 x = rng.nextFloat(),
                 y = rng.nextFloat(),
-                size = 46f + rng.nextFloat() * 70f,
+                size = 44f + rng.nextFloat() * 46f,
                 speed = 0.35f + rng.nextFloat() * 0.7f,
                 phase = rng.nextFloat() * 6.28f,
                 spin = if (rng.nextBoolean()) 1f else -1f,
@@ -433,6 +449,26 @@ fun Modifier.softShadow(color: Color = Fruta.Ink, alpha: Float = 0.18f, offset: 
             cornerRadius = androidx.compose.ui.geometry.CornerRadius(26.dp.toPx()),
         )
     }
+
+/**
+ * Número que rola até o valor novo em vez de pular. Custa quase nada e é a
+ * diferença entre "o placar mudou" e "eu ganhei aquilo ali".
+ */
+@Composable
+fun RollingNumber(
+    value: Int,
+    modifier: Modifier = Modifier,
+    style: androidx.compose.ui.text.TextStyle = MaterialTheme.typography.headlineSmall,
+    color: Color = Color.White,
+    format: (Int) -> String = { it.toString() },
+) {
+    val shown by animateIntAsState(
+        targetValue = value,
+        animationSpec = tween(340, easing = FastOutSlowInEasing),
+        label = "roll",
+    )
+    Text(text = format(shown), style = style, color = color, modifier = modifier)
+}
 
 @Composable
 fun LabelSmallMuted(text: String, modifier: Modifier = Modifier) {
