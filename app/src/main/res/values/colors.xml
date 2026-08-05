@@ -1,0 +1,9 @@
+<resources>
+    <color name="ink">#FF3D2B1F</color>
+    <color name="cream">#FFFFF7EA</color>
+    <color name="sun">#FFFFC531</color>
+    <color name="berry">#FFFF4D6D</color>
+    <color name="leaf">#FF43C463</color>
+    <color name="splash_background">#FFFFE9C9</color>
+    <color name="icon_background">#FFFFC531</color>
+</resources>
