@@ -1,6 +1,7 @@
 package com.formatfrute.game.game
 
 import android.app.Application
+import androidx.annotation.StringRes
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -24,6 +25,7 @@ import com.formatfrute.game.core.TileKind
 import com.formatfrute.game.data.Achievement
 import com.formatfrute.game.data.Achievements
 import com.formatfrute.game.data.GameRepository
+import com.formatfrute.game.R
 import com.formatfrute.game.data.SavedGame
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -151,6 +153,10 @@ class GameViewModel(app: Application) : AndroidViewModel(app) {
     private var achievementsBefore = emptySet<String>()
     private var recipeDay = ""
 
+    /** Resolve texto de `strings.xml`. O ViewModel tem Application, então pode. */
+    private fun str(@StringRes id: Int, vararg args: Any): String =
+        getApplication<Application>().getString(id, *args)
+
     // ------------------------------------------------------------- partida
 
     fun start(mode: GameMode, tutorial: Boolean = false) {
@@ -206,7 +212,7 @@ class GameViewModel(app: Application) : AndroidViewModel(app) {
             recipe = recipe,
             movesLeft = recipe.moves,
             movesTotal = recipe.moves,
-            goal = if (recipe.daily) "Receita do Dia" else "Fase ${recipe.number} — ${recipe.title}",
+            goal = recipeGoal(recipe),
             coach = if (repo.current.recipeCoachDone) null else RecipeCoachStep.entries.first(),
         )
 
@@ -246,9 +252,7 @@ class GameViewModel(app: Application) : AndroidViewModel(app) {
             bossHp = saved.bossHp,
             bossMaxHp = BOSS_HP,
             bossAngry = saved.mode.boss && saved.bossHp < BOSS_HP * 0.3f,
-            goal = recipe?.let {
-                if (it.daily) "Receita do Dia" else "Fase ${it.number} — ${it.title}"
-            } ?: goalText(saved.mode),
+            goal = recipe?.let { recipeGoal(it) } ?: goalText(saved.mode),
         )
 
         sound.music(if (saved.mode.boss) Track.BOSS else Track.GAME)
@@ -272,13 +276,20 @@ class GameViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     private fun goalText(mode: GameMode): String = when (mode) {
-        GameMode.RECEITA -> "Monte o pedido do freguês"
-        GameMode.POMAR -> "Chegue na ${Fruit.of(mode.goalLevel).label}"
-        GameMode.VITAMINA -> "Faça o máximo de pontos em ${mode.timeLimit}s"
-        GameMode.GELEIA -> "Derreta o gelo e chegue na ${Fruit.of(mode.goalLevel).label}"
-        GameMode.ZEN -> "Relaxe. O pomar cuida do resto."
-        GameMode.BATALHA -> "Derrote o Monstro Azedo"
+        GameMode.RECEITA -> str(R.string.goal_recipe)
+        GameMode.POMAR -> str(R.string.goal_reach, str(Fruit.of(mode.goalLevel).label))
+        GameMode.VITAMINA -> str(R.string.goal_score_time, mode.timeLimit)
+        GameMode.GELEIA -> str(R.string.goal_melt_ice, str(Fruit.of(mode.goalLevel).label))
+        GameMode.ZEN -> str(R.string.goal_zen)
+        GameMode.BATALHA -> str(R.string.goal_boss)
     }
+
+    private fun recipeGoal(recipe: Recipe): String =
+        if (recipe.daily) {
+            str(R.string.recipe_daily)
+        } else {
+            str(R.string.recipe_stage, recipe.number, str(recipe.title))
+        }
 
     private fun startClock() {
         timerJob?.cancel()
@@ -349,7 +360,7 @@ class GameViewModel(app: Application) : AndroidViewModel(app) {
             val fruit = Fruit.of(merge.level)
             newFloaters += Floater(
                 id = effectId++,
-                text = if (merge.harvest) "COLHEITA!" else "+${merge.value}",
+                text = if (merge.harvest) str(R.string.float_harvest) else "+${merge.value}",
                 row = merge.row,
                 col = merge.col,
                 color = if (merge.harvest) Color(0xFFFFD54F) else fruit.glow,
@@ -373,7 +384,13 @@ class GameViewModel(app: Application) : AndroidViewModel(app) {
             }
             if (combo >= 3) {
                 bonus = combo * 25
-                newFloaters += Floater(effectId++, "COMBO x$combo", 0, ui.mode.gridSize / 2, Color(0xFFFFD54F))
+                newFloaters += Floater(
+                    effectId++,
+                    str(R.string.float_combo, combo),
+                    0,
+                    ui.mode.gridSize / 2,
+                    Color(0xFFFFD54F),
+                )
             }
             if (ui.mode.hasClock) {
                 timeLeft = (timeLeft + result.merges.sumOf { 1 + it.level / 3 }).coerceAtMost(120)
@@ -404,9 +421,9 @@ class GameViewModel(app: Application) : AndroidViewModel(app) {
             if (movesSinceAttack >= (if (angry) 2 else 3) && bossHp > 0) {
                 movesSinceAttack = 0
                 state = Engine.spawn(state, rng, forcedKind = TileKind.ROTTEN, forcedLevel = 0)
-                newFloaters += Floater(effectId++, "Fruta podre!", 0, 0, Color(0xFF9CCC65))
+                newFloaters += Floater(effectId++, str(R.string.float_rotten), 0, 0, Color(0xFF9CCC65))
                 haptics.error()
-                say(FruitVoice.onBoss(effectId++), null, 0, ui.state.size - 1, villain = true)
+                say(str(FruitVoice.onBoss(effectId++)), null, 0, ui.state.size - 1, villain = true)
             }
         }
 
@@ -506,13 +523,18 @@ class GameViewModel(app: Application) : AndroidViewModel(app) {
             val fruit = Fruit.of(debut.level)
             val line = FruitVoice.onArrival(fruit, effectId + debut.level)
             if (line != null) {
-                say(line, fruit, debut.row, debut.col)
+                say(str(line), fruit, debut.row, debut.col)
                 return
             }
         }
         if (combo >= 5 && merges.isNotEmpty()) {
             val loudest = merges.maxByOrNull { it.level } ?: return
-            say(FruitVoice.onCombo(effectId + combo), Fruit.of(loudest.level), loudest.row, loudest.col)
+            say(
+                str(FruitVoice.onCombo(effectId + combo)),
+                Fruit.of(loudest.level),
+                loudest.row,
+                loudest.col,
+            )
         }
     }
 
@@ -585,7 +607,7 @@ class GameViewModel(app: Application) : AndroidViewModel(app) {
                 _ui.value = ui.copy(
                     state = cleaned,
                     floaters = ui.floaters + Floater(
-                        effectId++, "O pomar respirou!", 0, mode.gridSize / 2, Color(0xFF2FBF71),
+                        effectId++, str(R.string.float_breathe), 0, mode.gridSize / 2, Color(0xFF2FBF71),
                     ),
                 )
                 sound.play(Sfx.HARVEST)
@@ -685,7 +707,7 @@ class GameViewModel(app: Application) : AndroidViewModel(app) {
         val ui = _ui.value
         if (ui.status != GameStatus.PLAYING) return
         if (power == Power.RELOGIO && !ui.mode.hasClock) {
-            _ui.value = ui.copy(hint = "Esse poder só funciona nos modos com relógio.")
+            _ui.value = ui.copy(hint = str(R.string.hint_clock_only))
             haptics.error()
             return
         }
@@ -702,7 +724,7 @@ class GameViewModel(app: Application) : AndroidViewModel(app) {
             haptics.tap()
             requestPower(power)
         } else {
-            _ui.value = _ui.value.copy(hint = "Sementes insuficientes. Assista um vídeo!")
+            _ui.value = _ui.value.copy(hint = str(R.string.hint_no_coins))
             haptics.error()
         }
     }
@@ -716,7 +738,7 @@ class GameViewModel(app: Application) : AndroidViewModel(app) {
         val request = _ui.value.rewardRequest
         _ui.value = _ui.value.copy(rewardRequest = null)
         if (!granted) {
-            _ui.value = _ui.value.copy(hint = "O vídeo não carregou. Tente de novo em instantes.")
+            _ui.value = _ui.value.copy(hint = str(R.string.hint_no_video))
             return
         }
         when (request?.reason) {
@@ -740,8 +762,10 @@ class GameViewModel(app: Application) : AndroidViewModel(app) {
             Power.MARTELO, Power.ADUBO -> {
                 _ui.value = ui.copy(
                     pendingPower = power,
-                    hint = if (power == Power.MARTELO) "Toque na fruta que vai pro chão."
-                    else "Toque na fruta que vai crescer.",
+                    hint = str(
+                        if (power == Power.MARTELO) R.string.hint_pick_smash
+                        else R.string.hint_pick_grow
+                    ),
                 )
             }
             Power.VOLTAR -> undo()
@@ -763,12 +787,12 @@ class GameViewModel(app: Application) : AndroidViewModel(app) {
         val ui = _ui.value
         val pair = Engine.findHint(ui.state)
         if (pair == null) {
-            _ui.value = ui.copy(hint = "Não tem fusão possível. Use a Peneira ou o Martelinho!")
+            _ui.value = ui.copy(hint = str(R.string.hint_no_merge))
             return
         }
         _ui.value = ui.copy(
             hintTiles = setOf(pair.first.id, pair.second.id),
-            hint = "Junte essas duas! 👀",
+            hint = str(R.string.hint_look_here),
         )
         hintJob?.cancel()
         hintJob = viewModelScope.launch {
@@ -788,7 +812,7 @@ class GameViewModel(app: Application) : AndroidViewModel(app) {
         val power = ui.pendingPower ?: return
         val target = ui.state.at(row, col)
         if (target == null) {
-            _ui.value = ui.copy(hint = "Escolha uma casa com fruta.")
+            _ui.value = ui.copy(hint = str(R.string.hint_pick_any))
             haptics.error()
             return
         }
@@ -831,7 +855,7 @@ class GameViewModel(app: Application) : AndroidViewModel(app) {
     private fun undo() {
         val previous = history.removeLastOrNull()
         if (previous == null) {
-            _ui.value = _ui.value.copy(hint = "Não tem jogada pra desfazer ainda.")
+            _ui.value = _ui.value.copy(hint = str(R.string.hint_no_undo))
             return
         }
         movesSinceAttack = previous.movesSinceAttack

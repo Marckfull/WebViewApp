@@ -1,6 +1,8 @@
 package com.formatfrute.game.core
 
+import androidx.annotation.StringRes
 import androidx.compose.ui.graphics.Color
+import com.formatfrute.game.R
 
 /**
  * Poderes da barraquinha. Todos podem ser comprados com Sementes, mas o
@@ -8,8 +10,8 @@ import androidx.compose.ui.graphics.Color
  */
 enum class Power(
     val id: String,
-    val title: String,
-    val desc: String,
+    @StringRes val title: Int,
+    @StringRes val desc: Int,
     val emoji: String,
     val price: Int,
     val color: Color,
@@ -18,8 +20,8 @@ enum class Power(
 ) {
     MARTELO(
         id = "martelo",
-        title = "Martelinho",
-        desc = "Esmaga uma fruta qualquer do tabuleiro.",
+        title = R.string.power_martelo_title,
+        desc = R.string.power_martelo_desc,
         emoji = "🔨",
         price = 120,
         color = Color(0xFFFF6B6B),
@@ -27,8 +29,8 @@ enum class Power(
     ),
     ADUBO(
         id = "adubo",
-        title = "Adubo Mágico",
-        desc = "Faz uma fruta crescer um nível na hora.",
+        title = R.string.power_adubo_title,
+        desc = R.string.power_adubo_desc,
         emoji = "🌱",
         price = 200,
         color = Color(0xFF2FBF71),
@@ -36,40 +38,40 @@ enum class Power(
     ),
     VOLTAR(
         id = "voltar",
-        title = "Voltar no Tempo",
-        desc = "Desfaz a última jogada. Ninguém viu.",
+        title = R.string.power_voltar_title,
+        desc = R.string.power_voltar_desc,
         emoji = "⏪",
         price = 90,
         color = Color(0xFF7B61FF),
     ),
     PENEIRA(
         id = "peneira",
-        title = "Peneira",
-        desc = "Chacoalha o tabuleiro e embaralha tudo.",
+        title = R.string.power_peneira_title,
+        desc = R.string.power_peneira_desc,
         emoji = "🧺",
         price = 110,
         color = Color(0xFFFF8A00),
     ),
     RELOGIO(
         id = "relogio",
-        title = "Relógio de Açúcar",
-        desc = "Ganha 15 segundos. Só vale nos modos com relógio.",
+        title = R.string.power_relogio_title,
+        desc = R.string.power_relogio_desc,
         emoji = "⏱️",
         price = 150,
         color = Color(0xFF3FA9F5),
     ),
     ARCOIRIS(
         id = "arcoiris",
-        title = "Fruta Arco-íris",
-        desc = "Solta um coringa que combina com qualquer fruta.",
+        title = R.string.power_arcoiris_title,
+        desc = R.string.power_arcoiris_desc,
         emoji = "🌈",
         price = 260,
         color = Color(0xFFE0197B),
     ),
     DICA(
         id = "dica",
-        title = "Olho Bom",
-        desc = "Acende as duas frutas que dá para juntar agora.",
+        title = R.string.power_dica_title,
+        desc = R.string.power_dica_desc,
         emoji = "👀",
         price = 70,
         color = Color(0xFF3FA9F5),

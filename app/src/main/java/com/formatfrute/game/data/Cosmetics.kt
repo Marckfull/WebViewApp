@@ -1,6 +1,8 @@
 package com.formatfrute.game.data
 
+import androidx.annotation.StringRes
 import androidx.compose.ui.graphics.Color
+import com.formatfrute.game.R
 
 /**
  * Peles do tabuleiro.
@@ -13,8 +15,8 @@ import androidx.compose.ui.graphics.Color
  */
 enum class BoardTheme(
     val id: String,
-    val title: String,
-    val desc: String,
+    @StringRes val title: Int,
+    @StringRes val desc: Int,
     val price: Int,
     val top: Color,
     val bottom: Color,
@@ -28,8 +30,8 @@ enum class BoardTheme(
 
     FEIRA(
         id = "feira",
-        title = "Feira de Domingo",
-        desc = "O clássico ensolarado da barraca.",
+        title = R.string.theme_feira_title,
+        desc = R.string.theme_feira_desc,
         price = 0,
         top = Color(0xFFFFE9C9),
         bottom = Color(0xFFFFC29B),
@@ -39,8 +41,8 @@ enum class BoardTheme(
     ),
     POMAR(
         id = "pomar",
-        title = "Pomar ao Amanhecer",
-        desc = "Verdinho, calmo, cheirando a mato molhado.",
+        title = R.string.theme_pomar_title,
+        desc = R.string.theme_pomar_desc,
         price = 900,
         top = Color(0xFFD9F7C4),
         bottom = Color(0xFF8FD98B),
@@ -50,8 +52,8 @@ enum class BoardTheme(
     ),
     SORVETE(
         id = "sorvete",
-        title = "Sorvete de Frutas",
-        desc = "Pastel, fofo e gelado que nem picolé.",
+        title = R.string.theme_sorvete_title,
+        desc = R.string.theme_sorvete_desc,
         price = 2200,
         top = Color(0xFFFFE3F1),
         bottom = Color(0xFFBFE6FF),
@@ -61,8 +63,8 @@ enum class BoardTheme(
     ),
     TROPICAL(
         id = "tropical",
-        title = "Praia Tropical",
-        desc = "Areia, sol e cheiro de coco.",
+        title = R.string.theme_tropical_title,
+        desc = R.string.theme_tropical_desc,
         price = 4000,
         top = Color(0xFF9BE7FF),
         bottom = Color(0xFFFFE6A7),
@@ -75,8 +77,8 @@ enum class BoardTheme(
 
     NOITE(
         id = "noite",
-        title = "Feira da Meia-Noite",
-        desc = "Modo escuro com luzinha de barraca. Só no Passe.",
+        title = R.string.theme_noite_title,
+        desc = R.string.theme_noite_desc,
         price = 0,
         top = Color(0xFF241B3A),
         bottom = Color(0xFF3B2B5E),
@@ -87,8 +89,8 @@ enum class BoardTheme(
     ),
     JUNINA(
         id = "junina",
-        title = "Arraiá da Fruta",
-        desc = "Bandeirinha, fogueira e quentão. Só no Passe.",
+        title = R.string.theme_junina_title,
+        desc = R.string.theme_junina_desc,
         price = 0,
         top = Color(0xFFFFD98A),
         bottom = Color(0xFFE86A4A),
@@ -99,8 +101,8 @@ enum class BoardTheme(
     ),
     ENCANTADO(
         id = "encantado",
-        title = "Pomar Encantado",
-        desc = "Roxo, dourado e meio mágico. Só no Passe.",
+        title = R.string.theme_encantado_title,
+        desc = R.string.theme_encantado_desc,
         price = 0,
         top = Color(0xFF3B2A6B),
         bottom = Color(0xFF7A4FB5),
@@ -125,16 +127,10 @@ enum class BoardTheme(
 
 /** Patentes do feirante — a barra de XP da tela inicial. */
 object Ranks {
-    private val titles = listOf(
-        "Aprendiz de Feirante",
-        "Catador de Cereja",
-        "Ajudante de Barraca",
-        "Vendedor de Suco",
-        "Mestre da Salada",
-        "Chef de Vitamina",
-        "Guardião do Pomar",
-        "Barão da Melancia",
-        "Lenda da Feira",
+    private val titles = intArrayOf(
+        R.string.rank_1, R.string.rank_2, R.string.rank_3,
+        R.string.rank_4, R.string.rank_5, R.string.rank_6,
+        R.string.rank_7, R.string.rank_8, R.string.rank_9,
     )
 
     fun levelFor(xp: Int): Int {
@@ -161,5 +157,6 @@ object Ranks {
         return left to need
     }
 
-    fun title(level: Int): String = titles[((level - 1) / 3).coerceIn(0, titles.lastIndex)]
+    @StringRes
+    fun title(level: Int): Int = titles[((level - 1) / 3).coerceIn(0, titles.lastIndex)]
 }

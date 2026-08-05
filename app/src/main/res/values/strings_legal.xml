@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Termos de Uso e Política de Privacidade. Arquivo separado por tamanho. -->
+<resources>
+
+
+    <!-- ================================================ Termos de Uso -->
+    <string name="terms_1_t">1. Quem somos</string>
+    <string name="terms_1_b">Format Frute é um jogo de quebra-cabeça para celular, feito para diversão de toda a família. Ao instalar e jogar, você concorda com estes Termos de Uso. Se não concordar, basta desinstalar o aplicativo.\n\nContato: formatfrute@gmail.com</string>
+
+    <string name="terms_2_t">2. Licença de uso</string>
+    <string name="terms_2_b">Damos a você uma licença pessoal, gratuita, não exclusiva e intransferível para usar o Format Frute em seus dispositivos. O jogo, o nome, os desenhos das frutas, os sons e o código continuam sendo nossos.</string>
+
+    <string name="terms_3_t">3. O que você não pode fazer</string>
+    <string name="terms_3_b">• Copiar, vender, alugar ou redistribuir o jogo;\n• Modificar, descompilar ou fazer engenharia reversa do aplicativo;\n• Usar programas para trapacear, alterar pontuação, sementes ou poderes;\n• Usar o jogo para qualquer finalidade ilegal.\n\nContas ou dispositivos que burlarem as regras podem perder o progresso.</string>
+
+    <string name="terms_4_t">4. Sementes, poderes e itens</string>
+    <string name="terms_4_b">As Sementes e os poderes são itens virtuais, sem valor monetário fora do jogo. Eles não podem ser trocados por dinheiro, transferidos entre dispositivos ou resgatados de qualquer outra forma. Podemos ajustar preços, recompensas e equilíbrio do jogo para manter a experiência justa.</string>
+
+    <string name="terms_5_t">5. Anúncios</string>
+    <string name="terms_5_b">O Format Frute é gratuito e se mantém com anúncios exibidos pelo Google AdMob. Existem dois tipos:\n\n• Anúncio entre partidas (intersticial), mostrado com intervalos para não atrapalhar o jogo;\n• Anúncio premiado (vídeo), sempre opcional: você escolhe assistir para ganhar poderes, sementes, tempo extra ou continuar a partida.\n\nNunca é obrigatório assistir a um vídeo premiado para avançar no jogo.</string>
+
+    <string name="terms_6_t">6. Progresso salvo no aparelho</string>
+    <string name="terms_6_b">Seu progresso, recordes, sementes e itens ficam guardados no próprio aparelho. Se você desinstalar o jogo, limpar os dados do app ou trocar de celular, esse progresso pode ser perdido e não temos como recuperá-lo.</string>
+
+    <string name="terms_7_t">7. Disponibilidade e mudanças</string>
+    <string name="terms_7_b">Podemos atualizar o jogo, adicionar ou remover modos, poderes e recompensas, e também interromper o serviço a qualquer momento. Sempre que possível, avisaremos dentro do próprio aplicativo.</string>
+
+    <string name="terms_8_t">8. Garantias e responsabilidade</string>
+    <string name="terms_8_b">O jogo é fornecido \"como está\". Não garantimos que ele funcionará sem falhas em todos os aparelhos. Na medida permitida pela lei, não nos responsabilizamos por danos indiretos decorrentes do uso do aplicativo. Nada aqui afasta os direitos garantidos pelo Código de Defesa do Consumidor.</string>
+
+    <string name="terms_9_t">9. Idade</string>
+    <string name="terms_9_b">O Format Frute é indicado para todas as idades e configurado para exibir somente anúncios de classificação geral. Ainda assim, recomendamos que responsáveis configurem os controles parentais da loja de aplicativos e acompanhem o uso por crianças.</string>
+
+    <string name="terms_10_t">10. Lei aplicável</string>
+    <string name="terms_10_b">Estes Termos são regidos pelas leis do Brasil. Dúvidas, sugestões ou reclamações podem ser enviadas para formatfrute@gmail.com.\n\nÚltima atualização: 5 de agosto de 2026</string>
+
+    <!-- ====================================== Política de Privacidade -->
+    <string name="privacy_0_t">Resumo rápido</string>
+    <string name="privacy_0_b">Não pedimos cadastro, não pedimos e-mail, não pedimos telefone e não criamos conta. Seu progresso fica no seu aparelho. Os únicos dados que saem do celular são os usados pelo Google AdMob para mostrar anúncios.\n\nContato: formatfrute@gmail.com</string>
+
+    <string name="privacy_1_t">1. Dados que ficam só no seu aparelho</string>
+    <string name="privacy_1_b">Guardamos localmente, usando as preferências do Android:\n• Pontuação, recordes e melhor fruta alcançada;\n• Sementes, poderes, peles compradas e nível do jogador;\n• Fases da Receita, estrelas, conquistas e degrau do Passe da Feira;\n• Missões do dia, sequência de presentes e progresso do tutorial;\n• A partida em andamento, para você retomar de onde parou;\n• Suas preferências de música, efeitos, vibração e notificações.\n\nEsses dados não são enviados para nenhum servidor nosso — nós nem temos servidor.</string>
+
+    <string name="privacy_2_t">2. Relatório de erro</string>
+    <string name="privacy_2_b">Se o jogo travar, guardamos no aparelho um relatório técnico com modelo do celular, versão do Android, versão do app e o detalhe do erro. Na abertura seguinte perguntamos se você quer enviá-lo por e-mail para formatfrute@gmail.com.\n\nNada é enviado automaticamente: o relatório só sai se você tocar em \"Mandar\", e sai pelo seu próprio aplicativo de e-mail. Se recusar, ele é apagado.</string>
+
+    <string name="privacy_3_t">3. Dados usados pelos anúncios</string>
+    <string name="privacy_3_b">Os anúncios são fornecidos pelo Google AdMob. Para exibi-los, o Google pode coletar e tratar informações como identificador de publicidade do dispositivo, endereço IP, modelo do aparelho, versão do sistema e interações com o anúncio.\n\nEsse tratamento é feito pelo Google, conforme a política dele: https://policies.google.com/technologies/ads</string>
+
+    <string name="privacy_4_t">4. Consentimento e anúncios personalizados</string>
+    <string name="privacy_4_b">Se você estiver na Europa (EEE/Reino Unido) ou em outra região que exija, mostramos uma tela de consentimento antes dos anúncios, usando a plataforma de mensagens do Google (UMP). Você pode rever essa escolha a qualquer momento em Ajustes › Opções de privacidade.\n\nNo Android, você também pode limitar ou apagar o identificador de publicidade em Configurações › Google › Anúncios.</string>
+
+    <string name="privacy_5_t">5. Público e conteúdo dos anúncios</string>
+    <string name="privacy_5_b">O Format Frute é um jogo para todas as idades. Configuramos o AdMob com a classificação de conteúdo \"G\" (público geral), então os anúncios exibidos são apropriados para qualquer faixa etária — sem bebida, apostas, violência ou conteúdo adulto.\n\nNão coletamos intencionalmente dados pessoais de ninguém, de qualquer idade. Recomendamos que responsáveis usem os controles parentais da loja de aplicativos. Se você acredita que alguma criança forneceu algum dado pessoal, escreva para formatfrute@gmail.com e apagaremos o que estiver ao nosso alcance.</string>
+
+    <string name="privacy_6_t">6. Notificações</string>
+    <string name="privacy_6_b">Enviamos lembretes divertidos sobre presentes do dia e desafios novos. Elas são geradas no próprio aparelho, não usam servidor e podem ser desligadas a qualquer momento em Ajustes › Notificações ou nas configurações do Android.</string>
+
+    <string name="privacy_7_t">7. Permissões que o app pede</string>
+    <string name="privacy_7_b">• Notificações: para os lembretes (Android 13 ou superior);\n• Vibração: para o retorno tátil durante o jogo;\n• Internet: apenas para carregar os anúncios.\n\nNão pedimos acesso a contatos, câmera, microfone, fotos nem localização.</string>
+
+    <string name="privacy_8_t">8. Seus direitos (LGPD)</string>
+    <string name="privacy_8_b">Você pode pedir confirmação, acesso, correção ou exclusão dos dados tratados por nós. Como o progresso fica apenas no aparelho, a exclusão completa acontece ao limpar os dados do aplicativo ou desinstalá-lo. Para qualquer pedido ou dúvida sobre privacidade, fale com formatfrute@gmail.com — respondemos em até 15 dias.</string>
+
+    <string name="privacy_9_t">9. Mudanças nesta política</string>
+    <string name="privacy_9_b">Se algo mudar, atualizaremos este texto dentro do aplicativo e alteraremos a data abaixo. Mudanças relevantes serão avisadas na tela inicial.\n\nÚltima atualização: 5 de agosto de 2026</string>
+
+</resources>

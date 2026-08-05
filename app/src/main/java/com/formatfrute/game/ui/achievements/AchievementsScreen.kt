@@ -33,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.formatfrute.game.audio.Haptics
@@ -48,6 +49,7 @@ import com.formatfrute.game.ui.components.JuicyButton
 import com.formatfrute.game.ui.components.PaperCard
 import com.formatfrute.game.ui.components.Pulse
 import com.formatfrute.game.ui.components.StatPill
+import com.formatfrute.game.R
 import com.formatfrute.game.ui.theme.Fruta
 
 /**
@@ -111,12 +113,12 @@ fun AchievementsScreen(onBack: () -> Unit) {
                 Spacer(Modifier.width(10.dp))
                 Column(Modifier.weight(1f)) {
                     Text(
-                        "Conquistas",
+                        stringResource(R.string.ach_title),
                         style = MaterialTheme.typography.headlineMedium,
                         color = if (profile.boardTheme.dark) Color.White else Fruta.Ink,
                     )
                     Text(
-                        "$done de ${Achievements.all.size} desbloqueadas",
+                        stringResource(R.string.ach_progress, done, Achievements.all.size),
                         style = MaterialTheme.typography.bodySmall,
                         color = if (profile.boardTheme.dark) Color.White.copy(alpha = 0.8f)
                         else Fruta.InkSoft,
@@ -199,12 +201,12 @@ private fun AchievementRow(
 
             Column(Modifier.weight(1f)) {
                 Text(
-                    achievement.title,
+                    stringResource(achievement.title),
                     style = MaterialTheme.typography.titleMedium,
                     color = if (done) Fruta.Ink else Fruta.InkSoft,
                 )
                 Text(
-                    achievement.desc,
+                    stringResource(achievement.desc),
                     style = MaterialTheme.typography.bodySmall,
                     color = Fruta.InkSoft,
                 )
@@ -216,7 +218,7 @@ private fun AchievementRow(
                 )
                 Spacer(Modifier.height(2.dp))
                 Text(
-                    "$progress / ${achievement.target}  •  +${achievement.reward} 🌱",
+                    stringResource(R.string.mission_progress, progress, achievement.target, achievement.reward),
                     style = MaterialTheme.typography.labelSmall,
                     color = Fruta.InkSoft,
                 )
@@ -229,7 +231,7 @@ private fun AchievementRow(
                 done -> Box(contentAlignment = Alignment.Center) {
                     Pulse(Fruta.Leaf.copy(alpha = 0.5f), Modifier.size(86.dp, 42.dp), corner = 18.dp)
                     JuicyButton(
-                        text = "Pegar",
+                        text = stringResource(R.string.ach_claim),
                         color = Fruta.Leaf,
                         height = 36.dp,
                         modifier = Modifier.width(86.dp),

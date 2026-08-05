@@ -37,10 +37,17 @@ class AchievementsTest {
         Achievements.all.forEach {
             assertTrue("${it.id} sem meta", it.target > 0)
             assertTrue("${it.id} sem prêmio", it.reward > 0)
-            assertTrue("${it.id} sem título", it.title.isNotBlank())
-            assertTrue("${it.id} sem descrição", it.desc.isNotBlank())
+            assertTrue("${it.id} sem título", it.title != 0)
+            assertTrue("${it.id} sem descrição", it.desc != 0)
             assertTrue("${it.id} sem emoji", it.emoji.isNotBlank())
         }
+
+        // Cada conquista precisa de textos próprios: título repetido é sinal
+        // de copiar-e-colar errado no catálogo.
+        assertEquals(
+            Achievements.all.size,
+            Achievements.all.map { it.title }.toSet().size,
+        )
     }
 
     @Test

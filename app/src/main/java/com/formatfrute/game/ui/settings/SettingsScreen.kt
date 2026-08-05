@@ -32,6 +32,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.formatfrute.game.BuildConfig
@@ -45,6 +46,7 @@ import com.formatfrute.game.ui.components.PaperCard
 import com.formatfrute.game.ui.findActivity
 import com.formatfrute.game.ui.legal.LegalTab
 import com.formatfrute.game.ui.legal.LegalTexts
+import com.formatfrute.game.R
 import com.formatfrute.game.ui.theme.Fruta
 
 @Composable
@@ -87,7 +89,7 @@ fun SettingsScreen(
                 }
                 Spacer(Modifier.width(10.dp))
                 Text(
-                    "Ajustes",
+                    stringResource(R.string.settings_title),
                     style = MaterialTheme.typography.headlineMedium,
                     color = if (profile.boardTheme.dark) Color.White else Fruta.Ink,
                 )
@@ -95,13 +97,13 @@ fun SettingsScreen(
 
             PaperCard(Modifier.fillMaxWidth(), color = Color.White.copy(alpha = 0.96f)) {
                 Column(Modifier.padding(6.dp)) {
-                    ToggleRow("🎵", "Música", profile.music) {
+                    ToggleRow("🎵", stringResource(R.string.settings_music), profile.music) {
                         repo.setMusic(it)
                         sound.refreshMusic()
                     }
-                    ToggleRow("🔊", "Efeitos sonoros", profile.sfx) { repo.setSfx(it) }
-                    ToggleRow("📳", "Vibração", profile.vibration) { repo.setVibration(it) }
-                    ToggleRow("🔔", "Notificações engraçadas", profile.notifications) {
+                    ToggleRow("🔊", stringResource(R.string.settings_sfx), profile.sfx) { repo.setSfx(it) }
+                    ToggleRow("📳", stringResource(R.string.settings_vibration), profile.vibration) { repo.setVibration(it) }
+                    ToggleRow("🔔", stringResource(R.string.settings_notifications), profile.notifications) {
                         repo.setNotifications(it)
                         if (it) ReminderScheduler.scheduleAll(context)
                         else ReminderScheduler.cancelAll(context)
@@ -111,10 +113,10 @@ fun SettingsScreen(
 
             PaperCard(Modifier.fillMaxWidth(), color = Color.White.copy(alpha = 0.96f)) {
                 Column(Modifier.padding(16.dp)) {
-                    Text("Jogo", style = MaterialTheme.typography.titleLarge, color = Fruta.Ink)
+                    Text(stringResource(R.string.settings_game), style = MaterialTheme.typography.titleLarge, color = Fruta.Ink)
                     Spacer(Modifier.height(10.dp))
                     JuicyButton(
-                        text = "Refazer o tutorial",
+                        text = stringResource(R.string.settings_redo_tutorial),
                         emoji = "🎓",
                         color = Fruta.Leaf,
                         height = 48.dp,
@@ -123,19 +125,19 @@ fun SettingsScreen(
                     )
                     Spacer(Modifier.height(8.dp))
                     Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                        StatBox("Partidas", "${profile.totalGames}", Modifier.weight(1f))
-                        StatBox("Fusões", "${profile.totalMerges}", Modifier.weight(1f))
-                        StatBox("Colheitas", "${profile.totalHarvests}", Modifier.weight(1f))
+                        StatBox(stringResource(R.string.settings_games), "${profile.totalGames}", Modifier.weight(1f))
+                        StatBox(stringResource(R.string.settings_merges), "${profile.totalMerges}", Modifier.weight(1f))
+                        StatBox(stringResource(R.string.settings_harvests), "${profile.totalHarvests}", Modifier.weight(1f))
                     }
                 }
             }
 
             PaperCard(Modifier.fillMaxWidth(), color = Color.White.copy(alpha = 0.96f)) {
                 Column(Modifier.padding(16.dp)) {
-                    Text("Privacidade e documentos", style = MaterialTheme.typography.titleLarge, color = Fruta.Ink)
+                    Text(stringResource(R.string.settings_privacy_section), style = MaterialTheme.typography.titleLarge, color = Fruta.Ink)
                     Spacer(Modifier.height(10.dp))
                     JuicyButton(
-                        text = "Termos de Uso",
+                        text = stringResource(R.string.settings_terms),
                         emoji = "📄",
                         color = Fruta.Grape,
                         height = 46.dp,
@@ -144,7 +146,7 @@ fun SettingsScreen(
                     )
                     Spacer(Modifier.height(8.dp))
                     JuicyButton(
-                        text = "Política de Privacidade",
+                        text = stringResource(R.string.settings_privacy),
                         emoji = "🔒",
                         color = Fruta.Sky,
                         height = 46.dp,
@@ -154,7 +156,7 @@ fun SettingsScreen(
                     if (ConsentManager.canShowPrivacyOptions()) {
                         Spacer(Modifier.height(8.dp))
                         JuicyButton(
-                            text = "Opções de privacidade dos anúncios",
+                            text = stringResource(R.string.settings_ad_privacy),
                             emoji = "⚙️",
                             color = Fruta.InkSoft,
                             height = 46.dp,
@@ -164,12 +166,12 @@ fun SettingsScreen(
                     }
                     Spacer(Modifier.height(12.dp))
                     Text(
-                        "Fale com a gente: ${LegalTexts.EMAIL}",
+                        stringResource(R.string.settings_contact, LegalTexts.EMAIL),
                         style = MaterialTheme.typography.bodySmall,
                         color = Fruta.InkSoft,
                     )
                     Text(
-                        "Versão ${BuildConfig.VERSION_NAME}",
+                        stringResource(R.string.settings_version, BuildConfig.VERSION_NAME),
                         style = MaterialTheme.typography.labelSmall,
                         color = Fruta.InkSoft,
                     )

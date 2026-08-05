@@ -43,6 +43,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.formatfrute.game.core.Fruit
@@ -64,6 +65,8 @@ import com.formatfrute.game.ui.components.Pulse
 import com.formatfrute.game.ui.components.StatPill
 import com.formatfrute.game.ui.components.lighten
 import com.formatfrute.game.ui.formatScore
+import com.formatfrute.game.R
+import com.formatfrute.game.ui.label
 import com.formatfrute.game.ui.theme.Fruta
 
 @Composable
@@ -135,7 +138,7 @@ fun HomeScreen(
             if (!profile.tutorialDone) {
                 item {
                     JuicyButton(
-                        text = "Começar o tutorial",
+                        text = stringResource(R.string.home_start_tutorial),
                         emoji = "🎓",
                         color = Fruta.Leaf,
                         modifier = Modifier.fillMaxWidth(),
@@ -172,7 +175,7 @@ fun HomeScreen(
             item {
                 Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                     JuicyButton(
-                        text = "Barraquinha",
+                        text = stringResource(R.string.home_shop),
                         emoji = "🛒",
                         color = Fruta.Grape,
                         height = 54.dp,
@@ -180,7 +183,7 @@ fun HomeScreen(
                         onClick = onShop,
                     )
                     JuicyButton(
-                        text = if (repo.pendingDailyStreak() > 0) "Presente!" else "Presente",
+                        text = stringResource(if (repo.pendingDailyStreak() > 0) R.string.home_gift_ready else R.string.home_gift),
                         emoji = "🎁",
                         color = if (repo.pendingDailyStreak() > 0) Fruta.Sun else Fruta.InkSoft,
                         textColor = if (repo.pendingDailyStreak() > 0) Fruta.Ink else Color.White,
@@ -194,7 +197,7 @@ fun HomeScreen(
             item {
                 Box {
                     JuicyButton(
-                        text = "Conquistas",
+                        text = stringResource(R.string.home_achievements),
                         emoji = "🏅",
                         color = Fruta.Sky,
                         height = 54.dp,
@@ -222,7 +225,7 @@ fun HomeScreen(
             }
 
             item {
-                SectionTitle("Modos avulsos", theme.dark)
+                SectionTitle(stringResource(R.string.home_modes), theme.dark)
             }
 
             items(GameMode.arcade) { mode ->
@@ -234,7 +237,7 @@ fun HomeScreen(
                 )
             }
 
-            item { SectionTitle("Missões do dia", theme.dark) }
+            item { SectionTitle(stringResource(R.string.home_missions), theme.dark) }
 
             items(missions) { mission ->
                 MissionRow(
@@ -251,7 +254,7 @@ fun HomeScreen(
 
             item {
                 Text(
-                    "Format Frute • formatfrute@gmail.com",
+                    stringResource(R.string.home_footer),
                     style = MaterialTheme.typography.labelSmall,
                     color = if (theme.dark) Color.White.copy(alpha = 0.7f) else Fruta.Ink.copy(alpha = 0.6f),
                     modifier = Modifier.fillMaxWidth(),
@@ -285,7 +288,7 @@ fun HomeScreen(
 }
 
 @Composable
-private fun PlayerBar(level: Int, rank: String, xp: Int, coins: Int, onSettings: () -> Unit) {
+private fun PlayerBar(level: Int, rank: Int, xp: Int, coins: Int, onSettings: () -> Unit) {
     val (into, need) = Ranks.progress(xp)
     PaperCard(Modifier.fillMaxWidth(), color = Color.White.copy(alpha = 0.93f), corner = 22.dp) {
         Row(
@@ -304,7 +307,7 @@ private fun PlayerBar(level: Int, rank: String, xp: Int, coins: Int, onSettings:
                 Text("$level", style = MaterialTheme.typography.titleMedium, color = Fruta.Ink)
             }
             Column(Modifier.weight(1f)) {
-                Text(rank, style = MaterialTheme.typography.titleMedium, color = Fruta.Ink)
+                Text(stringResource(rank), style = MaterialTheme.typography.titleMedium, color = Fruta.Ink)
                 Spacer(Modifier.height(4.dp))
                 ChunkyBar(into.toFloat() / need, color = Fruta.Leaf, height = 12.dp)
             }
@@ -369,7 +372,7 @@ private fun Logo(dark: Boolean) {
             )
         }
         Text(
-            "junte as frutas, encha a cesta",
+            stringResource(R.string.tagline),
             style = MaterialTheme.typography.bodyMedium,
             color = if (dark) Color.White.copy(alpha = 0.85f) else Fruta.Ink.copy(alpha = 0.75f),
         )
@@ -378,7 +381,7 @@ private fun Logo(dark: Boolean) {
 
 /** A fruta do dia dando bom dia — a arte ganhando voz logo na abertura. */
 @Composable
-private fun Mascot(fruit: Fruit, line: String) {
+private fun Mascot(fruit: Fruit, line: Int) {
     val transition = rememberInfiniteTransition(label = "mascot")
     val hop by transition.animateFloat(
         initialValue = 0f,
@@ -392,7 +395,7 @@ private fun Mascot(fruit: Fruit, line: String) {
     ) {
         Image(
             painter = painterResource(fruit.art),
-            contentDescription = fruit.label,
+            contentDescription = stringResource(fruit.label),
             modifier = Modifier
                 .size(64.dp)
                 .graphicsLayer { translationY = hop },
@@ -400,7 +403,7 @@ private fun Mascot(fruit: Fruit, line: String) {
         Spacer(Modifier.width(4.dp))
         PaperCard(color = Color.White.copy(alpha = 0.95f), corner = 20.dp) {
             Text(
-                text = line,
+                text = stringResource(line),
                 style = MaterialTheme.typography.bodyMedium,
                 color = Fruta.Ink,
                 modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
@@ -437,15 +440,23 @@ private fun RecipeCard(next: Int, cleared: Int, stars: Int, onClick: () -> Unit)
             }
             Spacer(Modifier.width(12.dp))
             Column(Modifier.weight(1f)) {
-                Text("Modo Receita", style = MaterialTheme.typography.titleLarge, color = Color.White)
                 Text(
-                    "Monte o pedido do freguês",
+                    stringResource(R.string.mode_receita_title),
+                    style = MaterialTheme.typography.titleLarge,
+                    color = Color.White,
+                )
+                Text(
+                    stringResource(R.string.home_recipe_sub),
                     style = MaterialTheme.typography.bodySmall,
                     color = Color.White.copy(alpha = 0.92f),
                 )
                 Spacer(Modifier.height(4.dp))
                 Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                    StatPill("🍳", "Fase $next", color = Color.White.copy(alpha = 0.9f))
+                    StatPill(
+                        "🍳",
+                        stringResource(R.string.home_recipe_stage, next),
+                        color = Color.White.copy(alpha = 0.9f),
+                    )
                     StatPill("⭐", "$stars", color = Color.White.copy(alpha = 0.9f))
                 }
             }
@@ -456,7 +467,7 @@ private fun RecipeCard(next: Int, cleared: Int, stars: Int, onClick: () -> Unit)
 
 /** Convite para voltar exatamente de onde parou. */
 @Composable
-private fun ResumeCard(mode: String, score: Int, onClick: () -> Unit) {
+private fun ResumeCard(mode: Int, score: Int, onClick: () -> Unit) {
     PaperCard(
         Modifier
             .fillMaxWidth()
@@ -474,9 +485,13 @@ private fun ResumeCard(mode: String, score: Int, onClick: () -> Unit) {
             Text("⏸️", style = MaterialTheme.typography.displayMedium)
             Spacer(Modifier.width(12.dp))
             Column(Modifier.weight(1f)) {
-                Text("Continuar partida", style = MaterialTheme.typography.titleLarge, color = Color.White)
                 Text(
-                    "$mode • ${formatScore(score)} pontos",
+                    stringResource(R.string.home_resume_title),
+                    style = MaterialTheme.typography.titleLarge,
+                    color = Color.White,
+                )
+                Text(
+                    stringResource(R.string.home_resume_sub, stringResource(mode), formatScore(score)),
                     style = MaterialTheme.typography.bodySmall,
                     color = Color.White.copy(alpha = 0.92f),
                 )
@@ -511,10 +526,13 @@ private fun DailyRecipeCard(done: Boolean, onClick: () -> Unit) {
             Text(if (done) "✅" else "📅", style = MaterialTheme.typography.displayMedium)
             Spacer(Modifier.width(12.dp))
             Column(Modifier.weight(1f)) {
-                Text("Receita do Dia", style = MaterialTheme.typography.titleLarge, color = Color.White)
                 Text(
-                    if (done) "Fechada hoje! Volta amanhã pra próxima."
-                    else "Mesma fase para todo mundo. Vale sementes extras.",
+                    stringResource(R.string.home_daily_title),
+                    style = MaterialTheme.typography.titleLarge,
+                    color = Color.White,
+                )
+                Text(
+                    stringResource(if (done) R.string.home_daily_done else R.string.home_daily_open),
                     style = MaterialTheme.typography.bodySmall,
                     color = Color.White.copy(alpha = 0.92f),
                 )
@@ -544,9 +562,13 @@ private fun PassCard(tier: Int, progress: Pair<Int, Int>, daysLeft: Int, onClick
                 Text("🎟️", style = MaterialTheme.typography.displayMedium)
                 Spacer(Modifier.width(12.dp))
                 Column(Modifier.weight(1f)) {
-                    Text("Passe da Feira", style = MaterialTheme.typography.titleLarge, color = Fruta.Ink)
                     Text(
-                        "Degrau $tier de ${SeasonPass.TIERS} • acaba em ${daysLeft}d",
+                        stringResource(R.string.home_pass_title),
+                        style = MaterialTheme.typography.titleLarge,
+                        color = Fruta.Ink,
+                    )
+                    Text(
+                        stringResource(R.string.home_pass_sub, tier, SeasonPass.TIERS, daysLeft),
                         style = MaterialTheme.typography.bodySmall,
                         color = Fruta.Ink.copy(alpha = 0.8f),
                     )
@@ -611,9 +633,13 @@ private fun ModeCard(
             }
             Spacer(Modifier.width(12.dp))
             Column(Modifier.weight(1f)) {
-                Text(mode.title, style = MaterialTheme.typography.titleLarge, color = Color.White)
                 Text(
-                    if (locked) "Faça o tutorial para liberar" else mode.tagline,
+                    stringResource(mode.title),
+                    style = MaterialTheme.typography.titleLarge,
+                    color = Color.White,
+                )
+                Text(
+                    if (locked) stringResource(R.string.home_locked) else stringResource(mode.tagline),
                     style = MaterialTheme.typography.bodySmall,
                     color = Color.White.copy(alpha = 0.9f),
                 )
@@ -642,7 +668,7 @@ private fun MissionRow(mission: Mission, progress: Int, claimed: Boolean, onClai
             Text(mission.emoji, style = MaterialTheme.typography.headlineSmall)
             Spacer(Modifier.width(10.dp))
             Column(Modifier.weight(1f)) {
-                Text(mission.title, style = MaterialTheme.typography.titleMedium, color = Fruta.Ink)
+                Text(mission.label(), style = MaterialTheme.typography.titleMedium, color = Fruta.Ink)
                 Spacer(Modifier.height(4.dp))
                 ChunkyBar(
                     progress = progress.toFloat() / mission.target,
@@ -651,7 +677,7 @@ private fun MissionRow(mission: Mission, progress: Int, claimed: Boolean, onClai
                 )
                 Spacer(Modifier.height(2.dp))
                 Text(
-                    "$progress / ${mission.target}  •  +${mission.reward} 🌱",
+                    stringResource(R.string.mission_progress, progress, mission.target, mission.reward),
                     style = MaterialTheme.typography.labelSmall,
                     color = Fruta.InkSoft,
                 )
@@ -662,7 +688,7 @@ private fun MissionRow(mission: Mission, progress: Int, claimed: Boolean, onClai
                 done -> Box {
                     Pulse(Fruta.Leaf.copy(alpha = 0.5f), Modifier.size(84.dp, 44.dp), corner = 20.dp)
                     JuicyButton(
-                        text = "Pegar",
+                        text = stringResource(R.string.ach_claim),
                         color = Fruta.Leaf,
                         height = 38.dp,
                         modifier = Modifier.width(84.dp),
@@ -680,9 +706,17 @@ private fun MissionRow(mission: Mission, progress: Int, claimed: Boolean, onClai
 private fun CollectionCard(highest: Int) {
     PaperCard(Modifier.fillMaxWidth(), color = Color.White.copy(alpha = 0.95f), corner = 22.dp) {
         Column(Modifier.padding(14.dp)) {
-            Text("Álbum de frutas", style = MaterialTheme.typography.titleLarge, color = Fruta.Ink)
             Text(
-                "Você já chegou na ${Fruit.of(highest).label}. Faltam ${Fruit.MAX - highest} para completar!",
+                stringResource(R.string.home_album),
+                style = MaterialTheme.typography.titleLarge,
+                color = Fruta.Ink,
+            )
+            Text(
+                stringResource(
+                    R.string.home_album_sub,
+                    stringResource(Fruit.of(highest).label),
+                    Fruit.MAX - highest,
+                ),
                 style = MaterialTheme.typography.bodySmall,
                 color = Fruta.InkSoft,
             )
@@ -706,7 +740,7 @@ private fun CollectionCard(highest: Int) {
                                 if (unlocked) {
                                     Image(
                                         painter = painterResource(fruit.art),
-                                        contentDescription = fruit.label,
+                                        contentDescription = stringResource(fruit.label),
                                         modifier = Modifier.size(38.dp),
                                     )
                                 } else {
@@ -739,11 +773,15 @@ private fun DailyGiftDialog(
                 Modifier.padding(20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Text("Presente do dia 🎁", style = MaterialTheme.typography.headlineSmall, color = Fruta.Ink)
+                Text(
+                    stringResource(R.string.gift_title),
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = Fruta.Ink,
+                )
                 Spacer(Modifier.height(4.dp))
                 Text(
-                    if (streakDay > 0) "Dia $streakDay da sua sequência!"
-                    else "Você já pegou o presente de hoje. Volte amanhã!",
+                    if (streakDay > 0) stringResource(R.string.gift_streak, streakDay)
+                    else stringResource(R.string.gift_done),
                     style = MaterialTheme.typography.bodyMedium,
                     color = Fruta.InkSoft,
                     textAlign = TextAlign.Center,
@@ -775,14 +813,18 @@ private fun DailyGiftDialog(
                                     color = Fruta.Ink,
                                 )
                             }
-                            Text("D$day", style = MaterialTheme.typography.labelSmall, color = Fruta.InkSoft)
+                            Text(
+                                stringResource(R.string.gift_day, day),
+                                style = MaterialTheme.typography.labelSmall,
+                                color = Fruta.InkSoft,
+                            )
                         }
                     }
                 }
                 Spacer(Modifier.height(18.dp))
                 if (streakDay > 0) {
                     JuicyButton(
-                        text = "Pegar ${DailyRewards.rewardFor(streakDay)} sementes",
+                        text = stringResource(R.string.gift_claim, DailyRewards.rewardFor(streakDay)),
                         emoji = "🌱",
                         color = Fruta.Leaf,
                         modifier = Modifier.fillMaxWidth(),
@@ -791,7 +833,7 @@ private fun DailyGiftDialog(
                     Spacer(Modifier.height(8.dp))
                 }
                 JuicyButton(
-                    text = "Fechar",
+                    text = stringResource(R.string.gift_close),
                     color = Fruta.InkSoft,
                     height = 46.dp,
                     modifier = Modifier.fillMaxWidth(),

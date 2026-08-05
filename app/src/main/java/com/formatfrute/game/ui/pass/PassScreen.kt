@@ -35,6 +35,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.formatfrute.game.ads.AdsManager
@@ -52,6 +53,8 @@ import com.formatfrute.game.ui.components.PaperCard
 import com.formatfrute.game.ui.components.Pulse
 import com.formatfrute.game.ui.components.StatPill
 import com.formatfrute.game.ui.findActivity
+import com.formatfrute.game.R
+import com.formatfrute.game.ui.label
 import com.formatfrute.game.ui.theme.Fruta
 
 /**
@@ -90,15 +93,16 @@ fun PassScreen(onBack: () -> Unit) {
     LaunchedEffect(Unit) { listState.scrollToItem((tier - 1).coerceAtLeast(0)) }
 
     fun claim(level: Int, premium: Boolean) {
-        val reward = if (premium) SeasonPass.tier(level).premium else SeasonPass.tier(level).free
+        val entry = SeasonPass.tier(level)
+        val reward = if (premium) entry.premium else entry.free
         if (repo.claimTier(level, premium)) {
             sound.play(Sfx.COIN)
             haptics.win()
             celebrate = true
-            toast = "Pegou: ${reward.label}!"
+            toast = context.getString(R.string.pass_claimed, reward.label(context))
         } else {
             haptics.error()
-            toast = "Esse degrau ainda não abriu."
+            toast = context.getString(R.string.pass_locked)
         }
     }
 
@@ -129,18 +133,18 @@ fun PassScreen(onBack: () -> Unit) {
                 Spacer(Modifier.width(10.dp))
                 Column(Modifier.weight(1f)) {
                     Text(
-                        "Passe da Feira",
+                        stringResource(R.string.pass_title),
                         style = MaterialTheme.typography.headlineMedium,
                         color = if (profile.boardTheme.dark) Color.White else Fruta.Ink,
                     )
                     Text(
-                        SeasonPass.seasonName(),
+                        stringResource(R.string.pass_season, stringResource(SeasonPass.seasonMonth())),
                         style = MaterialTheme.typography.bodySmall,
                         color = if (profile.boardTheme.dark) Color.White.copy(alpha = 0.8f)
                         else Fruta.InkSoft,
                     )
                 }
-                StatPill("⏳", "${SeasonPass.daysLeft()}d")
+                StatPill("⏳", stringResource(R.string.pass_days_left, SeasonPass.daysLeft()))
             }
 
             PaperCard(Modifier.fillMaxWidth(), color = Color.White.copy(alpha = 0.95f), corner = 20.dp) {
@@ -150,12 +154,12 @@ fun PassScreen(onBack: () -> Unit) {
                         horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
                         Text(
-                            "Degrau $tier de ${SeasonPass.TIERS}",
+                            stringResource(R.string.pass_tier, tier, SeasonPass.TIERS),
                             style = MaterialTheme.typography.titleMedium,
                             color = Fruta.Ink,
                         )
                         Text(
-                            "🎟️ $into / $need",
+                            stringResource(R.string.pass_tokens, into, need),
                             style = MaterialTheme.typography.labelMedium,
                             color = Fruta.InkSoft,
                         )
@@ -164,8 +168,7 @@ fun PassScreen(onBack: () -> Unit) {
                     ChunkyBar(into.toFloat() / need, color = Fruta.Berry, height = 14.dp)
                     Spacer(Modifier.height(6.dp))
                     Text(
-                        "Ganhe fichas jogando qualquer modo, fechando fases da Receita " +
-                            "e concluindo missões do dia.",
+                        stringResource(R.string.pass_how),
                         style = MaterialTheme.typography.bodySmall,
                         color = Fruta.InkSoft,
                     )
@@ -197,12 +200,12 @@ fun PassScreen(onBack: () -> Unit) {
                         onClaimPremium = {
                             val act = activity
                             if (act == null) {
-                                toast = "Vídeo indisponível agora."
+                                toast = context.getString(R.string.shop_video_unavailable)
                                 return@TierRow
                             }
                             AdsManager.showRewarded(act) { granted ->
                                 if (granted) claim(level, premium = true)
-                                else toast = "O vídeo não completou. Tente de novo."
+                                else toast = context.getString(R.string.shop_video_failed)
                             }
                         },
                     )
@@ -269,21 +272,21 @@ private fun TierRow(
 
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 RewardSlot(
-                    tag = "GRÁTIS",
+                    tag = stringResource(R.string.pass_free),
                     tagColor = Fruta.Leaf,
                     reward = free,
                     reached = reached,
                     claimed = freeClaimed,
-                    cta = "Pegar",
+                    cta = stringResource(R.string.pass_claim),
                     onClaim = onClaimFree,
                 )
                 RewardSlot(
-                    tag = "VÍDEO",
+                    tag = stringResource(R.string.pass_premium),
                     tagColor = Fruta.Grape,
                     reward = premium,
                     reached = reached,
                     claimed = premiumClaimed,
-                    cta = "🎬 Ver",
+                    cta = stringResource(R.string.pass_claim_video),
                     onClaim = onClaimPremium,
                 )
             }
@@ -319,7 +322,7 @@ private fun RewardSlot(
         Text(reward.emoji, style = MaterialTheme.typography.titleMedium)
         Spacer(Modifier.width(6.dp))
         Text(
-            reward.label,
+            reward.label(),
             style = MaterialTheme.typography.bodyMedium,
             color = if (reached) Fruta.Ink else Fruta.InkSoft,
             modifier = Modifier.weight(1f),

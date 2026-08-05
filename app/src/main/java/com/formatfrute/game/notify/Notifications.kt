@@ -30,39 +30,40 @@ import kotlin.random.Random
 /** O texto e o produto aqui: se nao arrancar um sorriso, nao traz ninguem de volta. */
 object FunnyMessages {
 
-    private val saudade = listOf(
-        "🍌 A banana ficou marrom de tanto te esperar." to "Volta lá antes que vire bolo.",
-        "🍒 Suas cerejas estão em fila indiana esperando fusão." to "Elas são educadas, mas impacientes.",
-        "🥝 O Kiwi está se sentindo peludo e sozinho." to "Ninguém merece isso.",
-        "🍇 Suas uvas estão virando passas." to "Passa lá rapidinho pra salvar.",
-        "🍊 A Laranja perguntou de você." to "Falei que você já estava vindo. Não me deixe mal.",
-        "🍓 O Morango chorou hoje." to "De verdade. Foi constrangedor pra todo mundo.",
-        "🍐 A Pera está encostada na parede desde ontem." to "Ela finge que não liga, mas liga.",
+    private val saudade = arrayOf(
+        R.string.notif_saudade_1_t to R.string.notif_saudade_1_b,
+        R.string.notif_saudade_2_t to R.string.notif_saudade_2_b,
+        R.string.notif_saudade_3_t to R.string.notif_saudade_3_b,
+        R.string.notif_saudade_4_t to R.string.notif_saudade_4_b,
+        R.string.notif_saudade_5_t to R.string.notif_saudade_5_b,
+        R.string.notif_saudade_6_t to R.string.notif_saudade_6_b,
+        R.string.notif_saudade_7_t to R.string.notif_saudade_7_b,
     )
 
-    private val desafio = listOf(
-        "🍉 A Melancia disse que você nunca chega nela." to "Prova o contrário. Só uma partida.",
-        "🧃 O Monstro Azedo declarou vitória." to "Ele disse que você fugiu da Batalha do Suco.",
-        "🍍 O Abacaxi te desafiou." to "E olha, esse abacaxi é fácil de descascar.",
-        "🐉 A Pitaya está achando graça." to "Ninguém do seu nível chegou nela hoje.",
-        "🏆 Alguém bateu um recorde hoje." to "Foi você? Não. Ainda dá tempo.",
+    private val desafio = arrayOf(
+        R.string.notif_desafio_1_t to R.string.notif_desafio_1_b,
+        R.string.notif_desafio_2_t to R.string.notif_desafio_2_b,
+        R.string.notif_desafio_3_t to R.string.notif_desafio_3_b,
+        R.string.notif_desafio_4_t to R.string.notif_desafio_4_b,
+        R.string.notif_desafio_5_t to R.string.notif_desafio_5_b,
     )
 
-    private val economia = listOf(
-        "🎁 Seu presente do dia está esfriando." to "Presente frio não tem graça, vai lá.",
-        "🔥 Sua sequência de dias corre perigo!" to "Um dia sem jogar e ela volta pro começo.",
-        "🌱 Sementes grátis te esperando na barraca." to "É de graça. Literalmente.",
-        "✨ Poder novo desbloqueado na feira." to "Dá pra pegar assistindo um vídeo rapidinho.",
+    private val economia = arrayOf(
+        R.string.notif_economia_1_t to R.string.notif_economia_1_b,
+        R.string.notif_economia_2_t to R.string.notif_economia_2_b,
+        R.string.notif_economia_3_t to R.string.notif_economia_3_b,
+        R.string.notif_economia_4_t to R.string.notif_economia_4_b,
     )
 
-    private val receita = listOf(
-        "🧾 A Receita do Dia mudou!" to "Pedido novo, jogadas contadas. Bora?",
-        "📅 A receita de hoje está aberta." to "Todo mundo joga a mesma. Sem desculpa.",
-        "👨‍🍳 O freguês chegou com um pedido." to "Ele disse que só você sabe montar.",
-        "🏅 Tem conquista quase fechando." to "Falta pouquinho. Vem terminar!",
+    private val receita = arrayOf(
+        R.string.notif_receita_1_t to R.string.notif_receita_1_b,
+        R.string.notif_receita_2_t to R.string.notif_receita_2_b,
+        R.string.notif_receita_3_t to R.string.notif_receita_3_b,
+        R.string.notif_receita_4_t to R.string.notif_receita_4_b,
     )
 
-    fun pick(kind: String, seed: Long = System.currentTimeMillis()): Pair<String, String> {
+    /** Devolve o par (titulo, corpo) como recursos; quem resolve tem Context. */
+    fun pick(kind: String, seed: Long = System.currentTimeMillis()): Pair<Int, Int> {
         val list = when (kind) {
             KIND_DESAFIO -> desafio
             KIND_ECONOMIA -> economia
@@ -88,10 +89,10 @@ object Notifier {
         if (manager.getNotificationChannel(CHANNEL_ID) != null) return
         val channel = NotificationChannel(
             CHANNEL_ID,
-            "Recados da Feira",
+            context.getString(R.string.notification_channel),
             NotificationManager.IMPORTANCE_DEFAULT,
         ).apply {
-            description = "Lembretes engraçados, presentes do dia e desafios novos."
+            description = context.getString(R.string.notification_channel_desc)
             enableLights(true)
             enableVibration(true)
         }
@@ -141,7 +142,11 @@ class ReminderWorker(context: Context, params: WorkerParameters) : Worker(contex
 
         val kind = inputData.getString(KEY_KIND) ?: FunnyMessages.KIND_SAUDADE
         val (title, body) = FunnyMessages.pick(kind)
-        Notifier.show(applicationContext, title, body)
+        Notifier.show(
+            applicationContext,
+            applicationContext.getString(title),
+            applicationContext.getString(body),
+        )
         return Result.success()
     }
 

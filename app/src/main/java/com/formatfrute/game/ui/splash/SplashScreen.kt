@@ -31,10 +31,12 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.formatfrute.game.core.Fruit
 import com.formatfrute.game.ui.components.ChunkyBar
 import com.formatfrute.game.ui.components.OutlinedTitle
+import com.formatfrute.game.R
 import com.formatfrute.game.ui.theme.Fruta
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -125,7 +127,7 @@ fun SplashScreen(onDone: () -> Unit) {
             }
 
             Text(
-                "junte as frutas, encha a cesta",
+                stringResource(R.string.tagline),
                 style = MaterialTheme.typography.bodyMedium,
                 color = Color.White.copy(alpha = glow),
             )
@@ -144,7 +146,7 @@ fun SplashScreen(onDone: () -> Unit) {
             Spacer(Modifier.height(10.dp))
 
             Text(
-                "descascando as frutas…",
+                stringResource(R.string.splash_loading),
                 style = MaterialTheme.typography.labelSmall,
                 color = Fruta.Ink.copy(alpha = 0.7f),
             )

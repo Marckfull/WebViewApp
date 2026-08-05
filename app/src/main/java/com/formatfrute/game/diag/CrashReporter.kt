@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Build
 import androidx.core.content.edit
 import com.formatfrute.game.BuildConfig
+import com.formatfrute.game.R
 import java.io.PrintWriter
 import java.io.StringWriter
 import java.text.SimpleDateFormat
@@ -73,16 +74,12 @@ object CrashReporter {
     }
 
     /** Abre o app de e-mail com o relatório pronto. Nada sai sem o jogador mandar. */
-    fun shareIntent(report: String): Intent =
+    fun shareIntent(context: Context, report: String): Intent =
         Intent(Intent.ACTION_SENDTO).apply {
             data = Uri.parse("mailto:")
-            putExtra(Intent.EXTRA_EMAIL, arrayOf("formatfrute@gmail.com"))
-            putExtra(Intent.EXTRA_SUBJECT, "Format Frute — relatório de erro")
-            putExtra(
-                Intent.EXTRA_TEXT,
-                "Conte rapidinho o que você estava fazendo quando travou:\n\n\n" +
-                    "-------- detalhes técnicos --------\n$report",
-            )
+            putExtra(Intent.EXTRA_EMAIL, arrayOf(context.getString(R.string.contact_email)))
+            putExtra(Intent.EXTRA_SUBJECT, context.getString(R.string.crash_subject))
+            putExtra(Intent.EXTRA_TEXT, context.getString(R.string.crash_body, report))
         }
 
     private fun prefs(context: Context) =

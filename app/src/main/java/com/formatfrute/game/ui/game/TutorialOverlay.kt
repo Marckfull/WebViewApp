@@ -33,12 +33,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.formatfrute.game.game.RecipeCoachStep
 import com.formatfrute.game.game.TutorialSpot
 import com.formatfrute.game.game.TutorialStep
 import com.formatfrute.game.ui.components.JuicyButton
 import com.formatfrute.game.ui.components.PaperCard
+import com.formatfrute.game.R
 import com.formatfrute.game.ui.theme.Fruta
 
 /**
@@ -79,12 +81,12 @@ fun TutorialOverlay(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Text(
-                            "Passo ${step.stepNumber} de ${step.totalSteps}",
+                            stringResource(R.string.tut_step_of, step.stepNumber, step.totalSteps),
                             style = MaterialTheme.typography.labelSmall,
                             color = Fruta.InkSoft,
                         )
                         Text(
-                            "Pular",
+                            stringResource(R.string.tut_skip),
                             style = MaterialTheme.typography.labelSmall,
                             color = Fruta.InkSoft,
                             modifier = Modifier
@@ -98,14 +100,14 @@ fun TutorialOverlay(
                     Spacer(Modifier.height(10.dp))
 
                     Text(
-                        step.title,
+                        stringResource(step.title),
                         style = MaterialTheme.typography.headlineSmall,
                         color = Fruta.Berry,
                         textAlign = TextAlign.Center,
                     )
                     Spacer(Modifier.height(6.dp))
                     Text(
-                        step.text,
+                        stringResource(step.text),
                         style = MaterialTheme.typography.bodyMedium,
                         color = Fruta.Ink,
                         textAlign = TextAlign.Center,
@@ -114,7 +116,7 @@ fun TutorialOverlay(
                     if (step.manual) {
                         Spacer(Modifier.height(14.dp))
                         JuicyButton(
-                            text = step.cta,
+                            text = stringResource(step.cta),
                             emoji = "👍",
                             color = Fruta.Leaf,
                             height = 52.dp,
@@ -124,7 +126,7 @@ fun TutorialOverlay(
                     } else {
                         Spacer(Modifier.height(10.dp))
                         Text(
-                            "Faça o que foi pedido para liberar o próximo passo 🔒",
+                            stringResource(R.string.tut_locked),
                             style = MaterialTheme.typography.labelSmall,
                             color = Fruta.InkSoft,
                             textAlign = TextAlign.Center,
@@ -178,12 +180,12 @@ fun RecipeCoachOverlay(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Text(
-                            "Receita ${step.stepNumber} de ${step.totalSteps}",
+                            stringResource(R.string.coach_step_of, step.stepNumber, step.totalSteps),
                             style = MaterialTheme.typography.labelSmall,
                             color = Fruta.InkSoft,
                         )
                         Text(
-                            "Pular",
+                            stringResource(R.string.tut_skip),
                             style = MaterialTheme.typography.labelSmall,
                             color = Fruta.InkSoft,
                             modifier = Modifier
@@ -213,14 +215,14 @@ fun RecipeCoachOverlay(
                     Spacer(Modifier.height(10.dp))
 
                     Text(
-                        step.title,
+                        stringResource(step.title),
                         style = MaterialTheme.typography.headlineSmall,
                         color = Fruta.Berry,
                         textAlign = TextAlign.Center,
                     )
                     Spacer(Modifier.height(6.dp))
                     Text(
-                        step.text,
+                        stringResource(step.text),
                         style = MaterialTheme.typography.bodyMedium,
                         color = Fruta.Ink,
                         textAlign = TextAlign.Center,
@@ -229,7 +231,7 @@ fun RecipeCoachOverlay(
                     if (step.manual) {
                         Spacer(Modifier.height(14.dp))
                         JuicyButton(
-                            text = step.cta,
+                            text = stringResource(step.cta),
                             emoji = "👍",
                             color = Fruta.Leaf,
                             height = 52.dp,
@@ -239,7 +241,7 @@ fun RecipeCoachOverlay(
                     } else {
                         Spacer(Modifier.height(10.dp))
                         Text(
-                            "Faça uma fusão para continuar 🔒",
+                            stringResource(R.string.coach_locked),
                             style = MaterialTheme.typography.labelSmall,
                             color = Fruta.InkSoft,
                             textAlign = TextAlign.Center,

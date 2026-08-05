@@ -33,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -66,6 +67,7 @@ import com.formatfrute.game.ui.splash.SplashScreen
 import com.formatfrute.game.ui.components.JuicyButton
 import com.formatfrute.game.ui.components.PaperCard
 import com.formatfrute.game.ui.theme.FormatFruteTheme
+import com.formatfrute.game.R
 import com.formatfrute.game.ui.theme.Fruta
 
 class MainActivity : ComponentActivity() {
@@ -96,7 +98,7 @@ class MainActivity : ComponentActivity() {
                 crash?.let { report ->
                     CrashReportDialog(
                         onSend = {
-                            runCatching { startActivity(CrashReporter.shareIntent(report)) }
+                            runCatching { startActivity(CrashReporter.shareIntent(this, report)) }
                             CrashReporter.clear(this)
                             crash = null
                         },
@@ -162,19 +164,17 @@ private fun CrashReportDialog(onSend: () -> Unit, onDismiss: () -> Unit) {
                 Modifier.padding(22.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Text("Ops, o jogo travou 😖", style = MaterialTheme.typography.headlineSmall, color = Fruta.Ink)
+                Text(stringResource(R.string.crash_title), style = MaterialTheme.typography.headlineSmall, color = Fruta.Ink)
                 Spacer(Modifier.height(8.dp))
                 Text(
-                    "Da última vez alguma coisa deu errado. Quer mandar o que " +
-                        "aconteceu pra gente arrumar? Vai só o erro técnico — " +
-                        "nada seu.",
+                    stringResource(R.string.crash_text),
                     style = MaterialTheme.typography.bodyMedium,
                     color = Fruta.InkSoft,
                     textAlign = TextAlign.Center,
                 )
                 Spacer(Modifier.height(18.dp))
                 JuicyButton(
-                    text = "Mandar relatório",
+                    text = stringResource(R.string.crash_send),
                     emoji = "✉️",
                     color = Fruta.Leaf,
                     modifier = Modifier.fillMaxWidth(),
@@ -182,7 +182,7 @@ private fun CrashReportDialog(onSend: () -> Unit, onDismiss: () -> Unit) {
                 )
                 Spacer(Modifier.height(8.dp))
                 JuicyButton(
-                    text = "Agora não",
+                    text = stringResource(R.string.crash_later),
                     color = Fruta.InkSoft,
                     height = 46.dp,
                     modifier = Modifier.fillMaxWidth(),

@@ -13,7 +13,6 @@ class SeasonPassTest {
         (1..SeasonPass.TIERS).forEach { level ->
             val tier = SeasonPass.tier(level)
             listOf("grátis" to tier.free, "vídeo" to tier.premium).forEach { (faixa, reward) ->
-                assertTrue("degrau $level ($faixa) sem rótulo", reward.label.isNotBlank())
                 assertTrue("degrau $level ($faixa) sem emoji", reward.emoji.isNotBlank())
                 when (reward.kind) {
                     RewardKind.PODER -> assertNotNull(
@@ -30,7 +29,7 @@ class SeasonPassTest {
                     )
                     RewardKind.TITULO -> assertTrue(
                         "degrau $level ($faixa) sem título",
-                        reward.title.isNotBlank(),
+                        reward.title != 0,
                     )
                 }
             }
@@ -101,9 +100,13 @@ class SeasonPassTest {
     }
 
     @Test
-    fun `a temporada tem nome e prazo`() {
-        assertEquals("Temporada de Agosto", SeasonPass.seasonName("2026-08"))
-        assertEquals("Temporada de Janeiro", SeasonPass.seasonName("2026-01"))
+    fun `a temporada aponta o mes certo e tem prazo`() {
+        // Cada mês precisa cair num recurso diferente — nada de dois meses
+        // com o mesmo nome por erro de índice.
+        val meses = (1..12).map { SeasonPass.seasonMonth("2026-%02d".format(it)) }
+
+        assertEquals(12, meses.toSet().size)
+        assertTrue(meses.all { it != 0 })
         assertTrue(SeasonPass.daysLeft() in 1..31)
     }
 }

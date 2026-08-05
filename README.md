@@ -96,6 +96,14 @@ inicial.
 As falas são deliberadamente econômicas: só estreia de fruta grande e combo
 alto. Falar demais vira ruído e o jogador para de ler.
 
+### Peles: loja e Passe não competem
+A Barraquinha vende Pomar ao Amanhecer, Sorvete de Frutas e Praia Tropical. O
+Passe entrega três **exclusivas de temporada** — Feira da Meia-Noite, Arraiá da
+Fruta e Pomar Encantado — que nunca entram à venda. Se os dois oferecessem a
+mesma coisa, o jogador ganharia de graça justamente o que ia comprar e a
+vitrine perderia a função; um teste garante que nenhuma pele esteja nos dois
+lugares.
+
 ### Poderes
 Martelinho, Adubo Mágico, Voltar no Tempo, Peneira, Relógio de Açúcar, Fruta
 Arco-íris e **Olho Bom** (acende as duas frutas que dá para juntar agora — a
@@ -220,6 +228,21 @@ para testá-lo direto na JVM:
                   # VaultTest        save embaralhado, adulteração e retrocompat.
                   # SavedGameTest    a partida volta exatamente como parou
 ```
+
+Os testes rodam contra os ids de recurso de verdade, então um texto faltando
+em `strings.xml` vira erro de compilação, não tela em branco no aparelho.
+```
+
+## Tradução
+
+Nenhum texto de tela vive no Kotlin. Os 479 textos do jogo estão em
+`res/values/strings.xml` (interface) e `res/values/strings_legal.xml`
+(documentos), e as classes de dados guardam só o id do recurso
+(`@StringRes val title: Int`) — quem resolve é quem tem `Context`.
+
+Para lançar em outro idioma, copie os dois arquivos para
+`res/values-en/` (ou `-es`, `-fr`…) e traduza só os valores. Nenhuma linha de
+código muda.
 
 ## Nota sobre trapaça no save
 

@@ -1,5 +1,6 @@
 package com.formatfrute.game.data
 
+import androidx.annotation.StringRes
 import com.formatfrute.game.core.GameMode
 import com.formatfrute.game.core.Power
 import com.formatfrute.game.core.RecipeBook
@@ -41,7 +42,10 @@ data class Profile(
     val passTitle: String = "",
 ) {
     val level: Int get() = Ranks.levelFor(xp)
-    val rank: String get() = Ranks.title(level)
+
+    /** Recurso da patente; quem tem Context resolve. */
+    @get:StringRes
+    val rank: Int get() = Ranks.title(level)
     val boardTheme: BoardTheme get() = BoardTheme.byId(theme)
 
     fun powerCount(power: Power): Int = powers[power.id] ?: 0

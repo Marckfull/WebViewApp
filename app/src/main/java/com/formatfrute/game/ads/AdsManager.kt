@@ -3,7 +3,9 @@ package com.formatfrute.game.ads
 import android.app.Activity
 import android.content.Context
 import android.util.Log
+import androidx.annotation.StringRes
 import com.formatfrute.game.BuildConfig
+import com.formatfrute.game.R
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.FullScreenContentCallback
@@ -38,13 +40,17 @@ object AdsConfig {
 }
 
 /** Por que o anuncio premiado esta sendo aberto — vira texto na tela de oferta. */
-enum class RewardReason(val title: String, val subtitle: String, val emoji: String) {
-    PODER("Poder liberado!", "Assista um vídeo rapidinho e leve o poder agora.", "✨"),
-    REVIVER("Continuar jogando", "Um vídeo e a gente limpa espaço no tabuleiro.", "❤️"),
-    DOBRAR("Dobrar sementes", "Assista e leve o dobro da colheita da partida.", "🌱"),
-    TEMPO("Mais tempo", "Assista e ganhe +15 segundos no relógio.", "⏱️"),
-    DIARIO("Presente em dobro", "Assista e o presente do dia vale o dobro.", "🎁"),
-    LOJA("Sementes grátis", "Assista um vídeo e leve sementes pra barraca.", "🪙"),
+enum class RewardReason(
+    @StringRes val title: Int,
+    @StringRes val subtitle: Int,
+    val emoji: String,
+) {
+    PODER(R.string.reward_poder_title, R.string.reward_poder_sub, "✨"),
+    REVIVER(R.string.reward_reviver_title, R.string.reward_reviver_sub, "❤️"),
+    DOBRAR(R.string.reward_dobrar_title, R.string.reward_dobrar_sub, "🌱"),
+    TEMPO(R.string.reward_tempo_title, R.string.reward_tempo_sub, "⏱️"),
+    DIARIO(R.string.reward_diario_title, R.string.reward_diario_sub, "🎁"),
+    LOJA(R.string.reward_loja_title, R.string.reward_loja_sub, "🪙"),
 }
 
 /**

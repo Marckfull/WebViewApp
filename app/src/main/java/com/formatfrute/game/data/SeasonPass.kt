@@ -1,5 +1,7 @@
 package com.formatfrute.game.data
 
+import androidx.annotation.StringRes
+import com.formatfrute.game.R
 import com.formatfrute.game.core.Power
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -13,7 +15,7 @@ data class PassReward(
     val amount: Int = 0,
     val powerId: String = "",
     val themeId: String = "",
-    val title: String = "",
+    @StringRes val title: Int = 0,
 ) {
     val emoji: String
         get() = when (kind) {
@@ -23,13 +25,6 @@ data class PassReward(
             RewardKind.TITULO -> "🏅"
         }
 
-    val label: String
-        get() = when (kind) {
-            RewardKind.SEMENTES -> "$amount sementes"
-            RewardKind.PODER -> "${Power.byId(powerId)?.title ?: "Poder"} x$amount"
-            RewardKind.PELE -> BoardTheme.byId(themeId).title
-            RewardKind.TITULO -> title
-        }
 }
 
 data class PassTier(val level: Int, val free: PassReward, val premium: PassReward)
@@ -45,22 +40,25 @@ object SeasonPass {
     const val TIERS = 30
     const val POINTS_PER_TIER = 100
 
-    private val titles = listOf(
-        "Feirante do Mês", "Rei da Cesta", "Doutor em Fruta",
-        "Mão de Vitamina", "Lenda do Pomar",
+    private val titles = intArrayOf(
+        R.string.pass_title_1, R.string.pass_title_2, R.string.pass_title_3,
+        R.string.pass_title_4, R.string.pass_title_5,
     )
 
     /** Nome da temporada, tirado do mês corrente. */
     fun seasonId(millis: Long = System.currentTimeMillis()): String =
         SimpleDateFormat("yyyy-MM", Locale.US).format(Date(millis))
 
-    fun seasonName(id: String = seasonId()): String {
-        val months = listOf(
-            "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
-            "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro",
+    /** Recurso do mês da temporada. A frase completa é montada na UI. */
+    @StringRes
+    fun seasonMonth(id: String = seasonId()): Int {
+        val months = intArrayOf(
+            R.string.month_1, R.string.month_2, R.string.month_3, R.string.month_4,
+            R.string.month_5, R.string.month_6, R.string.month_7, R.string.month_8,
+            R.string.month_9, R.string.month_10, R.string.month_11, R.string.month_12,
         )
         val month = id.substringAfter('-').toIntOrNull() ?: 1
-        return "Temporada de ${months[(month - 1).coerceIn(0, 11)]}"
+        return months[(month - 1).coerceIn(0, 11)]
     }
 
     /** Dias que faltam para a temporada virar. */

@@ -1,5 +1,8 @@
 package com.formatfrute.game.game
 
+import androidx.annotation.StringRes
+import com.formatfrute.game.R
+
 /**
  * O segundo ensino do jogo.
  *
@@ -12,31 +15,28 @@ package com.formatfrute.game.game
  * cumprido de verdade.
  */
 enum class RecipeCoachStep(
-    val title: String,
-    val text: String,
+    @StringRes val title: Int,
+    @StringRes val text: Int,
     /** Termina num toque de botão, não numa jogada. */
     val manual: Boolean,
-    val cta: String = "",
+    @StringRes val cta: Int = 0,
 ) {
     PEDIDO(
-        title = "O pedido do freguês 🧾",
-        text = "Lá em cima está o que ele quer. Cada fruta tem um contador: " +
-            "quantas você já entregou e quantas faltam.",
+        title = R.string.coach_pedido_title,
+        text = R.string.coach_pedido_text,
         manual = true,
-        cta = "Entendi!",
+        cta = R.string.coach_pedido_cta,
     ),
     CRIAR(
-        title = "Só vale o que você criar",
-        text = "As frutas que já estão no tabuleiro são matéria-prima — elas não " +
-            "contam sozinhas. Faça uma fusão e veja o contador andar!",
+        title = R.string.coach_criar_title,
+        text = R.string.coach_criar_text,
         manual = false,
     ),
     JOGADAS(
-        title = "Jogada é contada ⭐",
-        text = "Você tem um número certo de jogadas. Terminar o pedido sobrando " +
-            "jogada vale estrela: três se sobrar bastante.",
+        title = R.string.coach_jogadas_title,
+        text = R.string.coach_jogadas_text,
         manual = true,
-        cta = "Bora cozinhar!",
+        cta = R.string.coach_jogadas_cta,
     );
 
     val stepNumber: Int get() = ordinal + 1

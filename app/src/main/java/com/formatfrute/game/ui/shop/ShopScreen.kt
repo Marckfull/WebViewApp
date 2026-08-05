@@ -35,6 +35,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.formatfrute.game.ads.AdsManager
@@ -52,6 +53,7 @@ import com.formatfrute.game.ui.components.Pulse
 import com.formatfrute.game.ui.components.StatPill
 import com.formatfrute.game.ui.findActivity
 import com.formatfrute.game.ui.formatScore
+import com.formatfrute.game.R
 import com.formatfrute.game.ui.theme.Fruta
 
 private const val AD_COINS = 150
@@ -103,7 +105,7 @@ fun ShopScreen(onBack: () -> Unit) {
                     BackChip(onBack)
                     Spacer(Modifier.width(10.dp))
                     Text(
-                        "Barraquinha",
+                        stringResource(R.string.shop_title),
                         style = MaterialTheme.typography.headlineMedium,
                         color = if (profile.boardTheme.dark) Color.White else Fruta.Ink,
                         modifier = Modifier.weight(1f),
@@ -117,7 +119,7 @@ fun ShopScreen(onBack: () -> Unit) {
                     onWatch = {
                         val act = activity
                         if (act == null) {
-                            toast = "Vídeo indisponível agora."
+                            toast = context.getString(R.string.shop_video_unavailable)
                             return@FreeCoinsCard
                         }
                         AdsManager.showRewarded(act) { granted ->
@@ -126,16 +128,16 @@ fun ShopScreen(onBack: () -> Unit) {
                                 sound.play(Sfx.COIN)
                                 haptics.win()
                                 celebrate = true
-                                toast = "+$AD_COINS sementes na conta!"
+                                toast = context.getString(R.string.shop_coins_added, AD_COINS)
                             } else {
-                                toast = "O vídeo não completou. Tente de novo."
+                                toast = context.getString(R.string.shop_video_failed)
                             }
                         }
                     },
                 )
             }
 
-            item { ShopSection("Poderes", profile.boardTheme.dark) }
+            item { ShopSection(stringResource(R.string.shop_powers), profile.boardTheme.dark) }
 
             items(Power.entries.toList()) { power ->
                 PowerRow(
@@ -146,16 +148,16 @@ fun ShopScreen(onBack: () -> Unit) {
                         if (repo.buyPower(power)) {
                             sound.play(Sfx.COIN)
                             haptics.tap()
-                            toast = "${power.title} comprado!"
+                            toast = context.getString(R.string.shop_bought, context.getString(power.title))
                         } else {
                             haptics.error()
-                            toast = "Faltam sementes. Assista um vídeo!"
+                            toast = context.getString(R.string.shop_no_coins)
                         }
                     },
                     onWatch = {
                         val act = activity
                         if (act == null) {
-                            toast = "Vídeo indisponível agora."
+                            toast = context.getString(R.string.shop_video_unavailable)
                             return@PowerRow
                         }
                         AdsManager.showRewarded(act) { granted ->
@@ -163,16 +165,16 @@ fun ShopScreen(onBack: () -> Unit) {
                                 repo.addPower(power)
                                 sound.play(Sfx.POWER)
                                 haptics.power()
-                                toast = "${power.title} liberado!"
+                                toast = context.getString(R.string.shop_unlocked, context.getString(power.title))
                             } else {
-                                toast = "O vídeo não completou. Tente de novo."
+                                toast = context.getString(R.string.shop_video_failed)
                             }
                         }
                     },
                 )
             }
 
-            item { ShopSection("Peles do tabuleiro", profile.boardTheme.dark) }
+            item { ShopSection(stringResource(R.string.shop_themes), profile.boardTheme.dark) }
 
             items(BoardTheme.shop) { theme ->
                 ThemeRow(
@@ -185,10 +187,10 @@ fun ShopScreen(onBack: () -> Unit) {
                             repo.selectTheme(theme)
                             sound.play(Sfx.COIN)
                             celebrate = true
-                            toast = "${theme.title} desbloqueada!"
+                            toast = context.getString(R.string.shop_theme_unlocked, context.getString(theme.title))
                         } else {
                             haptics.error()
-                            toast = "Faltam ${theme.price - profile.coins} sementes."
+                            toast = context.getString(R.string.shop_need_coins, theme.price - profile.coins)
                         }
                     },
                     onSelect = {
@@ -202,7 +204,7 @@ fun ShopScreen(onBack: () -> Unit) {
             // antes disso, quem manda nelas é o Passe.
             val owned = BoardTheme.seasonal.filter { it.id in profile.unlockedThemes }
             if (owned.isNotEmpty()) {
-                item { ShopSection("Exclusivas do Passe", profile.boardTheme.dark) }
+                item { ShopSection(stringResource(R.string.shop_seasonal), profile.boardTheme.dark) }
                 items(owned) { theme ->
                     ThemeRow(
                         theme = theme,
@@ -283,15 +285,19 @@ private fun FreeCoinsCard(onWatch: () -> Unit) {
             }
             Spacer(Modifier.width(12.dp))
             Column(Modifier.weight(1f)) {
-                Text("Sementes grátis", style = MaterialTheme.typography.titleLarge, color = Color.White)
                 Text(
-                    "Um vídeo rapidinho = $AD_COINS 🌱. Pode repetir sempre.",
+                    stringResource(R.string.shop_free_title),
+                    style = MaterialTheme.typography.titleLarge,
+                    color = Color.White,
+                )
+                Text(
+                    stringResource(R.string.shop_free_sub, AD_COINS),
                     style = MaterialTheme.typography.bodySmall,
                     color = Color.White.copy(alpha = 0.92f),
                 )
             }
             JuicyButton(
-                text = "Assistir",
+                text = stringResource(R.string.shop_watch),
                 color = Color.White,
                 textColor = Fruta.Ink,
                 height = 44.dp,
@@ -325,18 +331,18 @@ private fun PowerRow(
             Spacer(Modifier.width(12.dp))
             Column(Modifier.weight(1f)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(power.title, style = MaterialTheme.typography.titleMedium, color = Fruta.Ink)
+                    Text(stringResource(power.title), style = MaterialTheme.typography.titleMedium, color = Fruta.Ink)
                     if (owned > 0) {
                         Spacer(Modifier.width(6.dp))
                         StatPill("📦", "$owned")
                     }
                 }
-                Text(power.desc, style = MaterialTheme.typography.bodySmall, color = Fruta.InkSoft)
+                Text(stringResource(power.desc), style = MaterialTheme.typography.bodySmall, color = Fruta.InkSoft)
             }
             Spacer(Modifier.width(8.dp))
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 JuicyButton(
-                    text = "${power.price} 🌱",
+                    text = stringResource(R.string.shop_price, power.price),
                     color = if (canAfford) Fruta.Sun else Fruta.InkSoft,
                     textColor = if (canAfford) Fruta.Ink else Color.White,
                     height = 38.dp,
@@ -345,7 +351,7 @@ private fun PowerRow(
                 )
                 Spacer(Modifier.height(6.dp))
                 JuicyButton(
-                    text = "Vídeo",
+                    text = stringResource(R.string.shop_video),
                     emoji = "🎬",
                     color = Fruta.Leaf,
                     height = 38.dp,
@@ -389,21 +395,21 @@ private fun ThemeRow(
             }
             Spacer(Modifier.width(12.dp))
             Column(Modifier.weight(1f)) {
-                Text(theme.title, style = MaterialTheme.typography.titleMedium, color = Fruta.Ink)
-                Text(theme.desc, style = MaterialTheme.typography.bodySmall, color = Fruta.InkSoft)
+                Text(stringResource(theme.title), style = MaterialTheme.typography.titleMedium, color = Fruta.Ink)
+                Text(stringResource(theme.desc), style = MaterialTheme.typography.bodySmall, color = Fruta.InkSoft)
             }
             Spacer(Modifier.width(8.dp))
             when {
                 selected -> Text("✅", style = MaterialTheme.typography.headlineSmall)
                 unlocked -> JuicyButton(
-                    text = "Usar",
+                    text = stringResource(R.string.shop_use),
                     color = Fruta.Grape,
                     height = 40.dp,
                     modifier = Modifier.width(92.dp),
                     onClick = onSelect,
                 )
                 else -> JuicyButton(
-                    text = "${theme.price} 🌱",
+                    text = stringResource(R.string.shop_price, theme.price),
                     color = if (canAfford) Fruta.Sun else Fruta.InkSoft,
                     textColor = if (canAfford) Fruta.Ink else Color.White,
                     height = 40.dp,

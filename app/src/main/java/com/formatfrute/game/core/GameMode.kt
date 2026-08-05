@@ -1,6 +1,8 @@
 package com.formatfrute.game.core
 
+import androidx.annotation.StringRes
 import androidx.compose.ui.graphics.Color
+import com.formatfrute.game.R
 
 /**
  * Os modos do Format Frute. Cada um muda a regra de verdade — nao e o mesmo
@@ -8,9 +10,9 @@ import androidx.compose.ui.graphics.Color
  */
 enum class GameMode(
     val id: String,
-    val title: String,
-    val tagline: String,
-    val howTo: String,
+    @StringRes val title: Int,
+    @StringRes val tagline: Int,
+    @StringRes val howTo: Int,
     val emblem: Fruit,
     val gridSize: Int,
     val accent: Color,
@@ -29,10 +31,9 @@ enum class GameMode(
 ) {
     POMAR(
         id = "pomar",
-        title = "Pomar Clássico",
-        tagline = "O começo de todo feirante",
-        howTo = "Arraste para juntar frutas iguais. Chegue na Pitaya para vencer — " +
-            "e continue jogando para colher a Melancia.",
+        title = R.string.mode_pomar_title,
+        tagline = R.string.mode_pomar_tagline,
+        howTo = R.string.mode_pomar_howto,
         emblem = Fruit.MACA,
         gridSize = 4,
         accent = Color(0xFFFF4D6D),
@@ -42,10 +43,9 @@ enum class GameMode(
 
     VITAMINA(
         id = "vitamina",
-        title = "Vitamina Turbo",
-        tagline = "60 segundos de liquidificador",
-        howTo = "O relógio corre! Cada fusão devolve segundos e o combo multiplica " +
-            "os pontos. Pare de juntar e o tempo te alcança.",
+        title = R.string.mode_vitamina_title,
+        tagline = R.string.mode_vitamina_tagline,
+        howTo = R.string.mode_vitamina_howto,
         emblem = Fruit.LARANJA,
         gridSize = 4,
         accent = Color(0xFFFF8A00),
@@ -56,10 +56,9 @@ enum class GameMode(
 
     GELEIA(
         id = "geleia",
-        title = "Geleia Congelada",
-        tagline = "Frutas presas no gelo",
-        howTo = "Algumas frutas nascem congeladas: não deslizam nem fundem. " +
-            "Fusões vizinhas racham o gelo e libertam a fruta.",
+        title = R.string.mode_geleia_title,
+        tagline = R.string.mode_geleia_tagline,
+        howTo = R.string.mode_geleia_howto,
         emblem = Fruit.UVA,
         gridSize = 5,
         accent = Color(0xFF3FA9F5),
@@ -67,26 +66,11 @@ enum class GameMode(
         iceChance = 0.20f,
     ),
 
-    ZEN(
-        id = "zen",
-        title = "Zen do Pomar",
-        tagline = "Sem relógio, sem derrota",
-        howTo = "Tabuleiro grande e nenhuma pressão. Quando enche, o pomar colhe " +
-            "sozinho as frutinhas menores e o jogo continua.",
-        emblem = Fruit.PERA,
-        gridSize = 5,
-        accent = Color(0xFF2FBF71),
-        accent2 = Color(0xFFB7EFC5),
-        endless = true,
-    ),
-
     RECEITA(
         id = "receita",
-        title = "Modo Receita",
-        tagline = "Monte o pedido do freguês",
-        howTo = "Cada fase pede frutas específicas. Só conta a fruta que você " +
-            "CRIAR fundindo — o que já está no tabuleiro é matéria-prima. " +
-            "Sobrar jogada no fim vale estrela.",
+        title = R.string.mode_receita_title,
+        tagline = R.string.mode_receita_tagline,
+        howTo = R.string.mode_receita_howto,
         emblem = Fruit.MORANGO,
         gridSize = 4,
         accent = Color(0xFFE0197B),
@@ -95,12 +79,23 @@ enum class GameMode(
         rainbowChance = 0.04f,
     ),
 
+    ZEN(
+        id = "zen",
+        title = R.string.mode_zen_title,
+        tagline = R.string.mode_zen_tagline,
+        howTo = R.string.mode_zen_howto,
+        emblem = Fruit.PERA,
+        gridSize = 5,
+        accent = Color(0xFF2FBF71),
+        accent2 = Color(0xFFB7EFC5),
+        endless = true,
+    ),
+
     BATALHA(
         id = "batalha",
-        title = "Batalha do Suco",
-        tagline = "Contra o Monstro Azedo",
-        howTo = "Cada fusão vira dano no Monstro Azedo. A cada 3 jogadas ele " +
-            "cospe uma fruta podre no seu tabuleiro. Zere a vida dele!",
+        title = R.string.mode_batalha_title,
+        tagline = R.string.mode_batalha_tagline,
+        howTo = R.string.mode_batalha_howto,
         emblem = Fruit.LIMAO,
         gridSize = 4,
         accent = Color(0xFF00A67E),

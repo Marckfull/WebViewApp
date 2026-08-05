@@ -1,5 +1,518 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Todos os textos visíveis do Format Frute.
+
+  Para traduzir, copie este arquivo para res/values-<idioma>/strings.xml e
+  traduza só os valores. Nenhum texto de tela vive no código Kotlin.
+-->
 <resources>
-    <string name="app_name">Format Frute</string>
+
+    <string name="app_name" translatable="false">Format Frute</string>
+    <string name="contact_email" translatable="false">formatfrute@gmail.com</string>
+    <string name="tagline">junte as frutas, encha a cesta</string>
+
+    <!-- ======================================================= frutas -->
+    <string name="fruit_cereja">Cereja</string>
+    <string name="fruit_morango">Morango</string>
+    <string name="fruit_uva">Uva</string>
+    <string name="fruit_limao">Limão</string>
+    <string name="fruit_banana">Banana</string>
+    <string name="fruit_maca">Maçã</string>
+    <string name="fruit_laranja">Laranja</string>
+    <string name="fruit_pera">Pera</string>
+    <string name="fruit_kiwi">Kiwi</string>
+    <string name="fruit_abacaxi">Abacaxi</string>
+    <string name="fruit_pitaya">Pitaya</string>
+    <string name="fruit_melancia">Melancia</string>
+
+    <!-- ======================================================== modos -->
+    <string name="mode_pomar_title">Pomar Clássico</string>
+    <string name="mode_pomar_tagline">O começo de todo feirante</string>
+    <string name="mode_pomar_howto">Arraste para juntar frutas iguais. Chegue na Pitaya para vencer — e continue jogando para colher a Melancia.</string>
+
+    <string name="mode_vitamina_title">Vitamina Turbo</string>
+    <string name="mode_vitamina_tagline">60 segundos de liquidificador</string>
+    <string name="mode_vitamina_howto">O relógio corre! Cada fusão devolve segundos e o combo multiplica os pontos. Pare de juntar e o tempo te alcança.</string>
+
+    <string name="mode_geleia_title">Geleia Congelada</string>
+    <string name="mode_geleia_tagline">Frutas presas no gelo</string>
+    <string name="mode_geleia_howto">Algumas frutas nascem congeladas: não deslizam nem fundem. Fusões vizinhas racham o gelo e libertam a fruta.</string>
+
+    <string name="mode_receita_title">Modo Receita</string>
+    <string name="mode_receita_tagline">Monte o pedido do freguês</string>
+    <string name="mode_receita_howto">Cada fase pede frutas específicas. Só conta a fruta que você CRIAR fundindo — o que já está no tabuleiro é matéria-prima. Sobrar jogada no fim vale estrela.</string>
+
+    <string name="mode_zen_title">Zen do Pomar</string>
+    <string name="mode_zen_tagline">Sem relógio, sem derrota</string>
+    <string name="mode_zen_howto">Tabuleiro grande e nenhuma pressão. Quando enche, o pomar colhe sozinho as frutinhas menores e o jogo continua.</string>
+
+    <string name="mode_batalha_title">Batalha do Suco</string>
+    <string name="mode_batalha_tagline">Contra o Monstro Azedo</string>
+    <string name="mode_batalha_howto">Cada fusão vira dano no Monstro Azedo. A cada 3 jogadas ele cospe uma fruta podre no seu tabuleiro. Zere a vida dele!</string>
+
+    <!-- Metas mostradas no topo da partida -->
+    <string name="goal_reach">Chegue na %1$s</string>
+    <string name="goal_melt_ice">Derreta o gelo e chegue na %1$s</string>
+    <string name="goal_score_time">Faça o máximo de pontos em %1$ds</string>
+    <string name="goal_zen">Relaxe. O pomar cuida do resto.</string>
+    <string name="goal_boss">Derrote o Monstro Azedo</string>
+    <string name="goal_recipe">Monte o pedido do freguês</string>
+
+    <!-- ======================================================= poderes -->
+    <string name="power_martelo_title">Martelinho</string>
+    <string name="power_martelo_desc">Esmaga uma fruta qualquer do tabuleiro.</string>
+    <string name="power_adubo_title">Adubo Mágico</string>
+    <string name="power_adubo_desc">Faz uma fruta crescer um nível. Conta para o pedido da Receita.</string>
+    <string name="power_voltar_title">Voltar no Tempo</string>
+    <string name="power_voltar_desc">Desfaz a última jogada. Ninguém viu.</string>
+    <string name="power_peneira_title">Peneira</string>
+    <string name="power_peneira_desc">Chacoalha o tabuleiro e embaralha tudo.</string>
+    <string name="power_relogio_title">Relógio de Açúcar</string>
+    <string name="power_relogio_desc">Ganha 15 segundos. Só vale nos modos com relógio.</string>
+    <string name="power_arcoiris_title">Fruta Arco-íris</string>
+    <string name="power_arcoiris_desc">Solta um coringa que combina com qualquer fruta.</string>
+    <string name="power_dica_title">Olho Bom</string>
+    <string name="power_dica_desc">Acende as duas frutas que dá para juntar agora.</string>
+
+    <!-- ========================================================= peles -->
+    <string name="theme_feira_title">Feira de Domingo</string>
+    <string name="theme_feira_desc">O clássico ensolarado da barraca.</string>
+    <string name="theme_pomar_title">Pomar ao Amanhecer</string>
+    <string name="theme_pomar_desc">Verdinho, calmo, cheirando a mato molhado.</string>
+    <string name="theme_sorvete_title">Sorvete de Frutas</string>
+    <string name="theme_sorvete_desc">Pastel, fofo e gelado que nem picolé.</string>
+    <string name="theme_tropical_title">Praia Tropical</string>
+    <string name="theme_tropical_desc">Areia, sol e cheiro de coco.</string>
+    <string name="theme_noite_title">Feira da Meia-Noite</string>
+    <string name="theme_noite_desc">Modo escuro com luzinha de barraca. Só no Passe.</string>
+    <string name="theme_junina_title">Arraiá da Fruta</string>
+    <string name="theme_junina_desc">Bandeirinha, fogueira e quentão. Só no Passe.</string>
+    <string name="theme_encantado_title">Pomar Encantado</string>
+    <string name="theme_encantado_desc">Roxo, dourado e meio mágico. Só no Passe.</string>
+
+    <!-- ====================================================== patentes -->
+    <string name="rank_1">Aprendiz de Feirante</string>
+    <string name="rank_2">Catador de Cereja</string>
+    <string name="rank_3">Ajudante de Barraca</string>
+    <string name="rank_4">Vendedor de Suco</string>
+    <string name="rank_5">Mestre da Salada</string>
+    <string name="rank_6">Chef de Vitamina</string>
+    <string name="rank_7">Guardião do Pomar</string>
+    <string name="rank_8">Barão da Melancia</string>
+    <string name="rank_9">Lenda da Feira</string>
+
+    <!-- ======================================================= missões -->
+    <string name="mission_fusoes">Junte %1$d frutas</string>
+    <string name="mission_fruta">Chegue na %1$s</string>
+    <string name="mission_pontos">Faça %1$d pontos numa partida</string>
+    <string name="mission_partidas">Jogue %1$d partidas</string>
+    <string name="mission_poderes">Use %1$d poderes</string>
+    <string name="mission_colheita">Faça %1$d colheitas de Melancia</string>
+    <string name="mission_modo">Jogue o modo %1$s</string>
+    <string name="mission_progress">%1$d / %2$d  •  +%3$d 🌱</string>
+
+    <!-- ==================================================== conquistas -->
+    <string name="ach_primeira_fusao_title">Primeira Fusão</string>
+    <string name="ach_primeira_fusao_desc">Junte suas duas primeiras frutas.</string>
+    <string name="ach_cem_fusoes_title">Mão na Massa</string>
+    <string name="ach_cem_fusoes_desc">Faça 100 fusões.</string>
+    <string name="ach_mil_fusoes_title">Feirante Calejado</string>
+    <string name="ach_mil_fusoes_desc">Faça 1.000 fusões.</string>
+    <string name="ach_dez_mil_fusoes_title">Lenda da Fusão</string>
+    <string name="ach_dez_mil_fusoes_desc">Faça 10.000 fusões.</string>
+    <string name="ach_maca_title">Bom de Maçã</string>
+    <string name="ach_maca_desc">Chegue na Maçã.</string>
+    <string name="ach_kiwi_title">Peludo mas Doce</string>
+    <string name="ach_kiwi_desc">Chegue no Kiwi.</string>
+    <string name="ach_pitaya_title">Caçador de Dragão</string>
+    <string name="ach_pitaya_desc">Chegue na Pitaya.</string>
+    <string name="ach_melancia_title">Barão da Melancia</string>
+    <string name="ach_melancia_desc">Chegue na Melancia.</string>
+    <string name="ach_colheita_title">Primeira Colheita</string>
+    <string name="ach_colheita_desc">Junte duas Melancias.</string>
+    <string name="ach_colheita_dez_title">Colheita Farta</string>
+    <string name="ach_colheita_dez_desc">Faça 10 colheitas.</string>
+    <string name="ach_dez_partidas_title">Freguês da Casa</string>
+    <string name="ach_dez_partidas_desc">Jogue 10 partidas.</string>
+    <string name="ach_cem_partidas_title">Dono da Barraca</string>
+    <string name="ach_cem_partidas_desc">Jogue 100 partidas.</string>
+    <string name="ach_cinco_fases_title">Cozinheiro de Fim de Semana</string>
+    <string name="ach_cinco_fases_desc">Feche 5 fases da Receita.</string>
+    <string name="ach_vinte_cinco_fases_title">Chef de Confiança</string>
+    <string name="ach_vinte_cinco_fases_desc">Feche 25 fases da Receita.</string>
+    <string name="ach_todas_fases_title">Caderno Completo</string>
+    <string name="ach_todas_fases_desc">Feche todas as fases da Receita.</string>
+    <string name="ach_cem_estrelas_title">Chuva de Estrelas</string>
+    <string name="ach_cem_estrelas_desc">Junte 100 estrelas na Receita.</string>
+    <string name="ach_estrela_cheia_title">Nota Máxima</string>
+    <string name="ach_estrela_cheia_desc">Tire três estrelas em todas as fases.</string>
+    <string name="ach_poderes_title">Mão de Poder</string>
+    <string name="ach_poderes_desc">Use 25 poderes.</string>
+    <string name="ach_semana_title">Semana Cheia</string>
+    <string name="ach_semana_desc">Sete dias seguidos pegando o presente.</string>
+    <string name="ach_nivel_dez_title">Subindo na Vida</string>
+    <string name="ach_nivel_dez_desc">Chegue ao nível 10.</string>
+    <string name="ach_nivel_vinte_cinco_title">Autoridade da Feira</string>
+    <string name="ach_nivel_vinte_cinco_desc">Chegue ao nível 25.</string>
+    <string name="ach_passe_completo_title">Passe Fechado</string>
+    <string name="ach_passe_completo_desc">Chegue ao último degrau do Passe.</string>
+    <string name="ach_colecionador_title">Colecionador</string>
+    <string name="ach_colecionador_desc">Compre todas as peles da Barraquinha.</string>
+
+    <!-- ======================================================= receitas -->
+    <string name="recipe_daily">Receita do Dia</string>
+    <string name="recipe_stage">Fase %1$d — %2$s</string>
+    <string name="recipe_stage_short">Fase %1$d · %2$s</string>
+    <string name="recipe_1">Suco da Manhã</string>
+    <string name="recipe_2">Salada de Frutas</string>
+    <string name="recipe_3">Vitamina da Vovó</string>
+    <string name="recipe_4">Torta de Morango</string>
+    <string name="recipe_5">Smoothie Roxo</string>
+    <string name="recipe_6">Mousse de Limão</string>
+    <string name="recipe_7">Bolo de Banana</string>
+    <string name="recipe_8">Sorvete Tropical</string>
+    <string name="recipe_9">Caipirinha sem Álcool</string>
+    <string name="recipe_10">Geleia Caseira</string>
+    <string name="recipe_11">Pavê da Tia</string>
+    <string name="recipe_12">Suco Detox</string>
+    <string name="recipe_13">Milkshake Rosa</string>
+    <string name="recipe_14">Tortinha do Chef</string>
+    <string name="recipe_15">Compota da Feira</string>
+    <string name="recipe_16">Picolé Gourmet</string>
+    <string name="recipe_17">Salada Exótica</string>
+    <string name="recipe_18">Suco de Melancia</string>
+    <string name="recipe_19">Bolo Confeitado</string>
+    <string name="recipe_20">Banquete da Feira</string>
+
+    <!-- ==================================================== falas das frutas -->
+    <string name="voice_cereja_1">Sou pequena, mas começo tudo!</string>
+    <string name="voice_cereja_2">Cadê minha gêmea?</string>
+    <string name="voice_morango_1">Nasci pra ser sobremesa.</string>
+    <string name="voice_morango_2">Alguém falou em torta?</string>
+    <string name="voice_uva_1">Roxo é cor de realeza.</string>
+    <string name="voice_uva_2">Vim em cacho, cheguei sozinha.</string>
+    <string name="voice_limao_1">Sou azedo e tenho orgulho.</string>
+    <string name="voice_limao_2">A vida te deu eu.</string>
+    <string name="voice_banana_1">Escorreguei até aqui.</string>
+    <string name="voice_banana_2">Cuidado com a casca!</string>
+    <string name="voice_maca_1">Uma por dia e o médico some.</string>
+    <string name="voice_maca_2">Sou clássica. Aceita.</string>
+    <string name="voice_laranja_1">Cheguei espremida!</string>
+    <string name="voice_laranja_2">Vitamina C ambulante.</string>
+    <string name="voice_pera_1">Demorei, mas cheguei.</string>
+    <string name="voice_pera_2">Esse formato é exclusivo.</string>
+    <string name="voice_kiwi_1">Peludo fora, doce dentro.</string>
+    <string name="voice_kiwi_2">Fui difícil, né? Assume.</string>
+    <string name="voice_abacaxi_1">Sou um abacaxi. Resolve aí.</string>
+    <string name="voice_abacaxi_2">Coroa na cabeça, respeita!</string>
+    <string name="voice_pitaya_1">Fruta do dragão chegou! 🐉</string>
+    <string name="voice_pitaya_2">Cara na feira, rara aqui.</string>
+    <string name="voice_melancia_1">CHEGUEI! 🎉</string>
+    <string name="voice_melancia_2">Oito quilos de vitória.</string>
+    <string name="voice_melancia_3">Você conseguiu. Sério mesmo.</string>
+
+    <string name="voice_combo_1">Tá pegando fogo! 🔥</string>
+    <string name="voice_combo_2">Isso virou salada!</string>
+    <string name="voice_combo_3">Não para não!</string>
+    <string name="voice_combo_4">O liquidificador enlouqueceu!</string>
+    <string name="voice_combo_5">A feira inteira te viu.</string>
+
+    <string name="voice_boss_1">Você é doce demais pra mim!</string>
+    <string name="voice_boss_2">Vou azedar seu dia! 🍋</string>
+    <string name="voice_boss_3">Argh! Que doçura insuportável!</string>
+    <string name="voice_boss_4">Fruta podre pra você!</string>
+    <string name="voice_boss_5">Ninguém me vence... quase.</string>
+
+    <string name="voice_hello_1">Bom dia! Bora encher a cesta?</string>
+    <string name="voice_hello_2">Senti sua falta, viu?</string>
+    <string name="voice_hello_3">A feira abriu. Chega junto!</string>
+    <string name="voice_hello_4">Hoje é dia de recorde.</string>
+    <string name="voice_hello_5">Tem cesta nova te esperando!</string>
+    <string name="voice_hello_6">Vim aqui só pra te chamar.</string>
+
+    <!-- ====================================================== tutorial -->
+    <string name="tut_step_of">Passo %1$d de %2$d</string>
+    <string name="tut_skip">Pular</string>
+    <string name="tut_locked">Faça o que foi pedido para liberar o próximo passo 🔒</string>
+
+    <string name="tut_arrastar_title">Passo 1 — Arraste!</string>
+    <string name="tut_arrastar_text">Deslize o dedo para a DIREITA. Todas as frutas correm para esse lado.</string>
+    <string name="tut_arrastar_block">Agora só vale para a direita! ➡️</string>
+    <string name="tut_fundir_title">Passo 2 — Junte iguais</string>
+    <string name="tut_fundir_text">Duas cerejas encostando viram um morango. Faça a fusão acontecer!</string>
+    <string name="tut_fundir_block">Encoste duas frutas iguais para elas virarem uma só.</string>
+    <string name="tut_evoluir_title">Passo 3 — Faça crescer</string>
+    <string name="tut_evoluir_text">Continue juntando até aparecer uma UVA. A escada da fruta é assim: cereja, morango, uva…</string>
+    <string name="tut_poder_title">Passo 4 — Use um poder</string>
+    <string name="tut_poder_text">Toque no Martelinho lá embaixo e esmague qualquer fruta. Poderes salvam tabuleiro travado.</string>
+    <string name="tut_premiado_title">Passo 5 — Poder de graça</string>
+    <string name="tut_premiado_text">Acabaram os poderes? Assista um vídeo rapidinho e ganhe na hora, sem gastar semente nenhuma.</string>
+    <string name="tut_premiado_cta">Entendi!</string>
+    <string name="tut_fim_title">Pronto, feirante! 🎉</string>
+    <string name="tut_fim_text">Você ganhou 150 sementes, um Martelinho e um Voltar no Tempo. Agora é com você: encha essa cesta!</string>
+    <string name="tut_fim_cta">Bora jogar!</string>
+
+    <string name="coach_step_of">Receita %1$d de %2$d</string>
+    <string name="coach_locked">Faça uma fusão para continuar 🔒</string>
+    <string name="coach_pedido_title">O pedido do freguês 🧾</string>
+    <string name="coach_pedido_text">Lá em cima está o que ele quer. Cada fruta tem um contador: quantas você já entregou e quantas faltam.</string>
+    <string name="coach_pedido_cta">Entendi!</string>
+    <string name="coach_criar_title">Só vale o que você criar</string>
+    <string name="coach_criar_text">As frutas que já estão no tabuleiro são matéria-prima — elas não contam sozinhas. Faça uma fusão e veja o contador andar!</string>
+    <string name="coach_jogadas_title">Jogada é contada ⭐</string>
+    <string name="coach_jogadas_text">Você tem um número certo de jogadas. Terminar o pedido sobrando jogada vale estrela: três se sobrar bastante.</string>
+    <string name="coach_jogadas_cta">Bora cozinhar!</string>
+
+    <!-- ====================================================== anúncios -->
+    <string name="reward_poder_title">Poder liberado!</string>
+    <string name="reward_poder_sub">Assista um vídeo rapidinho e leve o poder agora.</string>
+    <string name="reward_reviver_title">Continuar jogando</string>
+    <string name="reward_reviver_sub">Um vídeo e a gente limpa espaço no tabuleiro.</string>
+    <string name="reward_dobrar_title">Dobrar sementes</string>
+    <string name="reward_dobrar_sub">Assista e leve o dobro da colheita da partida.</string>
+    <string name="reward_tempo_title">Mais tempo</string>
+    <string name="reward_tempo_sub">Assista e ganhe +15 segundos no relógio.</string>
+    <string name="reward_diario_title">Presente em dobro</string>
+    <string name="reward_diario_sub">Assista e o presente do dia vale o dobro.</string>
+    <string name="reward_loja_title">Sementes grátis</string>
+    <string name="reward_loja_sub">Assista um vídeo e leve sementes pra barraca.</string>
+
+    <!-- ================================================ tela: partida -->
+    <string name="hud_score">PONTOS</string>
+    <string name="hud_best">RECORDE</string>
+    <string name="hud_combo">🔥 COMBO x%1$d</string>
+    <string name="hud_moves">🎯 %1$d jogadas</string>
+    <string name="hud_moves_short">🎯 %1$d</string>
+    <string name="hud_moves_label">jogadas</string>
+    <string name="hud_clock">⏱️ %1$s</string>
+
+    <string name="pause_title">Pausa pro cafezinho ☕</string>
+    <string name="pause_resume">Continuar</string>
+    <string name="pause_restart">Recomeçar</string>
+    <string name="pause_shop">Barraquinha</string>
+    <string name="pause_exit">Sair da partida</string>
+
+    <string name="end_win">VOCÊ VENCEU!</string>
+    <string name="end_lose">Fim de feira!</string>
+    <string name="end_recipe_win">PEDIDO PRONTO!</string>
+    <string name="end_recipe_lose">Faltou pouco!</string>
+    <string name="end_recipe_win_sub">Fase %1$d — %2$s está fechada!</string>
+    <string name="end_recipe_lose_sub">As jogadas acabaram antes do pedido. Tenta de novo?</string>
+    <string name="end_win_sub">Você fechou o %1$s!</string>
+    <string name="end_lose_sub">O tabuleiro travou. Acontece até com os melhores.</string>
+    <string name="end_score">Pontos</string>
+    <string name="end_best">Recorde</string>
+    <string name="end_seeds">Sementes</string>
+    <string name="end_new_record">🏆 RECORDE NOVO!</string>
+    <string name="end_new_stage">⭐ FASE NOVA LIBERADA!</string>
+    <string name="end_best_fruit">Melhor fruta: </string>
+    <string name="end_revive">Continuar jogando</string>
+    <string name="end_revive_moves">+5 jogadas</string>
+    <string name="end_double">Dobrar sementes</string>
+    <string name="end_again">Jogar de novo</string>
+    <string name="end_retry">Tentar de novo</string>
+    <string name="end_next_stage">Próxima fase</string>
+    <string name="end_home">Voltar pra feira</string>
+    <string name="end_map">Voltar ao mapa</string>
+
+    <string name="dialog_watch_video">Assistir vídeo</string>
+    <string name="dialog_buy_for">Comprar por %1$d 🌱</string>
+    <string name="dialog_not_now">Agora não</string>
+    <string name="dialog_cancel_power">Cancelar %1$s</string>
+
+    <string name="hint_pick_smash">Toque na fruta que vai pro chão.</string>
+    <string name="hint_pick_grow">Toque na fruta que vai crescer.</string>
+    <string name="hint_pick_any">Escolha uma casa com fruta.</string>
+    <string name="hint_clock_only">Esse poder só funciona nos modos com relógio.</string>
+    <string name="hint_no_coins">Sementes insuficientes. Assista um vídeo!</string>
+    <string name="hint_no_video">O vídeo não carregou. Tente de novo em instantes.</string>
+    <string name="hint_no_undo">Não tem jogada pra desfazer ainda.</string>
+    <string name="hint_no_merge">Não tem fusão possível. Use a Peneira ou o Martelinho!</string>
+    <string name="hint_look_here">Junte essas duas! 👀</string>
+
+    <string name="float_harvest">COLHEITA!</string>
+    <string name="float_combo">COMBO x%1$d</string>
+    <string name="float_rotten">Fruta podre!</string>
+    <string name="float_breathe">O pomar respirou!</string>
+
+    <string name="achievement_banner">CONQUISTA!</string>
+    <string name="achievement_ok">Boa!</string>
+
+    <!-- ================================================== tela: início -->
+    <string name="home_start_tutorial">Começar o tutorial</string>
+    <string name="home_shop">Barraquinha</string>
+    <string name="home_gift">Presente</string>
+    <string name="home_gift_ready">Presente!</string>
+    <string name="home_achievements">Conquistas</string>
+    <string name="home_modes">Modos avulsos</string>
+    <string name="home_missions">Missões do dia</string>
+    <string name="home_locked">Faça o tutorial para liberar</string>
+    <string name="home_resume_title">Continuar partida</string>
+    <string name="home_resume_sub">%1$s • %2$s pontos</string>
+    <string name="home_daily_title">Receita do Dia</string>
+    <string name="home_daily_done">Fechada hoje! Volta amanhã pra próxima.</string>
+    <string name="home_daily_open">Mesma fase para todo mundo. Vale sementes extras.</string>
+    <string name="home_recipe_sub">Monte o pedido do freguês</string>
+    <string name="home_recipe_stage">Fase %1$d</string>
+    <string name="home_pass_title">Passe da Feira</string>
+    <string name="home_pass_sub">Degrau %1$d de %2$d • acaba em %3$dd</string>
+    <string name="home_album">Álbum de frutas</string>
+    <string name="home_album_sub">Você já chegou na %1$s. Faltam %2$d para completar!</string>
+    <string name="home_footer">Format Frute • formatfrute@gmail.com</string>
+
+    <string name="gift_title">Presente do dia 🎁</string>
+    <string name="gift_streak">Dia %1$d da sua sequência!</string>
+    <string name="gift_done">Você já pegou o presente de hoje. Volte amanhã!</string>
+    <string name="gift_claim">Pegar %1$d sementes</string>
+    <string name="gift_close">Fechar</string>
+    <string name="gift_day">D%1$d</string>
+
+    <!-- ==================================================== tela: loja -->
+    <string name="shop_title">Barraquinha</string>
+    <string name="shop_powers">Poderes</string>
+    <string name="shop_themes">Peles do tabuleiro</string>
+    <string name="shop_seasonal">Exclusivas do Passe</string>
+    <string name="shop_free_title">Sementes grátis</string>
+    <string name="shop_free_sub">Um vídeo rapidinho = %1$d 🌱. Pode repetir sempre.</string>
+    <string name="shop_watch">Assistir</string>
+    <string name="shop_video">Vídeo</string>
+    <string name="shop_use">Usar</string>
+    <string name="shop_price">%1$d 🌱</string>
+    <string name="shop_bought">%1$s comprado!</string>
+    <string name="shop_unlocked">%1$s liberado!</string>
+    <string name="shop_theme_unlocked">%1$s desbloqueada!</string>
+    <string name="shop_need_coins">Faltam %1$d sementes.</string>
+    <string name="shop_no_coins">Faltam sementes. Assista um vídeo!</string>
+    <string name="shop_coins_added">+%1$d sementes na conta!</string>
+    <string name="shop_video_failed">O vídeo não completou. Tente de novo.</string>
+    <string name="shop_video_unavailable">Vídeo indisponível agora.</string>
+
+    <!-- ==================================================== tela: passe -->
+    <string name="pass_title">Passe da Feira</string>
+    <string name="pass_season">Temporada de %1$s</string>
+    <string name="pass_tier">Degrau %1$d de %2$d</string>
+    <string name="pass_tokens">🎟️ %1$d / %2$d</string>
+    <string name="pass_days_left">%1$dd</string>
+    <string name="pass_how">Ganhe fichas jogando qualquer modo, fechando fases da Receita e concluindo missões do dia.</string>
+    <string name="pass_free">GRÁTIS</string>
+    <string name="pass_premium">VÍDEO</string>
+    <string name="pass_claim">Pegar</string>
+    <string name="pass_claim_video">🎬 Ver</string>
+    <string name="pass_claimed">Pegou: %1$s!</string>
+    <string name="pass_locked">Esse degrau ainda não abriu.</string>
+    <string name="pass_reward_seeds">%1$d sementes</string>
+    <string name="pass_reward_power">%1$s x%2$d</string>
+
+    <string name="month_1">Janeiro</string>
+    <string name="month_2">Fevereiro</string>
+    <string name="month_3">Março</string>
+    <string name="month_4">Abril</string>
+    <string name="month_5">Maio</string>
+    <string name="month_6">Junho</string>
+    <string name="month_7">Julho</string>
+    <string name="month_8">Agosto</string>
+    <string name="month_9">Setembro</string>
+    <string name="month_10">Outubro</string>
+    <string name="month_11">Novembro</string>
+    <string name="month_12">Dezembro</string>
+
+    <string name="pass_title_1">Feirante do Mês</string>
+    <string name="pass_title_2">Rei da Cesta</string>
+    <string name="pass_title_3">Doutor em Fruta</string>
+    <string name="pass_title_4">Mão de Vitamina</string>
+    <string name="pass_title_5">Lenda do Pomar</string>
+
+    <!-- ============================================== tela: mapa de fases -->
+    <string name="map_progress">%1$d de %2$d fases</string>
+    <string name="map_stars">%1$d/%2$d</string>
+    <string name="map_detail">%1$d jogadas • %2$d×%2$d</string>
+    <string name="map_play">JOGAR</string>
+
+    <!-- ============================================== tela: conquistas -->
+    <string name="ach_title">Conquistas</string>
+    <string name="ach_progress">%1$d de %2$d desbloqueadas</string>
+    <string name="ach_claim">Pegar</string>
+
+    <!-- ================================================= tela: ajustes -->
+    <string name="settings_title">Ajustes</string>
+    <string name="settings_music">Música</string>
+    <string name="settings_sfx">Efeitos sonoros</string>
+    <string name="settings_vibration">Vibração</string>
+    <string name="settings_notifications">Notificações engraçadas</string>
+    <string name="settings_game">Jogo</string>
+    <string name="settings_redo_tutorial">Refazer o tutorial</string>
+    <string name="settings_games">Partidas</string>
+    <string name="settings_merges">Fusões</string>
+    <string name="settings_harvests">Colheitas</string>
+    <string name="settings_privacy_section">Privacidade e documentos</string>
+    <string name="settings_terms">Termos de Uso</string>
+    <string name="settings_privacy">Política de Privacidade</string>
+    <string name="settings_ad_privacy">Opções de privacidade dos anúncios</string>
+    <string name="settings_contact">Fale com a gente: %1$s</string>
+    <string name="settings_version">Versão %1$s</string>
+
+    <!-- =============================================== tela: documentos -->
+    <string name="legal_title">Documentos</string>
+    <string name="legal_tab_terms">Termos de Uso</string>
+    <string name="legal_tab_privacy">Privacidade</string>
+
+    <!-- ================================================= tela: splash -->
+    <string name="splash_loading">descascando as frutas…</string>
+
+    <!-- ============================================ relatório de erro -->
+    <string name="crash_title">Ops, o jogo travou 😖</string>
+    <string name="crash_text">Da última vez alguma coisa deu errado. Quer mandar o que aconteceu pra gente arrumar? Vai só o erro técnico — nada seu.</string>
+    <string name="crash_send">Mandar relatório</string>
+    <string name="crash_later">Agora não</string>
+    <string name="crash_subject">Format Frute — relatório de erro</string>
+    <string name="crash_body">Conte rapidinho o que você estava fazendo quando travou:\n\n\n-------- detalhes técnicos --------\n%1$s</string>
+
+    <!-- ================================================ notificações -->
     <string name="notification_channel">Recados da Feira</string>
-    <string name="contact_email">formatfrute@gmail.com</string>
+    <string name="notification_channel_desc">Lembretes engraçados, presentes do dia e desafios novos.</string>
+
+    <string name="notif_saudade_1_t">🍌 A banana ficou marrom de tanto te esperar.</string>
+    <string name="notif_saudade_1_b">Volta lá antes que vire bolo.</string>
+    <string name="notif_saudade_2_t">🍒 Suas cerejas estão em fila indiana esperando fusão.</string>
+    <string name="notif_saudade_2_b">Elas são educadas, mas impacientes.</string>
+    <string name="notif_saudade_3_t">🥝 O Kiwi está se sentindo peludo e sozinho.</string>
+    <string name="notif_saudade_3_b">Ninguém merece isso.</string>
+    <string name="notif_saudade_4_t">🍇 Suas uvas estão virando passas.</string>
+    <string name="notif_saudade_4_b">Passa lá rapidinho pra salvar.</string>
+    <string name="notif_saudade_5_t">🍊 A Laranja perguntou de você.</string>
+    <string name="notif_saudade_5_b">Falei que você já estava vindo. Não me deixe mal.</string>
+    <string name="notif_saudade_6_t">🍓 O Morango chorou hoje.</string>
+    <string name="notif_saudade_6_b">De verdade. Foi constrangedor pra todo mundo.</string>
+    <string name="notif_saudade_7_t">🍐 A Pera está encostada na parede desde ontem.</string>
+    <string name="notif_saudade_7_b">Ela finge que não liga, mas liga.</string>
+
+    <string name="notif_desafio_1_t">🍉 A Melancia disse que você nunca chega nela.</string>
+    <string name="notif_desafio_1_b">Prova o contrário. Só uma partida.</string>
+    <string name="notif_desafio_2_t">🧃 O Monstro Azedo declarou vitória.</string>
+    <string name="notif_desafio_2_b">Ele disse que você fugiu da Batalha do Suco.</string>
+    <string name="notif_desafio_3_t">🍍 O Abacaxi te desafiou.</string>
+    <string name="notif_desafio_3_b">E olha, esse abacaxi é fácil de descascar.</string>
+    <string name="notif_desafio_4_t">🐉 A Pitaya está achando graça.</string>
+    <string name="notif_desafio_4_b">Ninguém do seu nível chegou nela hoje.</string>
+    <string name="notif_desafio_5_t">🏆 Alguém bateu um recorde hoje.</string>
+    <string name="notif_desafio_5_b">Foi você? Não. Ainda dá tempo.</string>
+
+    <string name="notif_economia_1_t">🎁 Seu presente do dia está esfriando.</string>
+    <string name="notif_economia_1_b">Presente frio não tem graça, vai lá.</string>
+    <string name="notif_economia_2_t">🔥 Sua sequência de dias corre perigo!</string>
+    <string name="notif_economia_2_b">Um dia sem jogar e ela volta pro começo.</string>
+    <string name="notif_economia_3_t">🌱 Sementes grátis te esperando na barraca.</string>
+    <string name="notif_economia_3_b">É de graça. Literalmente.</string>
+    <string name="notif_economia_4_t">✨ Poder novo desbloqueado na feira.</string>
+    <string name="notif_economia_4_b">Dá pra pegar assistindo um vídeo rapidinho.</string>
+
+    <string name="notif_receita_1_t">🧾 A Receita do Dia mudou!</string>
+    <string name="notif_receita_1_b">Pedido novo, jogadas contadas. Bora?</string>
+    <string name="notif_receita_2_t">📅 A receita de hoje está aberta.</string>
+    <string name="notif_receita_2_b">Todo mundo joga a mesma. Sem desculpa.</string>
+    <string name="notif_receita_3_t">👨‍🍳 O freguês chegou com um pedido.</string>
+    <string name="notif_receita_3_b">Ele disse que só você sabe montar.</string>
+    <string name="notif_receita_4_t">🏅 Tem conquista quase fechando.</string>
+    <string name="notif_receita_4_b">Falta pouquinho. Vem terminar!</string>
+
 </resources>

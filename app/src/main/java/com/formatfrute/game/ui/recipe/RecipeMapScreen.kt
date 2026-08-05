@@ -41,6 +41,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.formatfrute.game.core.RecipeBook
@@ -49,6 +50,7 @@ import com.formatfrute.game.ui.components.ChunkyBar
 import com.formatfrute.game.ui.components.FruitBackground
 import com.formatfrute.game.ui.components.PaperCard
 import com.formatfrute.game.ui.components.StatPill
+import com.formatfrute.game.R
 import com.formatfrute.game.ui.theme.Fruta
 
 /**
@@ -93,18 +95,18 @@ fun RecipeMapScreen(onPlay: (Int) -> Unit, onBack: () -> Unit) {
                 Spacer(Modifier.width(10.dp))
                 Column(Modifier.weight(1f)) {
                     Text(
-                        "Modo Receita",
+                        stringResource(R.string.mode_receita_title),
                         style = MaterialTheme.typography.headlineMedium,
                         color = if (profile.boardTheme.dark) Color.White else Fruta.Ink,
                     )
                     Text(
-                        "${profile.recipeCleared} de ${RecipeBook.TOTAL} fases",
+                        stringResource(R.string.map_progress, profile.recipeCleared, RecipeBook.TOTAL),
                         style = MaterialTheme.typography.bodySmall,
                         color = if (profile.boardTheme.dark) Color.White.copy(alpha = 0.8f)
                         else Fruta.InkSoft,
                     )
                 }
-                StatPill("⭐", "${profile.recipeStarTotal}/${RecipeBook.TOTAL * 3}")
+                StatPill("⭐", stringResource(R.string.map_stars, profile.recipeStarTotal, RecipeBook.TOTAL * 3))
             }
 
             ChunkyBar(
@@ -207,12 +209,12 @@ private fun LevelCard(
 
             Column(Modifier.weight(1f)) {
                 Text(
-                    recipe.title,
+                    stringResource(recipe.title),
                     style = MaterialTheme.typography.titleMedium,
                     color = Color.White,
                 )
                 val detail = buildString {
-                    append("${recipe.moves} jogadas • ${recipe.size}×${recipe.size}")
+                    append(stringResource(R.string.map_detail, recipe.moves, recipe.size))
                     if (recipe.iceBlocks > 0) append(" • ❄️")
                     if (recipe.rottenEvery > 0) append(" • 🤢")
                 }
@@ -233,7 +235,7 @@ private fun LevelCard(
                         ) {
                             Image(
                                 painter = painterResource(order.fruit.art),
-                                contentDescription = order.fruit.label,
+                                contentDescription = stringResource(order.fruit.label),
                                 modifier = Modifier.size(20.dp),
                             )
                             Text(
@@ -257,7 +259,7 @@ private fun LevelCard(
                 )
                 if (current) {
                     Text(
-                        "JOGAR",
+                        stringResource(R.string.map_play),
                         style = MaterialTheme.typography.labelSmall,
                         color = Color.White,
                     )

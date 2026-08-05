@@ -54,6 +54,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -85,6 +86,7 @@ import com.formatfrute.game.ui.components.lighten
 import com.formatfrute.game.ui.findActivity
 import com.formatfrute.game.ui.formatClock
 import com.formatfrute.game.ui.formatScore
+import com.formatfrute.game.R
 import com.formatfrute.game.ui.theme.Fruta
 
 @Composable
@@ -335,8 +337,8 @@ private fun GameHud(ui: GameUi, best: Int, coins: Int, onPause: () -> Unit) {
             Text("⏸", style = MaterialTheme.typography.titleMedium)
         }
 
-        ScoreBox("PONTOS", ui.state.score, ui.mode.accent, Modifier.weight(1f))
-        ScoreBox("RECORDE", best, Fruta.Grape, Modifier.weight(1f))
+        ScoreBox(stringResource(R.string.hud_score), ui.state.score, ui.mode.accent, Modifier.weight(1f))
+        ScoreBox(stringResource(R.string.hud_best), best, Fruta.Grape, Modifier.weight(1f))
         StatPill("🌱", formatScore(coins))
     }
 }
@@ -380,7 +382,14 @@ private fun ModeStatus(ui: GameUi) {
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    text = ui.recipe?.let { "Fase ${it.number} · ${it.title}" } ?: mode.title,
+                    text = ui.recipe?.let { recipe ->
+                        if (recipe.daily) stringResource(R.string.recipe_daily)
+                        else stringResource(
+                            R.string.recipe_stage_short,
+                            recipe.number,
+                            stringResource(recipe.title),
+                        )
+                    } ?: stringResource(mode.title),
                     style = MaterialTheme.typography.titleMedium,
                     color = mode.accent,
                 )
@@ -393,7 +402,7 @@ private fun ModeStatus(ui: GameUi) {
                         label = "cp",
                     )
                     Text(
-                        "🔥 COMBO x${ui.combo}",
+                        stringResource(R.string.hud_combo, ui.combo),
                         style = MaterialTheme.typography.titleMedium,
                         color = Fruta.Danger,
                         modifier = Modifier.graphicsLayer { scaleX = pop; scaleY = pop },
@@ -417,12 +426,12 @@ private fun ModeStatus(ui: GameUi) {
                         Spacer(Modifier.weight(1f))
                         Column(horizontalAlignment = Alignment.End) {
                             Text(
-                                "🎯 ${ui.movesLeft}",
+                                stringResource(R.string.hud_moves_short, ui.movesLeft),
                                 style = MaterialTheme.typography.titleMedium,
                                 color = if (ui.movesLeft <= 5) Fruta.Danger else Fruta.Ink,
                             )
                             Text(
-                                "jogadas",
+                                stringResource(R.string.hud_moves_label),
                                 style = MaterialTheme.typography.labelSmall,
                                 color = Fruta.InkSoft,
                             )
@@ -462,7 +471,7 @@ private fun ModeStatus(ui: GameUi) {
                     )
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
-                            "⏱️ ${formatClock(ui.timeLeft)}",
+                            stringResource(R.string.hud_clock, formatClock(ui.timeLeft)),
                             style = MaterialTheme.typography.titleLarge,
                             color = if (urgent) Fruta.Danger else Fruta.Ink,
                             modifier = Modifier.graphicsLayer { scaleX = beat; scaleY = beat },
@@ -479,7 +488,7 @@ private fun ModeStatus(ui: GameUi) {
                 mode.moveLimit > 0 -> {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
-                            "🎯 ${ui.movesLeft} jogadas",
+                            stringResource(R.string.hud_moves, ui.movesLeft),
                             style = MaterialTheme.typography.titleMedium,
                             color = Fruta.Ink,
                         )
@@ -551,7 +560,7 @@ private fun PowerBar(
     Column(Modifier.fillMaxWidth()) {
         if (ui.pendingPower != null) {
             JuicyButton(
-                text = "Cancelar ${ui.pendingPower!!.title}",
+                text = stringResource(R.string.dialog_cancel_power, stringResource(ui.pendingPower!!.title)),
                 color = Fruta.InkSoft,
                 height = 44.dp,
                 modifier = Modifier.fillMaxWidth(),
@@ -600,7 +609,7 @@ private fun PowerChip(power: Power, count: Int, selected: Boolean, onClick: () -
         ) {
             Text(power.emoji, style = MaterialTheme.typography.headlineSmall)
             Text(
-                power.title,
+                stringResource(power.title),
                 style = MaterialTheme.typography.labelSmall,
                 color = if (selected) Color.White else Fruta.Ink,
                 textAlign = TextAlign.Center,
@@ -667,21 +676,21 @@ private fun RewardDialog(
                 }
                 Spacer(Modifier.height(10.dp))
                 Text(
-                    power?.title ?: reason.title,
+                    stringResource(power?.title ?: reason.title),
                     style = MaterialTheme.typography.headlineSmall,
                     color = Fruta.Ink,
                     textAlign = TextAlign.Center,
                 )
                 Spacer(Modifier.height(6.dp))
                 Text(
-                    power?.desc ?: reason.subtitle,
+                    stringResource(power?.desc ?: reason.subtitle),
                     style = MaterialTheme.typography.bodyMedium,
                     color = Fruta.InkSoft,
                     textAlign = TextAlign.Center,
                 )
                 Spacer(Modifier.height(16.dp))
                 JuicyButton(
-                    text = "Assistir vídeo",
+                    text = stringResource(R.string.dialog_watch_video),
                     emoji = "🎬",
                     color = Fruta.Leaf,
                     modifier = Modifier.fillMaxWidth(),
@@ -690,7 +699,7 @@ private fun RewardDialog(
                 if (onBuy != null && power != null) {
                     Spacer(Modifier.height(8.dp))
                     JuicyButton(
-                        text = "Comprar por ${power.price} 🌱",
+                        text = stringResource(R.string.dialog_buy_for, power.price),
                         color = if (coins >= power.price) Fruta.Sun else Fruta.InkSoft,
                         textColor = Fruta.Ink,
                         height = 50.dp,
@@ -700,7 +709,7 @@ private fun RewardDialog(
                 }
                 Spacer(Modifier.height(8.dp))
                 Text(
-                    "Agora não",
+                    stringResource(R.string.dialog_not_now),
                     style = MaterialTheme.typography.bodyMedium,
                     color = Fruta.InkSoft,
                     modifier = Modifier
@@ -728,22 +737,22 @@ private fun PauseDialog(
                     .padding(22.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Text("Pausa pro cafezinho ☕", style = MaterialTheme.typography.headlineSmall, color = Fruta.Ink)
+                Text(stringResource(R.string.pause_title), style = MaterialTheme.typography.headlineSmall, color = Fruta.Ink)
                 Spacer(Modifier.height(6.dp))
                 Text(
-                    mode.howTo,
+                    stringResource(mode.howTo),
                     style = MaterialTheme.typography.bodySmall,
                     color = Fruta.InkSoft,
                     textAlign = TextAlign.Center,
                 )
                 Spacer(Modifier.height(18.dp))
-                JuicyButton("Continuar", Modifier.fillMaxWidth(), Fruta.Leaf, emoji = "▶️", onClick = onResume)
+                JuicyButton(stringResource(R.string.pause_resume), Modifier.fillMaxWidth(), Fruta.Leaf, emoji = "▶️", onClick = onResume)
                 Spacer(Modifier.height(8.dp))
-                JuicyButton("Recomeçar", Modifier.fillMaxWidth(), Fruta.Sun, Fruta.Ink, "🔄", height = 50.dp, onClick = onRestart)
+                JuicyButton(stringResource(R.string.pause_restart), Modifier.fillMaxWidth(), Fruta.Sun, Fruta.Ink, "🔄", height = 50.dp, onClick = onRestart)
                 Spacer(Modifier.height(8.dp))
-                JuicyButton("Barraquinha", Modifier.fillMaxWidth(), Fruta.Grape, emoji = "🛒", height = 50.dp, onClick = onShop)
+                JuicyButton(stringResource(R.string.pause_shop), Modifier.fillMaxWidth(), Fruta.Grape, emoji = "🛒", height = 50.dp, onClick = onShop)
                 Spacer(Modifier.height(8.dp))
-                JuicyButton("Sair da partida", Modifier.fillMaxWidth(), Fruta.InkSoft, emoji = "🚪", height = 50.dp, onClick = onExit)
+                JuicyButton(stringResource(R.string.pause_exit), Modifier.fillMaxWidth(), Fruta.InkSoft, emoji = "🚪", height = 50.dp, onClick = onExit)
             }
         }
     }
@@ -771,12 +780,14 @@ private fun EndDialog(
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     OutlinedTitle(
-                        text = when {
-                            won && recipe != null -> "PEDIDO PRONTO!"
-                            won -> "VOCÊ VENCEU!"
-                            recipe != null -> "Faltou pouco!"
-                            else -> "Fim de feira!"
-                        },
+                        text = stringResource(
+                            when {
+                                won && recipe != null -> R.string.end_recipe_win
+                                won -> R.string.end_win
+                                recipe != null -> R.string.end_recipe_lose
+                                else -> R.string.end_lose
+                            }
+                        ),
                         color = if (won) Fruta.Sun else Color.White,
                         style = MaterialTheme.typography.headlineLarge,
                     )
@@ -789,12 +800,14 @@ private fun EndDialog(
                     Spacer(Modifier.height(10.dp))
                     Text(
                         text = when {
-                            recipe != null && won ->
-                                "Fase ${recipe.number} — ${recipe.title} está fechada!"
-                            recipe != null ->
-                                "As jogadas acabaram antes do pedido. Tenta de novo?"
-                            won -> "Você fechou o ${ui.mode.title}!"
-                            else -> "O tabuleiro travou. Acontece até com os melhores."
+                            recipe != null && won -> stringResource(
+                                R.string.end_recipe_win_sub,
+                                recipe.number,
+                                stringResource(recipe.title),
+                            )
+                            recipe != null -> stringResource(R.string.end_recipe_lose_sub)
+                            won -> stringResource(R.string.end_win_sub, stringResource(ui.mode.title))
+                            else -> stringResource(R.string.end_lose_sub)
                         },
                         style = MaterialTheme.typography.bodyMedium,
                         color = Fruta.InkSoft,
@@ -816,17 +829,19 @@ private fun EndDialog(
                     Spacer(Modifier.height(14.dp))
 
                     Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                        ResultChip("Pontos", formatScore(ui.state.score), ui.mode.accent)
+                        ResultChip(stringResource(R.string.end_score), formatScore(ui.state.score), ui.mode.accent)
                         if (recipe == null) {
-                            ResultChip("Recorde", formatScore(maxOf(best, ui.state.score)), Fruta.Grape)
+                            ResultChip(stringResource(R.string.end_best), formatScore(maxOf(best, ui.state.score)), Fruta.Grape)
                         }
-                        ResultChip("Sementes", "+${ui.coinsEarned}", Fruta.Leaf)
+                        ResultChip(stringResource(R.string.end_seeds), "+${ui.coinsEarned}", Fruta.Leaf)
                     }
 
                     if (ui.newRecord) {
                         Spacer(Modifier.height(10.dp))
                         Text(
-                            if (recipe != null) "⭐ FASE NOVA LIBERADA!" else "🏆 RECORDE NOVO!",
+                            stringResource(
+                                if (recipe != null) R.string.end_new_stage else R.string.end_new_record
+                            ),
                             style = MaterialTheme.typography.titleMedium,
                             color = Fruta.Sun,
                         )
@@ -835,9 +850,9 @@ private fun EndDialog(
                     if (recipe == null) {
                         Spacer(Modifier.height(10.dp))
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text("Melhor fruta: ", style = MaterialTheme.typography.bodySmall, color = Fruta.InkSoft)
+                            Text(stringResource(R.string.end_best_fruit), style = MaterialTheme.typography.bodySmall, color = Fruta.InkSoft)
                             Text(
-                                Fruit.of(ui.state.highestLevel).label,
+                                stringResource(Fruit.of(ui.state.highestLevel).label),
                                 style = MaterialTheme.typography.titleMedium,
                                 color = Fruit.of(ui.state.highestLevel).skin,
                             )
@@ -848,7 +863,7 @@ private fun EndDialog(
 
                     if (!won && !ui.reviveUsed) {
                         JuicyButton(
-                            text = if (recipe != null) "+5 jogadas" else "Continuar jogando",
+                            text = stringResource(if (recipe != null) R.string.end_revive_moves else R.string.end_revive),
                             emoji = "🎬",
                             color = Fruta.Leaf,
                             modifier = Modifier.fillMaxWidth(),
@@ -858,7 +873,7 @@ private fun EndDialog(
                     }
                     if (won && onNext != null) {
                         JuicyButton(
-                            text = "Próxima fase",
+                            text = stringResource(R.string.end_next_stage),
                             emoji = "➡️",
                             color = Fruta.Leaf,
                             modifier = Modifier.fillMaxWidth(),
@@ -867,7 +882,7 @@ private fun EndDialog(
                         Spacer(Modifier.height(8.dp))
                     }
                     JuicyButton(
-                        text = "Dobrar sementes",
+                        text = stringResource(R.string.end_double),
                         emoji = "🎬",
                         color = Fruta.Sun,
                         textColor = Fruta.Ink,
@@ -877,7 +892,7 @@ private fun EndDialog(
                     )
                     Spacer(Modifier.height(8.dp))
                     JuicyButton(
-                        text = if (recipe != null) "Tentar de novo" else "Jogar de novo",
+                        text = stringResource(if (recipe != null) R.string.end_retry else R.string.end_again),
                         emoji = "🔄",
                         color = ui.mode.accent,
                         height = 50.dp,
@@ -886,7 +901,7 @@ private fun EndDialog(
                     )
                     Spacer(Modifier.height(8.dp))
                     JuicyButton(
-                        text = if (recipe != null) "Voltar ao mapa" else "Voltar pra feira",
+                        text = stringResource(if (recipe != null) R.string.end_map else R.string.end_home),
                         emoji = if (recipe != null) "🗺️" else "🏠",
                         color = Fruta.InkSoft,
                         height = 50.dp,
@@ -911,7 +926,7 @@ private fun AchievementDialog(achievement: Achievement, onClose: () -> Unit) {
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Text(
-                        "CONQUISTA!",
+                        stringResource(R.string.achievement_banner),
                         style = MaterialTheme.typography.labelLarge,
                         color = Fruta.InkSoft,
                     )
@@ -922,14 +937,14 @@ private fun AchievementDialog(achievement: Achievement, onClose: () -> Unit) {
                     }
                     Spacer(Modifier.height(12.dp))
                     Text(
-                        achievement.title,
+                        stringResource(achievement.title),
                         style = MaterialTheme.typography.headlineSmall,
                         color = Fruta.Berry,
                         textAlign = TextAlign.Center,
                     )
                     Spacer(Modifier.height(4.dp))
                     Text(
-                        achievement.desc,
+                        stringResource(achievement.desc),
                         style = MaterialTheme.typography.bodyMedium,
                         color = Fruta.InkSoft,
                         textAlign = TextAlign.Center,
@@ -938,7 +953,7 @@ private fun AchievementDialog(achievement: Achievement, onClose: () -> Unit) {
                     StatPill("🌱", "+${achievement.reward}")
                     Spacer(Modifier.height(18.dp))
                     JuicyButton(
-                        text = "Boa!",
+                        text = stringResource(R.string.achievement_ok),
                         emoji = "🎉",
                         color = Fruta.Leaf,
                         modifier = Modifier.fillMaxWidth(),

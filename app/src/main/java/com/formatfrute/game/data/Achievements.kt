@@ -1,5 +1,7 @@
 package com.formatfrute.game.data
 
+import androidx.annotation.StringRes
+import com.formatfrute.game.R
 import com.formatfrute.game.core.Fruit
 import com.formatfrute.game.core.RecipeBook
 
@@ -10,8 +12,8 @@ enum class AchievementKind {
 
 data class Achievement(
     val id: String,
-    val title: String,
-    val desc: String,
+    @StringRes val title: Int,
+    @StringRes val desc: Int,
     val emoji: String,
     val kind: AchievementKind,
     val target: Int,
@@ -43,100 +45,100 @@ object Achievements {
 
     val all: List<Achievement> = listOf(
         Achievement(
-            "primeira_fusao", "Primeira Fusão", "Junte suas duas primeiras frutas.",
+            "primeira_fusao", R.string.ach_primeira_fusao_title, R.string.ach_primeira_fusao_desc,
             "🍒", AchievementKind.FUSOES, 1, 40,
         ),
         Achievement(
-            "cem_fusoes", "Mão na Massa", "Faça 100 fusões.",
+            "cem_fusoes", R.string.ach_cem_fusoes_title, R.string.ach_cem_fusoes_desc,
             "👐", AchievementKind.FUSOES, 100, 120,
         ),
         Achievement(
-            "mil_fusoes", "Feirante Calejado", "Faça 1.000 fusões.",
+            "mil_fusoes", R.string.ach_mil_fusoes_title, R.string.ach_mil_fusoes_desc,
             "💪", AchievementKind.FUSOES, 1_000, 400,
         ),
         Achievement(
-            "dez_mil_fusoes", "Lenda da Fusão", "Faça 10.000 fusões.",
+            "dez_mil_fusoes", R.string.ach_dez_mil_fusoes_title, R.string.ach_dez_mil_fusoes_desc,
             "🌟", AchievementKind.FUSOES, 10_000, 1_500,
         ),
 
         Achievement(
-            "maca", "Bom de Maçã", "Chegue na Maçã.",
+            "maca", R.string.ach_maca_title, R.string.ach_maca_desc,
             "🍎", AchievementKind.FRUTA, Fruit.MACA.ordinal, 80,
         ),
         Achievement(
-            "kiwi", "Peludo mas Doce", "Chegue no Kiwi.",
+            "kiwi", R.string.ach_kiwi_title, R.string.ach_kiwi_desc,
             "🥝", AchievementKind.FRUTA, Fruit.KIWI.ordinal, 200,
         ),
         Achievement(
-            "pitaya", "Caçador de Dragão", "Chegue na Pitaya.",
+            "pitaya", R.string.ach_pitaya_title, R.string.ach_pitaya_desc,
             "🐉", AchievementKind.FRUTA, Fruit.PITAYA.ordinal, 500,
         ),
         Achievement(
-            "melancia", "Barão da Melancia", "Chegue na Melancia.",
+            "melancia", R.string.ach_melancia_title, R.string.ach_melancia_desc,
             "🍉", AchievementKind.FRUTA, Fruit.MELANCIA.ordinal, 1_200,
         ),
 
         Achievement(
-            "colheita", "Primeira Colheita", "Junte duas Melancias.",
+            "colheita", R.string.ach_colheita_title, R.string.ach_colheita_desc,
             "🧺", AchievementKind.COLHEITAS, 1, 300,
         ),
         Achievement(
-            "colheita_dez", "Colheita Farta", "Faça 10 colheitas.",
+            "colheita_dez", R.string.ach_colheita_dez_title, R.string.ach_colheita_dez_desc,
             "🚜", AchievementKind.COLHEITAS, 10, 900,
         ),
 
         Achievement(
-            "dez_partidas", "Freguês da Casa", "Jogue 10 partidas.",
+            "dez_partidas", R.string.ach_dez_partidas_title, R.string.ach_dez_partidas_desc,
             "🎮", AchievementKind.PARTIDAS, 10, 90,
         ),
         Achievement(
-            "cem_partidas", "Dono da Barraca", "Jogue 100 partidas.",
+            "cem_partidas", R.string.ach_cem_partidas_title, R.string.ach_cem_partidas_desc,
             "🏪", AchievementKind.PARTIDAS, 100, 600,
         ),
 
         Achievement(
-            "cinco_fases", "Cozinheiro de Fim de Semana", "Feche 5 fases da Receita.",
+            "cinco_fases", R.string.ach_cinco_fases_title, R.string.ach_cinco_fases_desc,
             "🍳", AchievementKind.FASES, 5, 100,
         ),
         Achievement(
-            "vinte_cinco_fases", "Chef de Confiança", "Feche 25 fases da Receita.",
+            "vinte_cinco_fases", R.string.ach_vinte_cinco_fases_title, R.string.ach_vinte_cinco_fases_desc,
             "👨‍🍳", AchievementKind.FASES, 25, 450,
         ),
         Achievement(
-            "todas_fases", "Caderno Completo", "Feche todas as ${RecipeBook.TOTAL} fases.",
+            "todas_fases", R.string.ach_todas_fases_title, R.string.ach_todas_fases_desc,
             "📕", AchievementKind.FASES, RecipeBook.TOTAL, 2_000,
         ),
         Achievement(
-            "cem_estrelas", "Chuva de Estrelas", "Junte 100 estrelas na Receita.",
+            "cem_estrelas", R.string.ach_cem_estrelas_title, R.string.ach_cem_estrelas_desc,
             "⭐", AchievementKind.ESTRELAS, 100, 700,
         ),
         Achievement(
-            "estrela_cheia", "Nota Máxima", "Junte ${RecipeBook.TOTAL * 3} estrelas.",
+            "estrela_cheia", R.string.ach_estrela_cheia_title, R.string.ach_estrela_cheia_desc,
             "🌠", AchievementKind.ESTRELAS, RecipeBook.TOTAL * 3, 3_000,
         ),
 
         Achievement(
-            "poderes", "Mão de Poder", "Use 25 poderes.",
+            "poderes", R.string.ach_poderes_title, R.string.ach_poderes_desc,
             "✨", AchievementKind.PODERES, 25, 250,
         ),
         Achievement(
-            "semana", "Semana Cheia", "Sete dias seguidos pegando o presente.",
+            "semana", R.string.ach_semana_title, R.string.ach_semana_desc,
             "🔥", AchievementKind.SEQUENCIA, 7, 500,
         ),
         Achievement(
-            "nivel_dez", "Subindo na Vida", "Chegue ao nível 10.",
+            "nivel_dez", R.string.ach_nivel_dez_title, R.string.ach_nivel_dez_desc,
             "📈", AchievementKind.NIVEL, 10, 300,
         ),
         Achievement(
-            "nivel_vinte_cinco", "Autoridade da Feira", "Chegue ao nível 25.",
+            "nivel_vinte_cinco", R.string.ach_nivel_vinte_cinco_title, R.string.ach_nivel_vinte_cinco_desc,
             "🎖️", AchievementKind.NIVEL, 25, 1_000,
         ),
         Achievement(
-            "passe_completo", "Passe Fechado", "Chegue ao degrau ${SeasonPass.TIERS} do Passe.",
+            "passe_completo", R.string.ach_passe_completo_title, R.string.ach_passe_completo_desc,
             "🎟️", AchievementKind.PASSE, SeasonPass.TIERS, 1_500,
         ),
         Achievement(
-            "colecionador", "Colecionador", "Compre todas as peles da Barraquinha.",
+            "colecionador", R.string.ach_colecionador_title, R.string.ach_colecionador_desc,
             "🎨", AchievementKind.PELES, BoardTheme.shop.size, 800,
         ),
     )

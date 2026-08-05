@@ -1,5 +1,7 @@
 package com.formatfrute.game.data
 
+import androidx.annotation.StringRes
+import com.formatfrute.game.R
 import com.formatfrute.game.core.Fruit
 import com.formatfrute.game.core.GameMode
 import kotlin.random.Random
@@ -12,15 +14,29 @@ data class Mission(
     val extra: String = "",
     val reward: Int,
 ) {
-    val title: String
+    /**
+     * O texto tem número dentro ("Junte 50 frutas"), então quem monta a frase
+     * é a UI — é lá que existe Context para resolver o recurso e formatar.
+     */
+    @get:StringRes
+    val titleRes: Int
         get() = when (kind) {
-            MissionKind.FUSOES -> "Junte $target frutas"
-            MissionKind.CHEGAR_NA_FRUTA -> "Chegue na ${Fruit.of(target).label}"
-            MissionKind.PONTOS -> "Faça $target pontos numa partida"
-            MissionKind.PARTIDAS -> "Jogue $target partidas"
-            MissionKind.PODERES -> "Use $target poderes"
-            MissionKind.COLHEITA -> "Faça $target colheita${if (target > 1) "s" else ""} de Melancia"
-            MissionKind.MODO -> "Jogue o modo ${GameMode.byId(extra).title}"
+            MissionKind.FUSOES -> R.string.mission_fusoes
+            MissionKind.CHEGAR_NA_FRUTA -> R.string.mission_fruta
+            MissionKind.PONTOS -> R.string.mission_pontos
+            MissionKind.PARTIDAS -> R.string.mission_partidas
+            MissionKind.PODERES -> R.string.mission_poderes
+            MissionKind.COLHEITA -> R.string.mission_colheita
+            MissionKind.MODO -> R.string.mission_modo
+        }
+
+    /** Quando o argumento do texto é outro recurso (fruta ou modo). */
+    @get:StringRes
+    val argRes: Int?
+        get() = when (kind) {
+            MissionKind.CHEGAR_NA_FRUTA -> Fruit.of(target).label
+            MissionKind.MODO -> GameMode.byId(extra).title
+            else -> null
         }
 
     val emoji: String
@@ -64,7 +80,7 @@ object MissionFactory {
         MissionKind.PODERES -> Mission(kind, rng.nextInt(2, 4), reward = 70)
         MissionKind.COLHEITA -> Mission(kind, 1, reward = 300)
         MissionKind.MODO -> {
-            val mode = GameMode.entries.random(rng)
+            val mode = GameMode.arcade.random(rng)
             Mission(kind, 1, extra = mode.id, reward = 80)
         }
     }

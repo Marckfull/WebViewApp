@@ -1,5 +1,7 @@
 package com.formatfrute.game.game
 
+import androidx.annotation.StringRes
+import com.formatfrute.game.R
 import com.formatfrute.game.core.Direction
 
 enum class TutorialSpot { TABULEIRO, PODERES, PREMIADO, PLACAR }
@@ -9,52 +11,48 @@ enum class TutorialSpot { TABULEIRO, PODERES, PREMIADO, PLACAR }
  * verdade o que foi pedido — nada de "pular tudo e se perder depois".
  */
 enum class TutorialStep(
-    val title: String,
-    val text: String,
+    @StringRes val title: Int,
+    @StringRes val text: Int,
     val requiredDirection: Direction? = null,
-    val blockHint: String? = null,
+    @StringRes val blockHint: Int? = null,
     val spot: TutorialSpot = TutorialSpot.TABULEIRO,
     /** Passo que termina num toque de botao, nao numa jogada. */
     val manual: Boolean = false,
-    val cta: String = "",
+    @StringRes val cta: Int = 0,
 ) {
     ARRASTAR(
-        title = "Passo 1 — Arraste!",
-        text = "Deslize o dedo para a DIREITA. Todas as frutas correm para esse lado.",
+        title = R.string.tut_arrastar_title,
+        text = R.string.tut_arrastar_text,
         requiredDirection = Direction.RIGHT,
-        blockHint = "Agora só vale para a direita! ➡️",
+        blockHint = R.string.tut_arrastar_block,
     ),
     FUNDIR(
-        title = "Passo 2 — Junte iguais",
-        text = "Duas cerejas encostando viram um morango. Faça a fusão acontecer!",
-        blockHint = "Encoste duas frutas iguais para elas virarem uma só.",
+        title = R.string.tut_fundir_title,
+        text = R.string.tut_fundir_text,
+        blockHint = R.string.tut_fundir_block,
     ),
     EVOLUIR(
-        title = "Passo 3 — Faça crescer",
-        text = "Continue juntando até aparecer uma UVA. A escada da fruta é assim: " +
-            "cereja, morango, uva…",
+        title = R.string.tut_evoluir_title,
+        text = R.string.tut_evoluir_text,
     ),
     PODER(
-        title = "Passo 4 — Use um poder",
-        text = "Toque no Martelinho lá embaixo e esmague qualquer fruta. Poderes salvam " +
-            "tabuleiro travado.",
+        title = R.string.tut_poder_title,
+        text = R.string.tut_poder_text,
         spot = TutorialSpot.PODERES,
     ),
     PREMIADO(
-        title = "Passo 5 — Poder de graça",
-        text = "Acabaram os poderes? Assista um vídeo rapidinho e ganhe na hora, sem " +
-            "gastar semente nenhuma.",
+        title = R.string.tut_premiado_title,
+        text = R.string.tut_premiado_text,
         spot = TutorialSpot.PREMIADO,
         manual = true,
-        cta = "Entendi!",
+        cta = R.string.tut_premiado_cta,
     ),
     FIM(
-        title = "Pronto, feirante! 🎉",
-        text = "Você ganhou 150 sementes, um Martelinho e um Voltar no Tempo. Agora é " +
-            "com você: encha essa cesta!",
+        title = R.string.tut_fim_title,
+        text = R.string.tut_fim_text,
         spot = TutorialSpot.PLACAR,
         manual = true,
-        cta = "Bora jogar!",
+        cta = R.string.tut_fim_cta,
     );
 
     val stepNumber: Int get() = ordinal + 1

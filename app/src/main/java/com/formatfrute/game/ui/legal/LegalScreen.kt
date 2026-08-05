@@ -31,14 +31,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.annotation.StringRes
+import com.formatfrute.game.R
 import com.formatfrute.game.data.GameRepository
 import com.formatfrute.game.ui.components.FruitBackground
 import com.formatfrute.game.ui.components.PaperCard
 import com.formatfrute.game.ui.theme.Fruta
 
-enum class LegalTab(val title: String) { TERMOS("Termos de Uso"), PRIVACIDADE("Privacidade") }
+enum class LegalTab(@StringRes val title: Int) {
+    TERMOS(R.string.legal_tab_terms),
+    PRIVACIDADE(R.string.legal_tab_privacy),
+}
 
 @Composable
 fun LegalScreen(initialTab: LegalTab = LegalTab.TERMOS, onBack: () -> Unit) {
@@ -73,7 +79,7 @@ fun LegalScreen(initialTab: LegalTab = LegalTab.TERMOS, onBack: () -> Unit) {
                 }
                 Spacer(Modifier.width(10.dp))
                 Text(
-                    "Documentos",
+                    stringResource(R.string.legal_title),
                     style = MaterialTheme.typography.headlineMedium,
                     color = if (profile.boardTheme.dark) Color.White else Fruta.Ink,
                 )
@@ -100,7 +106,7 @@ fun LegalScreen(initialTab: LegalTab = LegalTab.TERMOS, onBack: () -> Unit) {
                         contentAlignment = Alignment.Center,
                     ) {
                         Text(
-                            entry.title,
+                            stringResource(entry.title),
                             style = MaterialTheme.typography.labelMedium,
                             color = if (selected) Color.White else Fruta.Ink,
                         )
@@ -116,12 +122,20 @@ fun LegalScreen(initialTab: LegalTab = LegalTab.TERMOS, onBack: () -> Unit) {
             ) {
                 val sections = if (tab == LegalTab.TERMOS) LegalTexts.terms else LegalTexts.privacy
                 items(sections.size) { index ->
-                    val (title, body) = sections[index]
+                    val (titleRes, bodyRes) = sections[index]
                     PaperCard(Modifier.fillMaxWidth(), color = Color.White.copy(alpha = 0.96f)) {
                         Column(Modifier.padding(16.dp)) {
-                            Text(title, style = MaterialTheme.typography.titleMedium, color = Fruta.Berry)
+                            Text(
+                                stringResource(titleRes),
+                                style = MaterialTheme.typography.titleMedium,
+                                color = Fruta.Berry,
+                            )
                             Spacer(Modifier.height(6.dp))
-                            Text(body, style = MaterialTheme.typography.bodySmall, color = Fruta.Ink)
+                            Text(
+                                stringResource(bodyRes),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = Fruta.Ink,
+                            )
                         }
                     }
                 }
@@ -132,142 +146,36 @@ fun LegalScreen(initialTab: LegalTab = LegalTab.TERMOS, onBack: () -> Unit) {
 }
 
 /**
- * Textos legais do app. Escritos em portugues simples, descrevendo exatamente
- * o que o Format Frute faz — nada de clausula generica copiada.
+ * Índice dos documentos. Os textos vivem em `res/values/strings_legal.xml`;
+ * aqui fica só a ordem das seções.
  */
 object LegalTexts {
 
     const val EMAIL = "formatfrute@gmail.com"
-    const val UPDATED = "5 de agosto de 2026"
 
-    val terms: List<Pair<String, String>> = listOf(
-        "1. Quem somos" to
-            "Format Frute é um jogo de quebra-cabeça para celular, feito para diversão de " +
-            "toda a família. Ao instalar e jogar, você concorda com estes Termos de Uso. " +
-            "Se não concordar, basta desinstalar o aplicativo.\n\nContato: $EMAIL",
-
-        "2. Licença de uso" to
-            "Damos a você uma licença pessoal, gratuita, não exclusiva e intransferível para " +
-            "usar o Format Frute em seus dispositivos. O jogo, o nome, os desenhos das frutas, " +
-            "os sons e o código continuam sendo nossos.",
-
-        "3. O que você não pode fazer" to
-            "• Copiar, vender, alugar ou redistribuir o jogo;\n" +
-            "• Modificar, descompilar ou fazer engenharia reversa do aplicativo;\n" +
-            "• Usar programas para trapacear, alterar pontuação, sementes ou poderes;\n" +
-            "• Usar o jogo para qualquer finalidade ilegal.\n\n" +
-            "Contas ou dispositivos que burlarem as regras podem perder o progresso.",
-
-        "4. Sementes, poderes e itens" to
-            "As Sementes e os poderes são itens virtuais, sem valor monetário fora do jogo. " +
-            "Eles não podem ser trocados por dinheiro, transferidos entre dispositivos ou " +
-            "resgatados de qualquer outra forma. Podemos ajustar preços, recompensas e " +
-            "equilíbrio do jogo para manter a experiência justa.",
-
-        "5. Anúncios" to
-            "O Format Frute é gratuito e se mantém com anúncios exibidos pelo Google AdMob. " +
-            "Existem dois tipos:\n\n" +
-            "• Anúncio entre partidas (intersticial), mostrado com intervalos para não " +
-            "atrapalhar o jogo;\n" +
-            "• Anúncio premiado (vídeo), sempre opcional: você escolhe assistir para ganhar " +
-            "poderes, sementes, tempo extra ou continuar a partida.\n\n" +
-            "Nunca é obrigatório assistir a um vídeo premiado para avançar no jogo.",
-
-        "6. Progresso salvo no aparelho" to
-            "Seu progresso, recordes, sementes e itens ficam guardados no próprio aparelho. " +
-            "Se você desinstalar o jogo, limpar os dados do app ou trocar de celular, esse " +
-            "progresso pode ser perdido e não temos como recuperá-lo.",
-
-        "7. Disponibilidade e mudanças" to
-            "Podemos atualizar o jogo, adicionar ou remover modos, poderes e recompensas, e " +
-            "também interromper o serviço a qualquer momento. Sempre que possível, avisaremos " +
-            "dentro do próprio aplicativo.",
-
-        "8. Garantias e responsabilidade" to
-            "O jogo é fornecido \"como está\". Não garantimos que ele funcionará sem falhas em " +
-            "todos os aparelhos. Na medida permitida pela lei, não nos responsabilizamos por " +
-            "danos indiretos decorrentes do uso do aplicativo. Nada aqui afasta os direitos " +
-            "garantidos pelo Código de Defesa do Consumidor.",
-
-        "9. Idade" to
-            "O Format Frute é indicado para todas as idades e configurado para exibir " +
-            "somente anúncios de classificação geral. Ainda assim, recomendamos que " +
-            "responsáveis configurem os controles parentais da loja de aplicativos e " +
-            "acompanhem o uso por crianças.",
-
-        "10. Lei aplicável" to
-            "Estes Termos são regidos pelas leis do Brasil. Dúvidas, sugestões ou reclamações " +
-            "podem ser enviadas para $EMAIL.\n\nÚltima atualização: $UPDATED",
+    val terms: List<Pair<Int, Int>> = listOf(
+        R.string.terms_1_t to R.string.terms_1_b,
+        R.string.terms_2_t to R.string.terms_2_b,
+        R.string.terms_3_t to R.string.terms_3_b,
+        R.string.terms_4_t to R.string.terms_4_b,
+        R.string.terms_5_t to R.string.terms_5_b,
+        R.string.terms_6_t to R.string.terms_6_b,
+        R.string.terms_7_t to R.string.terms_7_b,
+        R.string.terms_8_t to R.string.terms_8_b,
+        R.string.terms_9_t to R.string.terms_9_b,
+        R.string.terms_10_t to R.string.terms_10_b,
     )
 
-    val privacy: List<Pair<String, String>> = listOf(
-        "Resumo rápido" to
-            "Não pedimos cadastro, não pedimos e-mail, não pedimos telefone e não criamos " +
-            "conta. Seu progresso fica no seu aparelho. Os únicos dados que saem do celular " +
-            "são os usados pelo Google AdMob para mostrar anúncios.\n\nContato: $EMAIL",
-
-        "1. Dados que ficam só no seu aparelho" to
-            "Guardamos localmente, usando as preferências do Android:\n" +
-            "• Pontuação, recordes e melhor fruta alcançada;\n" +
-            "• Sementes, poderes, peles compradas e nível do jogador;\n" +
-            "• Fases da Receita, estrelas, conquistas e degrau do Passe da Feira;\n" +
-            "• Missões do dia, sequência de presentes e progresso do tutorial;\n" +
-            "• A partida em andamento, para você retomar de onde parou;\n" +
-            "• Suas preferências de música, efeitos, vibração e notificações.\n\n" +
-            "Esses dados não são enviados para nenhum servidor nosso — nós nem temos servidor.",
-
-        "1b. Relatório de erro" to
-            "Se o jogo travar, guardamos no aparelho um relatório técnico com modelo do " +
-            "celular, versão do Android, versão do app e o detalhe do erro. Na abertura " +
-            "seguinte perguntamos se você quer enviá-lo por e-mail para $EMAIL.\n\n" +
-            "Nada é enviado automaticamente: o relatório só sai se você tocar em \"Mandar\", " +
-            "e sai pelo seu próprio aplicativo de e-mail. Se recusar, ele é apagado.",
-
-        "2. Dados usados pelos anúncios" to
-            "Os anúncios são fornecidos pelo Google AdMob. Para exibi-los, o Google pode " +
-            "coletar e tratar informações como identificador de publicidade do dispositivo, " +
-            "endereço IP, modelo do aparelho, versão do sistema e interações com o anúncio.\n\n" +
-            "Esse tratamento é feito pelo Google, conforme a política dele: " +
-            "https://policies.google.com/technologies/ads",
-
-        "3. Consentimento e anúncios personalizados" to
-            "Se você estiver na Europa (EEE/Reino Unido) ou em outra região que exija, " +
-            "mostramos uma tela de consentimento antes dos anúncios, usando a plataforma de " +
-            "mensagens do Google (UMP). Você pode rever essa escolha a qualquer momento em " +
-            "Ajustes › Opções de privacidade.\n\n" +
-            "No Android, você também pode limitar ou apagar o identificador de publicidade " +
-            "em Configurações › Google › Anúncios.",
-
-        "4. Notificações" to
-            "Enviamos lembretes divertidos sobre presentes do dia e desafios novos. Elas são " +
-            "geradas no próprio aparelho, não usam servidor e podem ser desligadas a qualquer " +
-            "momento em Ajustes › Notificações ou nas configurações do Android.",
-
-        "5. Permissões que o app pede" to
-            "• Notificações: para os lembretes (Android 13 ou superior);\n" +
-            "• Vibração: para o retorno tátil durante o jogo;\n" +
-            "• Internet: apenas para carregar os anúncios.\n\n" +
-            "Não pedimos acesso a contatos, câmera, microfone, fotos nem localização.",
-
-        "6. Público e conteúdo dos anúncios" to
-            "O Format Frute é um jogo para todas as idades. Configuramos o AdMob com a " +
-            "classificação de conteúdo \"G\" (público geral), então os anúncios exibidos " +
-            "são apropriados para qualquer faixa etária — sem bebida, apostas, violência " +
-            "ou conteúdo adulto.\n\n" +
-            "Não coletamos intencionalmente dados pessoais de ninguém, de qualquer idade. " +
-            "Recomendamos que responsáveis usem os controles parentais da loja de " +
-            "aplicativos. Se você acredita que alguma criança forneceu algum dado pessoal, " +
-            "escreva para $EMAIL e apagaremos o que estiver ao nosso alcance.",
-
-        "7. Seus direitos (LGPD)" to
-            "Você pode pedir confirmação, acesso, correção ou exclusão dos dados tratados por " +
-            "nós. Como o progresso fica apenas no aparelho, a exclusão completa acontece ao " +
-            "limpar os dados do aplicativo ou desinstalá-lo. Para qualquer pedido ou dúvida " +
-            "sobre privacidade, fale com $EMAIL — respondemos em até 15 dias.",
-
-        "8. Mudanças nesta política" to
-            "Se algo mudar, atualizaremos este texto dentro do aplicativo e alteraremos a data " +
-            "abaixo. Mudanças relevantes serão avisadas na tela inicial.\n\n" +
-            "Última atualização: $UPDATED",
+    val privacy: List<Pair<Int, Int>> = listOf(
+        R.string.privacy_0_t to R.string.privacy_0_b,
+        R.string.privacy_1_t to R.string.privacy_1_b,
+        R.string.privacy_2_t to R.string.privacy_2_b,
+        R.string.privacy_3_t to R.string.privacy_3_b,
+        R.string.privacy_4_t to R.string.privacy_4_b,
+        R.string.privacy_5_t to R.string.privacy_5_b,
+        R.string.privacy_6_t to R.string.privacy_6_b,
+        R.string.privacy_7_t to R.string.privacy_7_b,
+        R.string.privacy_8_t to R.string.privacy_8_b,
+        R.string.privacy_9_t to R.string.privacy_9_b,
     )
 }

@@ -1,5 +1,7 @@
 package com.formatfrute.game.core
 
+import androidx.annotation.StringRes
+import com.formatfrute.game.R
 import kotlin.random.Random
 
 /** Um item do pedido: quantas frutas daquele degrau o freguês quer. */
@@ -13,7 +15,7 @@ data class Order(val level: Int, val count: Int) {
  */
 data class Recipe(
     val number: Int,
-    val title: String,
+    @StringRes val title: Int,
     val orders: List<Order>,
     val moves: Int,
     val size: Int,
@@ -77,7 +79,7 @@ object RecipeBook {
         val base = recipe(dailyNumber(day))
         return base.copy(
             number = DAILY,
-            title = "Receita do Dia",
+            title = R.string.recipe_daily,
             seed = day.hashCode().toLong() * 104_729L,
         )
     }
@@ -89,11 +91,11 @@ object RecipeBook {
     private fun breathingRoom(size: Int): Int = 2 + size / 2
 
     private val names = listOf(
-        "Suco da Manhã", "Salada de Frutas", "Vitamina da Vovó", "Torta de Morango",
-        "Smoothie Roxo", "Mousse de Limão", "Bolo de Banana", "Sorvete Tropical",
-        "Caipirinha sem Álcool", "Geleia Caseira", "Pavê da Tia", "Suco Detox",
-        "Milkshake Rosa", "Tortinha do Chef", "Compota da Feira", "Picolé Gourmet",
-        "Salada Exótica", "Suco de Melancia", "Bolo Confeitado", "Banquete da Feira",
+        R.string.recipe_1, R.string.recipe_2, R.string.recipe_3, R.string.recipe_4,
+        R.string.recipe_5, R.string.recipe_6, R.string.recipe_7, R.string.recipe_8,
+        R.string.recipe_9, R.string.recipe_10, R.string.recipe_11, R.string.recipe_12,
+        R.string.recipe_13, R.string.recipe_14, R.string.recipe_15, R.string.recipe_16,
+        R.string.recipe_17, R.string.recipe_18, R.string.recipe_19, R.string.recipe_20,
     )
 
     fun recipe(number: Int): Recipe {
