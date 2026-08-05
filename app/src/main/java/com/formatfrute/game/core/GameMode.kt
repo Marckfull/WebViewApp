@@ -94,6 +94,21 @@ enum class GameMode(
         endless = true,
     ),
 
+    RECEITA(
+        id = "receita",
+        title = "Modo Receita",
+        tagline = "Monte o pedido do freguês",
+        howTo = "Cada fase pede frutas específicas. Só conta a fruta que você " +
+            "CRIAR fundindo — o que já está no tabuleiro é matéria-prima. " +
+            "Sobrar jogada no fim vale estrela.",
+        emblem = Fruit.MORANGO,
+        gridSize = 4,
+        accent = Color(0xFFE0197B),
+        accent2 = Color(0xFFFFA3D1),
+        moveLimit = 25,
+        rainbowChance = 0.04f,
+    ),
+
     BATALHA(
         id = "batalha",
         title = "Batalha do Suco",
@@ -109,7 +124,13 @@ enum class GameMode(
 
     val hasClock: Boolean get() = timeLimit > 0
 
+    /** O Modo Receita entra pelo mapa de fases, não pela lista de modos. */
+    val isCampaign: Boolean get() = this == RECEITA
+
     companion object {
         fun byId(id: String?): GameMode = entries.firstOrNull { it.id == id } ?: POMAR
+
+        /** Modos avulsos, que começam direto da tela inicial. */
+        val arcade: List<GameMode> get() = entries.filterNot { it.isCampaign }
     }
 }

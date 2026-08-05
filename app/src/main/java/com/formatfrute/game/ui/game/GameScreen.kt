@@ -12,6 +12,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -48,6 +49,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -56,6 +58,7 @@ import com.formatfrute.game.ads.AdsManager
 import com.formatfrute.game.ads.RewardReason
 import com.formatfrute.game.core.Fruit
 import com.formatfrute.game.core.GameMode
+import com.formatfrute.game.core.Order
 import com.formatfrute.game.core.Power
 import com.formatfrute.game.data.GameRepository
 import com.formatfrute.game.game.GameStatus
@@ -79,6 +82,7 @@ import com.formatfrute.game.ui.theme.Fruta
 fun GameScreen(
     mode: GameMode,
     tutorial: Boolean,
+    recipeNumber: Int = 1,
     onExit: () -> Unit,
     onShop: () -> Unit,
     vm: GameViewModel = viewModel(),
@@ -92,7 +96,9 @@ fun GameScreen(
 
     var showPause by remember { mutableStateOf(false) }
 
-    LaunchedEffect(mode, tutorial) { vm.start(mode, tutorial) }
+    LaunchedEffect(mode, tutorial, recipeNumber) {
+        if (mode.isCampaign) vm.startRecipe(recipeNumber) else vm.start(mode, tutorial)
+    }
 
     LaunchedEffect(ui.hint) {
         if (ui.hint != null) {
@@ -237,6 +243,15 @@ fun GameScreen(
                     val restart = { vm.restart() }
                     if (act == null || !AdsManager.maybeShowInterstitial(act) { restart() }) restart()
                 },
+                onNext = if (ui.recipe != null && vm.hasNextRecipe) {
+                    {
+                        val act = activity
+                        val next = { vm.nextRecipe() }
+                        if (act == null || !AdsManager.maybeShowInterstitial(act) { next() }) next()
+                    }
+                } else {
+                    null
+                },
                 onExit = {
                     val act = activity
                     val leave = {
@@ -316,7 +331,7 @@ private fun ModeStatus(ui: GameUi) {
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    text = mode.title,
+                    text = ui.recipe?.let { "Fase ${it.number} · ${it.title}" } ?: mode.title,
                     style = MaterialTheme.typography.titleMedium,
                     color = mode.accent,
                 )
@@ -340,6 +355,38 @@ private fun ModeStatus(ui: GameUi) {
             Spacer(Modifier.height(4.dp))
 
             when {
+                ui.recipe != null -> {
+                    val recipe = ui.recipe!!
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        recipe.orders.forEach { order ->
+                            OrderChip(
+                                order = order,
+                                done = (ui.produced[order.level] ?: 0).coerceAtMost(order.count),
+                            )
+                            Spacer(Modifier.width(8.dp))
+                        }
+                        Spacer(Modifier.weight(1f))
+                        Column(horizontalAlignment = Alignment.End) {
+                            Text(
+                                "🎯 ${ui.movesLeft}",
+                                style = MaterialTheme.typography.titleMedium,
+                                color = if (ui.movesLeft <= 5) Fruta.Danger else Fruta.Ink,
+                            )
+                            Text(
+                                "jogadas",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = Fruta.InkSoft,
+                            )
+                        }
+                    }
+                    Spacer(Modifier.height(6.dp))
+                    ChunkyBar(
+                        progress = ui.movesLeft / ui.movesTotal.toFloat().coerceAtLeast(1f),
+                        color = if (ui.movesLeft <= 5) Fruta.Danger else mode.accent,
+                        height = 12.dp,
+                    )
+                }
+
                 mode.boss -> {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(if (ui.bossAngry) "😡" else "🧃", style = MaterialTheme.typography.titleLarge)
@@ -389,7 +436,7 @@ private fun ModeStatus(ui: GameUi) {
                         )
                         Spacer(Modifier.width(10.dp))
                         ChunkyBar(
-                            progress = ui.movesLeft / mode.moveLimit.toFloat(),
+                            progress = ui.movesLeft / ui.movesTotal.toFloat().coerceAtLeast(1f),
                             color = mode.accent,
                             modifier = Modifier.weight(1f),
                         )
@@ -402,6 +449,44 @@ private fun ModeStatus(ui: GameUi) {
                 }
             }
         }
+    }
+}
+
+/** Item do pedido: a fruta e quanto já saiu da cozinha. */
+@Composable
+private fun OrderChip(order: Order, done: Int) {
+    val complete = done >= order.count
+    val pop = remember { androidx.compose.animation.core.Animatable(1f) }
+    LaunchedEffect(done) {
+        if (done > 0) {
+            pop.animateTo(1.18f, tween(90))
+            pop.animateTo(1f, androidx.compose.animation.core.spring(dampingRatio = 0.4f, stiffness = 700f))
+        }
+    }
+    Row(
+        Modifier
+            .graphicsLayer { scaleX = pop.value; scaleY = pop.value }
+            .clip(RoundedCornerShape(14.dp))
+            .background(if (complete) Fruta.Leaf.copy(alpha = 0.22f) else Fruta.Cream)
+            .border(
+                2.5.dp,
+                if (complete) Fruta.Leaf else Fruta.Ink.copy(alpha = 0.35f),
+                RoundedCornerShape(14.dp),
+            )
+            .padding(horizontal = 7.dp, vertical = 4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Image(
+            painter = painterResource(order.fruit.art),
+            contentDescription = order.fruit.label,
+            modifier = Modifier.size(26.dp),
+        )
+        Spacer(Modifier.width(4.dp))
+        Text(
+            text = if (complete) "✓" else "$done/${order.count}",
+            style = MaterialTheme.typography.labelMedium,
+            color = if (complete) Fruta.Leaf else Fruta.Ink,
+        )
     }
 }
 
@@ -622,9 +707,11 @@ private fun EndDialog(
     onRevive: () -> Unit,
     onDouble: () -> Unit,
     onAgain: () -> Unit,
+    onNext: (() -> Unit)?,
     onExit: () -> Unit,
 ) {
     val won = ui.status == GameStatus.WON
+    val recipe = ui.recipe
     Box(Modifier.fillMaxSize()) {
         Scrim {
             PaperCard(color = Color.White) {
@@ -635,50 +722,98 @@ private fun EndDialog(
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     OutlinedTitle(
-                        text = if (won) "VOCÊ VENCEU!" else "Fim de feira!",
+                        text = when {
+                            won && recipe != null -> "PEDIDO PRONTO!"
+                            won -> "VOCÊ VENCEU!"
+                            recipe != null -> "Faltou pouco!"
+                            else -> "Fim de feira!"
+                        },
                         color = if (won) Fruta.Sun else Color.White,
                         style = MaterialTheme.typography.headlineLarge,
                     )
+
+                    if (recipe != null && won) {
+                        Spacer(Modifier.height(12.dp))
+                        StarRow(ui.stars)
+                    }
+
                     Spacer(Modifier.height(10.dp))
                     Text(
-                        text = if (won) ui.mode.let { "Você fechou o ${it.title}!" }
-                        else "O tabuleiro travou. Acontece até com os melhores.",
+                        text = when {
+                            recipe != null && won ->
+                                "Fase ${recipe.number} — ${recipe.title} está fechada!"
+                            recipe != null ->
+                                "As jogadas acabaram antes do pedido. Tenta de novo?"
+                            won -> "Você fechou o ${ui.mode.title}!"
+                            else -> "O tabuleiro travou. Acontece até com os melhores."
+                        },
                         style = MaterialTheme.typography.bodyMedium,
                         color = Fruta.InkSoft,
                         textAlign = TextAlign.Center,
                     )
+
+                    if (recipe != null) {
+                        Spacer(Modifier.height(12.dp))
+                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            recipe.orders.forEach { order ->
+                                OrderChip(
+                                    order = order,
+                                    done = (ui.produced[order.level] ?: 0).coerceAtMost(order.count),
+                                )
+                            }
+                        }
+                    }
+
                     Spacer(Modifier.height(14.dp))
 
                     Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                         ResultChip("Pontos", formatScore(ui.state.score), ui.mode.accent)
-                        ResultChip("Recorde", formatScore(maxOf(best, ui.state.score)), Fruta.Grape)
+                        if (recipe == null) {
+                            ResultChip("Recorde", formatScore(maxOf(best, ui.state.score)), Fruta.Grape)
+                        }
                         ResultChip("Sementes", "+${ui.coinsEarned}", Fruta.Leaf)
                     }
 
                     if (ui.newRecord) {
                         Spacer(Modifier.height(10.dp))
-                        Text("🏆 RECORDE NOVO!", style = MaterialTheme.typography.titleMedium, color = Fruta.Sun)
+                        Text(
+                            if (recipe != null) "⭐ FASE NOVA LIBERADA!" else "🏆 RECORDE NOVO!",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = Fruta.Sun,
+                        )
                     }
 
-                    Spacer(Modifier.height(10.dp))
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text("Melhor fruta: ", style = MaterialTheme.typography.bodySmall, color = Fruta.InkSoft)
-                        Text(
-                            Fruit.of(ui.state.highestLevel).label,
-                            style = MaterialTheme.typography.titleMedium,
-                            color = Fruit.of(ui.state.highestLevel).skin,
-                        )
+                    if (recipe == null) {
+                        Spacer(Modifier.height(10.dp))
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text("Melhor fruta: ", style = MaterialTheme.typography.bodySmall, color = Fruta.InkSoft)
+                            Text(
+                                Fruit.of(ui.state.highestLevel).label,
+                                style = MaterialTheme.typography.titleMedium,
+                                color = Fruit.of(ui.state.highestLevel).skin,
+                            )
+                        }
                     }
 
                     Spacer(Modifier.height(18.dp))
 
                     if (!won && !ui.reviveUsed) {
                         JuicyButton(
-                            text = "Continuar jogando",
+                            text = if (recipe != null) "+5 jogadas" else "Continuar jogando",
                             emoji = "🎬",
                             color = Fruta.Leaf,
                             modifier = Modifier.fillMaxWidth(),
                             onClick = onRevive,
+                        )
+                        Spacer(Modifier.height(8.dp))
+                    }
+                    if (won && onNext != null) {
+                        JuicyButton(
+                            text = "Próxima fase",
+                            emoji = "➡️",
+                            color = Fruta.Leaf,
+                            modifier = Modifier.fillMaxWidth(),
+                            onClick = onNext,
                         )
                         Spacer(Modifier.height(8.dp))
                     }
@@ -693,7 +828,7 @@ private fun EndDialog(
                     )
                     Spacer(Modifier.height(8.dp))
                     JuicyButton(
-                        text = "Jogar de novo",
+                        text = if (recipe != null) "Tentar de novo" else "Jogar de novo",
                         emoji = "🔄",
                         color = ui.mode.accent,
                         height = 50.dp,
@@ -702,8 +837,8 @@ private fun EndDialog(
                     )
                     Spacer(Modifier.height(8.dp))
                     JuicyButton(
-                        text = "Voltar pra feira",
-                        emoji = "🏠",
+                        text = if (recipe != null) "Voltar ao mapa" else "Voltar pra feira",
+                        emoji = if (recipe != null) "🗺️" else "🏠",
                         color = Fruta.InkSoft,
                         height = 50.dp,
                         modifier = Modifier.fillMaxWidth(),
@@ -713,6 +848,32 @@ private fun EndDialog(
             }
         }
         Confetti(active = won || ui.newRecord)
+    }
+}
+
+/** As três estrelas da fase, caindo uma a uma. */
+@Composable
+fun StarRow(stars: Int, size: androidx.compose.ui.unit.Dp = 46.dp) {
+    Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        repeat(3) { index ->
+            val earned = index < stars
+            val scale = remember(stars, index) { androidx.compose.animation.core.Animatable(if (earned) 0f else 1f) }
+            LaunchedEffect(stars, index) {
+                if (earned) {
+                    kotlinx.coroutines.delay(index * 220L)
+                    scale.animateTo(1.3f, tween(140))
+                    scale.animateTo(1f, androidx.compose.animation.core.spring(dampingRatio = 0.36f, stiffness = 520f))
+                }
+            }
+            Text(
+                text = if (earned) "⭐" else "☆",
+                style = MaterialTheme.typography.displayMedium,
+                color = if (earned) Fruta.Sun else Fruta.InkSoft.copy(alpha = 0.4f),
+                modifier = Modifier
+                    .size(size)
+                    .graphicsLayer { scaleX = scale.value; scaleY = scale.value },
+            )
+        }
     }
 }
 

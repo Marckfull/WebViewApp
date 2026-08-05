@@ -32,6 +32,8 @@ import com.formatfrute.game.ui.game.GameScreen
 import com.formatfrute.game.ui.home.HomeScreen
 import com.formatfrute.game.ui.legal.LegalScreen
 import com.formatfrute.game.ui.legal.LegalTab
+import com.formatfrute.game.ui.pass.PassScreen
+import com.formatfrute.game.ui.recipe.RecipeMapScreen
 import com.formatfrute.game.ui.settings.SettingsScreen
 import com.formatfrute.game.ui.shop.ShopScreen
 import com.formatfrute.game.ui.splash.SplashScreen
@@ -84,12 +86,16 @@ class MainActivity : ComponentActivity() {
 private object Routes {
     const val SPLASH = "splash"
     const val HOME = "home"
-    const val GAME = "game/{mode}/{tutorial}"
+    const val GAME = "game/{mode}/{tutorial}/{recipe}"
     const val SHOP = "shop"
     const val SETTINGS = "settings"
     const val LEGAL = "legal/{tab}"
+    const val RECIPES = "recipes"
+    const val PASS = "pass"
 
-    fun game(mode: GameMode, tutorial: Boolean) = "game/${mode.id}/$tutorial"
+    fun game(mode: GameMode, tutorial: Boolean = false, recipe: Int = 1) =
+        "game/${mode.id}/$tutorial/$recipe"
+
     fun legal(tab: LegalTab) = "legal/${tab.name}"
 }
 
@@ -116,10 +122,12 @@ private fun FormatFruteNav(onAskNotifications: () -> Unit) {
             LaunchedEffect(Unit) { sound.music(Track.MENU) }
 
             HomeScreen(
-                onPlay = { mode -> nav.navigate(Routes.game(mode, false)) },
-                onTutorial = { nav.navigate(Routes.game(GameMode.POMAR, true)) },
+                onPlay = { mode -> nav.navigate(Routes.game(mode)) },
+                onTutorial = { nav.navigate(Routes.game(GameMode.POMAR, tutorial = true)) },
                 onShop = { nav.navigate(Routes.SHOP) },
                 onSettings = { nav.navigate(Routes.SETTINGS) },
+                onRecipes = { nav.navigate(Routes.RECIPES) },
+                onPass = { nav.navigate(Routes.PASS) },
             )
         }
 
@@ -128,16 +136,32 @@ private fun FormatFruteNav(onAskNotifications: () -> Unit) {
             arguments = listOf(
                 navArgument("mode") { type = NavType.StringType },
                 navArgument("tutorial") { type = NavType.BoolType },
+                navArgument("recipe") { type = NavType.IntType },
             ),
         ) { entry ->
             val mode = GameMode.byId(entry.arguments?.getString("mode"))
             val tutorial = entry.arguments?.getBoolean("tutorial") ?: false
+            val recipe = entry.arguments?.getInt("recipe") ?: 1
             GameScreen(
                 mode = mode,
                 tutorial = tutorial,
+                recipeNumber = recipe,
                 onExit = { nav.popBackStack() },
                 onShop = { nav.navigate(Routes.SHOP) },
             )
+        }
+
+        composable(Routes.RECIPES) {
+            RecipeMapScreen(
+                onPlay = { number ->
+                    nav.navigate(Routes.game(GameMode.RECEITA, recipe = number))
+                },
+                onBack = { nav.popBackStack() },
+            )
+        }
+
+        composable(Routes.PASS) {
+            PassScreen(onBack = { nav.popBackStack() })
         }
 
         composable(Routes.SHOP) {

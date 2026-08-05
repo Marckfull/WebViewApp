@@ -46,11 +46,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.formatfrute.game.core.Fruit
+import com.formatfrute.game.core.FruitVoice
 import com.formatfrute.game.core.GameMode
 import com.formatfrute.game.data.DailyRewards
 import com.formatfrute.game.data.GameRepository
 import com.formatfrute.game.data.Mission
 import com.formatfrute.game.data.Ranks
+import com.formatfrute.game.data.SeasonPass
 import com.formatfrute.game.ui.components.ChunkyBar
 import com.formatfrute.game.ui.components.Confetti
 import com.formatfrute.game.ui.components.FruitBackground
@@ -69,6 +71,8 @@ fun HomeScreen(
     onTutorial: () -> Unit,
     onShop: () -> Unit,
     onSettings: () -> Unit,
+    onRecipes: () -> Unit,
+    onPass: () -> Unit,
 ) {
     val context = LocalContext.current
     val repo = remember { GameRepository.get(context) }
@@ -80,8 +84,11 @@ fun HomeScreen(
 
     LaunchedEffect(Unit) {
         repo.ensureMissionsFresh()
+        repo.ensureSeasonFresh()
         if (repo.pendingDailyStreak() > 0) showDaily = true
     }
+
+    val mascot = remember { FruitVoice.greetingOfTheDay(GameRepository.today()) }
 
     val missions = remember(profile.missionsDay, profile.missionProgress) { repo.missions() }
 
@@ -107,6 +114,8 @@ fun HomeScreen(
 
             item { Logo(theme.dark) }
 
+            item { Mascot(fruit = mascot.first, line = mascot.second) }
+
             if (!profile.tutorialDone) {
                 item {
                     JuicyButton(
@@ -117,6 +126,24 @@ fun HomeScreen(
                         onClick = onTutorial,
                     )
                 }
+            }
+
+            item {
+                RecipeCard(
+                    next = profile.nextRecipe,
+                    cleared = profile.recipeCleared,
+                    stars = profile.recipeStarTotal,
+                    onClick = onRecipes,
+                )
+            }
+
+            item {
+                PassCard(
+                    tier = profile.passTier,
+                    progress = SeasonPass.progressInTier(profile.passPoints),
+                    daysLeft = SeasonPass.daysLeft(),
+                    onClick = onPass,
+                )
             }
 
             item {
@@ -142,10 +169,10 @@ fun HomeScreen(
             }
 
             item {
-                SectionTitle("Modos de jogo", theme.dark)
+                SectionTitle("Modos avulsos", theme.dark)
             }
 
-            items(GameMode.entries.toList()) { mode ->
+            items(GameMode.arcade) { mode ->
                 ModeCard(
                     mode = mode,
                     best = profile.bestOf(mode),
@@ -294,6 +321,123 @@ private fun Logo(dark: Boolean) {
             style = MaterialTheme.typography.bodyMedium,
             color = if (dark) Color.White.copy(alpha = 0.85f) else Fruta.Ink.copy(alpha = 0.75f),
         )
+    }
+}
+
+/** A fruta do dia dando bom dia — a arte ganhando voz logo na abertura. */
+@Composable
+private fun Mascot(fruit: Fruit, line: String) {
+    val transition = rememberInfiniteTransition(label = "mascot")
+    val hop by transition.animateFloat(
+        initialValue = 0f,
+        targetValue = -7f,
+        animationSpec = infiniteRepeatable(tween(900), RepeatMode.Reverse),
+        label = "hop",
+    )
+    Row(
+        Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Image(
+            painter = painterResource(fruit.art),
+            contentDescription = fruit.label,
+            modifier = Modifier
+                .size(64.dp)
+                .graphicsLayer { translationY = hop },
+        )
+        Spacer(Modifier.width(4.dp))
+        PaperCard(color = Color.White.copy(alpha = 0.95f), corner = 20.dp) {
+            Text(
+                text = line,
+                style = MaterialTheme.typography.bodyMedium,
+                color = Fruta.Ink,
+                modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
+            )
+        }
+    }
+}
+
+/** Cartão de entrada do Modo Receita: mostra onde o jogador parou. */
+@Composable
+private fun RecipeCard(next: Int, cleared: Int, stars: Int, onClick: () -> Unit) {
+    PaperCard(
+        Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
+        color = Color.White,
+        corner = 24.dp,
+    ) {
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .background(Brush.horizontalGradient(listOf(Fruta.Berry, Color(0xFFFFA3D1))))
+                .padding(14.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Box(
+                Modifier
+                    .size(64.dp)
+                    .clip(RoundedCornerShape(20.dp))
+                    .background(Color.White.copy(alpha = 0.35f)),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text("🧾", style = MaterialTheme.typography.displayMedium)
+            }
+            Spacer(Modifier.width(12.dp))
+            Column(Modifier.weight(1f)) {
+                Text("Modo Receita", style = MaterialTheme.typography.titleLarge, color = Color.White)
+                Text(
+                    "Monte o pedido do freguês",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.White.copy(alpha = 0.92f),
+                )
+                Spacer(Modifier.height(4.dp))
+                Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                    StatPill("🍳", "Fase $next", color = Color.White.copy(alpha = 0.9f))
+                    StatPill("⭐", "$stars", color = Color.White.copy(alpha = 0.9f))
+                }
+            }
+            Text("▶", style = MaterialTheme.typography.headlineMedium, color = Color.White)
+        }
+    }
+}
+
+/** Cartão de entrada do Passe da Feira, com o degrau atual. */
+@Composable
+private fun PassCard(tier: Int, progress: Pair<Int, Int>, daysLeft: Int, onClick: () -> Unit) {
+    PaperCard(
+        Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
+        color = Color.White,
+        corner = 24.dp,
+    ) {
+        Column(
+            Modifier
+                .fillMaxWidth()
+                .background(Brush.horizontalGradient(listOf(Fruta.Sun, Fruta.Peach)))
+                .padding(14.dp),
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text("🎟️", style = MaterialTheme.typography.displayMedium)
+                Spacer(Modifier.width(12.dp))
+                Column(Modifier.weight(1f)) {
+                    Text("Passe da Feira", style = MaterialTheme.typography.titleLarge, color = Fruta.Ink)
+                    Text(
+                        "Degrau $tier de ${SeasonPass.TIERS} • acaba em ${daysLeft}d",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Fruta.Ink.copy(alpha = 0.8f),
+                    )
+                }
+                Text("▶", style = MaterialTheme.typography.headlineMedium, color = Fruta.Ink)
+            }
+            Spacer(Modifier.height(8.dp))
+            ChunkyBar(
+                progress = progress.first.toFloat() / progress.second,
+                color = Fruta.Berry,
+                height = 12.dp,
+            )
+        }
     }
 }
 

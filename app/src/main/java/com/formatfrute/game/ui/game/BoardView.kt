@@ -15,6 +15,7 @@ import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -33,6 +34,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
@@ -47,8 +49,10 @@ import com.formatfrute.game.data.BoardTheme
 import com.formatfrute.game.game.Burst
 import com.formatfrute.game.game.Floater
 import com.formatfrute.game.game.GameUi
+import com.formatfrute.game.game.Speech
 import com.formatfrute.game.ui.components.darken
 import com.formatfrute.game.ui.components.lighten
+import kotlinx.coroutines.delay
 import kotlin.math.abs
 
 private val BoardPadding = 10.dp
@@ -164,7 +168,71 @@ fun BoardView(
             ui.floaters.forEach { floater ->
                 key(floater.id) { FloaterView(floater, cell) }
             }
+
+            ui.speech?.let { speech ->
+                SpeechBubble(speech, cell, Modifier.align(Alignment.TopCenter))
+            }
         }
+    }
+}
+
+/**
+ * O balãozinho da fruta. Fica acima da casa que falou (ou abaixo, se ela estiver
+ * na primeira linha) e é centralizado no tabuleiro para nunca vazar da borda.
+ */
+@Composable
+private fun SpeechBubble(speech: Speech, cell: Dp, modifier: Modifier = Modifier) {
+    val pop = remember(speech.id) { Animatable(0.5f) }
+    val fade = remember(speech.id) { Animatable(0f) }
+
+    LaunchedEffect(speech.id) {
+        fade.animateTo(1f, tween(140))
+        pop.animateTo(1f, spring(dampingRatio = 0.42f, stiffness = 520f))
+        delay(1900)
+        fade.animateTo(0f, tween(320))
+    }
+
+    val above = speech.row > 0
+    val y = if (above) {
+        cellX(speech.row, cell) - cell * 0.58f
+    } else {
+        cellX(speech.row, cell) + cell * 1.04f
+    }
+
+    Row(
+        modifier = modifier
+            .offset(y = y)
+            .graphicsLayer {
+                scaleX = pop.value
+                scaleY = pop.value
+                alpha = fade.value
+                transformOrigin = TransformOrigin(0.5f, if (above) 1f else 0f)
+            }
+            .clip(RoundedCornerShape(18.dp))
+            .background(if (speech.villain) Color(0xFF4A5628) else Color.White)
+            .border(
+                3.dp,
+                if (speech.villain) Color(0xFF2C3417) else Color(0xFF3D2B1F),
+                RoundedCornerShape(18.dp),
+            )
+            .padding(horizontal = 10.dp, vertical = 6.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        if (speech.fruit != null) {
+            Image(
+                painter = painterResource(speech.fruit.art),
+                contentDescription = null,
+                modifier = Modifier.size(26.dp),
+            )
+        } else {
+            Text("🧃", style = MaterialTheme.typography.bodyLarge)
+        }
+        Text(
+            text = speech.text,
+            style = MaterialTheme.typography.bodyMedium,
+            color = if (speech.villain) Color.White else Color(0xFF3D2B1F),
+            modifier = Modifier.padding(start = 7.dp),
+        )
     }
 }
 

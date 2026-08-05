@@ -13,9 +13,13 @@ import com.formatfrute.game.audio.Track
 import com.formatfrute.game.core.Direction
 import com.formatfrute.game.core.Engine
 import com.formatfrute.game.core.Fruit
+import com.formatfrute.game.core.FruitVoice
 import com.formatfrute.game.core.GameMode
 import com.formatfrute.game.core.GameState
+import com.formatfrute.game.core.Merge
 import com.formatfrute.game.core.Power
+import com.formatfrute.game.core.Recipe
+import com.formatfrute.game.core.RecipeBook
 import com.formatfrute.game.core.TileKind
 import com.formatfrute.game.data.GameRepository
 import kotlinx.coroutines.Job
@@ -47,6 +51,16 @@ data class Burst(
 
 data class RewardRequest(val reason: RewardReason, val power: Power? = null)
 
+/** Um balãozinho de fala saindo de uma casa do tabuleiro. */
+data class Speech(
+    val id: Long,
+    val text: String,
+    val fruit: Fruit?,
+    val row: Int,
+    val col: Int,
+    val villain: Boolean = false,
+)
+
 data class GameUi(
     val mode: GameMode = GameMode.POMAR,
     val state: GameState = Engine.empty(4),
@@ -54,6 +68,12 @@ data class GameUi(
     val paused: Boolean = false,
     val timeLeft: Int = 0,
     val movesLeft: Int = 0,
+    val movesTotal: Int = 0,
+    val recipe: Recipe? = null,
+    /** Quantas frutas de cada degrau já foram CRIADAS nesta partida. */
+    val produced: Map<Int, Int> = emptyMap(),
+    val stars: Int = 0,
+    val speech: Speech? = null,
     val combo: Int = 0,
     val comboToken: Long = 0,
     val bossHp: Int = 0,
@@ -93,19 +113,18 @@ class GameViewModel(app: Application) : AndroidViewModel(app) {
     private var harvestsThisGame = 0
     private var movesSinceAttack = 0
     private var comboJob: Job? = null
+    private var speechJob: Job? = null
     private var tutorialActive = false
+    private var seenFruits = HashSet<Int>()
 
     // ------------------------------------------------------------- partida
 
     fun start(mode: GameMode, tutorial: Boolean = false) {
-        timerJob?.cancel()
-        comboJob?.cancel()
-        history = ArrayDeque()
-        mergesThisGame = 0
-        harvestsThisGame = 0
-        movesSinceAttack = 0
-        tutorialActive = tutorial
-
+        if (mode.isCampaign) {
+            startRecipe(1)
+            return
+        }
+        reset(tutorial)
         rng = if (mode == GameMode.CESTA) Random(dailySeed()) else Random(System.nanoTime())
 
         val state = when {
@@ -119,6 +138,7 @@ class GameViewModel(app: Application) : AndroidViewModel(app) {
             state = state,
             timeLeft = mode.timeLimit,
             movesLeft = mode.moveLimit,
+            movesTotal = mode.moveLimit,
             bossHp = BOSS_HP,
             bossMaxHp = BOSS_HP,
             goal = goalText(mode),
@@ -131,7 +151,41 @@ class GameViewModel(app: Application) : AndroidViewModel(app) {
         if (mode.hasClock) startClock()
     }
 
+    /** Abre uma fase do Modo Receita. O tabuleiro vem montado pelo caderno. */
+    fun startRecipe(number: Int) {
+        reset(tutorial = false)
+        val recipe = RecipeBook.recipe(number)
+        rng = Random(recipe.number * 104_729L)
+        val state = RecipeBook.board(recipe, rng)
+        rng = Random(System.nanoTime())
+
+        _ui.value = GameUi(
+            mode = GameMode.RECEITA,
+            state = state,
+            recipe = recipe,
+            movesLeft = recipe.moves,
+            movesTotal = recipe.moves,
+            goal = "Fase ${recipe.number} — ${recipe.title}",
+        )
+
+        sound.music(Track.GAME)
+        repo.markLastPlayed()
+    }
+
+    private fun reset(tutorial: Boolean) {
+        timerJob?.cancel()
+        comboJob?.cancel()
+        speechJob?.cancel()
+        history = ArrayDeque()
+        mergesThisGame = 0
+        harvestsThisGame = 0
+        movesSinceAttack = 0
+        seenFruits = HashSet()
+        tutorialActive = tutorial
+    }
+
     private fun goalText(mode: GameMode): String = when (mode) {
+        GameMode.RECEITA -> "Monte o pedido do freguês"
         GameMode.POMAR -> "Chegue na ${Fruit.of(mode.goalLevel).label}"
         GameMode.VITAMINA -> "Faça o máximo de pontos em ${mode.timeLimit}s"
         GameMode.GELEIA -> "Derreta o gelo e chegue na ${Fruit.of(mode.goalLevel).label}"
@@ -194,6 +248,12 @@ class GameViewModel(app: Application) : AndroidViewModel(app) {
             )
         }
 
+        // Modo Receita: o pedido conta o que foi CRIADO, nao o que ja estava la.
+        val produced = ui.produced.toMutableMap()
+        result.merges.forEach { merge ->
+            produced[merge.level] = (produced[merge.level] ?: 0) + 1
+        }
+
         val newFloaters = ArrayList(ui.floaters)
         val newBursts = ArrayList(ui.bursts)
         result.merges.forEach { merge ->
@@ -250,13 +310,26 @@ class GameViewModel(app: Application) : AndroidViewModel(app) {
                 state = Engine.spawn(state, rng, forcedKind = TileKind.ROTTEN, forcedLevel = 0)
                 newFloaters += Floater(effectId++, "Fruta podre!", 0, 0, Color(0xFF9CCC65))
                 haptics.error()
+                say(FruitVoice.onBoss(effectId++), null, 0, ui.state.size - 1, villain = true)
             }
         }
 
-        val movesLeft = if (ui.mode.moveLimit > 0) (ui.movesLeft - 1).coerceAtLeast(0) else 0
+        // A fruta podre da receita cai sozinha, sem monstro nenhum.
+        val rottenEvery = ui.recipe?.rottenEvery ?: 0
+        if (rottenEvery > 0 && !ui.mode.boss) {
+            movesSinceAttack++
+            if (movesSinceAttack >= rottenEvery) {
+                movesSinceAttack = 0
+                state = Engine.spawn(state, rng, forcedKind = TileKind.ROTTEN, forcedLevel = 0)
+                haptics.error()
+            }
+        }
+
+        val movesLeft = if (ui.movesTotal > 0) (ui.movesLeft - 1).coerceAtLeast(0) else 0
 
         _ui.value = ui.copy(
             state = state,
+            produced = produced,
             combo = combo,
             comboToken = if (combo >= 3) ui.comboToken + 1 else ui.comboToken,
             timeLeft = timeLeft,
@@ -270,10 +343,48 @@ class GameViewModel(app: Application) : AndroidViewModel(app) {
             hint = null,
         )
 
+        voiceOf(result.merges, combo)
         scheduleCleanup()
         resetComboLater()
         advanceTutorial(dir, result.merges.isNotEmpty(), state)
         checkEnd()
+    }
+
+    // ------------------------------------------------------ voz das frutas
+
+    /**
+     * As frutas falam com parcimônia: estreia de fruta grande e combo alto.
+     * Falar demais vira ruído e o jogador para de ler.
+     */
+    private fun voiceOf(merges: List<Merge>, combo: Int) {
+        val debut = merges
+            .filter { !it.harvest && seenFruits.add(it.level) }
+            .maxByOrNull { it.level }
+
+        if (debut != null) {
+            val fruit = Fruit.of(debut.level)
+            val line = FruitVoice.onArrival(fruit, effectId + debut.level)
+            if (line != null) {
+                say(line, fruit, debut.row, debut.col)
+                return
+            }
+        }
+        if (combo >= 5 && merges.isNotEmpty()) {
+            val loudest = merges.maxByOrNull { it.level } ?: return
+            say(FruitVoice.onCombo(effectId + combo), Fruit.of(loudest.level), loudest.row, loudest.col)
+        }
+    }
+
+    private fun say(text: String, fruit: Fruit?, row: Int, col: Int, villain: Boolean = false) {
+        val speech = Speech(effectId++, text, fruit, row, col, villain)
+        _ui.value = _ui.value.copy(speech = speech)
+        speechJob?.cancel()
+        speechJob = viewModelScope.launch {
+            delay(2400)
+            if (_ui.value.speech?.id == speech.id) {
+                _ui.value = _ui.value.copy(speech = null)
+            }
+        }
     }
 
     private fun scheduleCleanup() {
@@ -299,6 +410,18 @@ class GameViewModel(app: Application) : AndroidViewModel(app) {
 
         if (mode.boss && ui.bossHp <= 0) {
             finish(won = true)
+            return
+        }
+
+        val recipe = ui.recipe
+        if (recipe != null) {
+            if (ordersDone(recipe, ui.produced)) {
+                finish(won = true)
+                return
+            }
+            if (ui.movesLeft <= 0 || !Engine.canMove(ui.state)) {
+                finish(won = false)
+            }
             return
         }
 
@@ -335,19 +458,36 @@ class GameViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    /** O pedido está completo? */
+    fun ordersDone(recipe: Recipe, produced: Map<Int, Int>): Boolean =
+        recipe.orders.all { (produced[it.level] ?: 0) >= it.count }
+
     private fun finish(won: Boolean) {
         timerJob?.cancel()
+        speechJob?.cancel()
         val ui = _ui.value
         if (ui.status != GameStatus.PLAYING) return
 
-        val coins = (ui.state.score / 90) + harvestsThisGame * 60 + if (won) 120 else 0
-        val record = repo.registerGame(
-            mode = ui.mode,
-            score = ui.state.score,
-            highestFruit = ui.state.highestLevel,
-            merges = mergesThisGame,
-            harvests = harvestsThisGame,
-        )
+        val recipe = ui.recipe
+        val stars = if (recipe != null && won) recipe.starsFor(ui.movesLeft) else 0
+
+        var coins = (ui.state.score / 90) + harvestsThisGame * 60 + if (won) 120 else 0
+        var record = false
+
+        if (recipe != null) {
+            coins += stars * 40
+            record = repo.registerRecipe(recipe.number, stars)
+        } else {
+            record = repo.registerGame(
+                mode = ui.mode,
+                score = ui.state.score,
+                highestFruit = ui.state.highestLevel,
+                merges = mergesThisGame,
+                harvests = harvestsThisGame,
+                won = won,
+            )
+        }
+
         repo.addCoins(coins)
         val leveled = repo.addXp(ui.state.score / 40 + if (won) 80 else 20)
         AdsManager.onGameFinished()
@@ -356,12 +496,23 @@ class GameViewModel(app: Application) : AndroidViewModel(app) {
             status = if (won) GameStatus.WON else GameStatus.LOST,
             coinsEarned = coins,
             newRecord = record,
+            stars = stars,
+            speech = null,
         )
 
         sound.play(if (won) Sfx.WIN else Sfx.LOSE)
         if (leveled) sound.play(Sfx.LEVELUP)
         if (won) haptics.win() else haptics.lose()
     }
+
+    /** Avança para a próxima fase da campanha. */
+    fun nextRecipe() {
+        val current = _ui.value.recipe?.number ?: return
+        startRecipe((current + 1).coerceAtMost(RecipeBook.TOTAL))
+    }
+
+    val hasNextRecipe: Boolean
+        get() = (_ui.value.recipe?.number ?: RecipeBook.TOTAL) < RecipeBook.TOTAL
 
     // --------------------------------------------------------------- poderes
 
@@ -606,7 +757,8 @@ class GameViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun restart() {
-        start(_ui.value.mode, tutorial = false)
+        val recipe = _ui.value.recipe
+        if (recipe != null) startRecipe(recipe.number) else start(_ui.value.mode, tutorial = false)
     }
 
     fun leave() {
@@ -618,6 +770,7 @@ class GameViewModel(app: Application) : AndroidViewModel(app) {
     override fun onCleared() {
         timerJob?.cancel()
         comboJob?.cancel()
+        speechJob?.cancel()
         super.onCleared()
     }
 

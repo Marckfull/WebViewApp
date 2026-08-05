@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import androidx.core.content.edit
 import com.formatfrute.game.core.GameMode
 import com.formatfrute.game.core.Power
+import com.formatfrute.game.core.RecipeBook
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -37,6 +38,13 @@ data class Profile(
     val missionsClaimed: Set<String> = emptySet(),
     val cestaClearedDay: String = "",
     val legalAccepted: Boolean = false,
+    /** Estrelas por fase do Modo Receita: "12" -> 3. */
+    val recipeStars: Map<String, Int> = emptyMap(),
+    val passSeason: String = "",
+    val passPoints: Int = 0,
+    val passClaimedFree: Set<String> = emptySet(),
+    val passClaimedPremium: Set<String> = emptySet(),
+    val passTitle: String = "",
 ) {
     val level: Int get() = Ranks.levelFor(xp)
     val rank: String get() = Ranks.title(level)
@@ -44,6 +52,20 @@ data class Profile(
 
     fun powerCount(power: Power): Int = powers[power.id] ?: 0
     fun bestOf(mode: GameMode): Int = best[mode.id] ?: 0
+
+    fun starsOf(recipe: Int): Int = recipeStars[recipe.toString()] ?: 0
+
+    /** A fase 1 está sempre aberta; as outras pedem a anterior concluída. */
+    fun isRecipeUnlocked(recipe: Int): Boolean = recipe <= 1 || starsOf(recipe - 1) > 0
+
+    val recipeCleared: Int get() = recipeStars.count { it.value > 0 }
+    val recipeStarTotal: Int get() = recipeStars.values.sum()
+
+    /** Próxima fase a jogar — é nela que o mapa abre. */
+    val nextRecipe: Int
+        get() = (1..RecipeBook.TOTAL).firstOrNull { starsOf(it) == 0 } ?: RecipeBook.TOTAL
+
+    val passTier: Int get() = SeasonPass.tierOf(passPoints)
 }
 
 /**
@@ -86,6 +108,12 @@ class GameRepository private constructor(context: Context) {
         missionsClaimed = prefs.getStringSet(K_MISSION_CLAIMED, null) ?: emptySet(),
         cestaClearedDay = prefs.getString(K_CESTA_DAY, "") ?: "",
         legalAccepted = prefs.getBoolean(K_LEGAL, false),
+        recipeStars = readCounts(K_RECIPE_STARS),
+        passSeason = prefs.getString(K_PASS_SEASON, "") ?: "",
+        passPoints = prefs.getInt(K_PASS_POINTS, 0),
+        passClaimedFree = prefs.getStringSet(K_PASS_FREE, null) ?: emptySet(),
+        passClaimedPremium = prefs.getStringSet(K_PASS_PREMIUM, null) ?: emptySet(),
+        passTitle = prefs.getString(K_PASS_TITLE, "") ?: "",
     )
 
     private fun readCounts(key: String): Map<String, Int> {
@@ -179,7 +207,14 @@ class GameRepository private constructor(context: Context) {
 
     // --------------------------------------------------------- partidas
 
-    fun registerGame(mode: GameMode, score: Int, highestFruit: Int, merges: Int, harvests: Int): Boolean {
+    fun registerGame(
+        mode: GameMode,
+        score: Int,
+        highestFruit: Int,
+        merges: Int,
+        harvests: Int,
+        won: Boolean,
+    ): Boolean {
         var record = false
         if (score > current.bestOf(mode)) {
             val map = current.best.toMutableMap()
@@ -208,7 +243,93 @@ class GameRepository private constructor(context: Context) {
         bumpMissionMax(MissionKind.PONTOS, score)
         bumpMissionMax(MissionKind.CHEGAR_NA_FRUTA, highestFruit)
         bumpMissionMode(mode)
+        addPassPoints(SeasonPass.pointsForGame(score, merges, won))
         return record
+    }
+
+    // --------------------------------------------------------- modo receita
+
+    /** Guarda a fase concluída. Só sobe estrela, nunca desce. */
+    fun registerRecipe(number: Int, stars: Int): Boolean {
+        val key = number.toString()
+        val before = current.starsOf(number)
+        if (stars <= before) {
+            addPassPoints(SeasonPass.pointsForRecipe(stars))
+            return false
+        }
+        val map = current.recipeStars.toMutableMap()
+        map[key] = stars
+        writeCounts(K_RECIPE_STARS, map)
+        update { it.copy(recipeStars = map) }
+        addPassPoints(SeasonPass.pointsForRecipe(stars))
+        return before == 0
+    }
+
+    // ---------------------------------------------------- passe da feira
+
+    /** Vira a temporada quando o mês muda: fichas e resgates recomeçam. */
+    fun ensureSeasonFresh() {
+        val season = SeasonPass.seasonId()
+        if (current.passSeason == season) return
+        prefs.edit {
+            putString(K_PASS_SEASON, season)
+            putInt(K_PASS_POINTS, 0)
+            putStringSet(K_PASS_FREE, emptySet())
+            putStringSet(K_PASS_PREMIUM, emptySet())
+        }
+        update {
+            it.copy(
+                passSeason = season,
+                passPoints = 0,
+                passClaimedFree = emptySet(),
+                passClaimedPremium = emptySet(),
+            )
+        }
+    }
+
+    fun addPassPoints(points: Int) {
+        if (points <= 0) return
+        ensureSeasonFresh()
+        val next = current.passPoints + points
+        prefs.edit { putInt(K_PASS_POINTS, next) }
+        update { it.copy(passPoints = next) }
+    }
+
+    fun isTierClaimed(tier: Int, premium: Boolean): Boolean {
+        val key = tier.toString()
+        return key in if (premium) current.passClaimedPremium else current.passClaimedFree
+    }
+
+    fun canClaimTier(tier: Int, premium: Boolean): Boolean =
+        current.passTier >= tier && !isTierClaimed(tier, premium)
+
+    /** Entrega a recompensa do degrau. Devolve false se não podia resgatar. */
+    fun claimTier(tier: Int, premium: Boolean): Boolean {
+        if (!canClaimTier(tier, premium)) return false
+        val entry = SeasonPass.tier(tier)
+        val reward = if (premium) entry.premium else entry.free
+
+        when (reward.kind) {
+            RewardKind.SEMENTES -> addCoins(reward.amount)
+            RewardKind.PODER -> Power.byId(reward.powerId)?.let { addPower(it, reward.amount) }
+            RewardKind.PELE -> unlockTheme(BoardTheme.byId(reward.themeId))
+            RewardKind.TITULO -> {
+                prefs.edit { putString(K_PASS_TITLE, reward.title) }
+                update { it.copy(passTitle = reward.title) }
+            }
+        }
+
+        val key = tier.toString()
+        if (premium) {
+            val set = current.passClaimedPremium + key
+            prefs.edit { putStringSet(K_PASS_PREMIUM, set) }
+            update { it.copy(passClaimedPremium = set) }
+        } else {
+            val set = current.passClaimedFree + key
+            prefs.edit { putStringSet(K_PASS_FREE, set) }
+            update { it.copy(passClaimedFree = set) }
+        }
+        return true
     }
 
     fun markCestaCleared() {
@@ -245,6 +366,7 @@ class GameRepository private constructor(context: Context) {
         update { it.copy(missionsClaimed = claimed) }
         addCoins(mission.reward)
         addXp(mission.reward / 2)
+        addPassPoints(SeasonPass.POINTS_PER_MISSION)
         return mission.reward
     }
 
@@ -368,6 +490,12 @@ class GameRepository private constructor(context: Context) {
         private const val K_CESTA_DAY = "cesta_day"
         private const val K_LEGAL = "legal"
         private const val K_LAST_PLAYED = "last_played"
+        private const val K_RECIPE_STARS = "recipe_stars"
+        private const val K_PASS_SEASON = "pass_season"
+        private const val K_PASS_POINTS = "pass_points"
+        private const val K_PASS_FREE = "pass_free"
+        private const val K_PASS_PREMIUM = "pass_premium"
+        private const val K_PASS_TITLE = "pass_title"
 
         private const val DAY_MS = 24 * 60 * 60 * 1000L
 
