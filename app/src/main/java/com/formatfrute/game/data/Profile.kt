@@ -18,6 +18,8 @@ data class Profile(
     val vibration: Boolean = true,
     val notifications: Boolean = true,
     val tutorialDone: Boolean = false,
+    /** O segundo ensino, o do Modo Receita — a mecânica do pedido. */
+    val recipeCoachDone: Boolean = false,
     val streak: Int = 0,
     val lastClaimDay: String = "",
     val totalMerges: Int = 0,

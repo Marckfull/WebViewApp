@@ -28,7 +28,8 @@ data class Achievement(
         AchievementKind.SEQUENCIA -> profile.streak
         AchievementKind.NIVEL -> profile.level
         AchievementKind.PASSE -> profile.passTier
-        AchievementKind.PELES -> profile.unlockedThemes.size
+        // Só conta pele comprada: as do Passe entram de graça e não valem prova.
+        AchievementKind.PELES -> BoardTheme.shop.count { it.id in profile.unlockedThemes }
     }.coerceAtMost(target)
 
     fun isDone(profile: Profile): Boolean = progressOf(profile) >= target
@@ -135,8 +136,8 @@ object Achievements {
             "🎟️", AchievementKind.PASSE, SeasonPass.TIERS, 1_500,
         ),
         Achievement(
-            "colecionador", "Colecionador", "Tenha todas as peles de tabuleiro.",
-            "🎨", AchievementKind.PELES, BoardTheme.entries.size, 800,
+            "colecionador", "Colecionador", "Compre todas as peles da Barraquinha.",
+            "🎨", AchievementKind.PELES, BoardTheme.shop.size, 800,
         ),
     )
 

@@ -34,6 +34,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.formatfrute.game.game.RecipeCoachStep
 import com.formatfrute.game.game.TutorialSpot
 import com.formatfrute.game.game.TutorialStep
 import com.formatfrute.game.ui.components.JuicyButton
@@ -124,6 +125,121 @@ fun TutorialOverlay(
                         Spacer(Modifier.height(10.dp))
                         Text(
                             "Faça o que foi pedido para liberar o próximo passo 🔒",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = Fruta.InkSoft,
+                            textAlign = TextAlign.Center,
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Ensino do Modo Receita. Mesma gramática do tutorial grande — cartão embaixo,
+ * bolinhas de progresso, passo travado até ser cumprido — mas só três passos,
+ * porque o jogador já sabe jogar; o que falta é entender o pedido.
+ */
+@Composable
+fun RecipeCoachOverlay(
+    step: RecipeCoachStep,
+    onAdvance: () -> Unit,
+    onSkip: () -> Unit,
+) {
+    Box(Modifier.fillMaxSize()) {
+        if (step == RecipeCoachStep.PEDIDO) {
+            // A seta aponta para o cartão do pedido, no topo da tela.
+            Text(
+                text = "☝️",
+                style = MaterialTheme.typography.displayMedium,
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .padding(top = 150.dp),
+            )
+        }
+
+        Column(
+            Modifier
+                .align(Alignment.BottomCenter)
+                .windowInsetsPadding(WindowInsets.systemBars)
+                .padding(16.dp),
+        ) {
+            PaperCard(color = Color.White.copy(alpha = 0.97f)) {
+                Column(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(18.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Row(
+                        Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(
+                            "Receita ${step.stepNumber} de ${step.totalSteps}",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = Fruta.InkSoft,
+                        )
+                        Text(
+                            "Pular",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = Fruta.InkSoft,
+                            modifier = Modifier
+                                .clickable(onClick = onSkip)
+                                .padding(6.dp),
+                        )
+                    }
+
+                    Spacer(Modifier.height(6.dp))
+                    Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                        RecipeCoachStep.entries.forEach { entry ->
+                            Box(
+                                Modifier
+                                    .size(if (entry == step) 14.dp else 10.dp)
+                                    .clip(RoundedCornerShape(50))
+                                    .background(
+                                        when {
+                                            entry == step -> Fruta.Berry
+                                            entry.ordinal < step.ordinal -> Fruta.Leaf
+                                            else -> Fruta.InkSoft.copy(alpha = 0.3f)
+                                        }
+                                    )
+                                    .border(2.dp, Fruta.Ink.copy(alpha = 0.4f), RoundedCornerShape(50)),
+                            )
+                        }
+                    }
+                    Spacer(Modifier.height(10.dp))
+
+                    Text(
+                        step.title,
+                        style = MaterialTheme.typography.headlineSmall,
+                        color = Fruta.Berry,
+                        textAlign = TextAlign.Center,
+                    )
+                    Spacer(Modifier.height(6.dp))
+                    Text(
+                        step.text,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Fruta.Ink,
+                        textAlign = TextAlign.Center,
+                    )
+
+                    if (step.manual) {
+                        Spacer(Modifier.height(14.dp))
+                        JuicyButton(
+                            text = step.cta,
+                            emoji = "👍",
+                            color = Fruta.Leaf,
+                            height = 52.dp,
+                            modifier = Modifier.fillMaxWidth(),
+                            onClick = onAdvance,
+                        )
+                    } else {
+                        Spacer(Modifier.height(10.dp))
+                        Text(
+                            "Faça uma fusão para continuar 🔒",
                             style = MaterialTheme.typography.labelSmall,
                             color = Fruta.InkSoft,
                             textAlign = TextAlign.Center,

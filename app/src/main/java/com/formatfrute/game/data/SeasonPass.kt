@@ -79,10 +79,12 @@ object SeasonPass {
             else -> PassReward(RewardKind.SEMENTES, amount = 60 + (n / 5) * 20)
         }
 
+        // As três peles do Passe são exclusivas: não existem na loja, então
+        // subir degrau é a única forma de tê-las.
         val premium = when (n) {
-            10 -> PassReward(RewardKind.PELE, themeId = BoardTheme.SORVETE.id)
-            20 -> PassReward(RewardKind.PELE, themeId = BoardTheme.NOITE.id)
-            30 -> PassReward(RewardKind.PELE, themeId = BoardTheme.TROPICAL.id)
+            10 -> PassReward(RewardKind.PELE, themeId = BoardTheme.NOITE.id)
+            20 -> PassReward(RewardKind.PELE, themeId = BoardTheme.JUNINA.id)
+            30 -> PassReward(RewardKind.PELE, themeId = BoardTheme.ENCANTADO.id)
             else -> when {
                 n % 7 == 0 -> PassReward(
                     RewardKind.TITULO,

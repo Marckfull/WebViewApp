@@ -101,6 +101,8 @@ data class GameUi(
     val rewardRequest: RewardRequest? = null,
     val tutorial: TutorialStep? = null,
     val tutorialToken: Long = 0,
+    /** Ensino do Modo Receita, mostrado só na primeira fase da vida do jogador. */
+    val coach: RecipeCoachStep? = null,
     val canUndo: Boolean = false,
     val reviveUsed: Boolean = false,
     val unlocked: Achievement? = null,
@@ -205,6 +207,7 @@ class GameViewModel(app: Application) : AndroidViewModel(app) {
             movesLeft = recipe.moves,
             movesTotal = recipe.moves,
             goal = if (recipe.daily) "Receita do Dia" else "Fase ${recipe.number} — ${recipe.title}",
+            coach = if (repo.current.recipeCoachDone) null else RecipeCoachStep.entries.first(),
         )
 
         sound.music(Track.GAME)
@@ -303,6 +306,13 @@ class GameViewModel(app: Application) : AndroidViewModel(app) {
 
         if (tutorialActive && !tutorialAllows(dir)) {
             _ui.value = ui.copy(shakeToken = ui.shakeToken + 1, hint = ui.tutorial?.blockHint)
+            haptics.error()
+            return
+        }
+
+        // Enquanto o cartão do ensino pede um toque, o tabuleiro fica quieto.
+        if (ui.coach?.manual == true) {
+            _ui.value = ui.copy(shakeToken = ui.shakeToken + 1)
             haptics.error()
             return
         }
@@ -436,7 +446,32 @@ class GameViewModel(app: Application) : AndroidViewModel(app) {
         scheduleCleanup()
         resetComboLater()
         advanceTutorial(dir, result.merges.isNotEmpty(), state)
+        // O passo "só vale o que você criar" fecha quando a fusão acontece —
+        // é ver o contador andar que ensina, não o texto.
+        if (ui.coach == RecipeCoachStep.CRIAR && result.merges.isNotEmpty()) {
+            advanceCoach()
+        }
         checkEnd()
+    }
+
+    // ----------------------------------------------- ensino da Receita
+
+    fun advanceCoach() {
+        val current = _ui.value.coach ?: return
+        val next = RecipeCoachStep.entries.getOrNull(current.ordinal + 1)
+        sound.play(Sfx.BUTTON)
+        haptics.tap()
+        if (next == null) {
+            repo.setRecipeCoachDone(true)
+            _ui.value = _ui.value.copy(coach = null)
+        } else {
+            _ui.value = _ui.value.copy(coach = next)
+        }
+    }
+
+    fun skipCoach() {
+        repo.setRecipeCoachDone(true)
+        _ui.value = _ui.value.copy(coach = null)
     }
 
     private fun pushHistory(ui: GameUi) {

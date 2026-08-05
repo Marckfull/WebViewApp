@@ -41,6 +41,7 @@ class GameRepository private constructor(context: Context) {
         vibration = prefs.getBoolean(K_VIBRATION, true),
         notifications = prefs.getBoolean(K_NOTIF, true),
         tutorialDone = prefs.getBoolean(K_TUTORIAL, false),
+        recipeCoachDone = prefs.getBoolean(K_RECIPE_COACH, false),
         streak = prefs.getInt(K_STREAK, 0),
         lastClaimDay = prefs.getString(K_LAST_CLAIM, "") ?: "",
         totalMerges = prefs.getInt(K_MERGES, 0),
@@ -142,6 +143,8 @@ class GameRepository private constructor(context: Context) {
 
     fun buyTheme(theme: BoardTheme): Boolean {
         if (theme.id in current.unlockedThemes) return true
+        // Pele de temporada não tem preço: ou vem do Passe, ou não vem.
+        if (theme.exclusive) return false
         if (!spendCoins(theme.price)) return false
         unlockTheme(theme)
         return true
@@ -435,6 +438,11 @@ class GameRepository private constructor(context: Context) {
         update { it.copy(tutorialDone = done) }
     }
 
+    fun setRecipeCoachDone(done: Boolean) {
+        prefs.edit { putBoolean(K_RECIPE_COACH, done) }
+        update { it.copy(recipeCoachDone = done) }
+    }
+
     fun acceptLegal() {
         prefs.edit { putBoolean(K_LEGAL, true) }
         update { it.copy(legalAccepted = true) }
@@ -459,6 +467,7 @@ class GameRepository private constructor(context: Context) {
         private const val K_VIBRATION = "vibration"
         private const val K_NOTIF = "notifications"
         private const val K_TUTORIAL = "tutorial"
+        private const val K_RECIPE_COACH = "recipe_coach"
         private const val K_STREAK = "streak"
         private const val K_LAST_CLAIM = "last_claim"
         private const val K_MERGES = "merges"

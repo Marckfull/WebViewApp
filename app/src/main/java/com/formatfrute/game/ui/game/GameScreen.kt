@@ -226,6 +226,14 @@ fun GameScreen(
             )
         }
 
+        ui.coach?.let { step ->
+            RecipeCoachOverlay(
+                step = step,
+                onAdvance = vm::advanceCoach,
+                onSkip = vm::skipCoach,
+            )
+        }
+
         ui.rewardRequest?.let { request ->
             RewardDialog(
                 reason = request.reason,

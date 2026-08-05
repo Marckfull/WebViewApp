@@ -38,7 +38,7 @@ class SeasonPassTest {
     }
 
     @Test
-    fun `a faixa de video entrega as tres peles pagas`() {
+    fun `a faixa de video entrega as tres peles de temporada`() {
         val themes = (1..SeasonPass.TIERS)
             .map { SeasonPass.tier(it).premium }
             .filter { it.kind == RewardKind.PELE }
@@ -46,6 +46,37 @@ class SeasonPassTest {
             .toSet()
 
         assertEquals(3, themes.size)
+        assertEquals(BoardTheme.seasonal.map { it.id }.toSet(), themes)
+    }
+
+    /**
+     * A regra que separa loja e Passe: se o Passe der de graça o que a loja
+     * vende, a vitrine perde a função e o jogador perde o motivo de gastar
+     * Semente. Nenhuma pele pode estar nos dois lugares.
+     */
+    @Test
+    fun `o Passe nunca entrega uma pele que a loja vende`() {
+        val naLoja = BoardTheme.shop.map { it.id }.toSet()
+        val noPasse = (1..SeasonPass.TIERS)
+            .map { SeasonPass.tier(it).premium }
+            .filter { it.kind == RewardKind.PELE }
+            .map { it.themeId }
+            .toSet()
+
+        assertTrue(
+            "peles vendidas E dadas: ${naLoja intersect noPasse}",
+            (naLoja intersect noPasse).isEmpty(),
+        )
+        assertTrue("a loja ficou sem pele para vender", BoardTheme.shop.any { it.price > 0 })
+        assertEquals(BoardTheme.entries.size, BoardTheme.shop.size + BoardTheme.seasonal.size)
+    }
+
+    @Test
+    fun `pele de temporada nao tem preco`() {
+        BoardTheme.seasonal.forEach {
+            assertEquals("${it.id} está com preço", 0, it.price)
+            assertTrue(it.exclusive)
+        }
     }
 
     @Test

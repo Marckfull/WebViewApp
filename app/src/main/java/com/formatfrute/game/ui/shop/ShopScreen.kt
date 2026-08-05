@@ -174,7 +174,7 @@ fun ShopScreen(onBack: () -> Unit) {
 
             item { ShopSection("Peles do tabuleiro", profile.boardTheme.dark) }
 
-            items(BoardTheme.entries.toList()) { theme ->
+            items(BoardTheme.shop) { theme ->
                 ThemeRow(
                     theme = theme,
                     unlocked = theme.id in profile.unlockedThemes,
@@ -196,6 +196,26 @@ fun ShopScreen(onBack: () -> Unit) {
                         sound.play(Sfx.BUTTON)
                     },
                 )
+            }
+
+            // As peles de temporada só aparecem aqui depois de conquistadas —
+            // antes disso, quem manda nelas é o Passe.
+            val owned = BoardTheme.seasonal.filter { it.id in profile.unlockedThemes }
+            if (owned.isNotEmpty()) {
+                item { ShopSection("Exclusivas do Passe", profile.boardTheme.dark) }
+                items(owned) { theme ->
+                    ThemeRow(
+                        theme = theme,
+                        unlocked = true,
+                        selected = theme.id == profile.theme,
+                        canAfford = true,
+                        onBuy = { },
+                        onSelect = {
+                            repo.selectTheme(theme)
+                            sound.play(Sfx.BUTTON)
+                        },
+                    )
+                }
             }
 
             item { Spacer(Modifier.height(24.dp)) }
