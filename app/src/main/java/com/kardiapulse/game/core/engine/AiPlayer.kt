@@ -25,8 +25,17 @@ object AiPlayer {
     private const val WIN_SCORE = 1_000_000
     private const val ROUND_SCORE = 5_000
 
-    /** Escolhe a jogada da IA para quem está com o turno. */
-    fun chooseMove(state: GameState, difficulty: Difficulty, rng: PulseRandom): Move? {
+    /**
+     * Escolhe a jogada da IA para quem está com o turno.
+     *
+     * [difficulty] define o quanto ela enxerga; [persona] define o que ela quer.
+     */
+    fun chooseMove(
+        state: GameState,
+        difficulty: Difficulty,
+        rng: PulseRandom,
+        persona: AiPersona = AiPersona.EQUILIBRADO
+    ): Move? {
         if (state.phase != Phase.JOGANDO) return null
         val me = state.turn
 
@@ -61,7 +70,18 @@ object AiPlayer {
             val world = determinize(state, rng)
             for (i in plays.indices) {
                 val next = stripped(GameEngine.apply(world, plays[i]))
-                totals[i] += search(next, difficulty.depth - 1, -WIN_SCORE * 2, WIN_SCORE * 2, me)
+                totals[i] += search(
+                    next, difficulty.depth - 1, -WIN_SCORE * 2, WIN_SCORE * 2, me, persona
+                )
+            }
+        }
+
+        // O ruído da persona entra DEPOIS da busca, nunca dentro dela: assim a árvore continua
+        // consistente e só a escolha final fica imprevisível.
+        if (persona.noise > 0) {
+            for (i in totals.indices) {
+                val jitter = rng.nextInt(persona.noise * 2 + 1) - persona.noise
+                totals[i] += jitter * difficulty.samples
             }
         }
 
@@ -72,18 +92,25 @@ object AiPlayer {
 
     // ------------------------------------------------------------------ busca
 
-    private fun search(state: GameState, depth: Int, alphaIn: Int, betaIn: Int, root: Side): Int {
+    private fun search(
+        state: GameState,
+        depth: Int,
+        alphaIn: Int,
+        betaIn: Int,
+        root: Side,
+        persona: AiPersona
+    ): Int {
         if (state.phase == Phase.FIM_DE_DUELO) {
             return if (state.winner == root) WIN_SCORE else -WIN_SCORE
         }
         if (state.phase == Phase.FIM_DE_RODADA) {
             val sign = if (state.lastRoundLoser == root) -1 else 1
-            return sign * ROUND_SCORE + evaluate(state, root)
+            return sign * ROUND_SCORE + evaluate(state, root, persona)
         }
-        if (depth <= 0) return evaluate(state, root)
+        if (depth <= 0) return evaluate(state, root, persona)
 
         val moves = GameEngine.legalPlays(state)
-        if (moves.isEmpty()) return evaluate(state, root)
+        if (moves.isEmpty()) return evaluate(state, root, persona)
 
         val maximizing = state.turn == root
         var alpha = alphaIn
@@ -92,7 +119,7 @@ object AiPlayer {
 
         for (move in moves) {
             val child = stripped(GameEngine.apply(state, move))
-            val score = search(child, depth - 1, alpha, beta, root)
+            val score = search(child, depth - 1, alpha, beta, root, persona)
             if (maximizing) {
                 if (score > best) best = score
                 if (best > alpha) alpha = best
@@ -109,29 +136,31 @@ object AiPlayer {
      * Avaliação posicional. As três coisas que importam em Kardia:
      * vida, quem está sem folga, e quem tem ressonância guardada para inverter.
      */
-    private fun evaluate(state: GameState, root: Side): Int {
+    private fun evaluate(state: GameState, root: Side, persona: AiPersona): Int {
         val other = root.other
         val mine = state.player(root)
         val theirs = state.player(other)
 
-        var score = (mine.hp - theirs.hp) * 40
+        var score = (mine.hp - theirs.hp) * persona.hpWeight
 
         // Aperto = quanto de campo já se perdeu, contando o Colapso. Ruim para quem joga agora.
         val squeeze = (state.config.limit - state.headroom).coerceAtLeast(0)
-        score += if (state.turn == root) -squeeze * 6 else squeeze * 6
+        score += if (state.turn == root) -squeeze * persona.squeezeWeight
+        else squeeze * persona.squeezeWeight
 
         val options = GameEngine.legalPlays(state).size
-        score += if (state.turn == root) options * 3 else -options * 3
+        score += if (state.turn == root) options * persona.optionsWeight
+        else -options * persona.optionsWeight
 
-        score += resonanceCount(state, root) * 18
-        score -= resonanceCount(state, other) * 15
+        score += resonanceCount(state, root) * persona.resonanceWeight
+        score -= resonanceCount(state, other) * persona.denyWeight
 
         // Cartas pequenas dão sobrevida quando a folga aperta; cartas grandes pressionam cedo.
-        score += flexibility(state, root) * 4
-        score -= flexibility(state, other) * 4
+        score += flexibility(state, root) * persona.flexWeight
+        score -= flexibility(state, other) * persona.flexWeight
 
-        score += mine.powers.values.sum() * 25
-        score -= theirs.powers.values.sum() * 25
+        score += mine.powers.values.sum() * persona.powerWeight
+        score -= theirs.powers.values.sum() * persona.powerWeight
         if (mine.shielded) score += 200
         if (theirs.shielded) score -= 200
 

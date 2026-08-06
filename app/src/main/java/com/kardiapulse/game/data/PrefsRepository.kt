@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.kardiapulse.game.security.IntegrityRules
 import com.kardiapulse.game.security.SaveGuard
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -38,15 +39,23 @@ class PrefsRepository(private val context: Context) {
         return PlayerProfile.fromJson(raw) ?: PlayerProfile(tampered = true)
     }
 
-    /** Aplica uma transformação ao perfil e regrava assinado. */
+    /**
+     * Aplica uma transformação ao perfil e regrava assinado.
+     *
+     * Entre a transformação e a gravação passa a validação de plausibilidade: assinar um valor
+     * adulterado produziria uma assinatura perfeitamente válida, então a assinatura sozinha não
+     * basta. Ver [IntegrityRules].
+     */
     suspend fun update(transform: (PlayerProfile) -> PlayerProfile): PlayerProfile {
         var result = PlayerProfile()
         context.dataStore.edit { prefs ->
-            val updated = transform(read(prefs)).copy(tampered = false)
-            val json = updated.toJson()
+            val previous = read(prefs)
+            val candidate = transform(previous).copy(tampered = false)
+            val validated = IntegrityRules.validate(previous, candidate)
+            val json = validated.profile.toJson()
             prefs[keyProfile] = json
             prefs[keySignature] = SaveGuard.sign(json)
-            result = updated
+            result = validated.profile
         }
         return result
     }

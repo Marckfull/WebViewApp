@@ -17,9 +17,10 @@ object DeviceIntegrity {
     data class Report(
         val rooted: Boolean,
         val emulator: Boolean,
-        val debuggable: Boolean
+        val debuggable: Boolean,
+        val signatureValid: Boolean
     ) {
-        val trustworthy: Boolean get() = !rooted && !debuggable
+        val trustworthy: Boolean get() = !rooted && !debuggable && signatureValid
     }
 
     private val SUSPECT_PATHS = listOf(
@@ -38,7 +39,8 @@ object DeviceIntegrity {
     fun assess(context: Context): Report = Report(
         rooted = looksRooted(),
         emulator = looksEmulated(),
-        debuggable = isDebuggable(context)
+        debuggable = isDebuggable(context),
+        signatureValid = AppSignature.isTrusted(context)
     )
 
     private fun looksRooted(): Boolean = try {

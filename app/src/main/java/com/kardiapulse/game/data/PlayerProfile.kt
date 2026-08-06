@@ -29,6 +29,8 @@ data class PlayerProfile(
     val shards: Int = 300,
     val crystals: Int = 5,
     val powers: Map<PowerType, Int> = mapOf(PowerType.DESCARGA to 1, PowerType.VISAO to 1),
+    /** Cargas de Recuo. Não é um poder do motor: desfaz a última jogada fora das regras. */
+    val undoCharges: Int = 1,
 
     val duelsPlayed: Int = 0,
     val duelsWon: Int = 0,
@@ -58,7 +60,9 @@ data class PlayerProfile(
     val dailyChallengeWon: Boolean = false,
     val removeAds: Boolean = false,
     val duelsSinceInterstitial: Int = 0,
-    val tampered: Boolean = false
+    val tampered: Boolean = false,
+    /** Ligado quando uma gravação implausível foi barrada. Ver [com.kardiapulse.game.security.IntegrityRules]. */
+    val suspicious: Boolean = false
 ) {
     /** Curva de nível suave: cada nível custa um pouco mais que o anterior. */
     val level: Int get() = 1 + sqrt(xp / 120.0).toInt()
@@ -93,6 +97,8 @@ data class PlayerProfile(
         json.put("xp", xp)
         json.put("shards", shards)
         json.put("crystals", crystals)
+        json.put("undoCharges", undoCharges)
+        json.put("suspicious", suspicious)
         json.put("powers", JSONObject().also { p -> powers.forEach { (k, v) -> p.put(k.name, v) } })
         json.put("duelsPlayed", duelsPlayed)
         json.put("duelsWon", duelsWon)
@@ -141,6 +147,8 @@ data class PlayerProfile(
                 xp = json.optInt("xp", 0).coerceAtLeast(0),
                 shards = json.optInt("shards", 0).coerceAtLeast(0),
                 crystals = json.optInt("crystals", 0).coerceAtLeast(0),
+                undoCharges = json.optInt("undoCharges", 0).coerceIn(0, 99),
+                suspicious = json.optBoolean("suspicious", false),
                 powers = powers.filterValues { it > 0 },
                 duelsPlayed = json.optInt("duelsPlayed", 0),
                 duelsWon = json.optInt("duelsWon", 0),

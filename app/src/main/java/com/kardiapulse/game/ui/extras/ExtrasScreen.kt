@@ -40,6 +40,7 @@ import com.kardiapulse.game.data.PlayerProfile
 import com.kardiapulse.game.ui.common.Caption
 import com.kardiapulse.game.ui.common.GlassPanel
 import com.kardiapulse.game.ui.common.KardiaBackground
+import com.kardiapulse.game.ui.common.PulseButton
 import com.kardiapulse.game.ui.common.ScreenHeader
 import com.kardiapulse.game.ui.common.SectionTitle
 import com.kardiapulse.game.ui.theme.PulseCyan
@@ -110,7 +111,7 @@ private val TIPS = listOf(
 )
 
 @Composable
-fun ExtrasScreen(profile: PlayerProfile, onBack: () -> Unit) {
+fun ExtrasScreen(profile: PlayerProfile, onBack: () -> Unit, onReplay: () -> Unit) {
     var open by remember { mutableStateOf("codex") }
 
     KardiaBackground {
@@ -265,6 +266,19 @@ fun ExtrasScreen(profile: PlayerProfile, onBack: () -> Unit) {
                         }
                     }
                 }
+            }
+
+            Spacer(Modifier.height(20.dp))
+            SectionTitle("Replay")
+            Spacer(Modifier.height(10.dp))
+            GlassPanel(Modifier.fillMaxWidth(), borderColor = PulseGold.copy(alpha = 0.45f)) {
+                Caption(
+                    "Todo duelo termina com um código curto. Cole o código de um amigo e assista " +
+                        "à partida dele carta por carta — o jogo recalcula tudo a partir da semente, " +
+                        "sem baixar nada."
+                )
+                Spacer(Modifier.height(12.dp))
+                PulseButton(text = "ASSISTIR UM DUELO", primary = false, onClick = onReplay)
             }
 
             Spacer(Modifier.height(20.dp))

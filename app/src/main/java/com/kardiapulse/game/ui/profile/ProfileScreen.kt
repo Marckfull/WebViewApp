@@ -116,6 +116,23 @@ fun ProfileScreen(profile: PlayerProfile, trustworthyDevice: Boolean, onBack: ()
                 }
             }
 
+            if (profile.suspicious) {
+                Spacer(Modifier.height(12.dp))
+                GlassPanel(Modifier.fillMaxWidth(), borderColor = DangerRed.copy(alpha = 0.5f)) {
+                    Text(
+                        "Gravação barrada",
+                        color = DangerRed,
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    Spacer(Modifier.height(4.dp))
+                    Caption(
+                        "Uma alteração impossível de acontecer jogando foi detectada e recusada — " +
+                            "o valor anterior foi mantido. Se isso apareceu sem você ter mexido em " +
+                            "nada, apagar o progresso em Ajustes limpa a marca."
+                    )
+                }
+            }
+
             if (!trustworthyDevice) {
                 Spacer(Modifier.height(12.dp))
                 GlassPanel(Modifier.fillMaxWidth(), borderColor = PulseGold.copy(alpha = 0.5f)) {

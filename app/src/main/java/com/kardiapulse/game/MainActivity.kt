@@ -41,6 +41,7 @@ import com.kardiapulse.game.ui.legal.LegalDocumentScreen
 import com.kardiapulse.game.ui.legal.LegalGateScreen
 import com.kardiapulse.game.ui.modes.ModeSelectScreen
 import com.kardiapulse.game.ui.profile.ProfileScreen
+import com.kardiapulse.game.ui.replay.ReplayScreen
 import com.kardiapulse.game.ui.settings.SettingsScreen
 import com.kardiapulse.game.ui.shop.ShopScreen
 import com.kardiapulse.game.ui.splash.SplashScreen
@@ -57,6 +58,7 @@ object Routes {
     const val PROFILE = "profile"
     const val DAILY = "daily"
     const val EXTRAS = "extras"
+    const val REPLAY = "replay"
     const val SETTINGS = "settings"
     const val PRIVACY = "privacy"
     const val TERMS = "terms"
@@ -245,7 +247,15 @@ private fun KardiaRoot(onShowPrivacyOptions: () -> Unit) {
         }
 
         composable(Routes.EXTRAS) {
-            ExtrasScreen(profile = loaded, onBack = { navController.popBackStack() })
+            ExtrasScreen(
+                profile = loaded,
+                onBack = { navController.popBackStack() },
+                onReplay = { navController.navigate(Routes.REPLAY) }
+            )
+        }
+
+        composable(Routes.REPLAY) {
+            ReplayScreen(onBack = { navController.popBackStack() })
         }
 
         composable(Routes.SETTINGS) {

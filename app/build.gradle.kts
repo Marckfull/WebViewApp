@@ -28,6 +28,7 @@ android {
             buildConfigField("String", "AD_INTERSTITIAL", "\"ca-app-pub-3940256099942544/1033173712\"")
             buildConfigField("String", "AD_REWARDED", "\"ca-app-pub-3940256099942544/5224354917\"")
             buildConfigField("String", "AD_BANNER", "\"ca-app-pub-3940256099942544/6300978111\"")
+            buildConfigField("String", "EXPECTED_SIGNATURE", "\"\"")
         }
         release {
             isMinifyEnabled = true
@@ -40,6 +41,9 @@ android {
             buildConfigField("String", "AD_INTERSTITIAL", "\"ca-app-pub-3940256099942544/1033173712\"")
             buildConfigField("String", "AD_REWARDED", "\"ca-app-pub-3940256099942544/5224354917\"")
             buildConfigField("String", "AD_BANNER", "\"ca-app-pub-3940256099942544/6300978111\"")
+            // Vazio = checagem de assinatura desligada. Rode uma vez em release, pegue o valor
+            // no Logcat (tag AppSignature) e cole aqui para ligar a verificação.
+            buildConfigField("String", "EXPECTED_SIGNATURE", "\"\"")
         }
     }
 
@@ -95,6 +99,8 @@ dependencies {
     implementation("com.google.android.ump:user-messaging-platform:3.0.0")
 
     testImplementation("junit:junit:4.13.2")
+    // Implementação real de org.json para os testes de unidade rodarem na JVM sem Robolectric.
+    testImplementation("org.json:json:20240303")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")

@@ -57,10 +57,18 @@ poder de graça.
 
 ## O que já está implementado
 
-- **Motor de regras** puro em Kotlin, imutável e determinístico (13 testes de unidade).
+- **Motor de regras** puro em Kotlin, imutável e determinístico (33 testes de unidade).
 - **IA com PIMC** (Perfect Information Monte Carlo): como a mão do adversário é oculta, a IA sorteia
   vários mundos possíveis a partir das cartas que ainda não viu, resolve cada um com busca alfa-beta,
   e joga o que se sai melhor na média. Quatro dificuldades. **Ela nunca olha a sua mão.**
+- **Cinco temperamentos de rival** (Equilibrado, Agressivo, Avarento, Paciente, Imprevisível). A
+  dificuldade controla o quanto a IA *enxerga*; a persona controla o que ela *quer*, mudando os
+  pesos da avaliação. O nome do temperamento aparece na tela: dá para ler o rival antes de jogar.
+- **Recuo**: desfaz a sua última ação e tudo que o rival respondeu depois. Como o estado é imutável,
+  desfazer é literalmente voltar a apontar para o estado anterior. Consumível, comprável na Loja.
+- **Replay por código**: todo duelo termina com uma string curta contendo semente e jogadas. Cole em
+  Extras › Replay e o motor recalcula a partida inteira, carta por carta. Nenhum vídeo, nenhum
+  download — um duelo completo cabe em pouco mais de cem caracteres.
 - **Tutorial de 8 etapas com trava real**: cada etapa só libera a próxima depois que a ação foi
   executada dentro de um duelo de verdade — nada de slides.
 - **Passe Diário** com ciclo de 7 dias, sequência (streak) e recuperação opcional por anúncio.
@@ -69,9 +77,16 @@ poder de graça.
 - **Áudio 100% sintetizado em tempo real** — 12 efeitos e 2 trilhas em loop, calculados por
   matemática no primeiro uso e gravados em cache. **O projeto não contém um único arquivo de áudio.**
 - **Vibração** com padrão próprio para cada evento (carta, inversão, corrente, sobrecarga…).
+- **Animação**: a carta voa da mão até o Núcleo, a tela treme e pisca na sobrecarga, partículas
+  explodem na inversão e nas correntes longas, e o dano sobe em número grande.
 - **Notificações provocadoras**, no máximo uma por dia, e só quando você não apareceu.
-- **Segurança**: o save é assinado com HMAC-SHA256 por uma chave gerada dentro do Android Keystore.
-  Editar o arquivo por fora quebra a assinatura e o jogo avisa.
+- **Segurança em três camadas**:
+  1. o save é assinado com HMAC-SHA256 por uma chave gerada dentro do Android Keystore — editar o
+     arquivo por fora quebra a assinatura;
+  2. **validação de plausibilidade** em toda gravação: assinar um valor adulterado geraria uma
+     assinatura válida, então o jogo também compara o que está sendo gravado com o que havia antes
+     e rejeita variações impossíveis (o clássico "999.999.999 Fragmentos");
+  3. **conferência da assinatura do APK** em runtime, para detectar build recompilada.
 - **Política de Privacidade e Termos de Uso** completos, com portão de aceite na primeira execução.
 - **Monetização**: intersticial (só ao SAIR do duelo, com limite de frequência) e premiados
   opcionais, com fluxo de consentimento UMP.
@@ -144,6 +159,11 @@ publique** antes de resolver:
 3. **Assinatura.** Crie a keystore e guarde em lugar seguro. Perder a keystore significa não
    conseguir mais atualizar o app.
 
+   Depois de gerar o primeiro release assinado, ligue também a conferência de assinatura: rode o
+   app, procure no Logcat a linha da tag `AppSignature` ("assinatura atual: ..."), e cole o valor
+   em `EXPECTED_SIGNATURE` no bloco `release` do `app/build.gradle.kts`. Enquanto o campo estiver
+   vazio a checagem fica desligada — que é o certo durante o desenvolvimento.
+
 4. **`applicationId`.** Está como `com.kardiapulse.game`. Se quiser outro, mude em
    `app/build.gradle.kts` (e lembre que ele é definitivo depois da primeira publicação).
 
@@ -176,13 +196,13 @@ Sugestão de título na Play Store (o campo aceita 30 caracteres):
 app/src/main/java/com/kardiapulse/game/
 ├── core/
 │   ├── model/          Card, Element, GameState, GameMode, Power… (Kotlin puro)
-│   └── engine/         GameEngine (regras), AiPlayer (PIMC), PulseRandom
+│   └── engine/         GameEngine (regras), AiPlayer (PIMC), AiPersona, ReplayCode, PulseRandom
 ├── data/               Perfil, economia, conquistas, Passe Diário, cosméticos, tutorial
 ├── audio/              Síntese de som e trilha (WavSynth, Sfx, MusicTrack, AudioController)
 ├── haptics/            Padrões de vibração
 ├── ads/                AdMob + consentimento UMP
 ├── notifications/      Provocações + agendamento via WorkManager
-├── security/           Assinatura do save (Keystore) e leitura do ambiente
+├── security/           Assinatura do save, plausibilidade das gravações, leitura do ambiente
 └── ui/                 Compose: tema, telas, componentes do tabuleiro
 ```
 
@@ -200,8 +220,6 @@ Coisas que combinam com a mecânica e que ficaram de fora desta primeira entrega
 - **Modo Puzzle**: mão fixa, "vença em exatamente 3 jogadas". Rende centenas de níveis feitos à mão.
 - **Baralhos com identidade**: um baralho com mais Éter (mais inversões), outro com mais cartas
   altas (mais pressão). Muda o estilo sem quebrar o equilíbrio.
-- **Replay compartilhável**: como o motor é determinístico e cabe em uma semente, dá para exportar
-  uma partida inteira em um código curto e o amigo assistir.
 - **Torneio semanal** com semente da semana e ranking local.
 - **Conquistas secretas** para jogadas específicas (vencer com o Núcleo exatamente em 0, por exemplo).
 

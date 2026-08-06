@@ -58,6 +58,9 @@ import com.kardiapulse.game.ui.theme.TextPrimary
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.rememberCoroutineScope
 
+/** Preço de uma carga de Recuo, em Fragmentos. */
+private const val UNDO_PRICE = 110
+
 @Composable
 fun ShopScreen(profile: PlayerProfile, onBack: () -> Unit) {
     val services = LocalServices.current
@@ -180,8 +183,52 @@ fun ShopScreen(profile: PlayerProfile, onBack: () -> Unit) {
                 Spacer(Modifier.height(8.dp))
             }
 
+            // --- Recuo
+            Spacer(Modifier.height(20.dp))
+            SectionTitle("Recuo")
+            Spacer(Modifier.height(10.dp))
+            GlassPanel(Modifier.fillMaxWidth(), borderColor = PulseGold.copy(alpha = 0.45f)) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text("↶", color = PulseGold, fontSize = 22.sp)
+                    Spacer(Modifier.width(12.dp))
+                    Column(Modifier.weight(1f)) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                "Recuo",
+                                color = TextPrimary,
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                            Spacer(Modifier.width(6.dp))
+                            Text("×${profile.undoCharges}", color = PulseGold, fontSize = 11.sp)
+                        }
+                        Caption(
+                            "Desfaz a sua última ação e tudo que o rival respondeu depois dela. " +
+                                "Uma carga por uso."
+                        )
+                    }
+                }
+                Spacer(Modifier.height(10.dp))
+                PulseButton(
+                    text = "COMPRAR · $UNDO_PRICE ◈",
+                    enabled = profile.shards >= UNDO_PRICE,
+                    primary = false,
+                    onClick = {
+                        scope.launch {
+                            services.repository.update {
+                                it.copy(
+                                    shards = it.shards - UNDO_PRICE,
+                                    undoCharges = it.undoCharges + 1
+                                )
+                            }
+                            services.audio.play(com.kardiapulse.game.audio.Sfx.COIN)
+                            message = "Uma carga de Recuo adicionada."
+                        }
+                    }
+                )
+            }
+
             // --- Cosméticos
-            Spacer(Modifier.height(14.dp))
+            Spacer(Modifier.height(20.dp))
             SectionTitle("Dorsos de carta")
             Spacer(Modifier.height(10.dp))
             CosmeticGrid(

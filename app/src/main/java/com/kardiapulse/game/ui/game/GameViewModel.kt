@@ -6,9 +6,12 @@ import androidx.lifecycle.viewModelScope
 import com.kardiapulse.game.Services
 import com.kardiapulse.game.audio.MusicTrack
 import com.kardiapulse.game.audio.Sfx
+import com.kardiapulse.game.core.engine.AiPersona
 import com.kardiapulse.game.core.engine.AiPlayer
 import com.kardiapulse.game.core.engine.GameEngine
 import com.kardiapulse.game.core.engine.PulseRandom
+import com.kardiapulse.game.core.engine.Replay
+import com.kardiapulse.game.core.engine.ReplayCode
 import com.kardiapulse.game.core.model.Difficulty
 import com.kardiapulse.game.core.model.GameConfig
 import com.kardiapulse.game.core.model.GameEvent
@@ -43,7 +46,9 @@ data class MatchResult(
     val newAchievements: List<String>,
     val leveledUp: Boolean,
     val endlessStreak: Int,
-    val rewardDoubled: Boolean = false
+    val rewardDoubled: Boolean = false,
+    /** O duelo inteiro em uma string curta. Ver [ReplayCode]. */
+    val replayCode: String = ""
 )
 
 data class GameUiState(
@@ -55,7 +60,12 @@ data class GameUiState(
     val toast: String? = null,
     val matchResult: MatchResult? = null,
     val endlessStreak: Int = 0,
-    val reviveOffered: Boolean = false
+    val reviveOffered: Boolean = false,
+    /** Eventos do último passo, para a UI animar. O motor já os consumiu. */
+    val fxEvents: List<GameEvent> = emptyList(),
+    val fxTick: Int = 0,
+    val canUndo: Boolean = false,
+    val rivalPersona: AiPersona = AiPersona.EQUILIBRADO
 ) {
     val phase: Phase? get() = game?.phase
     val yourTurn: Boolean get() = game?.turn == Side.VOCE && game?.phase == Phase.JOGANDO
@@ -84,6 +94,22 @@ class GameViewModel(
     private var rng = PulseRandom(System.nanoTime())
     private var difficulty = startDifficulty
     private var carriedHp = 0
+    private var persona = AiPersona.EQUILIBRADO
+
+    /** Uma entrada por ação sua, para o Recuo saber exatamente até onde voltar. */
+    private data class UndoPoint(
+        val state: GameState,
+        val moveCount: Int,
+        val refundPower: PowerType?
+    )
+
+    private val history = ArrayDeque<UndoPoint>()
+    private val recordedMoves = ArrayList<Move>()
+    private var replaySeed = 0L
+    private var replayYourHp = 0
+    private var replayFoeHp = 0
+    private var replayYourPowers: Map<PowerType, Int> = emptyMap()
+    private var replayFoePowers: Map<PowerType, Int> = emptyMap()
 
     init {
         viewModelScope.launch {
@@ -124,8 +150,10 @@ class GameViewModel(
         val config = buildConfig()
         val seed = seedFor()
         rng = PulseRandom(seed xor System.nanoTime())
+        persona = pickPersona()
 
         val yourHp = if (mode == GameMode.SOBREVIVENCIA && carriedHp > 0) carriedHp else config.startHp
+        val foePowers = rivalPowers()
 
         val game = GameEngine.newMatch(
             config = config,
@@ -133,18 +161,40 @@ class GameViewModel(
             yourName = "Você",
             foeName = rivalName(),
             yourPowers = profile.powers,
-            foePowers = rivalPowers(),
+            foePowers = foePowers,
             yourHp = yourHp,
             foeHp = config.startHp
         )
+
+        // Cabeçalho do replay: com isto mais a lista de jogadas, o duelo é reconstruível.
+        history.clear()
+        recordedMoves.clear()
+        replaySeed = seed
+        replayYourHp = yourHp
+        replayFoeHp = config.startHp
+        replayYourPowers = profile.powers
+        replayFoePowers = foePowers
+
         _ui.value = _ui.value.copy(
             game = game,
             selectedCardId = null,
             matchResult = null,
             reviveOffered = false,
-            toast = null
+            toast = null,
+            canUndo = false,
+            rivalPersona = persona
         )
         afterStateChange(game)
+    }
+
+    /**
+     * O temperamento do rival. Na Sobrevivência ele é estável por posição — o quarto adversário
+     * é sempre o mesmo sujeito, com o mesmo jeito de jogar.
+     */
+    private fun pickPersona(): AiPersona = when (mode) {
+        GameMode.SOBREVIVENCIA -> AiPersona.forIndex(_ui.value.endlessStreak)
+        GameMode.DIARIO -> AiPersona.forIndex(DailyPass.todayEpochDay().toInt())
+        else -> AiPersona.ALL[rng.nextInt(AiPersona.ALL.size)]
     }
 
     private fun rivalName(): String {
@@ -208,7 +258,10 @@ class GameViewModel(
         }
 
         timerJob?.cancel()
-        val next = GameEngine.apply(game, Move.Play(cardId, sign))
+        pushUndoPoint(game, refundPower = null)
+        val move = Move.Play(cardId, sign)
+        recordedMoves.add(move)
+        val next = GameEngine.apply(game, move)
         _ui.value = state.copy(game = next, selectedCardId = null, toast = null)
         afterStateChange(next)
     }
@@ -219,8 +272,12 @@ class GameViewModel(
         if (!state.yourTurn) return
         if (game.you.powerCount(power) <= 0) return
 
-        val next = GameEngine.apply(game, Move.UsePower(power))
+        val move = Move.UsePower(power)
+        val next = GameEngine.apply(game, move)
         if (next === game) return
+
+        pushUndoPoint(game, refundPower = power)
+        recordedMoves.add(move)
 
         // O poder gasto no duelo sai do inventário permanente.
         viewModelScope.launch {
@@ -230,6 +287,53 @@ class GameViewModel(
 
         _ui.value = state.copy(game = next, selectedCardId = null)
         afterStateChange(next)
+    }
+
+    private fun pushUndoPoint(state: GameState, refundPower: PowerType?) {
+        history.addLast(UndoPoint(state, recordedMoves.size, refundPower))
+        // Um duelo longo não precisa de memória infinita para um recurso que se compra por unidade.
+        while (history.size > MAX_UNDO_DEPTH) history.removeFirst()
+    }
+
+    /**
+     * O Recuo: desfaz a sua última ação e tudo que o rival respondeu depois dela.
+     *
+     * Como o estado do jogo é imutável, "desfazer" é literalmente voltar a apontar para o estado
+     * anterior — não existe reversão de mutação para dar errado. Se a ação desfeita gastou um
+     * poder, ele volta para o inventário.
+     */
+    fun undo() {
+        val state = _ui.value
+        if (state.profile.undoCharges <= 0) {
+            _ui.value = state.copy(toast = "Sem cargas de Recuo. Dá para comprar na Loja.")
+            return
+        }
+        if (state.game?.phase != Phase.JOGANDO) return
+        val point = history.removeLastOrNull() ?: return
+
+        aiJob?.cancel()
+        timerJob?.cancel()
+        while (recordedMoves.size > point.moveCount) recordedMoves.removeAt(recordedMoves.size - 1)
+
+        viewModelScope.launch {
+            val updated = services.repository.update { profile ->
+                val refunded = point.refundPower?.let { profile.withPower(it, 1) } ?: profile
+                refunded.copy(undoCharges = (refunded.undoCharges - 1).coerceAtLeast(0))
+            }
+            _ui.value = _ui.value.copy(profile = updated)
+        }
+
+        services.audio.play(Sfx.POWER)
+        services.haptics.perform(HapticPattern.POWER)
+        _ui.value = _ui.value.copy(
+            game = point.state,
+            selectedCardId = null,
+            toast = "Recuo: o Núcleo voltou ao que era.",
+            matchResult = null,
+            canUndo = history.isNotEmpty()
+        )
+        // Volta a contar o tempo do seu turno, se o modo tiver relógio.
+        if (point.state.turn == Side.VOCE) startTurnTimer(point.state)
     }
 
     fun continueToNextRound() {
@@ -258,7 +362,13 @@ class GameViewModel(
     private fun afterStateChange(state: GameState) {
         consumeEvents(state)
         val cleared = GameEngine.clearEvents(state)
-        _ui.value = _ui.value.copy(game = cleared)
+        // Os eventos seguem para a UI animar; o motor já não precisa deles.
+        _ui.value = _ui.value.copy(
+            game = cleared,
+            fxEvents = state.events,
+            fxTick = _ui.value.fxTick + 1,
+            canUndo = history.isNotEmpty() && cleared.phase == Phase.JOGANDO
+        )
 
         when (cleared.phase) {
             Phase.FIM_DE_DUELO -> finishMatch(cleared)
@@ -324,10 +434,11 @@ class GameViewModel(
             // fica ilegível.
             delay(420L + rng.nextInt(360).toLong())
             val move = withContext(Dispatchers.Default) {
-                AiPlayer.chooseMove(state, difficulty, rng)
+                AiPlayer.chooseMove(state, difficulty, rng, persona)
             }
             _ui.value = _ui.value.copy(aiThinking = false)
             if (move == null) return@launch
+            recordedMoves.add(move)
             val next = GameEngine.apply(state, move)
             _ui.value = _ui.value.copy(game = next)
             afterStateChange(next)
@@ -357,6 +468,8 @@ class GameViewModel(
             val fallback = GameEngine.legalPlays(current).randomOrNull()
             if (fallback != null) {
                 _ui.value = _ui.value.copy(toast = "O tempo acabou! O Núcleo jogou por você.")
+                pushUndoPoint(current, refundPower = null)
+                recordedMoves.add(fallback)
                 val next = GameEngine.apply(current, fallback)
                 _ui.value = _ui.value.copy(game = next, selectedCardId = null)
                 afterStateChange(next)
@@ -423,7 +536,8 @@ class GameViewModel(
                     rewards = rewards,
                     newAchievements = newAchievements,
                     leveledUp = after.level > before.level,
-                    endlessStreak = streak
+                    endlessStreak = streak,
+                    replayCode = buildReplayCode()
                 ),
                 reviveOffered = !won && mode == GameMode.SOBREVIVENCIA && streak > 0
             )
@@ -488,6 +602,24 @@ class GameViewModel(
         }
     }
 
+    /** Empacota o duelo que acabou de terminar em um código compartilhável. */
+    private fun buildReplayCode(): String = runCatching {
+        val game = _ui.value.game ?: return@runCatching ""
+        ReplayCode.encode(
+            Replay(
+                seed = replaySeed,
+                mode = game.config.mode,
+                difficulty = game.config.difficulty,
+                modifiers = game.config.modifiers,
+                yourHp = replayYourHp,
+                foeHp = replayFoeHp,
+                yourPowers = replayYourPowers,
+                foePowers = replayFoePowers,
+                moves = recordedMoves.toList()
+            )
+        )
+    }.getOrDefault("")
+
     private fun escalate(current: Difficulty, streak: Int): Difficulty = when {
         streak >= 9 -> Difficulty.MESTRE
         streak >= 5 -> Difficulty.DIFICIL
@@ -510,6 +642,11 @@ class GameViewModel(
                 "A direção está travada. Só uma carta de ${game.lastElement?.ptName ?: "qualquer elemento"} (ou Éter) inverte."
             else -> "Jogada inválida."
         }
+    }
+
+    private companion object {
+        /** Profundidade máxima do histórico de Recuo. */
+        const val MAX_UNDO_DEPTH = 40
     }
 
     class Factory(

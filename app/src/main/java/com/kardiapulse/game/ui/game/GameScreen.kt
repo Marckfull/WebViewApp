@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -51,13 +52,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.kardiapulse.game.LocalServices
+import com.kardiapulse.game.core.engine.AiPersona
 import com.kardiapulse.game.core.engine.GameEngine
 import com.kardiapulse.game.core.model.Difficulty
 import com.kardiapulse.game.core.model.GameMode
+import com.kardiapulse.game.core.model.GameEvent
 import com.kardiapulse.game.core.model.GameState
 import com.kardiapulse.game.core.model.Phase
 import com.kardiapulse.game.core.model.PowerType
@@ -71,7 +78,14 @@ import com.kardiapulse.game.ui.common.PulseButton
 import com.kardiapulse.game.ui.game.components.CardBack
 import com.kardiapulse.game.ui.game.components.CardView
 import com.kardiapulse.game.ui.game.components.NucleusGauge
+import com.kardiapulse.game.ui.game.components.BurstLayer
+import com.kardiapulse.game.ui.game.components.FlashLayer
+import com.kardiapulse.game.ui.game.components.FloatingDamageLayer
+import com.kardiapulse.game.ui.game.components.FlyingCard
+import com.kardiapulse.game.ui.game.components.FlyingCardLayer
 import com.kardiapulse.game.ui.game.components.NucleusStatusRow
+import com.kardiapulse.game.ui.game.components.burstColorFor
+import com.kardiapulse.game.ui.game.components.rememberShakeOffset
 import com.kardiapulse.game.ui.theme.DangerRed
 import com.kardiapulse.game.ui.theme.NegativePole
 import com.kardiapulse.game.ui.theme.PositivePole
@@ -86,6 +100,7 @@ import com.kardiapulse.game.ui.theme.TextPrimary
 import com.kardiapulse.game.ui.theme.TextSecondary
 import com.kardiapulse.game.ui.theme.VoidBlack
 import kotlinx.coroutines.delay
+import kotlin.math.roundToInt
 
 @Composable
 fun GameScreen(
@@ -102,6 +117,42 @@ fun GameScreen(
     )
     val ui by viewModel.ui.collectAsState()
     val game = ui.game
+
+    // --- Efeitos visuais. Cada evento do motor vira uma camada animada por cima do tabuleiro.
+    var flying by remember { mutableStateOf<FlyingCard?>(null) }
+    var burstTrigger by remember { mutableStateOf(0) }
+    var burstColor by remember { mutableStateOf(PulseCyan) }
+    var shakeTrigger by remember { mutableStateOf(0) }
+    var flashTrigger by remember { mutableStateOf(0) }
+    var damageTrigger by remember { mutableStateOf(0) }
+    var damageValue by remember { mutableStateOf<Int?>(null) }
+    var damageBlocked by remember { mutableStateOf(false) }
+    var fxKey by remember { mutableStateOf(0) }
+
+    LaunchedEffect(ui.fxTick) {
+        for (event in ui.fxEvents) {
+            when (event) {
+                is GameEvent.CardPlayed -> {
+                    fxKey++
+                    flying = FlyingCard(event.card, event.by, event.sign, fxKey)
+                    if (event.flipped || event.chain >= 3) {
+                        burstColor = burstColorFor(event.card)
+                        burstTrigger++
+                    }
+                }
+                is GameEvent.Overload -> {
+                    shakeTrigger++
+                    flashTrigger++
+                    damageValue = event.damage
+                    damageBlocked = event.blockedByShield
+                    damageTrigger++
+                }
+                else -> Unit
+            }
+        }
+    }
+
+    val shake by rememberShakeOffset(shakeTrigger)
 
     // O aviso passageiro some sozinho.
     LaunchedEffect(ui.toast) {
@@ -122,10 +173,16 @@ fun GameScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .offset { IntOffset(shake.x.roundToInt(), shake.y.roundToInt()) }
                 .windowInsetsPadding(WindowInsets.systemBars)
                 .padding(horizontal = 14.dp, vertical = 6.dp)
         ) {
-            RivalBar(game = game, thinking = ui.aiThinking, onExit = onExit)
+            RivalBar(
+                game = game,
+                thinking = ui.aiThinking,
+                persona = ui.rivalPersona,
+                onExit = onExit
+            )
 
             Spacer(Modifier.height(6.dp))
             RivalHand(game, Cosmetics.cardBackColor(ui.profile.activeCardBack))
@@ -164,10 +221,13 @@ fun GameScreen(
             }
 
             Spacer(Modifier.height(8.dp))
-            PowerRow(
+            ActionBar(
                 game = game,
                 enabled = ui.yourTurn,
-                onUse = viewModel::usePower
+                undoCharges = ui.profile.undoCharges,
+                canUndo = ui.canUndo && ui.yourTurn,
+                onUse = viewModel::usePower,
+                onUndo = viewModel::undo
             )
 
             Spacer(Modifier.height(10.dp))
@@ -194,6 +254,17 @@ fun GameScreen(
             Spacer(Modifier.height(8.dp))
             YourBar(game = game, secondsLeft = ui.secondsLeft)
         }
+
+        // --- Camadas de efeito (não recebem toque, ficam por cima do tabuleiro)
+
+        FlyingCardLayer(flying = flying, onFinished = { flying = null })
+        BurstLayer(trigger = burstTrigger, color = burstColor)
+        FlashLayer(trigger = flashTrigger)
+        FloatingDamageLayer(
+            damage = damageValue,
+            trigger = damageTrigger,
+            blocked = damageBlocked
+        )
 
         // --- Sobreposições
 
@@ -242,7 +313,12 @@ fun GameScreen(
 // ---------------------------------------------------------------------- topo
 
 @Composable
-private fun RivalBar(game: GameState, thinking: Boolean, onExit: () -> Unit) {
+private fun RivalBar(
+    game: GameState,
+    thinking: Boolean,
+    persona: AiPersona,
+    onExit: () -> Unit
+) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Surface(
             onClick = onExit,
@@ -264,13 +340,12 @@ private fun RivalBar(game: GameState, thinking: Boolean, onExit: () -> Unit) {
                     style = MaterialTheme.typography.titleMedium
                 )
                 Spacer(Modifier.width(8.dp))
-                if (thinking) {
-                    Text(
-                        text = "pensando…",
-                        color = PulseViolet,
-                        style = MaterialTheme.typography.labelMedium
-                    )
-                }
+                Text(
+                    // O temperamento fica à vista: dá para ler o rival antes de jogar contra ele.
+                    text = if (thinking) "pensando…" else persona.ptName.lowercase(),
+                    color = if (thinking) PulseViolet else TextMuted,
+                    style = MaterialTheme.typography.labelMedium
+                )
                 Spacer(Modifier.weight(1f))
                 Text(
                     text = "${game.foe.hp}",
@@ -369,19 +444,52 @@ private fun CorneredWarning() {
 }
 
 @Composable
-private fun PowerRow(
+private fun ActionBar(
     game: GameState,
     enabled: Boolean,
-    onUse: (PowerType) -> Unit
+    undoCharges: Int,
+    canUndo: Boolean,
+    onUse: (PowerType) -> Unit,
+    onUndo: () -> Unit
 ) {
     val owned = PowerType.ALL.filter { game.you.powerCount(it) > 0 }
-    if (owned.isEmpty()) return
+    if (owned.isEmpty() && !canUndo) return
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .horizontalScroll(rememberScrollState()),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
+        if (canUndo) {
+            val usable = undoCharges > 0
+            Surface(
+                onClick = onUndo,
+                enabled = usable,
+                shape = RoundedCornerShape(12.dp),
+                color = SurfaceCard.copy(alpha = if (usable) 0.95f else 0.5f),
+                border = BorderStroke(
+                    1.dp,
+                    if (usable) PulseGold.copy(alpha = 0.6f) else SurfaceStroke
+                )
+            ) {
+                Row(
+                    Modifier.padding(horizontal = 11.dp, vertical = 7.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text("↶", color = PulseGold, fontSize = 15.sp)
+                    Spacer(Modifier.width(6.dp))
+                    Text(
+                        "Recuo",
+                        color = if (usable) TextPrimary else TextMuted,
+                        style = MaterialTheme.typography.labelMedium
+                    )
+                    Spacer(Modifier.width(5.dp))
+                    Text("×$undoCharges", color = PulseGold, fontSize = 10.sp)
+                }
+            }
+        }
+
         owned.forEach { power ->
             val count = game.you.powerCount(power)
             Surface(
@@ -652,6 +760,11 @@ private fun MatchOverlay(
                 )
             }
 
+            if (result.replayCode.isNotEmpty()) {
+                Spacer(Modifier.height(14.dp))
+                ReplayCodeBlock(result.replayCode)
+            }
+
             Spacer(Modifier.height(18.dp))
 
             if (rewardedReady && !result.rewardDoubled) {
@@ -679,6 +792,50 @@ private fun MatchOverlay(
             Spacer(Modifier.height(8.dp))
             PulseButton(text = "VOLTAR AO MENU", onClick = onExit, primary = false)
         }
+    }
+}
+
+/**
+ * O duelo inteiro em uma linha de texto.
+ *
+ * Como o motor é determinístico, semente mais jogadas bastam para reconstruir a partida carta
+ * por carta — então dá para mandar o duelo por mensagem e o outro assistir em Extras › Replay.
+ */
+@Composable
+private fun ReplayCodeBlock(code: String) {
+    val clipboard = LocalClipboardManager.current
+    var copied by remember { mutableStateOf(false) }
+
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(12.dp))
+            .background(VoidBlack.copy(alpha = 0.6f))
+            .border(BorderStroke(1.dp, SurfaceStroke), RoundedCornerShape(12.dp))
+            .padding(10.dp)
+    ) {
+        Text(
+            "CÓDIGO DESTE DUELO",
+            color = TextMuted,
+            fontSize = 8.5.sp
+        )
+        Spacer(Modifier.height(4.dp))
+        Text(
+            text = code,
+            color = TextSecondary,
+            fontSize = 9.sp,
+            maxLines = 3,
+            overflow = TextOverflow.Ellipsis
+        )
+        Spacer(Modifier.height(8.dp))
+        PulseButton(
+            text = if (copied) "CÓDIGO COPIADO" else "COPIAR E COMPARTILHAR",
+            primary = false,
+            onClick = {
+                clipboard.setText(AnnotatedString(code))
+                copied = true
+            }
+        )
     }
 }
 
