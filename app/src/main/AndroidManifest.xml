@@ -1,23 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.teknorial.webviewapp" >
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- Rede: usada apenas para carregar anúncios. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <!-- Retorno tátil nas jogadas. -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+    <!-- Lembretes diários. Opcional: o jogo funciona normalmente sem ela. -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <!-- Exigido pelo SDK de anúncios do Google Play Services a partir do Android 13. -->
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
 
     <application
-        android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
+        android:name=".KardiaApp"
+        android:allowBackup="false"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:supportsRtl="true"
+        android:theme="@style/Theme.KardiaPulse"
+        android:usesCleartextTraffic="false"
+        android:hardwareAccelerated="true"
+        tools:targetApi="34">
+
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name" >
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden|uiMode"
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/Theme.KardiaPulse.Splash"
+            tools:ignore="DiscouragedApi,LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!--
+            ID de aplicativo do AdMob.
+            ESTE É O ID DE TESTE OFICIAL DO GOOGLE. Troque pelo seu ID real antes de publicar,
+            senão o app é rejeitado (ou não gera receita).
+        -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-3940256099942544~3347511713" />
+
+        <!-- Adia a inicialização do SDK de anúncios até o consentimento ser resolvido. -->
+        <meta-data
+            android:name="com.google.android.gms.ads.flag.OPTIMIZE_INITIALIZATION"
+            android:value="true" />
+        <meta-data
+            android:name="com.google.android.gms.ads.flag.OPTIMIZE_AD_LOADING"
+            android:value="true" />
+
     </application>
 
 </manifest>

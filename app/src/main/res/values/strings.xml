@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">Kardia Pulse</string>
 
-    <string name="app_name">WebViewApp</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <!-- Notificações -->
+    <string name="channel_taunts_name">Provocações do Núcleo</string>
+    <string name="channel_taunts_description">Lembretes do Passe Diário e do Desafio Diário. No máximo um por dia.</string>
 
+    <!-- Acessibilidade -->
+    <string name="cd_nucleus">Medidor do Núcleo</string>
+    <string name="cd_card">Carta</string>
+    <string name="cd_back">Voltar</string>
 </resources>

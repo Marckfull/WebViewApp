@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Tema base. O visual real é todo do Compose; isto define a janela antes dele subir. -->
+    <style name="Theme.KardiaPulse" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@color/void_black</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+    </style>
+
+    <!--
+        Tela de abertura do sistema (androidx.core:core-splashscreen). Ela aparece no instante
+        do toque no ícone e entrega a vez para a abertura animada em Compose.
+    -->
+    <style name="Theme.KardiaPulse.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/void_black</item>
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher_foreground</item>
+        <item name="postSplashScreenTheme">@style/Theme.KardiaPulse</item>
+    </style>
+</resources>

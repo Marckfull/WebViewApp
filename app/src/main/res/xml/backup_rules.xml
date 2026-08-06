@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    O progresso é assinado com uma chave do Android Keystore, que NÃO acompanha o backup.
+    Restaurar o arquivo em outro aparelho produziria uma assinatura inválida e o jogo
+    reiniciaria o perfil. Por isso o backup fica desligado.
+-->
+<full-backup-content>
+    <exclude domain="file" path="datastore/" />
+    <exclude domain="sharedpref" path="." />
+</full-backup-content>
